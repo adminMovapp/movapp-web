@@ -1,11 +1,21 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import "../styles/global.css";
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import Layout from "../layouts/Layout.astro";
+
 ---
 
 <Layout>
-	<Welcome />
+  <section class="text-center px-6 py-12 max-w-5xl mx-auto">
+    <h2 class="text-xl font-medium text-gray-700">Tu Protección Digital Comienza Aquí</h2>
+    <h1 class="text-3xl sm:text-5xl font-bold mt-2">
+      ¿Has sido <span class="text-purple-600">Víctima de Aplicaciones de Préstamo No Reguladas?</span>
+    </h1>
+    <a href="#" class="mt-6 inline-block bg-purple-600 text-white px-6 py-3 rounded-full font-medium hover:bg-purple-700 transition">
+      Contáctanos
+    </a>
+    <!-- Aquí puedes agregar la imagen o video a la derecha -->
+  </section>
+
+  <!-- Aquí puedes seguir con las secciones de estadísticas, contenido, etc. -->
 </Layout>
