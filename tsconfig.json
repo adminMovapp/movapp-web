@@ -6,10 +6,11 @@
       "strict": false,
       "baseUrl": ".",
       "paths": {
-         "@components/": ["src/components/"],
-         "@layouts/": ["src/layouts/"],
-         "@pages/": ["src/pages/"],
-         "@styles/": ["src/styles/"]
+         "@/*": ["src/*"],
+         "@components/*": ["src/components/*"],
+         "@layouts/*": ["src/layouts/*"],
+         "@pages/*": ["src/pages/*"],
+         "@styles/*": ["src/styles/*"]
       },
       "jsx": "react-jsx",
       "jsxImportSource": "react"

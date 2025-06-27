@@ -4,15 +4,18 @@ import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
    integrations: [react()],
-   alias: {
-      "@": "./src",
-      "@components": "/src/components",
-      "@layouts": "/src/layouts",
-      "@pages": "/src/pages",
-      "@styles": "/src/styles",
-   },
+
    vite: {
       plugins: [tailwindcss()],
+      resolve: {
+         alias: {
+            "@": "/src",
+            "@components": "/src/components",
+            "@layouts": "/src/layouts",
+            "@pages": "/src/pages",
+            "@styles": "/src/styles",
+         },
+      },
    },
    output: "static",
    build: {
