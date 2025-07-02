@@ -1,25 +1,29 @@
+---
+
+import ButtonContact from "./ButtonContact.astro";
+
+---
+
+
+
 <header
-  class="fixed top-4 left-1/2 -translate-x-1/2 z-50
-         max-w-6xl w-[95%] bg-white/50 backdrop-blur-md
-         shadow-lg px-6 py-4 rounded-full
+  class="fixed left-2 right-2 z-50
+         w-auto max-w-none bg-white/50 backdrop-blur-md
+         shadow-lg px-6 py-4 rounded-xl
          flex justify-between items-center"
 >
   <div class="flex items-center gap-2">
     <span class="text-2xl font-bold text-purple-700">movapp</span>
   </div>
 
-  <nav class="hidden md:flex gap-6 text-sm text-gray-700">
-    <a href="#">Inicio</a>
-    <a href="#">Movapp</a>
-    <a href="#">Hack</a>
-    <a href="#">Tienda</a>
-    <a href="#">Contenido</a>
-  </nav>
+  <div class="flex items-center gap-4 ml-auto">
+    <nav class="hidden md:flex gap-6 text-sm text-gray-700 justify-end">
+      <a href="#">INICIO</a>
+      <a href="#">NOSOTROS</a>
+      <a href="#">EL HACK</a>
+      <a href="#">TIENDA</a>
+    </nav>
+    <ButtonContact/>
+  </div>
 
-  <a
-  href="#"
-  class="hidden md:inline-flex bg-purple-600 text-white px-4 py-2 rounded-full text-sm hover:bg-purple-700 transition"
->
-  Contáctanos
-</a>
 </header>

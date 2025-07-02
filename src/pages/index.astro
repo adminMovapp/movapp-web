@@ -1,134 +1,29 @@
 ---
 
+import ButtonContact from "@/components/ButtonContact.astro";
 import Layout from "@layouts/Layout.astro";
 
 ---
 
 <Layout>
-  <section class="my-10 text-center px-6 py-12 max-w-5xl mx-auto bg-white/70 backdrop-blur-md rounded-lg shadow-lg">
+
+  <div class="bg-gradient-to-br from-gray-300 to-white text-gray-800 min-h-screen pt-24 my-0 rounded-lg">
+  
+  
+  
+  <section class=" text-center 
+  max-w-5xl mx-auto bg-white/70 backdrop-blur-md rounded-lg shadow-lg
+  my-10">
     <h2 class="text-xl font-medium text-gray-700">Tu Protección Digital Comienza Aquí</h2>
     <h1 class="text-3xl sm:text-5xl font-bold mt-2">
       ¿Has sido <span class="text-purple-600">Víctima de Aplicaciones de Préstamo No Reguladas?</span>
     </h1>
-    <a href="#" class="mt-6 inline-block bg-purple-600 text-white px-6 py-3 rounded-full font-medium hover:bg-purple-700 transition">
-      Contáctanos
-    </a>
-    <!-- Aquí puedes agregar la imagen o video a la derecha -->
+  <ButtonContact/>
   </section>
 
-  <section class="max-w-5xl mx-auto px-6 py-8">
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div class="bg-white rounded-lg shadow-md p-6 flex flex-col ">
-        <h3 class="text-lg  text-left font-semibold mb-2">Una Solución</h3>
-        <p class="text-gray-600">En Movapp, te ofrecemos una solución integral para proteger tu información y detener el acoso.</p>
-      </div>
-      <div class="bg-white rounded-lg shadow-md p-6 flex flex-col ">
-        <h3 class="text-lg  text-left font-semibold mb-2">Asesoría Experta</h3>
-        <p class="text-gray-600">En Movapp, te ofrecemos una solución integral para proteger tu información y detener el acoso.</p>
-      </div>
-      <div class="bg-white rounded-lg shadow-md p-6 flex flex-col ">
-        <h3 class="text-lg  text-left font-semibold mb-2">El Hack</h3>
-        <p class="text-gray-600">En Movapp, te ofrecemos una solución integral para proteger tu información y detener el acoso.</p>
-      </div>
-    </div>
-  </section>
 
-  <h1 class="text-xl sm:text-lg font-bold mt-2 text-center">
-    Los <span class="text-purple-600">Resultados</span> nos respaldan
-  </h1>
 
-  <div class="px-6 py-8">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-20 max-w-5xl mx-auto">
-      <div class="bg-white rounded-lg shadow-md p-6 flex flex-col">
-        <h3 class="text-lg text-left font-semibold mb-2">El Hack 1</h3>
-        <p class="text-gray-600">Solución integral para proteger tu información y detener el acoso.</p>
-      </div>
-    
-      <div class="bg-white rounded-lg shadow-md p-6 flex flex-col">
-        <h3 class="text-lg text-left font-semibold mb-2">El Hack 2</h3>
-        <p class="text-gray-600">Solución integral para proteger tu información y detener el acoso.</p>
-      </div>
-    
-      <div class="bg-white rounded-lg shadow-md p-6 flex flex-col">
-        <h3 class="text-lg text-left font-semibold mb-2">El Hack 3</h3>
-        <p class="text-gray-600">Solución integral para proteger tu información y detener el acoso.</p>
-      </div>
-  
-      <div class="bg-white rounded-lg shadow-md p-6 flex flex-col">
-        <h3 class="text-lg text-left font-semibold mb-2">El Hack 4</h3>
-        <p class="text-gray-600">Solución integral para proteger tu información y detener el acoso.</p>
-      </div>
-    </div>
+
   </div>
-  
-
-
-  <section class="bg-gradient-to-b from-white to-gray-100 py-12 px-6">
-    <div class="max-w-4xl mx-auto text-center">
-      <h2 class="text-lg sm:text-xl text-gray-800 mb-6 font-medium">
-        Únete al blog de la familia Movapp. Recibe tips de seguridad, consejos para salir adelante y
-      </h2>
-  
-      <!-- Formulario -->
-      <form class="flex flex-col sm:flex-row justify-center items-center gap-4 mb-4 w-full sm:w-auto">
-        <input
-          type="email"
-          placeholder="Ingresa tu correo"
-          class="flex-grow rounded-full px-6 py-3 shadow-sm focus:outline-none border border-gray-300 max-w-xl w-full"
-        />
-        <button
-          type="submit"
-          class="flex-shrink-0 bg-gradient-to-r from-purple-500 to-indigo-500 text-white px-6 py-3 rounded-full font-medium hover:brightness-110 transition"
-        >
-          Mantente al día
-        </button>
-      </form>
-      
-  
-      <p class="text-sm text-gray-500">
-        Al proveer tu correo aceptas nuestra <a href="#" class="underline">política de privacidad.</a>
-      </p>
-    </div>
-  
-    <!-- Links tipo footer -->
-    <div class="mt-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 max-w-6xl mx-auto px-6">
-      <div class="bg-white rounded-xl shadow-md p-4">
-        <h4 class="font-semibold mb-2">Acerca de Nosotros</h4>
-        <ul class="text-sm text-gray-800 space-y-1">
-          <li>Movapp</li>
-          <li>Colaboradores</li>
-          <li>Hack</li>
-          <li>Preguntas frecuentes</li>
-          <li>Testimonios</li>
-        </ul>
-      </div>
-  
-      <div class="bg-white rounded-xl shadow-md p-4">
-        <h4 class="font-semibold mb-2">Contenido</h4>
-        <ul class="text-sm text-gray-800 space-y-1">
-          <li>Mente digital</li>
-          <li>Nuestras redes sociales</li>
-          <li>Blog</li>
-          <li>Vexi</li>
-        </ul>
-      </div>
-  
-      <div class="bg-white rounded-xl shadow-md p-4">
-        <h4 class="font-semibold mb-2">Adquiere El Hack</h4>
-        <ul class="text-sm text-gray-800 space-y-1">
-          <li>Tienda</li>
-        </ul>
-      </div>
-  
-      <div class="bg-white rounded-xl shadow-md p-4">
-        <h4 class="font-semibold mb-2">Legal</h4>
-        <ul class="text-sm text-gray-800 space-y-1">
-          <li>Política de privacidad</li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  
 
 </Layout>
