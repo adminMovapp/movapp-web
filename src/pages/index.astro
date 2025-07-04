@@ -2,23 +2,132 @@
 
 import ButtonContact from "@/components/ButtonContact.astro";
 import Layout from "@layouts/Layout.astro";
+import JoinOurBlog from "@/components/JoinOurBlog.astro";
 
+const cardHover = "transition duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1 hover:scale-105 cursor-pointer";
 ---
 
 <Layout>
 
+  <!-- Tu proteccion Digital -->
+  <section class="my-1 px-8 py-8 max-w-xl  md:max-w-6xl 
+  mx-8 md:mx-auto
+   bg-white/70 backdrop-blur-md rounded-xl shadow-lg
+   ">
+    <div class="flex flex-col md:flex-row items-center gap-8">
+      <!-- Columna de texto y botón -->
+      <div class="flex-1 text-center md:text-left">
+        <h2 class="text-xl font-medium text-gray-700">Tu Protección Digital Comienza Aquí</h2>
+        <h1 class="text-3xl sm:text-4xl font-bold mt-2 mb-5">
+          ¿Has sido <span class="text-purple-600">Víctima de Aplicaciones de Préstamo</span> No Reguladas?
+        </h1>
+        <ButtonContact/>
+      </div>
+      <!-- Columna de video -->
+      <div class="flex-1">
+        <video controls autoplay muted playsinline class="w-full rounded-lg shadow-md">
+          <source src="https://movapp.org/wp-content/uploads/2025/03/MBoptimized.mp4" type="video/mp4" />
+          Tu navegador no soporta el video.
+        </video>
+      </div>
+    </div>
   
-  
-  
-  <section class=" text-center 
-  max-w-5xl mx-auto bg-white/70 backdrop-blur-md rounded-lg shadow-lg
-  my-10">
-    <h2 class="text-xl font-medium text-gray-700">Tu Protección Digital Comienza Aquí</h2>
-    <h1 class="text-3xl sm:text-5xl font-bold mt-2">
-      ¿Has sido <span class="text-purple-600">Víctima de Aplicaciones de Préstamo No Reguladas?</span>
-    </h1>
-  <ButtonContact/>
+    <!-- Cards debajo -->
+    <div class="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class={`bg-white rounded-lg shadow-md p-6 flex flex-col ${cardHover}`}>
+        <h3 class="text-lg text-left font-semibold mb-2">Una Solución</h3>
+        <p class="text-gray-600">En Movapp, te ofrecemos una solución integral para proteger tu información y detener el acoso.</p>
+      </div>
+      <div class={`bg-white rounded-lg shadow-md p-6 flex flex-col ${cardHover}`}>        <h3 class="text-lg text-left font-semibold mb-2">Asesoría Experta</h3>
+        <p class="text-gray-600">Nuestro equipo de expertos te brindará asesoría personalizada y apoyo psicológico sin costo.</p>
+      </div>
+      <div class={`bg-white rounded-lg shadow-md p-6 flex flex-col ${cardHover}`}>        <h3 class="text-lg text-left font-semibold mb-2">El Hack</h3>
+        <p class="text-gray-600">Actuará directamente en tus aplicaciones para salvaguardar tus datos y los de tus contactos.</p>
+      </div>
+    </div>
+
   </section>
+
+  <!-- Resultados destacados -->
+<section class="w-full max-w-6xl mx-auto mt-12 mb-8">
+  <h2 class="text-2xl md:text-3xl 
+  font-bold text-center mb-10 text-transparent bg-clip-text 
+  bg-gradient-to-r from-purple-500 to-blue-500 tracking-wide">
+    LOS RESULTADOS NOS RESPALDAN
+  </h2>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <!-- Card 1 -->
+    <div class={`bg-white rounded-2xl shadow-lg p-8 flex flex-col items-center text-center ${cardHover}`}>
+      <div class="mb-4 relative">
+        <span class="inline-block text-5xl text-purple-300">💜</span>
+      </div>
+      <div class="text-2xl font-bold text-gray-800 mb-1">+16,000 <span class="text-purple-500">Personas Impactadas</span></div>
+      <p class="text-gray-600 text-sm">Se parte de las miles de personas que confían en Movapp.</p>
+    </div>
+    <!-- Card 2 -->
+    <div class={`bg-white rounded-2xl shadow-lg p-8 flex flex-col items-center text-center ${cardHover}`}>
+      <div class="mb-4 relative">
+        <span class="inline-block text-5xl bg-gradient-to-r from-purple-300 to-indigo-200 rounded-full p-2">❗</span>
+      </div>
+      <div class="text-2xl font-bold text-gray-800 mb-1">+2,200 <span class="text-purple-500">Emergencias</span></div>
+      <p class="text-gray-600 text-sm">Hemos evitado que miles de personas dejen de pensar en desvivirse</p>
+    </div>
+    <!-- Card 3 -->
+    <div class={`bg-white rounded-2xl shadow-lg p-8 flex flex-col items-center text-center ${cardHover}`}>
+      <div class="mb-4 relative">
+        <span class="inline-block text-5xl bg-gradient-to-r from-purple-300 to-indigo-200 rounded-full p-2">📡</span>
+      </div>
+      <div class="text-2xl font-bold text-gray-800 mb-1">7 <span class="text-purple-500">Países</span></div>
+      <p class="text-gray-600 text-sm">Tenemos presencia en 7 países: México, Colombia, Perú, Ecuador, Chile, Bolivia y Argentina</p>
+    </div>
+  </div>
+</section>
+
+
+
+<section class=" flex flex-col items-center ">
+  <!-- Nuestro Contenido -->
+  <div class="bg-white p-6 rounded-2xl shadow-md w-full max-w-5xl">
+    <h2 class="text-xl font-semibold text-purple-600 mb-6">Nuestro Contenido</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <!-- Izquierda: Transmisión -->
+      <div class=" rounded-md p-2">
+        <div class="h-32 bg-gray-100 flex items-center justify-center">
+        </div>
+        <h3 class="mt-2 font-semibold">Transmisión del Día</h3>
+        <p class="text-sm text-gray-600">Únete a Enigmático en un episodio muy especial</p>
+      </div>
+
+      <!-- Derecha: Blogs -->
+      <div class="flex flex-col gap-4 max-w-xl  md:max-w-6xl ">
+        <div class="flex gap-2  rounded-md p-2">
+          <div class="w-16 h-16 bg-gray-100 flex items-center justify-center text-2xl"></div>
+          <div>
+            <h4 class="font-semibold">Blog Mente Digital</h4>
+            <p class="text-sm text-gray-600">En el blog de ésta semana exploramos los asuntos más...</p>
+          </div>
+        </div>
+        <div class="flex gap-2  rounded-md p-2 my-10">
+          <div class="w-16 h-16 bg-gray-100 flex items-center justify-center text-2xl"></div>
+          <div>
+            <h4 class="font-semibold">Cuídate de Mexdin</h4>
+            <p class="text-sm text-gray-600">Exploramos la aplicación más temida al día de hoy</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA WhatsApp -->
+  <div class={`bg-gradient-to-r from-pink-100 to-white text-center rounded-2xl shadow-md p-6 w-full max-w-3xl py-10 my-10 ${cardHover}`}>
+    <h3 class="text-xl font-semibold mb-4">No sufras esto solo. Nosotros estamos aquí.</h3>
+  <ButtonContact/>
+  </div>
+
+
+  <!-- Únete a nuestro blog -->
+   <JoinOurBlog />
+</section>
 
 
 

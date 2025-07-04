@@ -3,6 +3,9 @@ export default {
    content: ["./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}"],
    theme: {
       extend: {
+         fontFamily: {
+            montserrat: ["Montserrat", "sans-serif"],
+         },
          keyframes: {
             scaleAnim: {
                "0%": { transform: "scale(1)" },
