@@ -1,36 +1,37 @@
 ---
+
 import "@styles/global.css";
 import Header from "@components/Header.astro";
 import Footer from "@components/Footer.astro";
+import HeaderLayer from "@/components/HeaderLayer.astro";
+
+const showHeaderLayer = import.meta.env.PUBLIC_SHOW_HEADER_LAYER === "true";
+
 ---
 
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Movapp</title>
-	</head>
-	<body class="bg-gradient-to-br from-gray-200 to-white text-gray-800 min-h-screen">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/ico-movapp.png" />
+    <meta name="generator" content={Astro.generator} />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <title>Movapp</title>
+  </head>
+  <body class="bg-gray-100 text-gray-800 min-h-screen flex flex-col">  
+	{showHeaderLayer 
+		? <HeaderLayer /> 
+		: <div class="w-full h-5"></div> }
+    <Header />
+    <main class="p-8 md:pt-22 px-8 w-full -mt-8 flex-1 mb-8 ">
+      <div class={`
+      bg-gray-200
 
-		<Header />	
-		<div class="px-4 py-6 md:px-8 mx-4 my-8 rounded-2xl shadow-xl border border-white/30 bg-white/70 backdrop-blur-md">
-			<main class="max-w-6xl mx-auto">
-			  <slot />
-			</main>
-		  </div>
-	
-		<Footer />
-	  </body>
+       text-gray-800 min-h-screen pt-24 -my-1 rounded-2xl shadow-lg pb-1 `}>
+        <slot />
+        <Footer />
+      </div>
+    </main>
+  </body>
 </html>
-
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>
