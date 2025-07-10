@@ -1,0 +1,87 @@
+---
+
+import ButtonContact from "@/components/ButtonContact.astro";
+import Layout from "@layouts/Layout.astro";
+import JoinOurBlog from "@/components/JoinOurBlog.astro";
+
+const cardHover = "transition duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1 hover:scale-105 cursor-pointer";
+---
+
+<Layout>
+
+
+    <div class="flex items-center justify-center mt-2 space-x-4 mb-4">
+        <h2 class="text-gray-600 text-4xl font-bold">
+            Te Presentamos
+        </h2>
+        <img src="/elhack-negro.png" alt="Movapp Logo" class="w-32 h-auto" />        
+    </div>
+    <div class="flex items-center justify-center mt-15 space-x-4">
+        <p class="text-gray-500 text-xl text-center max-w-xl">
+            El Hack es la herramienta tecnológica diseñada por Movapp para proteger tu información personal cuando estás siendo afectado por aplicaciones no reguladas, también llamadas montadeudas.
+        <p/>
+    </div>
+      
+    <div class={`bg-gradient-to-b from-gray-100 to-pink-100
+        rounded-xl shadow-md p-3  ${cardHover} max-w-xl mx-auto mt-15`}>    
+          <h2 class="text-xl md:text-2xl font-bold text-center mb-3 text-gray-600">
+              El Hack Es La Solución Que Buscabas
+          </h2>    
+              <p class="text-gray-600 text-lg text-center">
+                Si estás siendo víctima de amenazas digitales o te han hecho pagar deudas ficticias, El Hack es la solución confiable y efectiva que estabas buscando.
+              </p>
+    </div>
+
+    <div class="flex items-center justify-center mt-15 mb-2 mx-auto ">
+        <h2 class="text-gray-600 text-xl md:text-2xl font-bold text-center max-w-md">
+          ¿Cómo Funciona El Proceso Para Adquirir El Hack?
+        </h2>
+      </div>
+
+    
+    <div class="flex flex-col items-center mt-15 space-y-4 px-4 ">
+        <div class="max-w-xl w-full">
+          <p class="text-gray-500 text-xl font-bold text-left">
+            Paso 1. Contacta a nuestro equipo por WhatsApp.
+          </p>
+          <p class="text-gray-500 text-lg text-left">
+            Nuestro equipo está capacitado para atenderte con empatía y de manera profesional.
+          </p>
+      
+          <p class="text-gray-500 text-xl font-bold text-left mt-6">
+            Paso 2. Te canalizamos con un asesor.
+          </p>
+          <p class="text-gray-500 text-lg text-left">
+            Recibirás soluciones y recomendaciones específicas para resolver tu problema.
+          </p>
+      
+          <p class="text-gray-500 text-xl font-bold text-left mt-6">
+            Paso 3. Te damos la solución.
+          </p>
+          <p class="text-gray-500 text-lg text-left">
+            Forma parte de las más de un millón de personas que hemos ayudado y vive El Hack hacia un nuevo inicio.
+          </p>
+        </div>
+      </div>
+      
+      
+
+            <!-- CTA WhatsApp -->
+    <div class={`flex items-center justify-center mt-15 space-x-4
+    bg-gradient-to-r from-pink-100 to-white text-center 
+        rounded-2xl shadow-md p-6 w-full max-w-xl py-10 my-10 ${cardHover} mx-auto mt-10`}>
+        <h3 class="text-xl font-semibold mb-4">Quiero aplicar EL HACK</h3>
+    <ButtonContact/>
+    </div>
+
+
+
+
+    <section class=" flex flex-col items-center mt-15 ">  
+        <!-- Únete a nuestro blog -->
+         <JoinOurBlog />
+      </section>
+
+
+
+</Layout>
