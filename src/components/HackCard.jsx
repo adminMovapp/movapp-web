@@ -14,11 +14,10 @@ const HackCard = () => {
       setIsClosing(true);
       setTimeout(() => {
          setIsDrawerVisible(false);
-      }, 300); // coincide con duración de slideDown
+      }, 300);
    };
 
    useEffect(() => {
-      // opcional: bloquear scroll del fondo
       document.body.style.overflow = isDrawerVisible ? "hidden" : "auto";
    }, [isDrawerVisible]);
 
@@ -32,11 +31,11 @@ const HackCard = () => {
             <p className="text-gray-500 text-center">Nuestra solución al acoso de las apps de préstamo.</p>
 
             <div className="flex items-center space-x-2">
-               <button onClick={decrement} className="bg-pink-300 px-4 py-2 rounded font-bold">
+               <button onClick={decrement} className="bg-purple-300 px-3 py-2 rounded font-bold text-white">
                   -
                </button>
                <span className="text-xl font-bold">{count}</span>
-               <button onClick={increment} className="bg-pink-300 px-4 py-2 rounded font-bold">
+               <button onClick={increment} className="bg-purple-300 px-3 py-2 rounded font-bold text-white">
                   +
                </button>
             </div>
@@ -51,8 +50,6 @@ const HackCard = () => {
                COMPRAR
             </button>
          </div>
-
-         <div className="bg-debug  p-4">Test</div>
 
          {isDrawerVisible && (
             <div className="fixed inset-0 flex items-end justify-center bg-black/50 z-50">
