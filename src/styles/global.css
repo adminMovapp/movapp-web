@@ -6,3 +6,11 @@
 body {
    font-family: "Montserrat", sans-serif;
 } */
+
+.paper-texture-bg {
+   background-color: rgb(242 243 245); /* gris Tailwind: bg-gray-200 */
+   background-image: url("/asset.png");
+   background-repeat: repeat;
+   background-size: initial;
+   background-blend-mode: multiply;
+}
