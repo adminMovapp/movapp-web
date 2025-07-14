@@ -1,20 +1,17 @@
 ---
-import ButtonContact from "./ButtonContact.astro";
-import MenuMobile from "./MenuMobile.jsx";
+import ButtonContact from "@components/ButtonContact.astro";
+import MenuMobile from "@components/MenuMobile.jsx";
 ---
 
 <header
-  class=" h-16 mt-1
-        fixed left-4 right-4 z-50
-        top-4 md:top-6 lg:top-8 xl:top-10
-        w-auto max-w-none
-         bg-white/50 backdrop-blur-md
-        shadow-lg px-6 py-4 rounded-4xl
-        flex justify-between items-center rounded-2xl 
-        md:h-20 md:-mt-5"
+  class="h-16 mt-1 fixed left-4 right-4 z-50
+         top-4 md:top-6 lg:top-8 xl:top-10
+         w-auto max-w-none bg-white/50 backdrop-blur-md
+         shadow-lg px-6 py-4 rounded-4xl
+         flex justify-between items-center rounded-3xl 
+         md:h-20 md:-mt-5"
 >
   <div class="flex items-center gap-2">
-
     <img
       src="/Logo-Morado.png"
       alt="Movapp Logo"
@@ -24,7 +21,7 @@ import MenuMobile from "./MenuMobile.jsx";
     <img
       src="/Logo-M.png"
       alt="Movapp Logo pequeño"
-      class="block md:hidden w-10 h-auto mx-auto  transition-all duration-300"
+      class="block md:hidden w-10 h-auto mx-auto transition-all duration-300"
     />
   </div>
 
@@ -40,6 +37,7 @@ import MenuMobile from "./MenuMobile.jsx";
     <div class="hidden md:block">
       <ButtonContact />
     </div>
+
     <MenuMobile client:load />
   </div>
 </header>
