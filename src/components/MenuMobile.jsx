@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function MenuMobile() {
+const MenuMobile = () => {
    const [open, setOpen] = useState(false);
 
    return (
@@ -40,4 +40,6 @@ export default function MenuMobile() {
          )}
       </div>
    );
-}
+};
+
+export default MenuMobile;

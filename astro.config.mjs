@@ -10,11 +10,11 @@ export default defineConfig({
       // plugins: [tailwindcss()],
       resolve: {
          alias: {
-            "@": "/src",
-            "@components": "/src/components",
-            "@layouts": "/src/layouts",
-            "@pages": "/src/pages",
-            "@styles": "/src/styles",
+            "@": "/src/",
+            "@components": "/src/components/",
+            "@layouts": "/src/layouts/",
+            "@pages": "/src/pages/",
+            "@styles": "/src/styles/",
          },
       },
    },
