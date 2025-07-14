@@ -1,0 +1,57 @@
+---
+import "@styles/global.css";
+
+import Layout from "@layouts/Layout.astro";
+import HackCard from "@/components/HackCard.jsx";
+
+const cardHover = "transition duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1 hover:scale-105 cursor-pointer";
+---
+
+<Layout>
+  <!-- Encabezado principal -->
+  <div class="mt-2 mb-4 flex items-center justify-center space-x-4">
+    <h2 class="text-4xl font-bold text-gray-600 text-center">
+      Protege Tu Información Digital Con El Hack
+    </h2>
+  </div>
+
+  <!-- Descripción introductoria -->
+  <div class="mt-6 flex items-center justify-center px-4">
+    <p class="max-w-2xl text-lg text-justify text-gray-500">
+      En <span class="text-purple-600 font-bold">Movapp</span>, ofrecemos la protección que necesitas contra aplicaciones no reguladas que están comprometidas con tu seguridad. Con El Hack, podrás bloquear el acoso digital y recuperar el control de tu vida privada.
+    </p>
+  </div>
+
+  <!-- Título de sección -->
+  <h2 class="mt-6 text-2xl font-bold text-center text-gray-600">
+    Selecciona tus hacks
+  </h2>
+
+  <!-- Pasos -->
+  <div class="mt-6 mx-auto flex flex-col max-w-2xl">
+    <div class={`my-2 flex flex-col rounded-lg bg-gradient-to-b from-gray-100 to-purple-100  p-6 shadow-md 
+    ${cardHover}`}>
+      <h3 class="mb-2 text-left text-lg font-semibold text-gray-600">Paso 1:</h3>
+      <p class="text-gray-600">
+        Si aún no lo has hecho, contáctanos por <span class="text-green-500 font-bold">WhatsApp</span>. Evaluaremos si podemos ayudarte y te daremos indicaciones.
+      </p>
+    </div>
+
+    <div class={`my-2 flex flex-col rounded-lg bg-gradient-to-b from-gray-100 to-purple-100  p-6 shadow-md ${cardHover}`}>
+      <h3 class="mb-2 text-left text-lg font-semibold text-gray-600">Paso 2:</h3>
+      <p class="text-gray-600">
+        Te canalizamos con un asesor que te indicará la cantidad de Hacks que debes adquirir.
+      </p>
+    </div>
+
+    <div class={`my-2 flex flex-col rounded-lg bg-gradient-to-b from-gray-100 to-purple-100  p-6 shadow-md ${cardHover}`}>
+      <h3 class="mb-2 text-left text-lg font-semibold text-gray-600">Paso 3:</h3>
+      <p class="text-gray-600">
+        Finaliza tu compra y vive El Hack hacia un nuevo inicio.
+      </p>
+    </div>
+  </div>
+
+  <!-- Componente dinámico -->
+  <HackCard client:load />
+</Layout>
