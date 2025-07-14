@@ -1,30 +1,45 @@
 ---
-
 import ButtonContact from "./ButtonContact.astro";
-
+import MenuMobile from "./MenuMobile.jsx";
 ---
+
 <header
-  class="fixed left-20 right-20 z-50
-        top-4 md:top-6 lg:top-8 xl:top-10        
-         w-auto max-w-none bg-white/50 backdrop-blur-md
-         shadow-lg px-6 py-4 rounded-4xl
-         flex justify-between items-center"
+  class=" h-16 mt-1
+        fixed left-4 right-4 z-50
+        top-4 md:top-6 lg:top-8 xl:top-10
+        w-auto max-w-none
+         bg-white/50 backdrop-blur-md
+        shadow-lg px-6 py-4 rounded-4xl
+        flex justify-between items-center rounded-2xl 
+        md:h-20 md:-mt-5"
 >
   <div class="flex items-center gap-2">
-    
-    <img src="/Logo-Morado.png" alt="Movapp Logo" class="w-32 h-auto mx-auto my-4" />
+
+    <img
+      src="/Logo-Morado.png"
+      alt="Movapp Logo"
+      class="hidden md:block w-32 h-auto mx-auto my-4 transition-all duration-300"
+    />
+
+    <img
+      src="/Logo-M.png"
+      alt="Movapp Logo pequeño"
+      class="block md:hidden w-10 h-auto mx-auto  transition-all duration-300"
+    />
   </div>
 
   <div class="flex items-center gap-4 ml-auto">
     <nav class="hidden md:flex gap-6 text-sm text-gray-700 justify-end">
-      
       <a href="/" class="hover:text-purple-300">Inicio</a>
       <a href="/movapp" class="hover:text-purple-300">Movapp</a>
-      <a href="#">Hack</a>
-      <a href="#">Tienda</a>
+      <a href="/hack">Hack</a>
+      <a href="/tienda">Tienda</a>
       <a href="#">Contenido</a>
     </nav>
-    <ButtonContact/>
-  </div>
 
+    <div class="hidden md:block">
+      <ButtonContact />
+    </div>
+    <MenuMobile client:load />
+  </div>
 </header>

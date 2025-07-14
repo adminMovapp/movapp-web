@@ -1,12 +1,13 @@
 import { defineConfig } from "astro/config";
 import react from "@astrojs/react";
-import tailwindcss from "@tailwindcss/vite";
+// import tailwindcss from "@tailwindcss/vite";
+import tailwind from "@astrojs/tailwind";
 
 export default defineConfig({
-   integrations: [react()],
+   integrations: [tailwind(), react()],
 
    vite: {
-      plugins: [tailwindcss()],
+      // plugins: [tailwindcss()],
       resolve: {
          alias: {
             "@": "/src",

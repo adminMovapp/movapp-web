@@ -1,22 +1,33 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-   content: ["./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}"],
    theme: {
       extend: {
          fontFamily: {
             montserrat: ["Montserrat", "sans-serif"],
          },
+         colors: {
+            debug: "#00ffff",
+         },
          keyframes: {
-            scaleAnim: {
-               "0%": { transform: "scale(1)" },
-               "50%": { transform: "scale(1.1)" },
-               "100%": { transform: "scale(1)" },
+            slideUp: {
+               "0%": { transform: "translateY(100%)" },
+               "100%": { transform: "translateY(0)" },
+            },
+            slideDown: {
+               "0%": { transform: "translateY(0)" },
+               "100%": { transform: "translateY(100%)" },
             },
          },
          animation: {
-            scale: "scaleAnim 300ms ease-in-out",
+            slideUp: "slideUp 0.3s ease-out forwards",
+            slideDown: "slideDown 0.3s ease-in forwards",
          },
       },
    },
+   content: [
+      "./src/**/*.{astro,html,js,jsx,ts,tsx}",
+      "./components/**/*.{astro,js,jsx,ts,tsx}",
+      "./layouts/**/*.{astro,js,jsx,ts,tsx}",
+   ],
    plugins: [],
 };
