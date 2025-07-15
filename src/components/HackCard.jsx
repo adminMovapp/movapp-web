@@ -136,7 +136,10 @@ const HackCard = () => {
 
    return (
       <div className="flex flex-col items-center justify-center px-4 mt-10">
-         <div className="bg-white rounded-lg shadow-md p-6 flex flex-col items-center space-y-4 max-w-md w-full">
+         <div
+            className="bg-white rounded-lg shadow-md p-6 flex flex-col items-center space-y-4 max-w-md w-full"
+            data-aos="flip-up"
+         >
             <img src="/elhack-negro.png" alt="Movapp Logo" className="w-32 h-auto" />
             <p className="text-gray-500 text-center text-lg">Nuestra solución al acoso de las apps de préstamo.</p>
 

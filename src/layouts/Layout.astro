@@ -1,12 +1,11 @@
 ---
-
 import "@styles/global.css";
 import Header from "@components/Header.astro";
 import Footer from "@components/Footer.astro";
 import HeaderLayer from "@/components/HeaderLayer.astro";
+import InitAOS from "@/components/InitAOS.jsx"; // 👈 se importa aquí
 
 const showHeaderLayer = import.meta.env.PUBLIC_SHOW_HEADER_LAYER === "true";
-
 ---
 
 <!doctype html>
@@ -20,13 +19,16 @@ const showHeaderLayer = import.meta.env.PUBLIC_SHOW_HEADER_LAYER === "true";
     <title>Movapp</title>
   </head>
   <body class="bg-gray-100 text-gray-800 min-h-screen flex flex-col">  
-	{showHeaderLayer 
-		? <HeaderLayer /> 
-		: <div class="w-full h-5"></div> }
+    <InitAOS client:load /> <!-- 👈 se activa en el navegador -->
+    
+    {showHeaderLayer 
+      ? <HeaderLayer /> 
+      : <div class="w-full h-5"></div> }
+
     <Header />
-    <main class="p-8 md:pt-22 px-8 w-full  flex-1 mb-8 ">
-      <div class={`bg-gray-200 text-gray-800 min-h-screen pt-24 -my-1 rounded-2xl shadow-lg pb-1 `}>
-        <!-- <div class="paper-texture-bg text-gray-800 min-h-screen pt-24 -my-1 rounded-2xl shadow-lg pb-1"> -->
+
+    <main class="p-8 md:pt-22 px-8 w-full flex-1 mb-8">
+      <div class="bg-gray-200 text-gray-800 min-h-screen pt-24 -my-1 rounded-2xl shadow-lg pb-1">
         <slot />
         <Footer />
       </div>
