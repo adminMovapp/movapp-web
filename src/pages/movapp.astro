@@ -9,12 +9,12 @@ const cardHover = "transition duration-300 ease-in-out hover:shadow-xl hover:-tr
 <Layout>
 
   <!-- Bienvenida -->
-  <div class="mx-auto mb-4 max-w-2xl">
+  <div class="mx-auto mb-4 max-w-2xl" data-aos="fade-down">
     <div class={`flex flex-col p-6 rounded-xl shadow-md 
     bg-gradient-to-b from-gray-100 to-purple-100 
     
     ${cardHover}`}>
-      <h2 class="mb-4 text-center text-xl font-bold  text-transparent bg-clip-text bg-purple-500 md:text-4xl">
+      <h2 class="mb-4 text-center text-xl font-bold  text-transparent bg-clip-text bg-purple_mv md:text-4xl">
         Bienvenido a Movapp
       </h2>
       <p class="text-justify text-lg text-gray-600">
@@ -38,32 +38,34 @@ const cardHover = "transition duration-300 ease-in-out hover:shadow-xl hover:-tr
   </div>
 
   <!-- ¿Cómo nació <span class="text-purple-600">Movapp</span>? -->
-  <h2 class="mt-8 text-center text-xl font-bold text-gray-600 ">¿Cómo nació 
+  <h2 class="mt-8 text-center text-xl font-bold text-gray-600 "  data-aos="fade-up">¿Cómo nació 
     <span class="text-purple-600 font-bold">Movapp</span>?</h2>
 
-  <div class="mx-auto my-8 flex flex-col max-w-2xl">
-    <div class={`my-2 flex flex-col p-6 rounded-lg shadow-md bg-white ${cardHover}`}>
+  <div class="mx-auto my-8 flex flex-col max-w-2xl" data-aos="fade-up">
+
+    <div class={`my-2 flex flex-col p-6 rounded-lg shadow-md bg-white ${cardHover}`}  >
       <h3 class="mb-2 text-left text-lg font-semibold">El problema</h3>
-      <p class="text-justify text-lg text-gray-600">
+      <p class="text-justify text-lg text-gray-600" >
         La idea surgió de una necesidad real. Hace algunos años, Erik Mann pidió un préstamo en una app, pero pronto se vio atrapado en un ciclo de hostigamiento digital que afectó a él y a sus contactos.
       </p>
     </div>
-    <div class={`my-2 flex flex-col p-6 rounded-lg shadow-md bg-white ${cardHover}`}>
+    <div class={`my-2 flex flex-col p-6 rounded-lg shadow-md bg-white ${cardHover}`}  >
       <h3 class="mb-2 text-left text-lg font-semibold">Erik sufrió las amenazas</h3>
       <p class="text-justify text-lg text-gray-600">
         Su tranquilidad fue anulada por las amenazas y deudas generadas por apps no reguladas. Al llegar al límite, Erik compartió su experiencia en el podcast Urban Arts y conectó con otras personas que pasaban por lo mismo.
       </p>
     </div>
-    <div class={`my-2 flex flex-col p-6 rounded-lg shadow-md bg-white ${cardHover}`}>
+    <div class={`my-2 flex flex-col p-6 rounded-lg shadow-md bg-white ${cardHover}`}  >
       <h3 class="mb-2 text-left text-lg font-semibold">Creación del Hack</h3>
       <p class="text-justify text-lg text-gray-600">
         Erik se dio a la tarea de crear El Hack, una herramienta que protege a los usuarios de aplicaciones fraudulentas, ofreciéndoles una solución confiable y efectiva.
       </p>
     </div>
+
   </div>
 
   <!-- Video -->
-  <div class="mx-auto my-8 flex flex-col max-w-2xl">
+  <div class="mx-auto my-8 flex flex-col max-w-2xl"  data-aos="fade-up">
     <video controls autoplay muted playsinline class="w-full rounded-lg shadow-md">
       <source src="https://movapp.org/wp-content/uploads/2025/03/MBoptimized.mp4" type="video/mp4" />
       Tu navegador no soporta el video.
@@ -71,45 +73,50 @@ const cardHover = "transition duration-300 ease-in-out hover:shadow-xl hover:-tr
   </div>
 
   <!-- Redes sociales -->
-  <h2 class="mt-5 text-center text-lg font-bold text-gray-600">
+  <h2 class="mt-5 text-center text-lg font-bold text-gray-600"  data-aos="fade-right">
     Redes Sociales de Nuestro CEO - Erik Mann
   </h2>
 
   <section class="mx-auto mt-12 mb-12 w-full max-w-3xl">
     <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
    
-    <div class={`flex flex-col items-center p-8 text-center rounded-xl shadow-lg 
-          bg-gradient-to-b from-gray-100 to-purple-100  ${cardHover}`}>
-        <div class="mb-1 text-2xl font-bold text-gray-800">Facebook</div>
-        <p class="text-lg text-gray-600">3,100</p>
-        <div class="relative mb-4">
-          <img src="/facebook-blue.png" alt="facebook-blue" class="mx-auto my-4 h-auto w-10" />
-        </div>
-      </div>
-
-      <div class={`flex flex-col items-center p-8 text-center rounded-xl shadow-lg
-        bg-gradient-to-b from-gray-100 to-purple-100  ${cardHover}`}>
-        <div class="mb-1 text-2xl font-bold text-gray-800">Instagram</div>
-        <p class="text-lg text-gray-600">3,800</p>
-        <div class="relative mb-4">
-          <img src="/instagram-blue.png" alt="instagram-blue" class="mx-auto my-4 h-auto w-10" />
-        </div>
-      </div>
-
-      <div class={`flex flex-col items-center p-8 text-center rounded-xl shadow-lg
-      bg-gradient-to-b from-gray-100 to-purple-100  ${cardHover}`}>
-        <div class="mb-1 text-2xl font-bold text-gray-800">Tiktok</div>
-        <p class="text-lg text-gray-600">3,500</p>
-        <div class="relative mb-4">
-          <img src="/tiktok-blue.png" alt="tiktok-blue" class="mx-auto my-4 h-auto w-10" />
-        </div>
+      <div data-aos="fade-right">
+         <div class={`flex flex-col items-center p-8 text-center rounded-xl shadow-lg 
+            bg-gradient-to-b from-gray-100 to-purple-100  ${cardHover}`}  >
+          <div class="mb-1 text-2xl font-bold text-gray-800">Facebook</div>
+          <p class="text-lg text-gray-600">3,100</p>
+          <div class="relative mb-4">
+            <img src="/facebook-blue.png" alt="facebook-blue" class="mx-auto my-4 h-auto w-10" />
+          </div>
       </div>
     </div>
+      <div data-aos="fade-up">
+      <div class={`flex flex-col items-center p-8 text-center rounded-xl shadow-lg
+          bg-gradient-to-b from-gray-100 to-purple-100  ${cardHover}`} >
+          <div class="mb-1 text-2xl font-bold text-gray-800">Instagram</div>
+          <p class="text-lg text-gray-600">3,800</p>
+          <div class="relative mb-4">
+            <img src="/instagram-blue.png" alt="instagram-blue" class="mx-auto my-4 h-auto w-10" />
+          </div>
+      </div>
+    </div>
+
+    <div data-aos="fade-left">
+      <div class={`flex flex-col items-center p-8 text-center rounded-xl shadow-lg
+        bg-gradient-to-b from-gray-100 to-purple-100  ${cardHover}`} >
+          <div class="mb-1 text-2xl font-bold text-gray-800">Tiktok</div>
+          <p class="text-lg text-gray-600">3,500</p>
+          <div class="relative mb-4">
+            <img src="/tiktok-blue.png" alt="tiktok-blue" class="mx-auto my-4 h-auto w-10" />
+          </div>
+      </div>
+    </div>
+  </div>
   </section>
 
   <!-- CTA final -->
-  <section class="flex flex-col items-center">
+  <!-- <section class="flex flex-col items-center">
     <JoinOurBlog />
-  </section>
+  </section> -->
 
 </Layout>

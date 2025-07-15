@@ -7,6 +7,9 @@ export default {
          },
          colors: {
             debug: "#00ffff",
+            purple_mv: "#8149E2",
+            gray_mv: "#4A4A4A",
+            greylight_mv: "#767676",
          },
          keyframes: {
             slideUp: {
