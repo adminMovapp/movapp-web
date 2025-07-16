@@ -1,0 +1,58 @@
+---
+import HamburgerIcon from "@assets/HamburgerIcon.astro";
+import CloseIcon from "@assets/CloseIcon.astro";
+---
+
+<div class="md:hidden relative">
+  <!-- Botón de menú hamburguesa -->
+  <button
+    id="menuButton"
+    class="flex justify-center items-center w-8 h-8 gap-1 focus:outline-none"
+    aria-label="Abrir menú"
+  >
+    <!-- Mostrar el ícono de la hamburguesa si el menú está cerrado -->
+    <div id="hamburgerIcon" class="text-gray-800">
+      <HamburgerIcon size={5} />
+    </div>
+
+    <!-- Mostrar el ícono de "X" si el menú está abierto -->
+    <div id="closeIcon" class="text-gray-800 hidden">
+      <CloseIcon size={5} />
+    </div>
+  </button>
+
+  <!-- Menú desplegable -->
+  <nav
+    id="menuNav"
+    class="absolute top-12 right-0 w-max bg-white/90 backdrop-blur-md shadow-lg rounded-lg p-4 flex flex-col gap-2 z-50 hidden"
+  >
+    <a href="/" class="text-gray-700 hover:text-purple-500">Inicio</a>
+    <a href="/movapp" class="text-gray-700 hover:text-purple-500">Movapp</a>
+    <a href="/hack" class="text-gray-700 hover:text-purple-500">Hack</a>
+    <a href="/tienda" class="text-gray-700 hover:text-purple-500">Tienda</a>
+
+    <!-- Nuevas opciones dentro del menú principal -->
+    <a href="/servicio1" class="text-gray-700 hover:text-purple-500">Preguntas frecuentes</a>
+    <a href="/servicio2" class="text-gray-700 hover:text-purple-500">Testimonios</a>
+    <a href="/servicio3" class="text-gray-700 hover:text-purple-500">Mente digital</a>
+    <a href="/servicio4" class="text-gray-700 hover:text-purple-500">Nuestras redes</a>
+  </nav>
+</div>
+
+<script>
+  // Obtenemos los elementos
+  const menuButton = document.getElementById('menuButton');
+  const hamburgerIcon = document.getElementById('hamburgerIcon');
+  const closeIcon = document.getElementById('closeIcon');
+  const menuNav = document.getElementById('menuNav');
+
+  // Manejar el clic en el botón del menú
+  menuButton.addEventListener('click', () => {
+    // Alternamos el menú visible/oculto
+    menuNav.classList.toggle('hidden');
+
+    // Alternamos la visibilidad de los íconos
+    hamburgerIcon.classList.toggle('hidden');
+    closeIcon.classList.toggle('hidden');
+  });
+</script>
