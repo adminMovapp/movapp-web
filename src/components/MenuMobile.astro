@@ -32,27 +32,35 @@ import CloseIcon from "@assets/CloseIcon.astro";
     <a href="/tienda" class="text-gray-700 hover:text-purple-500">Tienda</a>
 
     <!-- Nuevas opciones dentro del menú principal -->
-    <a href="/servicio1" class="text-gray-700 hover:text-purple-500">Preguntas frecuentes</a>
-    <a href="/servicio2" class="text-gray-700 hover:text-purple-500">Testimonios</a>
-    <a href="/servicio3" class="text-gray-700 hover:text-purple-500">Mente digital</a>
-    <a href="/servicio4" class="text-gray-700 hover:text-purple-500">Nuestras redes</a>
+    <a href="/faqs" class="text-gray-700 hover:text-purple-500"
+      >Preguntas frecuentes</a
+    >
+    <a href="/servicio2" class="text-gray-700 hover:text-purple-500"
+      >Testimonios</a
+    >
+    <a href="/servicio3" class="text-gray-700 hover:text-purple-500"
+      >Mente digital</a
+    >
+    <a href="/servicio4" class="text-gray-700 hover:text-purple-500"
+      >Nuestras redes</a
+    >
   </nav>
 </div>
 
 <script>
   // Obtenemos los elementos
-  const menuButton = document.getElementById('menuButton');
-  const hamburgerIcon = document.getElementById('hamburgerIcon');
-  const closeIcon = document.getElementById('closeIcon');
-  const menuNav = document.getElementById('menuNav');
+  const menuButton = document.getElementById("menuButton");
+  const hamburgerIcon = document.getElementById("hamburgerIcon");
+  const closeIcon = document.getElementById("closeIcon");
+  const menuNav = document.getElementById("menuNav");
 
   // Manejar el clic en el botón del menú
-  menuButton.addEventListener('click', () => {
+  menuButton.addEventListener("click", () => {
     // Alternamos el menú visible/oculto
-    menuNav.classList.toggle('hidden');
+    menuNav.classList.toggle("hidden");
 
     // Alternamos la visibilidad de los íconos
-    hamburgerIcon.classList.toggle('hidden');
-    closeIcon.classList.toggle('hidden');
+    hamburgerIcon.classList.toggle("hidden");
+    closeIcon.classList.toggle("hidden");
   });
 </script>
