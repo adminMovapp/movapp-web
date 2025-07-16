@@ -1,7 +1,7 @@
 ---
 import ButtonContact from "@components/ButtonContact.astro";
 import MenuMobile from "@components/MenuMobile.astro";
-import ArrowIcon from '@assets/ArrowIcon.astro';
+import ArrowIcon from "@assets/ArrowIcon.astro";
 ---
 
 <header
@@ -9,7 +9,7 @@ import ArrowIcon from '@assets/ArrowIcon.astro';
          top-4 md:top-6 lg:top-8 xl:top-10
          w-auto max-w-none bg-white/50 backdrop-blur-md
          shadow-lg px-8 py-4 rounded-4xl
-         flex justify-between items-center rounded-3xl 
+         flex justify-between items-center rounded-3xl
          md:h-20 md:-mt-5"
 >
   <div class="flex items-center gap-2">
@@ -43,30 +43,48 @@ import ArrowIcon from '@assets/ArrowIcon.astro';
       </button>
 
       <!-- Submenú con fondo transparente -->
-      <div id="submenu" class="absolute right-0 mt-8 w-48 bg-white/80 backdrop-blur-md rounded-lg p-3 hidden z-50">
-        <a href="/faqs" class="block py-1 text-sm text-gray-700 hover:bg-gray-200 rounded-lg px-2">Preguntas frecuentes</a>
-        <a href="/servicio2" class="block py-1 text-sm text-gray-700 hover:bg-gray-200 rounded-lg px-2">Testimonios</a>
-        <a href="/servicio3" class="block py-1 text-sm text-gray-700 hover:bg-gray-200 rounded-lg px-2">Mente digital</a>
-        <a href="/servicio3" class="block py-1 text-sm text-gray-700 hover:bg-gray-200 rounded-lg px-2">Nuestras redes</a>
+      <div
+        id="submenu"
+        class="absolute right-0 mt-8 w-48 bg-white/80 backdrop-blur-md rounded-lg p-3 hidden z-50"
+      >
+        <a
+          href="/faqs"
+          class="block py-1 text-sm text-gray-700 hover:bg-gray-200 rounded-lg px-2"
+          >Preguntas frecuentes</a
+        >
+        <a
+          href="/testimonials"
+          class="block py-1 text-sm text-gray-700 hover:bg-gray-200 rounded-lg px-2"
+          >Testimonios</a
+        >
+        <a
+          href="#"
+          class="block py-1 text-sm text-gray-700 hover:bg-gray-200 rounded-lg px-2"
+          >Mente digital</a
+        >
+        <a
+          href="#"
+          class="block py-1 text-sm text-gray-700 hover:bg-gray-200 rounded-lg px-2"
+          >Nuestras redes</a
+        >
       </div>
     </div>
   </nav>
-
 
   <MenuMobile />
 </header>
 
 <script>
-  const servicesButton = document.getElementById('servicesButton');
-  const submenu = document.getElementById('submenu');
-  const arrowIcon = document.getElementById('arrowIcon');
+  const servicesButton = document.getElementById("servicesButton");
+  const submenu = document.getElementById("submenu");
+  const arrowIcon = document.getElementById("arrowIcon");
 
   // Manejar el clic para desplegar/ocultar el submenú
-  servicesButton.addEventListener('click', () => {
+  servicesButton.addEventListener("click", () => {
     // Alternar la visibilidad del submenú
-    submenu.classList.toggle('hidden');
-    
+    submenu.classList.toggle("hidden");
+
     // Rotar la flecha
-    arrowIcon.classList.toggle('rotate-180');
+    arrowIcon.classList.toggle("rotate-180");
   });
 </script>

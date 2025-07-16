@@ -1,27 +1,33 @@
 ---
-const cardHover = "transition duration-300 ease-in-out will-change-transform hover:shadow-xl hover:-translate-y-1 hover:scale-105 hover:bg-purple_mv/2 hover:backdrop-blur-md cursor-pointer";
+const cardHover =
+  "transition duration-300 ease-in-out will-change-transform hover:shadow-xl hover:-translate-y-1 hover:scale-105 hover:bg-purple_mv/2 hover:backdrop-blur-md cursor-pointer";
 ---
 
 <section class="mt-5 flex flex-col items-center justify-center px-6 py-5">
-  <section class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3 items-stretch w-full max-w-5xl">
-    
+  <section
+    class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3 items-stretch w-full max-w-5xl"
+  >
     <!-- Acerca de Nosotros -->
     <div data-aos="fade-right" class="h-full">
-      <div class={`h-full flex flex-col justify-between p-6 rounded-2xl bg-white shadow-md ${cardHover}`}>
+      <div
+        class={`h-full flex flex-col justify-between p-6 rounded-2xl bg-white shadow-md ${cardHover}`}
+      >
         <h3 class="mb-3 font-semibold text-gray-800">Acerca de nosotros</h3>
         <ul class="space-y-1 text-sm text-gray-700">
           <li><a href="/movapp" class="hover:text-purple-300">Movapp</a></li>
           <li><a href="/hack" class="hover:text-purple-300">Hack</a></li>
           <li><a href="#">Colaboradores</a></li>
           <li><a href="/questions">Preguntas frecuentes</a></li>
-          <li><a href="#">Testimonios</a></li>
+          <li><a href="/testimonials">Testimonios</a></li>
         </ul>
       </div>
     </div>
 
     <!-- Contenido -->
     <div data-aos="fade-up" class="h-full">
-      <div class={`h-full flex flex-col justify-between p-6 rounded-2xl bg-white shadow-md ${cardHover}`}>
+      <div
+        class={`h-full flex flex-col justify-between p-6 rounded-2xl bg-white shadow-md ${cardHover}`}
+      >
         <h3 class="mb-3 font-semibold text-gray-800">Contenido</h3>
         <ul class="space-y-1 text-sm text-gray-700">
           <li><a href="#">Mente digital</a></li>
@@ -32,7 +38,9 @@ const cardHover = "transition duration-300 ease-in-out will-change-transform hov
 
     <!-- Adquiere El Hack -->
     <div data-aos="fade-left" class="h-full">
-      <div class={`h-full flex flex-col justify-between p-6 rounded-2xl bg-white shadow-md ${cardHover}`}>
+      <div
+        class={`h-full flex flex-col justify-between p-6 rounded-2xl bg-white shadow-md ${cardHover}`}
+      >
         <h3 class="mb-3 font-semibold text-gray-800">Adquiere EL HACK</h3>
         <ul class="space-y-1 text-sm text-gray-700">
           <li><a href="/tienda" class="hover:text-purple-300">Tienda</a></li>
@@ -41,22 +49,26 @@ const cardHover = "transition duration-300 ease-in-out will-change-transform hov
         </ul>
       </div>
     </div>
-
   </section>
 </section>
 
-
 <!-- Footer -->
-<footer class="
-  mx-8 mt-8 mb-16 rounded-3xl bg-gradient-to-r from-purple_mv to-indigo-500
+<footer
+  class="mx-8 mt-8 mb-16 rounded-3xl bg-gradient-to-r from-purple_mv to-indigo-500
   p-5 shadow-lg text-white
-  flex flex-col items-center justify-between gap-4 md:mx-16 md:flex-row
-">
+  flex flex-col items-center justify-between gap-4 md:mx-16 md:flex-row"
+>
   <!-- Logo + Descripción -->
   <div class="max-w-md text-center md:text-left">
-    <img src="/Logo-Blanco.png" alt="Movapp Logo" class="mx-auto my-4 w-32 h-auto" />
+    <img
+      src="/Logo-Blanco.png"
+      alt="Movapp Logo"
+      class="mx-auto my-4 w-32 h-auto"
+    />
     <p class="mt-2 text-sm">
-      Movapp es una organización que ayuda a personas víctimas de las aplicaciones de préstamo no reguladas mediante apoyo psicológico, asesoría personalizada y la aplicación del Hack.
+      Movapp es una organización que ayuda a personas víctimas de las
+      aplicaciones de préstamo no reguladas mediante apoyo psicológico, asesoría
+      personalizada y la aplicación del Hack.
     </p>
   </div>
 
@@ -64,16 +76,32 @@ const cardHover = "transition duration-300 ease-in-out will-change-transform hov
   <div class="flex flex-col items-center text-center md:text-right">
     <div class="mb-2 flex justify-center gap-4 text-lg md:justify-end">
       <a href="#" aria-label="YouTube" class="hover:text-gray-300">
-        <img src="/logo-youtube.png" alt="YouTube" class="mx-auto my-4 w-7 h-auto" />
+        <img
+          src="/logo-youtube.png"
+          alt="YouTube"
+          class="mx-auto my-4 w-7 h-auto"
+        />
       </a>
       <a href="#" aria-label="TikTok" class="hover:text-gray-300">
-        <img src="/logo-tiktok.png" alt="TikTok" class="mx-auto my-4 w-7 h-auto" />
+        <img
+          src="/logo-tiktok.png"
+          alt="TikTok"
+          class="mx-auto my-4 w-7 h-auto"
+        />
       </a>
       <a href="#" aria-label="Facebook" class="hover:text-gray-300">
-        <img src="/logo-facebook.png" alt="Facebook" class="mx-auto my-4 w-7 h-auto" />
+        <img
+          src="/logo-facebook.png"
+          alt="Facebook"
+          class="mx-auto my-4 w-7 h-auto"
+        />
       </a>
       <a href="#" aria-label="Instagram" class="hover:text-gray-300">
-        <img src="/logo-instagram.png" alt="Instagram" class="mx-auto my-4 w-7 h-auto" />
+        <img
+          src="/logo-instagram.png"
+          alt="Instagram"
+          class="mx-auto my-4 w-7 h-auto"
+        />
       </a>
     </div>
     <p class="text-sm">
