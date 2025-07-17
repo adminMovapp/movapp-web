@@ -1,14 +1,15 @@
 ---
 import ButtonContact from "@components/ButtonContact.astro";
-import MenuMobile from "@components/MenuMobile.jsx";
+import MenuMobile from "@components/MenuMobile.astro";
+import ArrowIcon from "@assets/ArrowIcon.astro";
 ---
 
 <header
-  class="h-16 mt-1 fixed left-4 right-4 z-50
+  class="h-16 mt-3 fixed left-4 right-14 md:right-4 z-50
          top-4 md:top-6 lg:top-8 xl:top-10
          w-auto max-w-none bg-white/50 backdrop-blur-md
-         shadow-lg px-6 py-4 rounded-4xl
-         flex justify-between items-center rounded-3xl 
+         shadow-lg px-8 py-4 rounded-4xl
+         flex justify-between items-center rounded-3xl
          md:h-20 md:-mt-5"
 >
   <div class="flex items-center gap-2">
@@ -25,19 +26,65 @@ import MenuMobile from "@components/MenuMobile.jsx";
     />
   </div>
 
-  <div class="flex items-center gap-4 ml-auto">
-    <nav class="hidden md:flex gap-6 text-sm text-gray-700 justify-end">
-      <a href="/" class="hover:text-purple-300">Inicio</a>
-      <a href="/movapp" class="hover:text-purple-300">Movapp</a>
-      <a href="/hack">Hack</a>
-      <a href="/tienda">Tienda</a>
-      <a href="#">Contenido</a>
-    </nav>
+  <nav class="hidden md:flex gap-6 text-sm text-gray-700 justify-end w-full">
+    <a href="/" class="hover:text-purple-300">Inicio</a>
+    <a href="/movapp" class="hover:text-purple-300">Movapp</a>
+    <a href="/hack" class="hover:text-purple-300">Hack</a>
+    <a href="/tienda" class="hover:text-purple-300">Tienda</a>
 
-    <div class="hidden md:block">
-      <ButtonContact />
+    <!-- Nuevo ítem de menú con submenú y flecha -->
+    <div class="relative">
+      <button
+        id="servicesButton"
+        class="flex items-center gap-2 hover:text-purple-300"
+      >
+        <span>Contenido</span>
+        <ArrowIcon class="text-gray-800" id="arrowIcon" size={4} />
+      </button>
+
+      <!-- Submenú con fondo transparente -->
+      <div
+        id="submenu"
+        class="absolute right-0 mt-8 w-48 bg-white/80 backdrop-blur-md rounded-lg p-3 hidden z-50"
+      >
+        <a
+          href="/faqs"
+          class="block py-1 text-sm text-gray-700 hover:bg-gray-200 rounded-lg px-2"
+          >Preguntas frecuentes</a
+        >
+        <a
+          href="/testimonials"
+          class="block py-1 text-sm text-gray-700 hover:bg-gray-200 rounded-lg px-2"
+          >Testimonios</a
+        >
+        <a
+          href="/mind"
+          class="block py-1 text-sm text-gray-700 hover:bg-gray-200 rounded-lg px-2"
+          >Mente digital</a
+        >
+        <a
+          href="/red"
+          class="block py-1 text-sm text-gray-700 hover:bg-gray-200 rounded-lg px-2"
+          >Nuestras redes</a
+        >
+      </div>
     </div>
+  </nav>
 
-    <MenuMobile client:load />
-  </div>
+  <MenuMobile />
 </header>
+
+<script>
+  const servicesButton = document.getElementById("servicesButton");
+  const submenu = document.getElementById("submenu");
+  const arrowIcon = document.getElementById("arrowIcon");
+
+  // Manejar el clic para desplegar/ocultar el submenú
+  servicesButton.addEventListener("click", () => {
+    // Alternar la visibilidad del submenú
+    submenu.classList.toggle("hidden");
+
+    // Rotar la flecha
+    arrowIcon.classList.toggle("rotate-180");
+  });
+</script>

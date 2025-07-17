@@ -1,0 +1,52 @@
+---
+import Layout from "@layouts/Layout.astro";
+import JoinOurBlog from "@/components/JoinOurBlog.astro";
+
+const cardHover =
+  "transition duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1 hover:scale-105 cursor-pointer";
+---
+
+<Layout>
+  <div class="mx-auto mb-4 max-w-2xl" data-aos="fade-down">
+    <div
+      class={`flex flex-col p-6 rounded-xl shadow-md 
+    bg-gradient-to-b from-gray-100 to-purple-100 
+    
+    ${cardHover}`}
+    >
+      <h2
+        class="mb-4 text-center text-xl font-bold text-transparent bg-clip-text bg-purple_mv md:text-4xl"
+      >
+        La voz de nuestros usuarios
+      </h2>
+      <p class="text-justify text-lg text-gray-600">
+        No estás solo en esto. Más de 2,000 usuarios han confirmado que El Hack
+        es la solución para recuperar el control de su vida digital. Conoce las
+        historias de quienes ya han experimentado el poder de El Hack y cómo ha
+        transformado su seguridad y bienestar.
+      </p>
+    </div>
+  </div>
+
+  <!-- Video -->
+  <div class="mx-auto my-8 flex flex-col max-w-2xl" data-aos="fade-up">
+    <video
+      controls
+      autoplay
+      muted
+      playsinline
+      class="w-full rounded-lg shadow-md"
+    >
+      <source
+        src="https://movapp.org/wp-content/uploads/2025/03/MBoptimized.mp4"
+        type="video/mp4"
+      />
+      Tu navegador no soporta el video.
+    </video>
+  </div>
+
+  <!-- CTA final -->
+  <!-- <section class="flex flex-col items-center">
+    <JoinOurBlog />
+  </section> -->
+</Layout>
