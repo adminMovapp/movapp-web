@@ -1,0 +1,71 @@
+---
+import Layout from "@layouts/Layout.astro";
+
+const cardHover =
+  "transition duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1 hover:scale-105 cursor-pointer";
+---
+
+<Layout>
+  <!-- Bienvenida -->
+  <div class="mx-auto mb-4 max-w-2xl" data-aos="fade-down">
+    <div
+      class={`flex flex-col p-6 rounded-xl shadow-md 
+    bg-gradient-to-b from-gray-100 to-purple-100 
+    
+    ${cardHover}`}
+    >
+      <h2
+        class="mb-4 text-center text-xl font-bold text-transparent bg-clip-text bg-purple_mv md:text-4xl"
+      >
+        Bienvenido a mente digital
+      </h2>
+      <p class="text-justify text-lg text-gray-600">
+        Este es un espacio dedicado a ayudarte a recuperar la paz emocional. Si
+        has sido víctima de las aplicaciones no reguladas, llamadas montadeudas,
+        y sientes que no hay salida, este es el lugar donde encontrarás las
+        herramientas para sanar mental y emocionalmente.
+      </p>
+      <h2
+        class="mb-4 text-center text-xl font-bold text-transparent bg-clip-text bg-purple_mv md:text-4xl mt-5"
+      >
+        Dra. Dalia
+      </h2>
+      <p class="text-justify text-lg text-gray-600">
+        Te quiero guiar hacia un mayor bienestar emocional. Quiero brindarte las
+        herramientas para que superes esta difícil situación y recuperes el
+        control de tu vida.
+      </p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mx-4 md:mx-48 mt-10">
+    <!-- Texto -->
+    <div class="mx-auto my-8 flex flex-col max-w-xl" data-aos="fade-right">
+      <h2
+        class="mb-4 text-center text-xl font-bold text-transparent bg-clip-text bg-purple_mv md:text-4xl mt-5"
+      >
+        Tu bienestar es importante para nosotros
+      </h2>
+      <p class="text-justify text-lg text-gray-600">
+        Sabemos que superar una situación como la que vives puede parecer
+        abrumador, pero no estás solo. Con Movapp y el respaldo de Mente
+        Digital, podrás encontrar un camino hacia la tranquilidad, tanto digital
+        como emocional. Aquí, nos comprometemos a brindarte todo el apoyo
+        necesario para que no solo protejas tus datos, sino que también
+        recuperes la paz mental.
+      </p>
+    </div>
+
+    <!-- Imagen -->
+    <div
+      class="mx-auto my-8 flex justify-center items-center max-w-xl"
+      data-aos="fade-left"
+    >
+      <img
+        src="/MenteDigital.jpg"
+        alt="Mente Digital"
+        class="rounded-xl w-full h-96"
+      />
+    </div>
+  </div>
+</Layout>
