@@ -5,10 +5,10 @@ import ArrowIcon from "@assets/ArrowIcon.astro";
 ---
 
 <header
-  class="h-16 mt-3 fixed left-4 right-14 md:right-4 z-50
+  class="h-16 mt-3 fixed left-4 md:left-16 right-14 md:right-16 z-50
          top-4 md:top-6 lg:top-8 xl:top-10
          w-auto max-w-none bg-white/50 backdrop-blur-md
-         shadow-lg px-8 py-4 rounded-4xl
+         shadow-lg px-8 py-4
          flex justify-between items-center rounded-3xl
          md:h-20 md:-mt-5"
 >
@@ -32,7 +32,6 @@ import ArrowIcon from "@assets/ArrowIcon.astro";
     <a href="/hack" class="hover:text-purple-300">Hack</a>
     <a href="/tienda" class="hover:text-purple-300">Tienda</a>
 
-    <!-- Nuevo ítem de menú con submenú y flecha -->
     <div class="relative">
       <button
         id="servicesButton"
@@ -42,7 +41,7 @@ import ArrowIcon from "@assets/ArrowIcon.astro";
         <ArrowIcon class="text-gray-800" id="arrowIcon" size={4} />
       </button>
 
-      <!-- Submenú con fondo transparente -->
+      <!-- Submenú -->
       <div
         id="submenu"
         class="absolute right-0 mt-8 w-48 bg-white/80 backdrop-blur-md rounded-lg p-3 hidden z-50"
@@ -79,12 +78,8 @@ import ArrowIcon from "@assets/ArrowIcon.astro";
   const submenu = document.getElementById("submenu");
   const arrowIcon = document.getElementById("arrowIcon");
 
-  // Manejar el clic para desplegar/ocultar el submenú
   servicesButton.addEventListener("click", () => {
-    // Alternar la visibilidad del submenú
     submenu.classList.toggle("hidden");
-
-    // Rotar la flecha
     arrowIcon.classList.toggle("rotate-180");
   });
 </script>
