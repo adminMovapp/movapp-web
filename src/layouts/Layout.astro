@@ -23,10 +23,17 @@ const {title} = Astro.props
     <link rel="icon" type="image/png" href="/ico-movapp.ico" />
     <meta name="generator" content={Astro.generator} />
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons/css/flag-icons.min.css">
+
+    <!-- SDK de MercadoPago -->
+    <script is:inline src="https://sdk.mercadopago.com/js/v2"></script>
+        
     <title>{title}</title>
   </head>
+
+
   <body class="bg-gray-100 text-gray-800 min-h-screen flex flex-col">  
-    <InitAOS client:load /> <!-- 👈 se activa en el navegador -->
+    <InitAOS client:load /> 
     
     {showHeaderLayer 
       ? <HeaderLayer /> 

@@ -1,0 +1,30 @@
+{
+   "MX": {
+      "nombre": "México",
+      "moneda": "MXN",
+      "simbolo": "$",
+      "precio": 2,
+      "bandera": "fi fi-mx"
+   },
+   "PE": {
+      "nombre": "Perú",
+      "moneda": "PEN",
+      "simbolo": "S/",
+      "precio": 126,
+      "bandera": "fi fi-pe"
+   },
+   "CO": {
+      "nombre": "Colombia",
+      "moneda": "COP",
+      "simbolo": "$",
+      "precio": 120,
+      "bandera": "fi fi-co"
+   },
+   "EC": {
+      "nombre": "Ecuador",
+      "moneda": "USD",
+      "simbolo": "$",
+      "precio": 33,
+      "bandera": "fi fi-ec"
+   }
+}

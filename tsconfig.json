@@ -11,9 +11,13 @@
          "@layouts/*": ["src/layouts/*"],
          "@pages/*": ["src/pages/*"],
          "@styles/*": ["src/styles/*"],
-         "@assets/*": ["src/assets/*"]
+         "@assets/*": ["src/assets/*"],
+         "@hooks/*": ["src/hooks/*"],
+         "@utils/*": ["src/utils/*"],
+         "@api/*": ["src/api/*"]
       },
       "jsx": "react-jsx",
-      "jsxImportSource": "react"
+      "jsxImportSource": "react",
+      "resolveJsonModule": true
    }
 }
