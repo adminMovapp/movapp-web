@@ -4,7 +4,7 @@ import countries from "@utils/configCountries.json";
 import { getCountry } from "@/api/api";
 
 const useCountryConfig = () => {
-   const value = "CO";
+   const value = "PE";
    const [country, setCountry] = useState(value);
    const [config, setConfig] = useState(countries[value]);
 

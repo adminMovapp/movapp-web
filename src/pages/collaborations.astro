@@ -1,0 +1,69 @@
+---
+import Layout from "@layouts/Layout.astro";
+const cardHover =
+  "transition duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1 hover:scale-105 cursor-pointer";
+---
+
+<Layout title="Colaboraciones">
+  <!-- Título principal -->
+
+
+<section class="flex flex-col items-center justify-center gap-10 px-4 md:px-32 ">
+
+  <!-- Grupo 1: Card + Video -->
+  <div class="flex flex-col md:flex-row items-stretch justify-center gap-4 w-full max-w-5xl">
+    <div class={`bg-white p-4 rounded-xl shadow-lg w-full md:w-1/2 h-full ${cardHover} md:h-64`}>
+      <h2 class="text-xl font-bold text-gray_mv">
+        Colaboración Movapp - Poncho Yezca - Programa Oye con Erik Mann
+      </h2>
+      <p class="text-sm mt-2">
+        Erik Mann platicó sobre montadeudas en el podcast Oye, con Poncho Yezca.
+      </p>
+    </div>
+
+    <div class="w-full md:w-1/2 h-full  md:h-64" data-aos="fade-up">
+      <video
+        controls
+        autoplay
+        muted
+        playsinline
+        class="w-full h-full rounded-lg shadow-md object-cover"
+      >
+        <source src="https://movapp.org/wp-content/uploads/2025/03/MBoptimized.mp4" type="video/mp4" />
+        Tu navegador no soporta el video.
+      </video>
+    </div>
+  </div>
+
+  <!-- Grupo 2: Video + Card -->
+<div class="flex flex-col md:flex-row-reverse items-stretch justify-center gap-4 w-full max-w-5xl">
+  <div class="w-full md:w-1/2 h-full md:h-64" data-aos="fade-up">
+    <video
+      controls
+      autoplay
+      muted
+      playsinline
+      class="w-full h-full rounded-lg shadow-md object-cover"
+    >
+      <source src="https://movapp.org/wp-content/uploads/2025/03/MBoptimized.mp4" type="video/mp4" />
+      Tu navegador no soporta el video.
+    </video>
+  </div>
+
+  <div class={`bg-white p-4 rounded-xl shadow-lg w-full md:w-1/2 h-full ${cardHover} md:h-64`}>
+    <h2 class="text-xl font-bold text-gray_mv">
+      Movapp con Policía Cibernética y Cenepred Capacitación en Tabasco
+    </h2>
+    <p class="text-sm mt-2">
+      Fuimos a Tabasco, a hablar sobre seguridad cibernética...
+    </p>
+  </div>
+</div>
+
+</section>
+
+
+
+
+
+</Layout>

@@ -146,7 +146,8 @@ const HackCard = () => {
             codigopostal: form.codigoPostal,
             producto: productName,
             cantidad: count,
-            precio: (config.precio * count).toFixed(2),
+            precio_unitario: config.precio.toFixed(2),
+            total: (config.precio * count).toFixed(2),
             pais: country,
          };
 
