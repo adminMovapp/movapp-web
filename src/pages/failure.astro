@@ -2,16 +2,54 @@
 import Layout from "@layouts/Layout.astro";
 ---
 
-<Layout title="Failure">
-  <div
-    class="mt-4 mb-6 flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4 text-center md:text-left"
-    data-aos="fade-down"
+<Layout title="Error en el pago">
+  <section
+    class="mt-12 mb-20 flex flex-col items-center justify-center px-6 text-center"
+    data-aos="zoom-in"
   >
-    <h2 class="text-3xl md:text-4xl font-bold text-gray-600">
-      Failure
-    </h2>
-    
-  </div>
+    <!-- Ícono de error -->
+    <div class="text-red-500 mb-6">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="w-20 h-20"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M12 9v2m0 4h.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"
+        />
+      </svg>
+    </div>
 
- 
+    <!-- Título -->
+    <h1 class="text-3xl sm:text-4xl font-bold text-red-600 mb-2">
+      ¡Algo salió mal!
+    </h1>
+
+    <!-- Mensaje -->
+    <p class="text-lg text-gray-600 max-w-2xl mb-6">
+      No pudimos procesar tu pago. Esto puede deberse a un error en la transacción, fondos insuficientes o un problema con tu método de pago.
+    </p>
+
+    <!-- Botones -->
+    <div class="flex flex-col sm:flex-row gap-4">
+      <a
+        href="/"
+        class="px-6 py-3 bg-purple-600 text-white rounded-lg font-semibold shadow hover:bg-purple-700 transition"
+      >
+        Volver al inicio
+      </a>
+
+      <!-- <a
+        href="mailto:soporte@movapp.org"
+        class="px-6 py-3 bg-gray-200 text-gray-800 rounded-lg font-semibold shadow hover:bg-gray-300 transition"
+      >
+        Contactar soporte
+      </a> -->
+    </div>
+  </section>
 </Layout>

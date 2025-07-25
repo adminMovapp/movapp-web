@@ -7,6 +7,7 @@ const InitAOS = () => {
       AOS.init({
          duration: 800,
          once: true,
+         disable: () => window.innerWidth < 768, // ⛔ Desactiva AOS en móviles
       });
    }, []);
 

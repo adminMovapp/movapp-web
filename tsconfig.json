@@ -14,7 +14,8 @@
          "@assets/*": ["src/assets/*"],
          "@hooks/*": ["src/hooks/*"],
          "@utils/*": ["src/utils/*"],
-         "@api/*": ["src/api/*"]
+         "@api/*": ["src/api/*"],
+         "@constants/*": ["src/constants/*"]
       },
       "jsx": "react-jsx",
       "jsxImportSource": "react",

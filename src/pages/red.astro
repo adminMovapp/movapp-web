@@ -1,219 +1,121 @@
 ---
+import { Picture } from 'astro:assets';
 import Layout from "@layouts/Layout.astro";
+import { URLS, SOCIALS } from "@constants/socials.ts";
+
+import ImgFacebook from '@assets/icono-Facebook.png';
+import ImgInstagram from '@assets/icono-Instagram.png';
+import ImgYoutube from '@assets/icono-Youtube.png'; 
+import ImgTiktok from '@assets/Icono-Tik-Tok.png';
+import ImgWhatsapp from '@assets/icono-Whatsapp.png';
+
+// Icon map
+const ICONS = {
+  "Icono-Facebook.png": ImgFacebook,
+  "Icono-Instagram.png": ImgInstagram,
+  "Icono-Youtube.png": ImgYoutube,
+  "Icono-Tik-Tok.png": ImgTiktok,
+};
 
 const cardHover =
   "transition duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1 hover:scale-105 cursor-pointer";
 ---
 
 <Layout title="Redes">
-  <div
-    class="mt-4 mb-6 flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4 text-center md:text-left"
-    data-aos="fade-down"
-  >
-    <h2 class="text-3xl md:text-4xl font-bold text-gray_mv">
+  <!-- Título -->
+  <div class="mt-4 mb-6 flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4 text-center md:text-left" data-aos="fade-down">
+    <h2 class="text-2xl md:text-4xl font-bold text-gray_mv">
       ¡Síguenos y mantente conectado!
     </h2>
   </div>
 
-  <!-- Descripción introductoria -->
+  <!-- Descripción -->
   <div class="mt-6 flex items-center justify-center px-4" data-aos="fade-up">
-    <p class="max-w-2xl text-lg text-justify text-gray_mv">
-      Creemos que la mejor manera de ayudarte es mantener una comunicación
-      constante. A través de nuestras redes sociales, podrás estar al día con
-      consejos de seguridad, actualizaciones de productos y contenido exclusivo
-      que hemos creado para ti.
+    <p class="max-w-2xl text-xs md:text-xl text-justify text-gray_mv">
+      Creemos que la mejor manera de ayudarte es mantener una comunicación constante. A través de nuestras redes sociales, podrás estar al día con consejos de seguridad, actualizaciones de productos y contenido exclusivo que hemos creado para ti.
     </p>
   </div>
 
-  <h2
-    class="mt-6 text-2xl font-bold text-center text-gray_mv"
-    data-aos="fade-up"
-  >
+  <!-- Redes sociales -->
+  <h2 class="mt-6 text-lg md:text-2xl font-bold text-center text-gray_mv" data-aos="fade-up">
     Encuéntranos fácilmente
   </h2>
 
   <section class="mt-5 flex flex-col items-center justify-center px-6 py-5">
-    <section
-      class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4 items-stretch w-full max-w-5xl"
-    >
-      <!-- Youtube -->
-      <div data-aos="fade-right" class="h-full">
-        <div
-          class={`h-full flex flex-col justify-between p-6 rounded-2xl bg-white shadow-md ${cardHover}`}
-        >
-          <div class="flex items-center space-x-3 mb-3">
-            <h3 class="font-semibold text-gray-800 text-xl ml-8">Youtube</h3>
-            <img src="/youtube-blue.png" alt="youtube-blue" class="h-10 w-10" />
+    <section class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4 items-stretch w-full max-w-5xl">
+      {SOCIALS.map((social) => (
+        <div data-aos="fade-right" class="h-full">
+          <div class={`h-full flex flex-col justify-between p-6 rounded-2xl bg-white shadow-md ${cardHover}`}>
+            <div class="flex items-center space-x-3 mb-3">
+              <h3 class="font-semibold text-gray-800 text-xl ml-8">{social.name}</h3>
+              <a href={social.url} target="_blank" rel="noopener noreferrer">
+                <Picture src={ICONS[social.icon]} alt={social.name} class="h-12 w-12" />
+              </a>
+            </div>
+            <h3 class="mb-4 font-semibold text-gray-800 text-2xl text-center">
+              <span class="counter" data-target={social.count}>0</span>
+            </h3>
+            <p class="text-xs md:text-sm text-justify text-gray_mv">
+              {social.description}
+            </p>
           </div>
-
-          <h3 class="mb-4 font-semibold text-gray-800 text-2xl text-center">
-            <span class="counter" data-target="28400">0</span>
-          </h3>
-
-          <p class="max-w-2xl text-sm text-justify text-gray_mv">
-            Accede a contenido exclusivo, tutoriales sobre El Hack, entrevistas
-            con expertos y mucho más. ¡Suscríbete y activa las notificaciones
-            para no perderte nada!
-          </p>
         </div>
-      </div>
-
-      <!-- Facebook -->
-      <div data-aos="fade-right" class="h-full">
-        <div
-          class={`h-full flex flex-col justify-between p-6 rounded-2xl bg-white shadow-md ${cardHover}`}
-        >
-          <div class="flex items-center space-x-3 mb-3">
-            <h3 class="font-semibold text-gray-800 text-xl ml-8">Facebook</h3>
-            <img
-              src="/facebook-blue.png"
-              alt="facebook-blue"
-              class="h-10 w-10"
-            />
-          </div>
-
-          <h3 class="mb-4 font-semibold text-gray-800 text-2xl text-center">
-            <span class="counter" data-target="3100">0</span>
-          </h3>
-
-          <p class="max-w-2xl text-sm text-justify text-gray_mv">
-            Únete a nuestra comunidad en Facebook para mantenerte al tanto de
-            las últimas noticias y actualizaciones.
-          </p>
-        </div>
-      </div>
-
-      <!-- Instagram -->
-      <div data-aos="fade-right" class="h-full">
-        <div
-          class={`h-full flex flex-col justify-between p-6 rounded-2xl bg-white shadow-md ${cardHover}`}
-        >
-          <div class="flex items-center space-x-3 mb-3">
-            <h3 class="font-semibold text-gray-800 text-xl ml-8">Instagram</h3>
-            <img
-              src="/instagram-blue.png"
-              alt="facebook-blue"
-              class="h-10 w-10"
-            />
-          </div>
-
-          <h3 class="mb-4 font-semibold text-gray-800 text-2xl text-center">
-            <span class="counter" data-target="3800">0</span>
-          </h3>
-
-          <p class="max-w-2xl text-sm text-justify text-gray_mv">
-            ¡Síguenos para ver tips rápidos, noticias y contenido visual sobre
-            cómo proteger tu información!
-          </p>
-        </div>
-      </div>
-
-      <!-- Tiktok -->
-      <div data-aos="fade-right" class="h-full">
-        <div
-          class={`h-full flex flex-col justify-between p-6 rounded-2xl bg-white shadow-md ${cardHover}`}
-        >
-          <div class="flex items-center space-x-3 mb-3">
-            <h3 class="font-semibold text-gray-800 text-xl ml-8">Tiktok</h3>
-            <img src="/tiktok-blue.png" alt="facebook-blue" class="h-10 w-10" />
-          </div>
-
-          <h3 class="mb-4 font-semibold text-gray-800 text-2xl text-center">
-            <span class="counter" data-target="3500">0</span>
-          </h3>
-
-          <p class="max-w-2xl text-sm text-justify text-gray_mv">
-            Síguenos en TikTok para ver contenido dinámico y divertido sobre
-            cómo proteger tus datos y más.
-          </p>
-        </div>
-      </div>
+      ))}
     </section>
   </section>
 
-  <h2
-    class="mt-6 text-2xl font-bold text-center text-gray_mv"
-    data-aos="fade-up"
-  >
-    Conoce nuestros canales oficiales de <span class="text-green-500 font-bold"
-      >WhatsApp</span
-    >
+  <!-- Canales WhatsApp -->
+  <h2 class="mt-6 text-2xl font-bold text-center text-gray_mv" data-aos="fade-up">
+    Conoce nuestros canales oficiales de <span class="text-green-500 font-bold">WhatsApp</span>
   </h2>
 
-  <!-- Canales WhatsApp -->
-  <div
-    data-aos="fade-right"
-    class="mt-5 flex flex-col items-center justify-center px-6 py-10"
-  >
-    <div
-      class={`flex flex-col justify-center items-center p-6 rounded-2xl bg-white shadow-md ${cardHover} mt-5 w-full lg:w-[40px] xl:w-[500px]`}
-    >
-      <!-- Primer bloque: Movapp Oficial con WhatsApp -->
-      <div class="flex items-center justify-between w-full mb-6">
-        <div class="flex flex-col">
-          <h3 class="font-semibold text-gray-800 text-xl">Movapp Oficial</h3>
-          <p class="text-sm text-gray-600">+52 55 7436 0621</p>
+  <div class="mt-5 flex flex-col items-center justify-center px-6 py-10 w-full" data-aos="fade-right">
+    <div class={`flex flex-col justify-center items-center p-6 rounded-2xl bg-white shadow-md ${cardHover} mt-5 w-full sm:w-[400px] md:w-[450px] lg:w-[500px]`}>
+      {[
+        { nombre: "Movapp Oficial", numero: "+5215574360621", url: URLS.whatsapp.oficial },
+        { nombre: "Movapp Chat Principal", numero: "+5215578767442", url: URLS.whatsapp.principal },
+        { nombre: "Movapp Colombia", numero: "+573045829040", url: URLS.whatsapp.colombia },
+        { nombre: "Movapp Ecuador", numero: "+593983639715", url: URLS.whatsapp.ecuador },
+        { nombre: "Movapp Perú", numero: "+51958102730", url: URLS.whatsapp.peru },
+      ].map((canal) => (
+        <div class="flex items-center justify-between w-full mb-6">
+          <div class="flex flex-col">
+            <h3 class="font-semibold text-gray-800 text-sm md:text-xl">{canal.nombre}</h3>
+            <p class="text-sm text-gray-600">{canal.numero}</p>
+          </div>
+          <a href={canal.url} target="_blank" rel="noopener noreferrer">
+            <Picture src={ImgWhatsapp} alt="Whatsapp" class="h-8 w-8 md:h-10 md:w-10" />
+          </a>
         </div>
-        <img src="/whatsapp-blue.png" alt="whatsapp" class="h-10 w-10" />
-      </div>
-
-      <!-- Segundo bloque: Movapp Chat Principal con WhatsApp -->
-      <div class="flex items-center justify-between w-full mb-6">
-        <div class="flex flex-col">
-          <h3 class="font-semibold text-gray-800 text-xl">
-            Movapp Chat Principal
-          </h3>
-          <p class="text-sm text-gray-600">+52 55 7876 7442</p>
-        </div>
-        <img src="/whatsapp-blue.png" alt="whatsapp" class="h-10 w-10" />
-      </div>
-
-      <!-- Tercer bloque: Movapp Colombia con WhatsApp -->
-      <div class="flex items-center justify-between w-full mb-6">
-        <div class="flex flex-col">
-          <h3 class="font-semibold text-gray-800 text-xl">Movapp Colombia</h3>
-          <p class="text-sm text-gray-600">+57 304 5829040</p>
-        </div>
-        <img src="/whatsapp-blue.png" alt="whatsapp" class="h-10 w-10" />
-      </div>
-
-      <!-- Cuarto bloque: Movapp Ecuador con WhatsApp -->
-      <div class="flex items-center justify-between w-full mb-6">
-        <div class="flex flex-col">
-          <h3 class="font-semibold text-gray-800 text-xl">Movapp Ecuador</h3>
-          <p class="text-sm text-gray-600">+593 98 363 9715</p>
-        </div>
-        <img src="/whatsapp-blue.png" alt="whatsapp" class="h-10 w-10" />
-      </div>
-
-      <!-- Quinto bloque: Movapp Perú con WhatsApp -->
-      <div class="flex items-center justify-between w-full mb-6">
-        <div class="flex flex-col">
-          <h3 class="font-semibold text-gray-800 text-xl">Movapp Perú</h3>
-          <p class="text-sm text-gray-600">+51 958 102 730</p>
-        </div>
-        <img src="/whatsapp-blue.png" alt="whatsapp" class="h-10 w-10" />
-      </div>
+      ))}
     </div>
   </div>
 
-  <script>
+  <!-- Animación contador -->
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll(".counter").forEach((counter) => {
-      const updateCounter = () => {
-        const target = +counter.getAttribute("data-target");
-        let current = +counter.textContent;
-        const increment = target / 500;
+      const target = +counter.getAttribute("data-target");
+      let current = 0;
+      const increment = Math.max(1, Math.floor(target / 200));
 
+      const updateCounter = () => {
         if (current < target) {
-          current = Math.ceil(current + increment);
-          counter.textContent = current.toLocaleString();
-          setTimeout(updateCounter, 1);
+          current += increment;
+          if (current > target) current = target;
+        
+           counter.textContent = current.toLocaleString('es-ES');
+          setTimeout(updateCounter, 15);
         } else {
-          counter.textContent = target.toLocaleString();
+          counter.textContent = target.toLocaleString('es-ES');
         }
       };
 
       updateCounter();
     });
-  </script>
+  });
+</script>
+
+
+
 </Layout>

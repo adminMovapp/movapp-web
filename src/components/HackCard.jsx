@@ -181,7 +181,7 @@ const HackCard = () => {
    };
 
    return (
-      <div className="flex flex-col items-center justify-center px-6 mt-10">
+      <div className="flex flex-col items-center justify-center px-2 mt-10">
          {!disabled && (
             <div className="mb-4 p-3 bg-red-100 text-red-700 rounded w-full max-w-md text-center font-semibold">
                Lo sentimos, la opción de compra no está disponible en tu país ({config.nombre}).
@@ -189,8 +189,10 @@ const HackCard = () => {
          )}
 
          <div className="bg-white rounded-lg shadow-md  p-6 flex flex-col items-center space-y-4 max-w-lg w-full">
-            <img src="/elhack-negro.png" alt="Movapp Logo" className="w-32 h-auto" />
-            <p className="text-gray-500 text-center text-lg">Nuestra solución al acoso de las apps de préstamo.</p>
+            <img src="../elhack-negro.png" alt="Movapp Logo" className="w-32 h-auto" />
+            <p className="text-gray-500 text-center text-sm md:text-lg">
+               Nuestra solución al acoso de las apps de préstamo.
+            </p>
 
             <div className="flex items-center space-x-2">
                <button
@@ -212,7 +214,7 @@ const HackCard = () => {
                </button>
             </div>
 
-            <p className="text-gray-600 text-lg">Selecciona el número de hacks.</p>
+            <p className="text-gray-600 text-sm md:text-lg text-center">Selecciona el número de hacks.</p>
             <div className="flex items-center space-x-2">
                <p className="text-xl font-bold">
                   {config.simbolo} {(config.precio * count).toFixed(2)} {config.moneda}
@@ -245,7 +247,7 @@ const HackCard = () => {
                   className={`bg-white                 
                      max-w-md md:max-w-lg md:w-full 
                      min-h-[400px]
-                     rounded-t-xl p-8 relative shadow-xl ring-2 ring-purple-300 z-50
+                     rounded-t-xl p-5 md:p-8 relative shadow-xl ring-2 ring-purple-300 z-50
                    ${isClosing ? "animate-slideDown" : "animate-slideUp"} transform`}
                >
                   <button
@@ -272,10 +274,10 @@ const HackCard = () => {
 
                   <h3 className="text-xl font-bold mb-4 text-center mt-5 text-gray-700">Completa tu información</h3>
 
-                  <form className="grid gap-3" onSubmit={handleSubmit} noValidate>
+                  <form className="grid gap-3 max-w-md mx-auto" onSubmit={handleSubmit} noValidate>
                      <div>
                         <input
-                           className={`border p-2 rounded w-full ${
+                           className={`border p-2 rounded w-full  ${
                               errors.nombre ? "border-red-500" : "border-gray-300"
                            }`}
                            placeholder="Nombre"

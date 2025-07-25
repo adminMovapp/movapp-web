@@ -1,4 +1,7 @@
 ---
+
+import { URLS } from "@/constants/socials";
+
 const cardHover =
   "transition duration-300 ease-in-out will-change-transform hover:shadow-xl hover:-translate-y-1 hover:scale-105 hover:bg-purple_mv/2 hover:backdrop-blur-md cursor-pointer";
 ---
@@ -10,7 +13,7 @@ const cardHover =
     <!-- Acerca de Nosotros -->
     <div data-aos="fade-right" class="h-full">
       <div
-        class={`h-full flex flex-col justify-between p-6 rounded-2xl bg-white shadow-md ${cardHover}`}
+        class={`h-full flex flex-col justify-start p-6 rounded-2xl bg-white shadow-md ${cardHover}`}
       >
         <h3 class="mb-3 font-semibold text-gray-800">Acerca de nosotros</h3>
         <ul class="space-y-1 text-sm text-gray-700">
@@ -26,7 +29,7 @@ const cardHover =
     <!-- Contenido -->
     <div data-aos="fade-up" class="h-full">
       <div
-        class={`h-full flex flex-col justify-between p-6 rounded-2xl bg-white shadow-md ${cardHover}`}
+        class={`h-full flex flex-col justify-start p-6 rounded-2xl bg-white shadow-md ${cardHover}`}
       >
         <h3 class="mb-3 font-semibold text-gray-800">Contenido</h3>
         <ul class="space-y-1 text-sm text-gray-700">
@@ -39,7 +42,7 @@ const cardHover =
     <!-- Adquiere El Hack -->
     <div data-aos="fade-left" class="h-full">
       <div
-        class={`h-full flex flex-col justify-between p-6 rounded-2xl bg-white shadow-md ${cardHover}`}
+        class={`h-full flex flex-col justify-start p-6 rounded-2xl bg-white shadow-md ${cardHover}`}
       >
         <h3 class="mb-3 font-semibold text-gray-800">Adquiere EL HACK</h3>
         <ul class="space-y-1 text-sm text-gray-700">
@@ -60,9 +63,9 @@ const cardHover =
 
 <!-- Footer -->
 <footer
-  class="mx-8 mt-8 mb-16 rounded-3xl bg-gradient-to-r from-purple_mv to-indigo-500
-  p-5 shadow-lg text-white
-  flex flex-col items-center justify-between gap-4 md:mx-16 md:flex-row"
+  class="mt-8 mb-16 rounded-3xl bg-gradient-to-r from-purple_mv to-indigo-500
+   px-10 md:px-16 py-6 shadow-lg text-white
+  flex flex-col items-center justify-between gap-6 md:flex-row max-w-7xl mx-5 md:mx-auto"
 >
   <!-- Logo + Descripción -->
   <div class="max-w-md text-center md:text-left">
@@ -79,30 +82,31 @@ const cardHover =
   </div>
 
   <!-- Redes Sociales + Derechos -->
-  <div class="flex flex-col items-center text-center md:text-right">
+  <div class="flex flex-col items-center text-center justify-between 
+             md:items-end md:text-right md:justify-end">
     <div class="mb-2 flex justify-center gap-4 text-lg md:justify-end">
-      <a href="#" aria-label="YouTube" class="hover:text-gray-300">
+      <a href={URLS.youtube} aria-label="YouTube" class="hover:text-gray-300">
         <img
           src="/logo-youtube.png"
           alt="YouTube"
           class="mx-auto my-4 w-7 h-auto"
         />
       </a>
-      <a href="#" aria-label="TikTok" class="hover:text-gray-300">
+      <a href={URLS.tiktok} target="_blank" rel="noopener noreferrer"aria-label="TikTok" class="hover:text-gray-300">
         <img
           src="/logo-tiktok.png"
           alt="TikTok"
           class="mx-auto my-4 w-7 h-auto"
         />
       </a>
-      <a href="#" aria-label="Facebook" class="hover:text-gray-300">
+      <a href={URLS.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook" class="hover:text-gray-300">
         <img
           src="/logo-facebook.png"
           alt="Facebook"
           class="mx-auto my-4 w-7 h-auto"
         />
       </a>
-      <a href="#" aria-label="Instagram" class="hover:text-gray-300">
+      <a href={URLS.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="hover:text-gray-300">
         <img
           src="/logo-instagram.png"
           alt="Instagram"

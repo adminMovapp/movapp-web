@@ -22,7 +22,7 @@ export const getCountry = async (defaultCode = "MX") => {
 
 export const createPreference = async (payload) => {
    try {
-      const res = await fetch(`${urlApi}/api/payments/create-preference`, {
+      const res = await fetch(`${urlApi}/payments/create-preference`, {
          method: "POST",
          headers: {
             "Content-Type": "application/json",
