@@ -222,7 +222,7 @@ const HackCard = () => {
                <span className={`fi ${config.bandera} rounded-md`} style={{ fontSize: "2rem" }}></span>
             </div>
             <button
-               className={`bg-purple-600 hover:bg-purple-500 text-white font-bold h-8 w-auto px-5 rounded-md flex justify-center items-center
+               className={`bg-purple_mv hover:bg-purple_mv text-white font-bold h-8 w-auto px-5 rounded-md flex justify-center items-center
             ${!disabled ? "opacity-50 cursor-not-allowed" : ""}
           `}
                onClick={openDrawer}
@@ -260,7 +260,7 @@ const HackCard = () => {
 
                   <div className="mb-4 text-center">
                      <div className="text-lg font-bold text-gray-700">
-                        Producto: <span className="text-purple-600">{productName}</span>
+                        Producto: <span className="text-purple_mv">{productName}</span>
                      </div>
                      <div className="text-lg font-bold text-gray-700">{`Cantidad = ${count}`}</div>
                      <div className="flex items-center justify-center space-x-2">
@@ -354,7 +354,7 @@ const HackCard = () => {
 
                      <button
                         type="submit"
-                        className="mt-4w-full bg-purple-600 text-white font-bold py-2 rounded hover:bg-purple-700"
+                        className="mt-4w-full bg-purple_mv text-white font-bold py-2 rounded hover:bg-purple-700"
                      >
                         Finaliza tu compra
                      </button>

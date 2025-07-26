@@ -68,13 +68,13 @@ const cardHover =
     </div>
   </div>
 
-  <!-- ¿Cómo nació <span class="text-purple-600">Movapp</span>? -->
+  <!-- ¿Cómo nació <span class="text-purple_mv">Movapp</span>? -->
   <h2
     class="mt-8 text-center text-xl font-bold text-gray-600 "
     data-aos="fade-up"
   >
     ¿Cómo nació
-    <span class="text-purple-600 font-bold">Movapp</span>?
+    <span class="text-purple_mv font-bold">Movapp</span>?
   </h2>
 
   <div class="mx-auto my-8 flex flex-col max-w-2xl px-4 md:px-0" data-aos="fade-up">
@@ -144,10 +144,10 @@ const cardHover =
       <div data-aos="fade-right" >
         <a href={social.url} target="_blank" rel="noopener noreferrer" class={`flex flex-col items-center p-8 text-center rounded-xl shadow-lg bg-gradient-to-b from-gray-100 to-purple-100 ${cardHover} hover:bg-purple-200`}>
           <div class="mb-1 text-2xl font-bold text-gray-800">{social.name}</div>
-          <span class="counter text-lg" data-target={social.count ?? 0}>0</span>
           <div class="relative mb-4">
-            <Picture src={social.icon ? ICONS[social.icon] : undefined} alt={social.name} class="h-8 w-8 md:h-10 md:w-10" />
+            <Picture src={social.icon ? ICONS[social.icon] : undefined} alt={social.name} class="h-12 w-12 md:h-14 md:w-14" />
           </div>
+          <span class="counter text-xl font-semibold" data-target={social.count ?? 0}>0</span>
         </a>
       </div>
     ))}
