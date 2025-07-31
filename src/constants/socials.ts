@@ -6,10 +6,14 @@ export const URLS = {
    instagram: "https://www.instagram.com/movappbymann",
    tiktok: "https://www.tiktok.com/@erikmanndp",
    whatsapp: {
-      oficial: "https://api.whatsapp.com/send/?phone=5215574360621&text&type=phone_number&app_absent=0",
-      principal: "https://api.whatsapp.com/send/?phone=5215578767442&text&type=phone_number&app_absent=0",
-      colombia: "https://api.whatsapp.com/send/?phone=573045829040&text&type=phone_number&app_absent=0",
-      ecuador: "https://api.whatsapp.com/send/?phone=593983639715&text&type=phone_number&app_absent=0",
+      oficial:
+         "https://api.whatsapp.com/send/?phone=5215574360621&text&type=phone_number&app_absent=0",
+      principal:
+         "https://api.whatsapp.com/send/?phone=5215578767442&text&type=phone_number&app_absent=0",
+      colombia:
+         "https://api.whatsapp.com/send/?phone=573045829040&text&type=phone_number&app_absent=0",
+      ecuador:
+         "https://api.whatsapp.com/send/?phone=593983639715&text&type=phone_number&app_absent=0",
       peru: "https://api.whatsapp.com/send/?phone=51958102730&text&type=phone_number&app_absent=0",
    },
 };
@@ -36,19 +40,26 @@ export const SOCIALS = [
       url: URLS.instagram,
       icon: "Icono-Instagram.png",
       count: 3800,
-      description: "¡Síguenos para ver tips rápidos, noticias y contenido visual sobre cómo proteger tu información!",
+      description:
+         "¡Síguenos para ver tips rápidos, noticias y contenido visual sobre cómo proteger tu información!",
    },
    {
       name: "TikTok",
       url: URLS.tiktok,
       icon: "Icono-Tik-Tok.png",
       count: 3500,
-      description: "Síguenos en TikTok para ver contenido dinámico y divertido sobre cómo proteger tus datos y más.",
+      description:
+         "Síguenos en TikTok para ver contenido dinámico y divertido sobre cómo proteger tus datos y más.",
    },
 ];
 
 export const VIDEOS = {
-   inicio: "https://www.youtube.com/embed/zk80qd_icjI?autoplay=1&mute=1",
-   movapp: "https://www.youtube.com/embed/CarjgPXBHfM?autoplay=1&mute=1",
-   testimonios: "https://www.youtube.com/embed/Nhk-CxtuXfk?autoplay=1&mute=1",
+   inicio:
+      "https://www.youtube.com/embed/vNZxLXI75_U?autoplay=1&mute=1&loop=1&playlist=vNZxLXI75_U",
+   movapp:
+      "https://www.youtube.com/embed/SM5hBiuv-og?autoplay=1&mute=1&loop=1&playlist=SM5hBiuv-og",
+   testimonios:
+      "https://www.youtube.com/embed/iiuid3nlolU?autoplay=1&mute=1&loop=1&playlist=iiuid3nlolU",
+   colaboraciones:
+      "https://www.youtube.com/embed/owi6YB41tnM?autoplay=1&mute=1&loop=1&playlist=owi6YB41tnM",
 };

@@ -1,69 +1,44 @@
 ---
 import Layout from "@layouts/Layout.astro";
+import {  VIDEOS } from "@constants/socials.ts";
+
 const cardHover =
   "transition duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1 hover:scale-105 cursor-pointer";
 ---
 
 <Layout title="Colaboraciones">
-  <!-- Título principal -->
-
-
-<section class="flex flex-col items-center justify-center gap-10 px-4 md:px-32 ">
-
-  <!-- Grupo 1: Card + Video -->
-  <div class="flex flex-col md:flex-row items-stretch justify-center gap-4 w-full max-w-5xl">
-    <div class={`bg-white p-4 rounded-xl shadow-lg w-full md:w-1/2 h-full ${cardHover} md:h-64`}>
-      <h2 class="text-xl font-bold text-gray_mv">
-        Colaboración Movapp - Poncho Yezca - Programa Oye con Erik Mann
-      </h2>
-      <p class="text-sm mt-2">
-        Erik Mann platicó sobre montadeudas en el podcast Oye, con Poncho Yezca.
-      </p>
-    </div>
-
-    <div class="w-full md:w-1/2 h-full  md:h-64" data-aos="fade-up">
-      <video
-        controls
-        autoplay
-        muted
-        playsinline
-        class="w-full h-full rounded-lg shadow-md object-cover"
-      >
-        <source src="https://movapp.org/wp-content/uploads/2025/03/MBoptimized.mp4" type="video/mp4" />
-        Tu navegador no soporta el video.
-      </video>
-    </div>
-  </div>
-
-  <!-- Grupo 2: Video + Card -->
-<div class="flex flex-col md:flex-row-reverse items-stretch justify-center gap-4 w-full max-w-5xl">
-  <div class="w-full md:w-1/2 h-full md:h-64" data-aos="fade-up">
-    <video
-      controls
-      autoplay
-      muted
-      playsinline
-      class="w-full h-full rounded-lg shadow-md object-cover"
+  <div class="mx-auto mb-4 max-w-2xl px-4 md:px-0" data-aos="fade-down">
+    <div
+      class={`flex flex-col p-6 rounded-xl shadow-md 
+    bg-gradient-to-b from-gray-100 to-purple-100 
+    
+    ${cardHover}`}
     >
-      <source src="https://movapp.org/wp-content/uploads/2025/03/MBoptimized.mp4" type="video/mp4" />
-      Tu navegador no soporta el video.
-    </video>
+      <h2
+        class="mb-4 text-center text-xl font-bold text-transparent bg-clip-text bg-purple_mv md:text-4xl"
+      >
+        Colaboraciones
+      </h2>
+     
+    </div>
   </div>
 
-  <div class={`bg-white p-4 rounded-xl shadow-lg w-full md:w-1/2 h-full ${cardHover} md:h-64`}>
-    <h2 class="text-xl font-bold text-gray_mv">
-      Movapp con Policía Cibernética y Cenepred Capacitación en Tabasco
-    </h2>
-    <p class="text-sm mt-2">
-      Fuimos a Tabasco, a hablar sobre seguridad cibernética...
-    </p>
+
+
+<div
+  class="mx-auto my-8 w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-2xl px-4 md:px-0"
+  data-aos="fade-up"
+>
+  <div class="w-full aspect-video overflow-hidden rounded-lg">
+    <iframe
+      src={VIDEOS.colaboraciones}
+      class="w-full h-full"
+      frameborder="0"
+      allow="autoplay; encrypted-media"
+      allowfullscreen
+    ></iframe>
   </div>
 </div>
-
-</section>
-
-
-
 
 
 </Layout>
