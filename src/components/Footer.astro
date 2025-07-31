@@ -1,121 +1,107 @@
 ---
-
-import { URLS } from "@/constants/socials";
+import { URLS } from '@/constants/socials';
 
 const cardHover =
-  "transition duration-300 ease-in-out will-change-transform hover:shadow-xl hover:-translate-y-1 hover:scale-105 hover:bg-purple_mv/2 hover:backdrop-blur-md cursor-pointer";
+   'transition duration-300 ease-in-out will-change-transform hover:shadow-xl hover:-translate-y-1 hover:scale-105 hover:bg-purple_mv/2 hover:backdrop-blur-md cursor-pointer';
 ---
 
 <section class="mt-5 flex flex-col items-center justify-center px-6 py-5">
-  <section
-    class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3 items-stretch w-full max-w-5xl"
-  >
-    <!-- Acerca de Nosotros -->
-    <div data-aos="fade-right" class="h-full">
-      <div
-        class={`h-full flex flex-col justify-start p-6 rounded-2xl bg-white shadow-md ${cardHover}`}
-      >
-        <h3 class="mb-3 font-semibold text-gray-800">Acerca de nosotros</h3>
-        <ul class="space-y-1 text-sm text-gray-700">
-          <li><a href="/movapp" class="hover:text-purple-300">Movapp</a></li>
-          <li><a href="/collaborations" class="hover:text-purple-300">Colaboraciones</a></li>
-          <li><a href="/hack" class="hover:text-purple-300">Hack</a></li>
-          <li><a href="/faqs">Preguntas frecuentes</a></li>
-          <li><a href="/testimonials">Testimonios</a></li>
-        </ul>
+   <section class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3 items-stretch w-full max-w-5xl">
+      <!-- Acerca de Nosotros -->
+      <div data-aos="fade-right" class="h-full">
+         <div class={`h-full flex flex-col justify-start p-6 rounded-2xl bg-white shadow-md ${cardHover}`}>
+            <h3 class="mb-3 font-semibold text-gray-800">Acerca de nosotros</h3>
+            <ul class="space-y-1 text-sm text-gray-700">
+               <li><a href="/movapp" class="hover:text-purple-300">Movapp</a></li>
+               <li><a href="/collaborations" class="hover:text-purple-300">Colaboraciones</a></li>
+               <li><a href="/hack" class="hover:text-purple-300">Hack</a></li>
+               <li><a href="/faqs">Preguntas frecuentes</a></li>
+               <li><a href="/testimonials">Testimonios</a></li>
+            </ul>
+         </div>
       </div>
-    </div>
 
-    <!-- Contenido -->
-    <div data-aos="fade-up" class="h-full">
-      <div
-        class={`h-full flex flex-col justify-start p-6 rounded-2xl bg-white shadow-md ${cardHover}`}
-      >
-        <h3 class="mb-3 font-semibold text-gray-800">Contenido</h3>
-        <ul class="space-y-1 text-sm text-gray-700">
-          <li><a href="/mind">Mente digital</a></li>
-          <li><a href="/red">Nuestras redes sociales</a></li>
-        </ul>
+      <!-- Contenido -->
+      <div data-aos="fade-up" class="h-full">
+         <div class={`h-full flex flex-col justify-start p-6 rounded-2xl bg-white shadow-md ${cardHover}`}>
+            <h3 class="mb-3 font-semibold text-gray-800">Contenido</h3>
+            <ul class="space-y-1 text-sm text-gray-700">
+               <li><a href="/mind">Mente digital</a></li>
+               <li><a href="/red">Nuestras redes sociales</a></li>
+            </ul>
+         </div>
       </div>
-    </div>
 
-    <!-- Adquiere El Hack -->
-    <div data-aos="fade-left" class="h-full">
-      <div
-        class={`h-full flex flex-col justify-start p-6 rounded-2xl bg-white shadow-md ${cardHover}`}
-      >
-        <h3 class="mb-3 font-semibold text-gray-800">Adquiere EL HACK</h3>
-        <ul class="space-y-1 text-sm text-gray-700">
-          <li><a href="/store" class="hover:text-purple-300">Tienda</a></li>
-          <li><span class="font-semibold">Legal</span></li>
-          <li>
-            <li>
-              <a href="/privacypolicy" class="hover:text-purple-300"
-                >Política de privacidad</a
-              >
-            </li>
-          </li>
-        </ul>
+      <!-- Adquiere El Hack -->
+      <div data-aos="fade-left" class="h-full">
+         <div class={`h-full flex flex-col justify-start p-6 rounded-2xl bg-white shadow-md ${cardHover}`}>
+            <h3 class="mb-3 font-semibold text-gray-800">Adquiere EL HACK</h3>
+            <ul class="space-y-1 text-sm text-gray-700">
+               <li><a href="/store" class="hover:text-purple-300">Tienda</a></li>
+               <li><span class="font-semibold">Legal</span></li>
+               <li>
+                  <li>
+                     <a href="/privacypolicy" class="hover:text-purple-300">Política de privacidad</a>
+                  </li>
+               </li>
+            </ul>
+         </div>
       </div>
-    </div>
-  </section>
+   </section>
 </section>
 
 <!-- Footer -->
 <footer
-  class="mt-8 mb-16 rounded-3xl bg-gradient-to-r from-purple_mv to-indigo-500
+   class="mt-8 mb-16 rounded-3xl bg-gradient-to-r from-purple_mv to-indigo-500
    px-10 md:px-16 py-6 shadow-lg text-white
   flex flex-col items-center justify-between gap-6 md:flex-row max-w-7xl mx-5 md:mx-auto"
 >
-  <!-- Logo + Descripción -->
-  <div class="max-w-md text-center md:text-left">
-    <img
-      src="/Logo-Blanco.png"
-      alt="Movapp Logo"
-      class="mx-auto my-4 w-32 h-auto"
-    />
-    <p class="mt-2 text-sm">
-      Movapp es una organización que ayuda a personas víctimas de las
-      aplicaciones de préstamo no reguladas mediante apoyo psicológico, asesoría
-      personalizada y la aplicación del Hack.
-    </p>
-  </div>
+   <!-- Logo + Descripción -->
+   <div class="max-w-md text-center md:text-left">
+      <img src="/Logo-Blanco.png" alt="Movapp Logo" class="mx-auto my-4 w-32 h-auto" />
+      <p class="mt-2 text-sm">
+         Movapp es una organización que ayuda a personas víctimas de las aplicaciones de préstamo no reguladas mediante
+         apoyo psicológico, asesoría personalizada y la aplicación del Hack.
+      </p>
+   </div>
 
-  <!-- Redes Sociales + Derechos -->
-  <div class="flex flex-col items-center text-center justify-between 
-             md:items-end md:text-right md:justify-end">
-    <div class="mb-2 flex justify-center gap-4 text-lg md:justify-end">
-      <a href={URLS.youtube} aria-label="YouTube" class="hover:text-gray-300">
-        <img
-          src="/logo-youtube.png"
-          alt="YouTube"
-          class="mx-auto my-4 w-7 h-auto"
-        />
-      </a>
-      <a href={URLS.tiktok} target="_blank" rel="noopener noreferrer"aria-label="TikTok" class="hover:text-gray-300">
-        <img
-          src="/logo-tiktok.png"
-          alt="TikTok"
-          class="mx-auto my-4 w-7 h-auto"
-        />
-      </a>
-      <a href={URLS.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook" class="hover:text-gray-300">
-        <img
-          src="/logo-facebook.png"
-          alt="Facebook"
-          class="mx-auto my-4 w-7 h-auto"
-        />
-      </a>
-      <a href={URLS.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="hover:text-gray-300">
-        <img
-          src="/logo-instagram.png"
-          alt="Instagram"
-          class="mx-auto my-4 w-7 h-auto"
-        />
-      </a>
-    </div>
-    <p class="text-sm">
-      Movappbyerikmann © - Todos Los Derechos Reservados - 2025
-    </p>
-  </div>
+   <!-- Redes Sociales + Derechos -->
+   <div
+      class="flex flex-col items-center text-center justify-between
+             md:items-end md:text-right md:justify-end"
+   >
+      <div class="mb-2 flex justify-center gap-4 text-lg md:justify-end">
+         <a href={URLS.youtube} aria-label="YouTube" class="hover:text-gray-300">
+            <img src="/logo-youtube.png" alt="YouTube" class="mx-auto my-4 w-7 h-auto" />
+         </a>
+         <a
+            href={URLS.tiktok}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="TikTok"
+            class="hover:text-gray-300"
+         >
+            <img src="/logo-tiktok.png" alt="TikTok" class="mx-auto my-4 w-7 h-auto" />
+         </a>
+         <a
+            href={URLS.facebook}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Facebook"
+            class="hover:text-gray-300"
+         >
+            <img src="/logo-facebook.png" alt="Facebook" class="mx-auto my-4 w-7 h-auto" />
+         </a>
+         <a
+            href={URLS.instagram}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Instagram"
+            class="hover:text-gray-300"
+         >
+            <img src="/logo-instagram.png" alt="Instagram" class="mx-auto my-4 w-7 h-auto" />
+         </a>
+      </div>
+      <p class="text-sm">Movappbyerikmann © - Todos Los Derechos Reservados - 2025</p>
+   </div>
 </footer>

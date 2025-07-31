@@ -1,202 +1,165 @@
 ---
-import ButtonContact from "@/components/ButtonContact.astro";
-import Layout from "@layouts/Layout.astro";
-import JoinOurBlog from "@/components/JoinOurBlog.astro";
+import ButtonContact from '@/components/ButtonContact.astro';
+import Layout from '@layouts/Layout.astro';
+import JoinOurBlog from '@/components/JoinOurBlog.astro';
 
-import ImgFacebook from "@assets/Icono-Facebook.png";
-import ImgInstagram from "@assets/Icono-Instagram.png";
-import ImgTiktok from "@assets/Icono-Tik-Tok.png";
+import ImgFacebook from '@assets/Icono-Facebook.png';
+import ImgInstagram from '@assets/Icono-Instagram.png';
+import ImgTiktok from '@assets/Icono-Tik-Tok.png';
 
 const ICONS = {
-  "Icono-Facebook.png": ImgFacebook,
-  "Icono-Instagram.png": ImgInstagram,
-  "Icono-Tik-Tok.png": ImgTiktok,
+   'Icono-Facebook.png': ImgFacebook,
+   'Icono-Instagram.png': ImgInstagram,
+   'Icono-Tik-Tok.png': ImgTiktok,
 };
 
-import { URLS, SOCIALS, VIDEOS } from "@constants/socials.ts";
-import { Picture } from "astro:assets";
+import { URLS, SOCIALS, VIDEOS } from '@constants/socials.ts';
+import { Picture } from 'astro:assets';
 
 const cardHover =
-  "transition duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1 hover:scale-105 cursor-pointer";
+   'transition duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1 hover:scale-105 cursor-pointer';
 ---
 
 <Layout title="Movapp">
-  <!-- Bienvenida -->
-  <div class="mx-auto mb-4 max-w-2xl px-4 md:px-0" data-aos="fade-down">
-    <div
-      class={`flex flex-col p-6 rounded-xl shadow-md 
+   <!-- Bienvenida -->
+   <div class="mx-auto mb-4 max-w-2xl px-4 md:px-0" data-aos="fade-down">
+      <div
+         class={`flex flex-col p-6 rounded-xl shadow-md 
     bg-gradient-to-b from-gray-100 to-purple-100 
     
     ${cardHover}`}
-    >
-      <h2
-        class="mb-4 text-center text-xl md:text-4xl font-bold text-transparent bg-clip-text bg-purple_mv"
       >
-        Bienvenido a Movapp
-      </h2>
-      <p class="text-justify text-sm md:text-lg text-gray-600">
-        Somos tu aliado digital en la lucha contra las aplicaciones no reguladas
-        también llamadas montadeudas que amenazan tu bienestar financiero y
-        personal.
-      </p>
+         <h2 class="mb-4 text-center text-xl md:text-4xl font-bold text-transparent bg-clip-text bg-purple_mv">
+            Bienvenido a Movapp
+         </h2>
+         <p class="text-justify text-sm md:text-lg text-gray-600">
+            Somos tu aliado digital en la lucha contra las aplicaciones no reguladas también llamadas montadeudas que
+            amenazan tu bienestar financiero y personal.
+         </p>
 
-      <div class="mt-4 flex justify-center">
-        <ButtonContact />
+         <div class="mt-4 flex justify-center">
+            <ButtonContact />
+         </div>
+
+         <h2 class="mt-4 text-center text-sm md:text-lg font-bold text-gray-600">Acerca de nosotros</h2>
+         <p class="text-justify text-sm md:text-lg text-gray-600">
+            Desde 2021 hemos estado brindando apoyo constante a las personas que buscan recuperar el control de sus
+            vidas digitales, protegiendo su información personal y evitando el pago de deudas injustas generadas por
+            estas aplicaciones.
+         </p>
+
+         <h2 class="mt-5 text-center text-sm md:text-lg font-bold text-gray-600">
+            Nuestra misión es clara: PROTEGERTE.
+         </h2>
+         <p class="text-justify text-sm md:text-lg text-gray-600 mt-2">
+            Queremos ayudar a personas que han sido víctimas de las aplicaciones no reguladas (montadeudas) que operan
+            con un malware llamado: SpyLoan. A través de un software especializado cuyo objetivo es evitar que los
+            montadeudas tengan acceso a tu información.
+         </p>
       </div>
+   </div>
 
-      <h2 class="mt-4 text-center text-sm md:text-lg font-bold text-gray-600">
-        Acerca de nosotros
-      </h2>
-      <p class="text-justify text-sm md:text-lg text-gray-600">
-        Desde 2021 hemos estado brindando apoyo constante a las personas que
-        buscan recuperar el control de sus vidas digitales, protegiendo su
-        información personal y evitando el pago de deudas injustas generadas por
-        estas aplicaciones.
-      </p>
+   <!-- ¿Cómo nació <span class="text-purple_mv">Movapp</span>? -->
+   <h2 class="mt-8 text-center text-xl font-bold text-gray-600" data-aos="fade-up">
+      ¿Cómo nació
+      <span class="text-purple_mv font-bold">Movapp</span>?
+   </h2>
 
-      <h2 class="mt-5 text-center text-sm md:text-lg font-bold text-gray-600">
-        Nuestra misión es clara: PROTEGERTE.
-      </h2>
-      <p class="text-justify text-sm md:text-lg text-gray-600 mt-2">
-        Queremos ayudar a personas que han sido víctimas de las aplicaciones no
-        reguladas (montadeudas) que operan con un malware llamado: SpyLoan. A
-        través de un software especializado cuyo objetivo es evitar que los
-        montadeudas tengan acceso a tu información.
-      </p>
-    </div>
-  </div>
+   <div class="mx-auto my-8 flex flex-col max-w-2xl px-4 md:px-0" data-aos="fade-up">
+      <div class={`my-2 flex flex-col p-6 rounded-lg shadow-md bg-white ${cardHover}`}>
+         <h3 class="mb-2 text-left text-sm md:text-lg font-semibold">El problema</h3>
+         <p class="text-justify text-sm md:text-lg text-gray-600">
+            La idea surgió de una necesidad real. Hace algunos años, Erik Mann pidió un préstamo en una app, pero pronto
+            se vio atrapado en un ciclo de hostigamiento digital que afectó a él y a sus contactos.
+         </p>
+      </div>
+      <div class={`my-2 flex flex-col p-6 rounded-lg shadow-md bg-white ${cardHover}`}>
+         <h3 class="mb-2 text-left text-lg font-semibold">Erik sufrió las amenazas</h3>
+         <p class="text-justify text-sm md:text-lg text-gray-600">
+            Su tranquilidad fue anulada por las amenazas y deudas generadas por apps no reguladas. Al llegar al límite,
+            Erik compartió su experiencia en el podcast Urban Arts y conectó con otras personas que pasaban por lo
+            mismo.
+         </p>
+      </div>
+      <div class={`my-2 flex flex-col p-6 rounded-lg shadow-md bg-white ${cardHover}`}>
+         <h3 class="mb-2 text-left text-lg font-semibold">Creación de EL HACK</h3>
+         <p class="text-justify text-sm md:text-lg text-gray-600">
+            Erik se dio a la tarea de crear EL HACK, una herramienta que protege a los usuarios de aplicaciones
+            fraudulentas, ofreciéndoles una solución confiable y efectiva.
+         </p>
+      </div>
+   </div>
 
-  <!-- ¿Cómo nació <span class="text-purple_mv">Movapp</span>? -->
-  <h2
-    class="mt-8 text-center text-xl font-bold text-gray-600"
-    data-aos="fade-up"
-  >
-    ¿Cómo nació
-    <span class="text-purple_mv font-bold">Movapp</span>?
-  </h2>
+   <!-- Video -->
 
-  <div
-    class="mx-auto my-8 flex flex-col max-w-2xl px-4 md:px-0"
-    data-aos="fade-up"
-  >
-    <div
-      class={`my-2 flex flex-col p-6 rounded-lg shadow-md bg-white ${cardHover}`}
-    >
-      <h3 class="mb-2 text-left text-sm md:text-lg font-semibold">
-        El problema
-      </h3>
-      <p class="text-justify text-sm md:text-lg text-gray-600">
-        La idea surgió de una necesidad real. Hace algunos años, Erik Mann pidió
-        un préstamo en una app, pero pronto se vio atrapado en un ciclo de
-        hostigamiento digital que afectó a él y a sus contactos.
-      </p>
-    </div>
-    <div
-      class={`my-2 flex flex-col p-6 rounded-lg shadow-md bg-white ${cardHover}`}
-    >
-      <h3 class="mb-2 text-left text-lg font-semibold">
-        Erik sufrió las amenazas
-      </h3>
-      <p class="text-justify text-sm md:text-lg text-gray-600">
-        Su tranquilidad fue anulada por las amenazas y deudas generadas por apps
-        no reguladas. Al llegar al límite, Erik compartió su experiencia en el
-        podcast Urban Arts y conectó con otras personas que pasaban por lo
-        mismo.
-      </p>
-    </div>
-    <div
-      class={`my-2 flex flex-col p-6 rounded-lg shadow-md bg-white ${cardHover}`}
-    >
-      <h3 class="mb-2 text-left text-lg font-semibold">Creación de EL HACK</h3>
-      <p class="text-justify text-sm md:text-lg text-gray-600">
-        Erik se dio a la tarea de crear EL HACK, una herramienta que protege a
-        los usuarios de aplicaciones fraudulentas, ofreciéndoles una solución
-        confiable y efectiva.
-      </p>
-    </div>
-  </div>
+   <div class="mx-auto my-8 w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-2xl px-4" data-aos="fade-up">
+      <div class="w-full aspect-video overflow-hidden rounded-lg">
+         <iframe
+            src={VIDEOS.movapp}
+            class="w-full h-full"
+            frameborder="0"
+            allow="autoplay; encrypted-media"
+            allowfullscreen></iframe>
+      </div>
+   </div>
 
-  <!-- Video -->
+   <!-- Redes sociales -->
+   <h2 class="mt-5 text-center text-sm md:text-lg font-bold text-gray-600" data-aos="fade-right">
+      Redes Sociales de Nuestro CEO - Erik Mann
+   </h2>
 
-  <div
-    class="mx-auto my-8 w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-2xl px-4"
-    data-aos="fade-up"
-  >
-    <div class="w-full aspect-video overflow-hidden rounded-lg">
-      <iframe
-        src={VIDEOS.movapp}
-        class="w-full h-full"
-        frameborder="0"
-        allow="autoplay; encrypted-media"
-        allowfullscreen></iframe>
-    </div>
-  </div>
+   <section class="mx-auto mt-12 mb-12 w-full max-w-3xl px-4 sm:px-8 md:px-0">
+      <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+         {
+            SOCIALS.filter((social) => social.name !== 'YouTube').map((social) => (
+               <div data-aos="fade-right">
+                  <a
+                     href={social.url}
+                     target="_blank"
+                     rel="noopener noreferrer"
+                     class={`flex flex-col items-center p-8 text-center rounded-xl shadow-lg bg-gradient-to-b from-gray-100 to-purple-100 ${cardHover} hover:bg-purple-200`}
+                  >
+                     <div class="mb-1 text-2xl font-bold text-gray-800">{social.name}</div>
+                     <div class="relative mb-4">
+                        <Picture
+                           src={social.icon ? ICONS[social.icon] : undefined}
+                           alt={social.name}
+                           class="h-12 w-12 md:h-14 md:w-14"
+                        />
+                     </div>
+                     <span class="counter text-xl font-semibold" data-target={social.count ?? 0}>
+                        0
+                     </span>
+                  </a>
+               </div>
+            ))
+         }
+      </div>
+   </section>
 
-  <!-- Redes sociales -->
-  <h2
-    class="mt-5 text-center text-sm md:text-lg font-bold text-gray-600"
-    data-aos="fade-right"
-  >
-    Redes Sociales de Nuestro CEO - Erik Mann
-  </h2>
-
-  <section class="mx-auto mt-12 mb-12 w-full max-w-3xl px-4 sm:px-8 md:px-0">
-    <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
-      {
-        SOCIALS.filter((social) => social.name !== "YouTube").map((social) => (
-          <div data-aos="fade-right">
-            <a
-              href={social.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              class={`flex flex-col items-center p-8 text-center rounded-xl shadow-lg bg-gradient-to-b from-gray-100 to-purple-100 ${cardHover} hover:bg-purple-200`}
-            >
-              <div class="mb-1 text-2xl font-bold text-gray-800">
-                {social.name}
-              </div>
-              <div class="relative mb-4">
-                <Picture
-                  src={social.icon ? ICONS[social.icon] : undefined}
-                  alt={social.name}
-                  class="h-12 w-12 md:h-14 md:w-14"
-                />
-              </div>
-              <span
-                class="counter text-xl font-semibold"
-                data-target={social.count ?? 0}
-              >
-                0
-              </span>
-            </a>
-          </div>
-        ))
-      }
-    </div>
-  </section>
-
-  <!-- CTA final -->
-  <!-- <section class="flex flex-col items-center">
+   <!-- CTA final -->
+   <!-- <section class="flex flex-col items-center">
     <JoinOurBlog />
   </section> -->
 
-  <script>
-    // Función de contador animado
-    document.querySelectorAll(".counter").forEach((counter) => {
-      const updateCounter = () => {
-        const target = +counter.getAttribute("data-target");
-        let current = +counter.textContent; // Cambiar innerText por textContent
-        const increment = target / 500;
+   <script>
+      // Función de contador animado
+      document.querySelectorAll('.counter').forEach((counter) => {
+         const updateCounter = () => {
+            const target = +counter.getAttribute('data-target');
+            let current = +counter.textContent; // Cambiar innerText por textContent
+            const increment = target / 500;
 
-        if (current < target) {
-          current = Math.ceil(current + increment);
-          counter.textContent = current.toLocaleString(); // Formateo con comas
-          setTimeout(updateCounter, 1);
-        } else {
-          counter.textContent = target.toLocaleString(); // Formateo con comas
-        }
-      };
+            if (current < target) {
+               current = Math.ceil(current + increment);
+               counter.textContent = current.toLocaleString(); // Formateo con comas
+               setTimeout(updateCounter, 1);
+            } else {
+               counter.textContent = target.toLocaleString(); // Formateo con comas
+            }
+         };
 
-      updateCounter();
-    });
-  </script>
+         updateCounter();
+      });
+   </script>
 </Layout>

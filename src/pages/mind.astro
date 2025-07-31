@@ -1,96 +1,76 @@
 ---
-import { Picture} from 'astro:assets'
-import Layout from "@layouts/Layout.astro";
+import { Picture } from 'astro:assets';
+import Layout from '@layouts/Layout.astro';
 
-import ImgMenteDigital from '@assets/MenteDigital.jpg'
+import ImgMenteDigital from '@assets/MenteDigital.jpg';
 
 const cardHover =
-  "transition duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1 hover:scale-105 cursor-pointer";
+   'transition duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1 hover:scale-105 cursor-pointer';
 ---
 
 <Layout title="Mente digital">
-  <!-- Bienvenida -->
-  <div class="mx-auto mb-4 max-w-2xl px-4 md:px-0" data-aos="fade-down">
-    <div
-      class={`flex flex-col p-6 rounded-xl shadow-md 
+   <!-- Bienvenida -->
+   <div class="mx-auto mb-4 max-w-2xl px-4 md:px-0" data-aos="fade-down">
+      <div
+         class={`flex flex-col p-6 rounded-xl shadow-md 
     bg-gradient-to-b from-gray-100 to-purple-100 
     
     ${cardHover}`}
-    >
-      <h2
-        class="mb-4 text-center text-xl font-bold text-transparent bg-clip-text bg-purple_mv md:text-4xl"
       >
-        Bienvenido a mente digital
-      </h2>
-      <p class="text-justify text-sm md:text-lg text-gray-600">
-        Este es un espacio dedicado a ayudarte a recuperar la paz emocional. Si
-        has sido víctima de las aplicaciones no reguladas, llamadas montadeudas,
-        y sientes que no hay salida, este es el lugar donde encontrarás las
-        herramientas para sanar mental y emocionalmente.
-      </p>
-      <h2
-        class="mb-4 text-center text-lg md:text-xl font-bold text-transparent bg-clip-text bg-purple_mvmt-5"
-      >
-        Dra. Dalia
-      </h2>
-      <p class="text-justify text-sm md:text-lg text-gray-600">
-        Te quiero guiar hacia un mayor bienestar emocional. Quiero brindarte las
-        herramientas para que superes esta difícil situación y recuperes el
-        control de tu vida.
-      </p>
-    </div>
-  </div>
+         <h2 class="mb-4 text-center text-xl font-bold text-transparent bg-clip-text bg-purple_mv md:text-4xl">
+            Bienvenido a mente digital
+         </h2>
+         <p class="text-justify text-sm md:text-lg text-gray-600">
+            Este es un espacio dedicado a ayudarte a recuperar la paz emocional. Si has sido víctima de las aplicaciones
+            no reguladas, llamadas montadeudas, y sientes que no hay salida, este es el lugar donde encontrarás las
+            herramientas para sanar mental y emocionalmente.
+         </p>
+         <h2 class="mb-4 text-center text-lg md:text-xl font-bold text-transparent bg-clip-text bg-purple_mvmt-5">
+            Dra. Dalia
+         </h2>
+         <p class="text-justify text-sm md:text-lg text-gray-600">
+            Te quiero guiar hacia un mayor bienestar emocional. Quiero brindarte las herramientas para que superes esta
+            difícil situación y recuperes el control de tu vida.
+         </p>
+      </div>
+   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mx-4 md:mx-48 mt-10">
-    <!-- Texto -->
-    <div class="mx-auto my-8 flex flex-col max-w-xl" data-aos="fade-right">
-      <h2
-        class="mb-4 text-center text-xl font-bold text-transparent bg-clip-text bg-purple_mv md:text-2xl mt-5"
-      >
-        Tu bienestar es importante para nosotros
-      </h2>
-      <p class="text-justify text-sm md:text-lg text-gray-600">
-        Sabemos que superar una situación como la que vives puede parecer
-        abrumador, pero no estás solo. Con Movapp y el respaldo de Mente
-        Digital, podrás encontrar un camino hacia la tranquilidad, tanto digital
-        como emocional. Aquí, nos comprometemos a brindarte todo el apoyo
-        necesario para que no solo protejas tus datos, sino que también
-        recuperes la paz mental.
-      </p>
-    </div>
+   <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mx-4 md:mx-48 mt-10">
+      <!-- Texto -->
+      <div class="mx-auto my-8 flex flex-col max-w-xl" data-aos="fade-right">
+         <h2 class="mb-4 text-center text-xl font-bold text-transparent bg-clip-text bg-purple_mv md:text-2xl mt-5">
+            Tu bienestar es importante para nosotros
+         </h2>
+         <p class="text-justify text-sm md:text-lg text-gray-600">
+            Sabemos que superar una situación como la que vives puede parecer abrumador, pero no estás solo. Con Movapp
+            y el respaldo de Mente Digital, podrás encontrar un camino hacia la tranquilidad, tanto digital como
+            emocional. Aquí, nos comprometemos a brindarte todo el apoyo necesario para que no solo protejas tus datos,
+            sino que también recuperes la paz mental.
+         </p>
+      </div>
 
-    <!-- Imagen -->
-    <div
-      class="mx-auto my-4 flex justify-center items-center max-w-xl"
-      data-aos="fade-left"
-    >
-      <Picture src={ImgMenteDigital}  
-         alt="Mente Digital"
-         class="rounded-xl w-full h-96"/>
-         
-    </div>
-  </div>
+      <!-- Imagen -->
+      <div class="mx-auto my-4 flex justify-center items-center max-w-xl" data-aos="fade-left">
+         <Picture src={ImgMenteDigital} alt="Mente Digital" class="rounded-xl w-full h-96" />
+      </div>
+   </div>
 
-  <div class="mx-auto mb-4 max-w-2xl px-4 md:px-0" data-aos="fade-up">
-    <div
-      class={`flex flex-col p-6 rounded-xl shadow-md 
+   <div class="mx-auto mb-4 max-w-2xl px-4 md:px-0" data-aos="fade-up">
+      <div
+         class={`flex flex-col p-6 rounded-xl shadow-md 
     bg-gradient-to-b from-gray-100 to-purple-100 
     
     ${cardHover}`}
-    >
-      <h2
-        class="mb-4 text-center text-sm md:text-xl font-bold text-transparent bg-clip-text bg-purple_mv "
       >
-        ¿Cómo Obtener El Apoyo Psicológico?
-      </h2>
-      <p class="text-justify text-sm md:text-lg text-gray-600">
-        1. Contáctanos al chat principal y pregunta a tu asesor por el servicio.
-      </p>
-      <p class="text-justify text-sm md:text-lg text-gray-600">2. Agenda tu cita.</p>
-      <p class="text-justify text-sm md:text-lg text-gray-600">
-        3. Mi equipo y yo te estaremos brindando apoyo.
-      </p>
-      <p class="text-justify text-sm md:text-lg text-gray-600">4. Recupera tu vida.</p>
-    </div>
-  </div>
+         <h2 class="mb-4 text-center text-sm md:text-xl font-bold text-transparent bg-clip-text bg-purple_mv">
+            ¿Cómo Obtener El Apoyo Psicológico?
+         </h2>
+         <p class="text-justify text-sm md:text-lg text-gray-600">
+            1. Contáctanos al chat principal y pregunta a tu asesor por el servicio.
+         </p>
+         <p class="text-justify text-sm md:text-lg text-gray-600">2. Agenda tu cita.</p>
+         <p class="text-justify text-sm md:text-lg text-gray-600">3. Mi equipo y yo te estaremos brindando apoyo.</p>
+         <p class="text-justify text-sm md:text-lg text-gray-600">4. Recupera tu vida.</p>
+      </div>
+   </div>
 </Layout>

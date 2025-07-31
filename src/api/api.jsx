@@ -1,7 +1,7 @@
-import countries from "../utils/configCountries.json";
+import countries from '../utils/configCountries.json';
 const urlApi = import.meta.env.PUBLIC_API_LINK;
 
-export const getCountry = async (defaultCode = "MX") => {
+export const getCountry = async (defaultCode = 'MX') => {
    try {
       const res = await fetch(import.meta.env.PUBLIC_IPAPI_LINK);
       const data = await res.json();
@@ -12,7 +12,7 @@ export const getCountry = async (defaultCode = "MX") => {
          config: countries[codigo] || countries[defaultCode],
       };
    } catch (error) {
-      console.warn("No se pudo detectar país, usando por defecto:", defaultCode);
+      console.warn('No se pudo detectar país, usando por defecto:', defaultCode);
       return {
          country: defaultCode,
          config: countries[defaultCode],
@@ -23,9 +23,9 @@ export const getCountry = async (defaultCode = "MX") => {
 export const createPreference = async (payload) => {
    try {
       const res = await fetch(`${urlApi}/payments/create-preference`, {
-         method: "POST",
+         method: 'POST',
          headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
          },
          body: JSON.stringify(payload),
       });
@@ -37,7 +37,7 @@ export const createPreference = async (payload) => {
       const data = await res.json();
       return data;
    } catch (err) {
-      console.error("Error al crear preferencia:", err.message);
+      console.error('Error al crear preferencia:', err.message);
       throw err;
    }
 };

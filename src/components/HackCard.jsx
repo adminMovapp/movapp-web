@@ -1,7 +1,7 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from 'react';
 
-import useCountryConfig from "../hooks/useCountryConfig";
-import { createPreference } from "@/api/api";
+import useCountryConfig from '../hooks/useCountryConfig';
+import { createPreference } from '@/api/api';
 
 const HackCard = () => {
    const [count, setCount] = useState(1);
@@ -9,15 +9,15 @@ const HackCard = () => {
    const [isClosing, setIsClosing] = useState(false);
    const { country, config } = useCountryConfig();
 
-   const disabled = country === "MX";
-   const productName = "El Hack";
+   const disabled = country === 'MX';
+   const productName = 'El Hack';
 
    const [form, setForm] = useState({
-      nombre: "",
-      apellidos: "",
-      email: "",
-      telefono: "",
-      codigoPostal: "",
+      nombre: '',
+      apellidos: '',
+      email: '',
+      telefono: '',
+      codigoPostal: '',
    });
 
    const [errors, setErrors] = useState({});
@@ -28,7 +28,7 @@ const HackCard = () => {
       const interval = setInterval(() => {
          if (window.MercadoPago && !mpRef.current) {
             mpRef.current = new window.MercadoPago(import.meta.env.PUBLIC_KEY_MP, {
-               locale: "es-MX",
+               locale: 'es-MX',
             });
             clearInterval(interval); // solo una vez
          }
@@ -48,11 +48,11 @@ const HackCard = () => {
          setIsDrawerVisible(false);
          setErrors({});
          setForm({
-            nombre: "",
-            apellidos: "",
-            email: "",
-            telefono: "",
-            codigoPostal: "",
+            nombre: '',
+            apellidos: '',
+            email: '',
+            telefono: '',
+            codigoPostal: '',
          });
       }, 300);
    };
@@ -64,20 +64,20 @@ const HackCard = () => {
    }, [isDrawerVisible]);
 
    useEffect(() => {
-      document.body.style.overflow = isDrawerVisible ? "hidden" : "auto";
+      document.body.style.overflow = isDrawerVisible ? 'hidden' : 'auto';
 
       function handleKeyDown(e) {
-         if (e.key === "Escape" && isDrawerVisible) closeDrawer();
+         if (e.key === 'Escape' && isDrawerVisible) closeDrawer();
       }
       function handleClickOutside(e) {
-         if (e.target.id === "drawer-overlay") closeDrawer();
+         if (e.target.id === 'drawer-overlay') closeDrawer();
       }
 
-      document.addEventListener("keydown", handleKeyDown);
-      document.addEventListener("click", handleClickOutside);
+      document.addEventListener('keydown', handleKeyDown);
+      document.addEventListener('click', handleClickOutside);
       return () => {
-         document.removeEventListener("keydown", handleKeyDown);
-         document.removeEventListener("click", handleClickOutside);
+         document.removeEventListener('keydown', handleKeyDown);
+         document.removeEventListener('click', handleClickOutside);
       };
    }, [isDrawerVisible]);
 
@@ -89,30 +89,30 @@ const HackCard = () => {
       setForm((f) => ({ ...f, [name]: value }));
 
       // Opcional: limpiar error al cambiar
-      setErrors((errs) => ({ ...errs, [name]: "" }));
+      setErrors((errs) => ({ ...errs, [name]: '' }));
    };
 
    // Validaciones regex
    const validations = {
       nombre: {
          regex: /^[a-zA-ZÀ-ÿ\s]{2,30}$/,
-         message: "Nombre inválido (solo letras y espacios, 2-30 caracteres).",
+         message: 'Nombre inválido (solo letras y espacios, 2-30 caracteres).',
       },
       apellidos: {
          regex: /^[a-zA-ZÀ-ÿ\s]{2,30}$/,
-         message: "Apellidos inválidos (solo letras y espacios, 2-30 caracteres).",
+         message: 'Apellidos inválidos (solo letras y espacios, 2-30 caracteres).',
       },
       email: {
          regex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-         message: "Correo electrónico inválido.",
+         message: 'Correo electrónico inválido.',
       },
       telefono: {
          regex: /^\+?[\d\s\-]{7,15}$/,
-         message: "Teléfono inválido (7 a 15 dígitos, puede incluir +, espacios y guiones).",
+         message: 'Teléfono inválido (7 a 15 dígitos, puede incluir +, espacios y guiones).',
       },
       codigoPostal: {
          regex: /^[a-zA-Z0-9\s\-]{4,6}$/,
-         message: "Código postal inválido (4 a 6 caracteres, números, letras, espacios o guiones).",
+         message: 'Código postal inválido (4 a 6 caracteres, números, letras, espacios o guiones).',
       },
    };
 
@@ -123,7 +123,7 @@ const HackCard = () => {
 
       Object.entries(validations).forEach(([field, { regex, message }]) => {
          if (!form[field].trim()) {
-            newErrors[field] = "Este campo es obligatorio.";
+            newErrors[field] = 'Este campo es obligatorio.';
          } else if (!regex.test(form[field].trim())) {
             newErrors[field] = message;
          }
@@ -153,7 +153,7 @@ const HackCard = () => {
 
          try {
             const response = await createPreference(payload);
-            console.log("Preferencia creada:", response);
+            console.log('Preferencia creada:', response);
             console.log(mpRef.current);
 
             // if (!mpRef.current) {
@@ -170,10 +170,10 @@ const HackCard = () => {
                   iframe: true, // abrir como modal
                });
             } else {
-               console.error("No se encontró init_point en la respuesta.");
+               console.error('No se encontró init_point en la respuesta.');
             }
          } catch (error) {
-            console.error("Error al crear preferencia:", error);
+            console.error('Error al crear preferencia:', error);
          }
          setCount(1);
          closeDrawer();
@@ -219,11 +219,11 @@ const HackCard = () => {
                <p className="text-xl font-bold">
                   {config.simbolo} {(config.precio * count).toFixed(2)} {config.moneda}
                </p>
-               <span className={`fi ${config.bandera} rounded-md`} style={{ fontSize: "2rem" }}></span>
+               <span className={`fi ${config.bandera} rounded-md`} style={{ fontSize: '2rem' }}></span>
             </div>
             <button
                className={`bg-purple_mv hover:bg-purple_mv text-white font-bold h-8 w-auto px-5 rounded-md flex justify-center items-center
-            ${!disabled ? "opacity-50 cursor-not-allowed" : ""}
+            ${!disabled ? 'opacity-50 cursor-not-allowed' : ''}
           `}
                onClick={openDrawer}
                aria-haspopup="dialog"
@@ -248,7 +248,7 @@ const HackCard = () => {
                      max-w-md md:max-w-lg md:w-full 
                      min-h-[400px]
                      rounded-t-xl p-5 md:p-8 relative shadow-xl ring-2 ring-purple-300 z-50
-                   ${isClosing ? "animate-slideDown" : "animate-slideUp"} transform`}
+                   ${isClosing ? 'animate-slideDown' : 'animate-slideUp'} transform`}
                >
                   <button
                      onClick={closeDrawer}
@@ -268,7 +268,7 @@ const HackCard = () => {
                            {`Total = ${config.simbolo}
                            ${(config.precio * count).toFixed(2)} ${config.moneda}`}
                         </div>
-                        <span className={`fi ${config.bandera} rounded-md`} style={{ fontSize: "2rem" }}></span>
+                        <span className={`fi ${config.bandera} rounded-md`} style={{ fontSize: '2rem' }}></span>
                      </div>
                   </div>
 
@@ -278,7 +278,7 @@ const HackCard = () => {
                      <div>
                         <input
                            className={`border p-2 rounded w-full  ${
-                              errors.nombre ? "border-red-500" : "border-gray-300"
+                              errors.nombre ? 'border-red-500' : 'border-gray-300'
                            }`}
                            placeholder="Nombre"
                            name="nombre"
@@ -293,7 +293,7 @@ const HackCard = () => {
                      <div>
                         <input
                            className={`border p-2 rounded w-full ${
-                              errors.apellidos ? "border-red-500" : "border-gray-300"
+                              errors.apellidos ? 'border-red-500' : 'border-gray-300'
                            }`}
                            placeholder="Apellidos"
                            name="apellidos"
@@ -308,7 +308,7 @@ const HackCard = () => {
                      <div>
                         <input
                            className={`border p-2 rounded w-full ${
-                              errors.email ? "border-red-500" : "border-gray-300"
+                              errors.email ? 'border-red-500' : 'border-gray-300'
                            }`}
                            placeholder="Correo electrónico"
                            type="email"
@@ -324,7 +324,7 @@ const HackCard = () => {
                      <div>
                         <input
                            className={`border p-2 rounded w-full ${
-                              errors.telefono ? "border-red-500" : "border-gray-300"
+                              errors.telefono ? 'border-red-500' : 'border-gray-300'
                            }`}
                            placeholder="Teléfono"
                            type="tel"
@@ -340,7 +340,7 @@ const HackCard = () => {
                      <div>
                         <input
                            className={`border p-2 rounded w-full ${
-                              errors.codigoPostal ? "border-red-500" : "border-gray-300"
+                              errors.codigoPostal ? 'border-red-500' : 'border-gray-300'
                            }`}
                            placeholder="Código postal"
                            name="codigoPostal"
