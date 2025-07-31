@@ -4,370 +4,366 @@ import useCountryConfig from '../hooks/useCountryConfig';
 import { createPreference } from '@/api/api';
 
 const HackCard = () => {
-    const [count, setCount] = useState(1);
-    const [isDrawerVisible, setIsDrawerVisible] = useState(false);
-    const [isClosing, setIsClosing] = useState(false);
-    const { country, config } = useCountryConfig();
+   const [count, setCount] = useState(1);
+   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
+   const [isClosing, setIsClosing] = useState(false);
+   const { country, config } = useCountryConfig();
 
-    const disabled = country === 'MX';
-    const productName = 'El Hack';
+   const disabled = country === 'MX';
+   const productName = 'El Hack';
 
-    const [form, setForm] = useState({
-        nombre: '',
-        apellidos: '',
-        email: '',
-        telefono: '',
-        codigoPostal: '',
-    });
+   const [form, setForm] = useState({
+      nombre: '',
+      apellidos: '',
+      email: '',
+      telefono: '',
+      codigoPostal: '',
+   });
 
-    const [errors, setErrors] = useState({});
-    const drawerRef = useRef(null);
-    const mpRef = useRef(null);
+   const [errors, setErrors] = useState({});
+   const drawerRef = useRef(null);
+   const mpRef = useRef(null);
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            if (window.MercadoPago && !mpRef.current) {
-                mpRef.current = new window.MercadoPago(import.meta.env.PUBLIC_KEY_MP, {
-                    locale: 'es-MX',
-                });
-                clearInterval(interval); // solo una vez
-            }
-        }, 300); // chequea cada 300ms
-
-        return () => clearInterval(interval);
-    }, []);
-
-    const openDrawer = () => {
-        setIsDrawerVisible(true);
-        setIsClosing(false);
-    };
-
-    const closeDrawer = () => {
-        setIsClosing(true);
-        setTimeout(() => {
-            setIsDrawerVisible(false);
-            setErrors({});
-            setForm({
-                nombre: '',
-                apellidos: '',
-                email: '',
-                telefono: '',
-                codigoPostal: '',
+   useEffect(() => {
+      const interval = setInterval(() => {
+         if (window.MercadoPago && !mpRef.current) {
+            mpRef.current = new window.MercadoPago(import.meta.env.PUBLIC_KEY_MP, {
+               locale: 'es-MX',
             });
-        }, 300);
-    };
+            clearInterval(interval); // solo una vez
+         }
+      }, 300); // chequea cada 300ms
 
-    useEffect(() => {
-        if (isDrawerVisible && drawerRef.current) {
-            drawerRef.current.focus();
-        }
-    }, [isDrawerVisible]);
+      return () => clearInterval(interval);
+   }, []);
 
-    useEffect(() => {
-        document.body.style.overflow = isDrawerVisible ? 'hidden' : 'auto';
+   const openDrawer = () => {
+      setIsDrawerVisible(true);
+      setIsClosing(false);
+   };
 
-        function handleKeyDown(e) {
-            if (e.key === 'Escape' && isDrawerVisible) closeDrawer();
-        }
-        function handleClickOutside(e) {
-            if (e.target.id === 'drawer-overlay') closeDrawer();
-        }
+   const closeDrawer = () => {
+      setIsClosing(true);
+      setTimeout(() => {
+         setIsDrawerVisible(false);
+         setErrors({});
+         setForm({
+            nombre: '',
+            apellidos: '',
+            email: '',
+            telefono: '',
+            codigoPostal: '',
+         });
+      }, 300);
+   };
 
-        document.addEventListener('keydown', handleKeyDown);
-        document.addEventListener('click', handleClickOutside);
-        return () => {
-            document.removeEventListener('keydown', handleKeyDown);
-            document.removeEventListener('click', handleClickOutside);
-        };
-    }, [isDrawerVisible]);
+   useEffect(() => {
+      if (isDrawerVisible && drawerRef.current) {
+         drawerRef.current.focus();
+      }
+   }, [isDrawerVisible]);
 
-    const increment = () => setCount((c) => c + 1);
-    const decrement = () => setCount((c) => (c > 1 ? c - 1 : 1));
+   useEffect(() => {
+      document.body.style.overflow = isDrawerVisible ? 'hidden' : 'auto';
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setForm((f) => ({ ...f, [name]: value }));
+      function handleKeyDown(e) {
+         if (e.key === 'Escape' && isDrawerVisible) closeDrawer();
+      }
+      function handleClickOutside(e) {
+         if (e.target.id === 'drawer-overlay') closeDrawer();
+      }
 
-        // Opcional: limpiar error al cambiar
-        setErrors((errs) => ({ ...errs, [name]: '' }));
-    };
+      document.addEventListener('keydown', handleKeyDown);
+      document.addEventListener('click', handleClickOutside);
+      return () => {
+         document.removeEventListener('keydown', handleKeyDown);
+         document.removeEventListener('click', handleClickOutside);
+      };
+   }, [isDrawerVisible]);
 
-    // Validaciones regex
-    const validations = {
-        nombre: {
-            regex: /^[a-zA-ZÀ-ÿ\s]{2,30}$/,
-            message: 'Nombre inválido (solo letras y espacios, 2-30 caracteres).',
-        },
-        apellidos: {
-            regex: /^[a-zA-ZÀ-ÿ\s]{2,30}$/,
-            message: 'Apellidos inválidos (solo letras y espacios, 2-30 caracteres).',
-        },
-        email: {
-            regex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-            message: 'Correo electrónico inválido.',
-        },
-        telefono: {
-            regex: /^\+?[\d\s\-]{7,15}$/,
-            message: 'Teléfono inválido (7 a 15 dígitos, puede incluir +, espacios y guiones).',
-        },
-        codigoPostal: {
-            regex: /^[a-zA-Z0-9\s\-]{4,6}$/,
-            message: 'Código postal inválido (4 a 6 caracteres, números, letras, espacios o guiones).',
-        },
-    };
+   const increment = () => setCount((c) => c + 1);
+   const decrement = () => setCount((c) => (c > 1 ? c - 1 : 1));
 
-    const validateForm = () => {
-        // if (!validacionActiva) return true;
+   const handleChange = (e) => {
+      const { name, value } = e.target;
+      setForm((f) => ({ ...f, [name]: value }));
 
-        const newErrors = {};
+      // Opcional: limpiar error al cambiar
+      setErrors((errs) => ({ ...errs, [name]: '' }));
+   };
 
-        Object.entries(validations).forEach(([field, { regex, message }]) => {
-            if (!form[field].trim()) {
-                newErrors[field] = 'Este campo es obligatorio.';
-            } else if (!regex.test(form[field].trim())) {
-                newErrors[field] = message;
+   // Validaciones regex
+   const validations = {
+      nombre: {
+         regex: /^[a-zA-ZÀ-ÿ\s]{2,30}$/,
+         message: 'Nombre inválido (solo letras y espacios, 2-30 caracteres).',
+      },
+      apellidos: {
+         regex: /^[a-zA-ZÀ-ÿ\s]{2,30}$/,
+         message: 'Apellidos inválidos (solo letras y espacios, 2-30 caracteres).',
+      },
+      email: {
+         regex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+         message: 'Correo electrónico inválido.',
+      },
+      telefono: {
+         regex: /^\+?[\d\s\-]{7,15}$/,
+         message: 'Teléfono inválido (7 a 15 dígitos, puede incluir +, espacios y guiones).',
+      },
+      codigoPostal: {
+         regex: /^[a-zA-Z0-9\s\-]{4,6}$/,
+         message: 'Código postal inválido (4 a 6 caracteres, números, letras, espacios o guiones).',
+      },
+   };
+
+   const validateForm = () => {
+      // if (!validacionActiva) return true;
+
+      const newErrors = {};
+
+      Object.entries(validations).forEach(([field, { regex, message }]) => {
+         if (!form[field].trim()) {
+            newErrors[field] = 'Este campo es obligatorio.';
+         } else if (!regex.test(form[field].trim())) {
+            newErrors[field] = message;
+         }
+      });
+
+      setErrors(newErrors);
+
+      return Object.keys(newErrors).length === 0;
+   };
+
+   const handleSubmit = async (e) => {
+      e.preventDefault();
+
+      if (validateForm()) {
+         const payload = {
+            nombre: form.nombre,
+            apellidos: form.apellidos,
+            correo: form.email,
+            telefono: form.telefono,
+            codigopostal: form.codigoPostal,
+            producto: productName,
+            cantidad: count,
+            precio_unitario: config.precio.toFixed(2),
+            total: (config.precio * count).toFixed(2),
+            pais: country,
+         };
+
+         try {
+            const response = await createPreference(payload);
+            console.log('Preferencia creada:', response);
+            console.log(mpRef.current);
+
+            // if (!mpRef.current) {
+            //    console.warn("MercadoPago no está inicializado aún.");
+            //    return;
+            // }
+
+            if (response?.id) {
+               mpRef.current.checkout({
+                  preference: {
+                     id: response.id,
+                  },
+                  autoOpen: true, // abrir automáticamente
+                  iframe: true, // abrir como modal
+               });
+            } else {
+               console.error('No se encontró init_point en la respuesta.');
             }
-        });
+         } catch (error) {
+            console.error('Error al crear preferencia:', error);
+         }
+         setCount(1);
+         closeDrawer();
+      }
+   };
 
-        setErrors(newErrors);
+   return (
+      <div className="flex flex-col items-center justify-center px-2 mt-10">
+         {!disabled && (
+            <div className="mb-4 p-3 bg-red-100 text-red-700 rounded w-full max-w-md text-center font-semibold">
+               Lo sentimos, la opción de compra no está disponible en tu país ({config.nombre}).
+            </div>
+         )}
 
-        return Object.keys(newErrors).length === 0;
-    };
+         <div className="bg-white rounded-lg shadow-md  p-6 flex flex-col items-center space-y-4 max-w-lg w-full">
+            <img src="../elhack-negro.png" alt="Movapp Logo" className="w-32 h-auto" />
+            <p className="text-gray-500 text-center text-sm md:text-lg">
+               Nuestra solución al acoso de las apps de préstamo.
+            </p>
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        if (validateForm()) {
-            const payload = {
-                nombre: form.nombre,
-                apellidos: form.apellidos,
-                correo: form.email,
-                telefono: form.telefono,
-                codigopostal: form.codigoPostal,
-                producto: productName,
-                cantidad: count,
-                precio_unitario: config.precio.toFixed(2),
-                total: (config.precio * count).toFixed(2),
-                pais: country,
-            };
-
-            try {
-                const response = await createPreference(payload);
-                console.log('Preferencia creada:', response);
-                console.log(mpRef.current);
-
-                // if (!mpRef.current) {
-                //    console.warn("MercadoPago no está inicializado aún.");
-                //    return;
-                // }
-
-                if (response?.id) {
-                    mpRef.current.checkout({
-                        preference: {
-                            id: response.id,
-                        },
-                        autoOpen: true, // abrir automáticamente
-                        iframe: true, // abrir como modal
-                    });
-                } else {
-                    console.error('No se encontró init_point en la respuesta.');
-                }
-            } catch (error) {
-                console.error('Error al crear preferencia:', error);
-            }
-            setCount(1);
-            closeDrawer();
-        }
-    };
-
-    return (
-        <div className="flex flex-col items-center justify-center px-2 mt-10">
-            {!disabled && (
-                <div className="mb-4 p-3 bg-red-100 text-red-700 rounded w-full max-w-md text-center font-semibold">
-                    Lo sentimos, la opción de compra no está disponible en tu país ({config.nombre}).
-                </div>
-            )}
-
-            <div className="bg-white rounded-lg shadow-md  p-6 flex flex-col items-center space-y-4 max-w-lg w-full">
-                <img src="../elhack-negro.png" alt="Movapp Logo" className="w-32 h-auto" />
-                <p className="text-gray-500 text-center text-sm md:text-lg">
-                    Nuestra solución al acoso de las apps de préstamo.
-                </p>
-
-                <div className="flex items-center space-x-2">
-                    <button
-                        onClick={decrement}
-                        className="bg-purple-300 px-3 py-2 rounded font-bold text-white"
-                        aria-label="Disminuir cantidad"
-                    >
-                        -
-                    </button>
-                    <span className="text-xl font-bold" aria-live="polite">
-                        {count}
-                    </span>
-                    <button
-                        onClick={increment}
-                        className="bg-purple-300 px-3 py-2 rounded font-bold text-white"
-                        aria-label="Aumentar cantidad"
-                    >
-                        +
-                    </button>
-                </div>
-
-                <p className="text-gray-600 text-sm md:text-lg text-center">Selecciona el número de hacks.</p>
-                <div className="flex items-center space-x-2">
-                    <p className="text-xl font-bold">
-                        {config.simbolo} {(config.precio * count).toFixed(2)} {config.moneda}
-                    </p>
-                    <span className={`fi ${config.bandera} rounded-md`} style={{ fontSize: '2rem' }}></span>
-                </div>
-                <button
-                    className={`bg-purple_mv hover:bg-purple_mv text-white font-bold h-8 w-auto px-5 rounded-md flex justify-center items-center
-            ${!disabled ? 'opacity-50 cursor-not-allowed' : ''}
-          `}
-                    onClick={openDrawer}
-                    aria-haspopup="dialog"
-                    aria-expanded={isDrawerVisible}
-                    disabled={!disabled}
-                >
-                    Comprar
-                </button>
+            <div className="flex items-center space-x-2">
+               <button
+                  onClick={decrement}
+                  className="bg-purple-300 px-3 py-2 rounded font-bold text-white"
+                  aria-label="Disminuir cantidad"
+               >
+                  -
+               </button>
+               <span className="text-xl font-bold" aria-live="polite">
+                  {count}
+               </span>
+               <button
+                  onClick={increment}
+                  className="bg-purple-300 px-3 py-2 rounded font-bold text-white"
+                  aria-label="Aumentar cantidad"
+               >
+                  +
+               </button>
             </div>
 
-            {isDrawerVisible && (
-                <div
-                    id="drawer-overlay"
-                    className="fixed inset-0 flex items-end justify-center bg-black/50 z-50"
-                    role="dialog"
-                    aria-modal="true"
-                >
-                    <div
-                        ref={drawerRef}
-                        tabIndex={-1}
-                        className={`bg-white                 
+            <p className="text-gray-600 text-sm md:text-lg text-center">Selecciona el número de hacks.</p>
+            <div className="flex items-center space-x-2">
+               <p className="text-xl font-bold">
+                  {config.simbolo} {(config.precio * count).toFixed(2)} {config.moneda}
+               </p>
+               <span className={`fi ${config.bandera} rounded-md`} style={{ fontSize: '2rem' }}></span>
+            </div>
+            <button
+               className={`bg-purple_mv hover:bg-purple_mv text-white font-bold h-8 w-auto px-5 rounded-md flex justify-center items-center
+            ${!disabled ? 'opacity-50 cursor-not-allowed' : ''}
+          `}
+               onClick={openDrawer}
+               aria-haspopup="dialog"
+               aria-expanded={isDrawerVisible}
+               disabled={!disabled}
+            >
+               Comprar
+            </button>
+         </div>
+
+         {isDrawerVisible && (
+            <div
+               id="drawer-overlay"
+               className="fixed inset-0 flex items-end justify-center bg-black/50 z-50"
+               role="dialog"
+               aria-modal="true"
+            >
+               <div
+                  ref={drawerRef}
+                  tabIndex={-1}
+                  className={`bg-white                 
                      max-w-md md:max-w-lg md:w-full 
                      min-h-[400px]
                      rounded-t-xl p-5 md:p-8 relative shadow-xl ring-2 ring-purple-300 z-50
                    ${isClosing ? 'animate-slideDown' : 'animate-slideUp'} transform`}
-                    >
-                        <button
-                            onClick={closeDrawer}
-                            className="absolute top-2 right-4 text-gray-400 text-2xl font-bold"
-                            aria-label="Cerrar"
-                        >
-                            ×
-                        </button>
+               >
+                  <button
+                     onClick={closeDrawer}
+                     className="absolute top-2 right-4 text-gray-400 text-2xl font-bold"
+                     aria-label="Cerrar"
+                  >
+                     ×
+                  </button>
 
-                        <div className="mb-4 text-center">
-                            <div className="text-lg font-bold text-gray-700">
-                                Producto: <span className="text-purple_mv">{productName}</span>
-                            </div>
-                            <div className="text-lg font-bold text-gray-700">{`Cantidad = ${count}`}</div>
-                            <div className="flex items-center justify-center space-x-2">
-                                <div className="text-xl font-bold text-gray-700 mt-1">
-                                    {`Total = ${config.simbolo}
+                  <div className="mb-4 text-center">
+                     <div className="text-lg font-bold text-gray-700">
+                        Producto: <span className="text-purple_mv">{productName}</span>
+                     </div>
+                     <div className="text-lg font-bold text-gray-700">{`Cantidad = ${count}`}</div>
+                     <div className="flex items-center justify-center space-x-2">
+                        <div className="text-xl font-bold text-gray-700 mt-1">
+                           {`Total = ${config.simbolo}
                            ${(config.precio * count).toFixed(2)} ${config.moneda}`}
-                                </div>
-                                <span className={`fi ${config.bandera} rounded-md`} style={{ fontSize: '2rem' }}></span>
-                            </div>
                         </div>
+                        <span className={`fi ${config.bandera} rounded-md`} style={{ fontSize: '2rem' }}></span>
+                     </div>
+                  </div>
 
-                        <h3 className="text-xl font-bold mb-4 text-center mt-5 text-gray-700">
-                            Completa tu información
-                        </h3>
+                  <h3 className="text-xl font-bold mb-4 text-center mt-5 text-gray-700">Completa tu información</h3>
 
-                        <form className="grid gap-3 max-w-md mx-auto" onSubmit={handleSubmit} noValidate>
-                            <div>
-                                <input
-                                    className={`border p-2 rounded w-full  ${
-                                        errors.nombre ? 'border-red-500' : 'border-gray-300'
-                                    }`}
-                                    placeholder="Nombre"
-                                    name="nombre"
-                                    value={form.nombre}
-                                    onChange={handleChange}
-                                    aria-label="Nombre"
-                                    required
-                                />
-                                {errors.nombre && <p className="text-red-500 text-sm mt-1">{errors.nombre}</p>}
-                            </div>
+                  <form className="grid gap-3 max-w-md mx-auto" onSubmit={handleSubmit} noValidate>
+                     <div>
+                        <input
+                           className={`border p-2 rounded w-full  ${
+                              errors.nombre ? 'border-red-500' : 'border-gray-300'
+                           }`}
+                           placeholder="Nombre"
+                           name="nombre"
+                           value={form.nombre}
+                           onChange={handleChange}
+                           aria-label="Nombre"
+                           required
+                        />
+                        {errors.nombre && <p className="text-red-500 text-sm mt-1">{errors.nombre}</p>}
+                     </div>
 
-                            <div>
-                                <input
-                                    className={`border p-2 rounded w-full ${
-                                        errors.apellidos ? 'border-red-500' : 'border-gray-300'
-                                    }`}
-                                    placeholder="Apellidos"
-                                    name="apellidos"
-                                    value={form.apellidos}
-                                    onChange={handleChange}
-                                    aria-label="Apellidos"
-                                    required
-                                />
-                                {errors.apellidos && <p className="text-red-500 text-sm mt-1">{errors.apellidos}</p>}
-                            </div>
+                     <div>
+                        <input
+                           className={`border p-2 rounded w-full ${
+                              errors.apellidos ? 'border-red-500' : 'border-gray-300'
+                           }`}
+                           placeholder="Apellidos"
+                           name="apellidos"
+                           value={form.apellidos}
+                           onChange={handleChange}
+                           aria-label="Apellidos"
+                           required
+                        />
+                        {errors.apellidos && <p className="text-red-500 text-sm mt-1">{errors.apellidos}</p>}
+                     </div>
 
-                            <div>
-                                <input
-                                    className={`border p-2 rounded w-full ${
-                                        errors.email ? 'border-red-500' : 'border-gray-300'
-                                    }`}
-                                    placeholder="Correo electrónico"
-                                    type="email"
-                                    name="email"
-                                    value={form.email}
-                                    onChange={handleChange}
-                                    aria-label="Correo electrónico"
-                                    required
-                                />
-                                {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
-                            </div>
+                     <div>
+                        <input
+                           className={`border p-2 rounded w-full ${
+                              errors.email ? 'border-red-500' : 'border-gray-300'
+                           }`}
+                           placeholder="Correo electrónico"
+                           type="email"
+                           name="email"
+                           value={form.email}
+                           onChange={handleChange}
+                           aria-label="Correo electrónico"
+                           required
+                        />
+                        {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+                     </div>
 
-                            <div>
-                                <input
-                                    className={`border p-2 rounded w-full ${
-                                        errors.telefono ? 'border-red-500' : 'border-gray-300'
-                                    }`}
-                                    placeholder="Teléfono"
-                                    type="tel"
-                                    name="telefono"
-                                    value={form.telefono}
-                                    onChange={handleChange}
-                                    aria-label="Teléfono"
-                                    required
-                                />
-                                {errors.telefono && <p className="text-red-500 text-sm mt-1">{errors.telefono}</p>}
-                            </div>
+                     <div>
+                        <input
+                           className={`border p-2 rounded w-full ${
+                              errors.telefono ? 'border-red-500' : 'border-gray-300'
+                           }`}
+                           placeholder="Teléfono"
+                           type="tel"
+                           name="telefono"
+                           value={form.telefono}
+                           onChange={handleChange}
+                           aria-label="Teléfono"
+                           required
+                        />
+                        {errors.telefono && <p className="text-red-500 text-sm mt-1">{errors.telefono}</p>}
+                     </div>
 
-                            <div>
-                                <input
-                                    className={`border p-2 rounded w-full ${
-                                        errors.codigoPostal ? 'border-red-500' : 'border-gray-300'
-                                    }`}
-                                    placeholder="Código postal"
-                                    name="codigoPostal"
-                                    value={form.codigoPostal}
-                                    onChange={handleChange}
-                                    aria-label="Código postal"
-                                    required
-                                />
-                                {errors.codigoPostal && (
-                                    <p className="text-red-500 text-sm mt-1">{errors.codigoPostal}</p>
-                                )}
-                            </div>
+                     <div>
+                        <input
+                           className={`border p-2 rounded w-full ${
+                              errors.codigoPostal ? 'border-red-500' : 'border-gray-300'
+                           }`}
+                           placeholder="Código postal"
+                           name="codigoPostal"
+                           value={form.codigoPostal}
+                           onChange={handleChange}
+                           aria-label="Código postal"
+                           required
+                        />
+                        {errors.codigoPostal && <p className="text-red-500 text-sm mt-1">{errors.codigoPostal}</p>}
+                     </div>
 
-                            <button
-                                type="submit"
-                                className="mt-4w-full bg-purple_mv text-white font-bold py-2 rounded hover:bg-purple-700"
-                            >
-                                Finaliza tu compra
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            )}
-        </div>
-    );
+                     <button
+                        type="submit"
+                        className="mt-4w-full bg-purple_mv text-white font-bold py-2 rounded hover:bg-purple-700"
+                     >
+                        Finaliza tu compra
+                     </button>
+                  </form>
+               </div>
+            </div>
+         )}
+      </div>
+   );
 };
 
 export default HackCard;
