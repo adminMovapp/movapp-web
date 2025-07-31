@@ -1,11 +1,12 @@
 ---
 import ButtonContact from "@/components/ButtonContact.astro";
 import Layout from "@layouts/Layout.astro";
-import JoinOurBlog from "@/components/JoinOurBlog.astro";
 
 import ImgCorazon from '@assets/corazon.png'; 
 import ImgAlerta from '@assets/alerta.png';
 import ImgFlag from '@assets/flag.png';
+
+import ImgErik from '@assets/Erik.png'
 
 
 import { VIDEOS } from "@constants/socials.ts";
@@ -91,39 +92,6 @@ const cardHover = "transition duration-300 ease-in-out hover:shadow-xl hover:-tr
     </div>
   </section>
 
-  <!-- Contenido y Blog -->
-  <!-- <section class="flex flex-col items-center" data-aos="fade-up" data-aos-duration="800">
-    <div class="w-full max-w-5xl rounded-2xl bg-white p-6 shadow-md">
-      <h2 class="mb-6 text-xl font-semibold text-purple_mv">Nuestro contenido</h2>
-      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-
-  
-        <div class="rounded-md p-2">
-          <div class="flex h-32 items-center justify-center bg-gray-100"></div>
-          <h3 class="mt-2 font-semibold">Transmisión del día</h3>
-          <p class="text-sm md:text-lg text-gray-600">Únete a Enigmático en un episodio muy especial</p>
-        </div>
-
-
-        <div class="flex flex-col gap-4 md:max-w-6xl max-w-xl">
-          <div class="flex gap-2 rounded-md p-2">
-            <div class="flex h-16 w-16 items-center justify-center bg-gray-100 text-2xl"></div>
-            <div>
-              <h4 class="font-semibold">Blog mente digital</h4>
-              <p class="text-sm md:text-lg text-gray-600">En el blog de esta semana exploramos los asuntos más...</p>
-            </div>
-          </div>
-
-          <div class="my-10 flex gap-2 rounded-md p-2">
-            <div class="flex h-16 w-16 items-center justify-center bg-gray-100 text-2xl"></div>
-            <div>
-              <h4 class="font-semibold">Cuídate de mexdin</h4>
-              <p class="text-sm md:text-lg text-gray-600">Exploramos la aplicación más temida al día de hoy</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div> -->
 
     <!-- CTA WhatsApp -->
     <section class="flex flex-col items-center px-4 md:px-0" data-aos="fade-up" data-aos-duration="800">
@@ -131,12 +99,18 @@ const cardHover = "transition duration-300 ease-in-out hover:shadow-xl hover:-tr
          bg-gradient-to-b from-gray-100 to-purple-100 
       p-6 py-10 text-center shadow-md ${cardHover}`} data-aos="fade-up" >
       <h3 class="mb-4 text-md md:text-xl  font-semibold">No sufras esto solo. Nosotros estamos aquí.</h3>
+
+   <div
+      class="mx-auto my-4 flex justify-center items-center max-w-xl"
+      data-aos="fade-left"
+    >
+              <Picture src={ImgErik}  
+                alt="Erik"
+                class="rounded-xl w-full h-96"/>
+         
+    </div>
       <ButtonContact />
     </div>
 
-    </section>
-    <!-- Únete al blog -->
-    <!-- <JoinOurBlog /> -->
-    </section>
 
 </Layout>
