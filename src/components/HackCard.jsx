@@ -1,23 +1,41 @@
 import { useEffect, useState, useRef } from "react";
 
+import useCountryConfig from "../hooks/useCountryConfig";
+import { createPreference } from "@/api/api";
+
 const HackCard = () => {
    const [count, setCount] = useState(1);
    const [isDrawerVisible, setIsDrawerVisible] = useState(false);
    const [isClosing, setIsClosing] = useState(false);
+   const { country, config } = useCountryConfig();
+
+   const disabled = country === "MX";
+   const productName = "El Hack";
 
    const [form, setForm] = useState({
       nombre: "",
-      apellido: "",
+      apellidos: "",
       email: "",
       telefono: "",
-      tarjeta: "",
-      vencimiento: "",
-      cvv: "",
+      codigoPostal: "",
    });
 
    const [errors, setErrors] = useState({});
-
    const drawerRef = useRef(null);
+   const mpRef = useRef(null);
+
+   useEffect(() => {
+      const interval = setInterval(() => {
+         if (window.MercadoPago && !mpRef.current) {
+            mpRef.current = new window.MercadoPago(import.meta.env.PUBLIC_KEY_MP, {
+               locale: "es-MX",
+            });
+            clearInterval(interval); // solo una vez
+         }
+      }, 300); // chequea cada 300ms
+
+      return () => clearInterval(interval);
+   }, []);
 
    const openDrawer = () => {
       setIsDrawerVisible(true);
@@ -31,12 +49,10 @@ const HackCard = () => {
          setErrors({});
          setForm({
             nombre: "",
-            apellido: "",
+            apellidos: "",
             email: "",
             telefono: "",
-            tarjeta: "",
-            vencimiento: "",
-            cvv: "",
+            codigoPostal: "",
          });
       }, 300);
    };
@@ -82,9 +98,9 @@ const HackCard = () => {
          regex: /^[a-zA-ZÀ-ÿ\s]{2,30}$/,
          message: "Nombre inválido (solo letras y espacios, 2-30 caracteres).",
       },
-      apellido: {
+      apellidos: {
          regex: /^[a-zA-ZÀ-ÿ\s]{2,30}$/,
-         message: "Apellido inválido (solo letras y espacios, 2-30 caracteres).",
+         message: "Apellidos inválidos (solo letras y espacios, 2-30 caracteres).",
       },
       email: {
          regex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
@@ -94,22 +110,15 @@ const HackCard = () => {
          regex: /^\+?[\d\s\-]{7,15}$/,
          message: "Teléfono inválido (7 a 15 dígitos, puede incluir +, espacios y guiones).",
       },
-      tarjeta: {
-         regex: /^\d{13,19}$/,
-         message: "Número de tarjeta inválido (13 a 19 dígitos).",
-      },
-      vencimiento: {
-         regex: /^(0[1-9]|1[0-2])\/?([0-9]{2})$/,
-         message: "Vencimiento inválido (MM/AA).",
-      },
-      cvv: {
-         regex: /^\d{3,4}$/,
-         message: "CVV inválido (3 o 4 dígitos).",
+      codigoPostal: {
+         regex: /^[a-zA-Z0-9\s\-]{4,6}$/,
+         message: "Código postal inválido (4 a 6 caracteres, números, letras, espacios o guiones).",
       },
    };
 
-   // Validar todos los campos
    const validateForm = () => {
+      // if (!validacionActiva) return true;
+
       const newErrors = {};
 
       Object.entries(validations).forEach(([field, { regex, message }]) => {
@@ -125,23 +134,65 @@ const HackCard = () => {
       return Object.keys(newErrors).length === 0;
    };
 
-   const handleSubmit = (e) => {
+   const handleSubmit = async (e) => {
       e.preventDefault();
 
       if (validateForm()) {
-         alert(`Compra confirmada! Cantidad: ${count}, Total: $${500 * count} MXN.\nDatos: ${JSON.stringify(form)}`);
+         const payload = {
+            nombre: form.nombre,
+            apellidos: form.apellidos,
+            correo: form.email,
+            telefono: form.telefono,
+            codigopostal: form.codigoPostal,
+            producto: productName,
+            cantidad: count,
+            precio_unitario: config.precio.toFixed(2),
+            total: (config.precio * count).toFixed(2),
+            pais: country,
+         };
+
+         try {
+            const response = await createPreference(payload);
+            console.log("Preferencia creada:", response);
+            console.log(mpRef.current);
+
+            // if (!mpRef.current) {
+            //    console.warn("MercadoPago no está inicializado aún.");
+            //    return;
+            // }
+
+            if (response?.id) {
+               mpRef.current.checkout({
+                  preference: {
+                     id: response.id,
+                  },
+                  autoOpen: true, // abrir automáticamente
+                  iframe: true, // abrir como modal
+               });
+            } else {
+               console.error("No se encontró init_point en la respuesta.");
+            }
+         } catch (error) {
+            console.error("Error al crear preferencia:", error);
+         }
+         setCount(1);
          closeDrawer();
       }
    };
 
    return (
-      <div className="flex flex-col items-center justify-center px-4 mt-10">
-         <div
-            className="bg-white rounded-lg shadow-md p-6 flex flex-col items-center space-y-4 max-w-md w-full"
-           
-         >
-            <img src="/elhack-negro.png" alt="Movapp Logo" className="w-32 h-auto" />
-            <p className="text-gray-500 text-center text-lg">Nuestra solución al acoso de las apps de préstamo.</p>
+      <div className="flex flex-col items-center justify-center px-2 mt-10">
+         {!disabled && (
+            <div className="mb-4 p-3 bg-red-100 text-red-700 rounded w-full max-w-md text-center font-semibold">
+               Lo sentimos, la opción de compra no está disponible en tu país ({config.nombre}).
+            </div>
+         )}
+
+         <div className="bg-white rounded-lg shadow-md  p-6 flex flex-col items-center space-y-4 max-w-lg w-full">
+            <img src="../elhack-negro.png" alt="Movapp Logo" className="w-32 h-auto" />
+            <p className="text-gray-500 text-center text-sm md:text-lg">
+               Nuestra solución al acoso de las apps de préstamo.
+            </p>
 
             <div className="flex items-center space-x-2">
                <button
@@ -163,16 +214,23 @@ const HackCard = () => {
                </button>
             </div>
 
-            <p className="text-gray-600 text-lg">Selecciona el número de hacks.</p>
-            <p className="text-xl font-bold">${500 * count} MXN</p>
-
+            <p className="text-gray-600 text-sm md:text-lg text-center">Selecciona el número de hacks.</p>
+            <div className="flex items-center space-x-2">
+               <p className="text-xl font-bold">
+                  {config.simbolo} {(config.precio * count).toFixed(2)} {config.moneda}
+               </p>
+               <span className={`fi ${config.bandera} rounded-md`} style={{ fontSize: "2rem" }}></span>
+            </div>
             <button
-               className="bg-purple-600 hover:bg-purple-500 text-white font-bold h-8  w-auto px-5 rounded-full flex justify-center items-center"
+               className={`bg-purple_mv hover:bg-purple_mv text-white font-bold h-8 w-auto px-5 rounded-md flex justify-center items-center
+            ${!disabled ? "opacity-50 cursor-not-allowed" : ""}
+          `}
                onClick={openDrawer}
                aria-haspopup="dialog"
                aria-expanded={isDrawerVisible}
+               disabled={!disabled}
             >
-               COMPRAR
+               Comprar
             </button>
          </div>
 
@@ -186,8 +244,11 @@ const HackCard = () => {
                <div
                   ref={drawerRef}
                   tabIndex={-1}
-                  className={`bg-white w-full max-w-md min-h-[400px] rounded-t-xl p-6 relative shadow-2xl ring-2 ring-purple-300 z-50
-              ${isClosing ? "animate-slideDown" : "animate-slideUp"} transform`}
+                  className={`bg-white                 
+                     max-w-md md:max-w-lg md:w-full 
+                     min-h-[400px]
+                     rounded-t-xl p-5 md:p-8 relative shadow-xl ring-2 ring-purple-300 z-50
+                   ${isClosing ? "animate-slideDown" : "animate-slideUp"} transform`}
                >
                   <button
                      onClick={closeDrawer}
@@ -199,18 +260,24 @@ const HackCard = () => {
 
                   <div className="mb-4 text-center">
                      <div className="text-lg font-bold text-gray-700">
-                        Producto: <span className="text-purple-600">El Hack</span>
+                        Producto: <span className="text-purple_mv">{productName}</span>
                      </div>
-                     <div className="text-lg text-gray-500">Cantidad: {count}</div>
-                     <div className="text-xl font-bold text-gray-900 mt-1">Total: ${500 * count} MXN</div>
+                     <div className="text-lg font-bold text-gray-700">{`Cantidad = ${count}`}</div>
+                     <div className="flex items-center justify-center space-x-2">
+                        <div className="text-xl font-bold text-gray-700 mt-1">
+                           {`Total = ${config.simbolo}
+                           ${(config.precio * count).toFixed(2)} ${config.moneda}`}
+                        </div>
+                        <span className={`fi ${config.bandera} rounded-md`} style={{ fontSize: "2rem" }}></span>
+                     </div>
                   </div>
 
-                  <h3 className="text-xl font-bold mb-4 text-center">Completa tu información</h3>
+                  <h3 className="text-xl font-bold mb-4 text-center mt-5 text-gray-700">Completa tu información</h3>
 
-                  <form className="grid gap-3" onSubmit={handleSubmit} noValidate>
+                  <form className="grid gap-3 max-w-md mx-auto" onSubmit={handleSubmit} noValidate>
                      <div>
                         <input
-                           className={`border p-2 rounded w-full ${
+                           className={`border p-2 rounded w-full  ${
                               errors.nombre ? "border-red-500" : "border-gray-300"
                            }`}
                            placeholder="Nombre"
@@ -226,16 +293,16 @@ const HackCard = () => {
                      <div>
                         <input
                            className={`border p-2 rounded w-full ${
-                              errors.apellido ? "border-red-500" : "border-gray-300"
+                              errors.apellidos ? "border-red-500" : "border-gray-300"
                            }`}
-                           placeholder="Apellido"
-                           name="apellido"
-                           value={form.apellido}
+                           placeholder="Apellidos"
+                           name="apellidos"
+                           value={form.apellidos}
                            onChange={handleChange}
-                           aria-label="Apellido"
+                           aria-label="Apellidos"
                            required
                         />
-                        {errors.apellido && <p className="text-red-500 text-sm mt-1">{errors.apellido}</p>}
+                        {errors.apellidos && <p className="text-red-500 text-sm mt-1">{errors.apellidos}</p>}
                      </div>
 
                      <div>
@@ -273,54 +340,23 @@ const HackCard = () => {
                      <div>
                         <input
                            className={`border p-2 rounded w-full ${
-                              errors.tarjeta ? "border-red-500" : "border-gray-300"
+                              errors.codigoPostal ? "border-red-500" : "border-gray-300"
                            }`}
-                           placeholder="Número de tarjeta"
-                           name="tarjeta"
-                           value={form.tarjeta}
+                           placeholder="Código postal"
+                           name="codigoPostal"
+                           value={form.codigoPostal}
                            onChange={handleChange}
-                           aria-label="Número de tarjeta"
+                           aria-label="Código postal"
                            required
                         />
-                        {errors.tarjeta && <p className="text-red-500 text-sm mt-1">{errors.tarjeta}</p>}
-                     </div>
-
-                     <div className="flex gap-3">
-                        <div className="flex-1">
-                           <input
-                              className={`border p-2 rounded w-full ${
-                                 errors.vencimiento ? "border-red-500" : "border-gray-300"
-                              }`}
-                              placeholder="Vencimiento (MM/AA)"
-                              name="vencimiento"
-                              value={form.vencimiento}
-                              onChange={handleChange}
-                              aria-label="Vencimiento (MM/AA)"
-                              required
-                           />
-                           {errors.vencimiento && <p className="text-red-500 text-sm mt-1">{errors.vencimiento}</p>}
-                        </div>
-                        <div className="flex-1">
-                           <input
-                              className={`border p-2 rounded w-full ${
-                                 errors.cvv ? "border-red-500" : "border-gray-300"
-                              }`}
-                              placeholder="CVV"
-                              name="cvv"
-                              value={form.cvv}
-                              onChange={handleChange}
-                              aria-label="CVV"
-                              required
-                           />
-                           {errors.cvv && <p className="text-red-500 text-sm mt-1">{errors.cvv}</p>}
-                        </div>
+                        {errors.codigoPostal && <p className="text-red-500 text-sm mt-1">{errors.codigoPostal}</p>}
                      </div>
 
                      <button
                         type="submit"
-                        className="mt-4 w-full bg-blue-600 text-white font-bold py-2 rounded hover:bg-blue-700"
+                        className="mt-4w-full bg-purple_mv text-white font-bold py-2 rounded hover:bg-purple-700"
                      >
-                        CONFIRMAR COMPRA
+                        Finaliza tu compra
                      </button>
                   </form>
                </div>

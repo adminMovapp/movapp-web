@@ -2,15 +2,26 @@
 import ButtonContact from "@components/ButtonContact.astro";
 import MenuMobile from "@components/MenuMobile.astro";
 import ArrowIcon from "@assets/ArrowIcon.astro";
+
+const showHeaderLayer = import.meta.env.PUBLIC_SHOW_HEADER_LAYER === "true";
+
 ---
 
 <header
-  class="h-16 mt-3 fixed left-4 md:left-16 right-14 md:right-16 z-50
+  class={`h-16 mt-3 fixed left-4 md:left-16 right-4 md:right-16 z-50
          top-4 md:top-6 lg:top-8 xl:top-10
          w-auto max-w-none bg-white/50 backdrop-blur-md
          shadow-lg px-8 py-4
          flex justify-between items-center rounded-3xl
-         md:h-20 md:-mt-5"
+         md:h-20 
+
+      ${showHeaderLayer 
+        ? "md:mt-1"
+        : "md:-mt-5"}
+
+         
+         
+         `}
 >
   <div class="flex items-center gap-2">
     <img
@@ -30,7 +41,7 @@ import ArrowIcon from "@assets/ArrowIcon.astro";
     <a href="/" class="hover:text-purple-300">Inicio</a>
     <a href="/movapp" class="hover:text-purple-300">Movapp</a>
     <a href="/hack" class="hover:text-purple-300">Hack</a>
-    <a href="/tienda" class="hover:text-purple-300">Tienda</a>
+    <a href="/store" class="hover:text-purple-300">Tienda</a>
 
     <div class="relative">
       <button
@@ -46,6 +57,11 @@ import ArrowIcon from "@assets/ArrowIcon.astro";
         id="submenu"
         class="absolute right-0 mt-8 w-48 bg-white/80 backdrop-blur-md rounded-lg p-3 hidden z-50"
       >
+      <a
+          href="/collaborations"
+          class="block py-1 text-sm text-gray-700 hover:bg-gray-200 rounded-lg px-2"
+          >Colaboraciones</a
+        >
         <a
           href="/faqs"
           class="block py-1 text-sm text-gray-700 hover:bg-gray-200 rounded-lg px-2"

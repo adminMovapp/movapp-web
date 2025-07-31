@@ -1,5 +1,14 @@
+---
+import { Picture } from 'astro:assets';
+import ImgWhatsapp from '@assets/whatsapp-logo.png';
+import { URLS } from "@constants/socials.ts";
+
+---
+
+
+
 <a
-  href="#"
+  href={URLS.whatsapp.oficial}
   class="
     inline-flex items-center gap-2
    px-4
@@ -8,7 +17,10 @@
     bg-green-500 hover:bg-green-600
     rounded-3xl transition
   "
+  target="_blank" rel="noopener noreferrer"
 >
-  <img src="/whatsapp-logo.png" alt="WhatsApp" class="w-4 h-4" />
+   <Picture src={ImgWhatsapp}
+    alt="Whatsapp"
+     class="h-4 w-4 md:h-6 md:w-6" />
   <span >Contáctanos</span>
 </a>

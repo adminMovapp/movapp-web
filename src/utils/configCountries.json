@@ -1,0 +1,51 @@
+{
+  "MX": {
+    "nombre": "México",
+    "moneda": "MXN",
+    "simbolo": "$",
+    "precio": 2,
+    "bandera": "fi fi-mx",
+    "precioMx": 2
+  },
+  "PE": {
+    "nombre": "Perú",
+    "moneda": "PEN",
+    "simbolo": "S/",
+    "precio": 126,
+    "bandera": "fi fi-pe",
+    "precioMx": 10.55
+  },
+  "CO": {
+    "nombre": "Colombia",
+    "moneda": "COP",
+    "simbolo": "$",
+    "precio": 120,
+    "bandera": "fi fi-co",
+    "precioMx": 23.45
+  },
+  "EC": {
+    "nombre": "Ecuador",
+    "moneda": "USD",
+    "simbolo": "$",
+    "precio": 33,
+    "bandera": "fi fi-ec",
+    "precioMx": 660
+  },
+
+  "AR": {
+    "nombre": "Argentina",
+    "moneda": "ARS",
+    "simbolo": "$",
+    "precio": 500,
+    "bandera": "fi fi-ar",
+    "precioMx": 2.5
+  },
+  "CL": {
+    "nombre": "Chile",
+    "moneda": "CLP",
+    "simbolo": "$",
+    "precio": 1500,
+    "bandera": "fi fi-cl",
+    "precioMx": 0.25
+  }
+}

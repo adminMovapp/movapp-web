@@ -3,30 +3,42 @@ import ButtonContact from "@/components/ButtonContact.astro";
 import Layout from "@layouts/Layout.astro";
 import JoinOurBlog from "@/components/JoinOurBlog.astro";
 
+import ImgCorazon from '@assets/corazon.png'; 
+import ImgAlerta from '@assets/alerta.png';
+import ImgFlag from '@assets/flag.png';
+
+
+import { VIDEOS } from "@constants/socials.ts";
+import { Picture } from "astro:assets";
+
+
 const cardHover = "transition duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1 hover:scale-105 cursor-pointer";
 ---
 
-<Layout>
+<Layout title="El Hack hacia un nuevo inicio">
 
   <!-- Protección Digital -->
   <section class="mx-auto my-1 max-w-xl md:max-w-6xl px-8 py-8 bg-white/70 backdrop-blur-md rounded-xl shadow-lg" data-aos="fade-down">
-    <div class="flex flex-col items-center gap-8 md:flex-row">
+    <div class="flex flex-col items-center gap-8 md:flex-row px-4 md:px-0">
 
       <!-- Texto -->
       <div class="flex-1 text-center md:text-left">
         <h2 class="text-xl font-medium text-gray-700">Tu protección digital comienza aquí</h2>
         <h1 class="mt-2 mb-5 text-3xl font-bold sm:text-4xl">
-          ¿Has sido <span class="text-purple-600">víctima de aplicaciones de préstamo</span> no reguladas?
+          ¿Has sido <span class="text-purple_mv">víctima de aplicaciones de préstamo</span> no reguladas?
         </h1>
         <ButtonContact />
       </div>
 
       <!-- Video -->
       <div class="flex-1">
-        <video controls autoplay muted playsinline class="w-full rounded-lg shadow-md">
-          <source src="https://movapp.org/wp-content/uploads/2025/03/MBoptimized.mp4" type="video/mp4" />
-          Tu navegador no soporta el video.
-        </video>
+        <iframe
+          src={VIDEOS.inicio}
+        class="w-full aspect-video rounded-lg shadow-md"
+        frameborder="0"
+        allow="autoplay; encrypted-media"
+        allowfullscreen
+        ></iframe>
       </div>
 
     </div>
@@ -34,16 +46,16 @@ const cardHover = "transition duration-300 ease-in-out hover:shadow-xl hover:-tr
     <!-- Cards -->
     <div class="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3">
       <div class={`flex flex-col p-6 bg-white rounded-lg shadow-md ${cardHover}`}>
-        <h3 class="mb-2 text-left text-lg font-semibold">Una solución</h3>
-        <p class="text-justify text-lg text-gray-600">En <span class="text-purple-600 font-bold">Movapp</span>, te ofrecemos una solución integral para proteger tu información y detener el acoso.</p>
+        <h3 class="mb-2 text-left text-sm md:text-lg font-semibold">Una solución</h3>
+        <p class="text-justify text-sm md:text-lg text-gray-600">En <span class="text-purple_mv font-bold">Movapp</span>, te ofrecemos una solución integral para proteger tu información y detener el acoso.</p>
       </div>
       <div class={`flex flex-col p-6 bg-white rounded-lg shadow-md ${cardHover}`}>
-        <h3 class="mb-2 text-left text-lg font-semibold">Asesoría experta</h3>
-        <p class="text-justify text-lg text-gray-600">Nuestro equipo de expertos te brindará asesoría personalizada y apoyo psicológico sin costo.</p>
+        <h3 class="mb-2 text-left text-sm md:text-lg font-semibold">Asesoría experta</h3>
+        <p class="text-justify text-sm md:text-lg text-gray-600">Nuestro equipo de expertos te brindará asesoría personalizada y apoyo psicológico sin costo.</p>
       </div>
       <div class={`flex flex-col p-6 bg-white rounded-lg shadow-md ${cardHover}`}>
-        <h3 class="mb-2 text-left text-lg font-semibold">EL HACK</h3>
-        <p class="text-justify text-lg text-gray-600">Actuará directamente en tus aplicaciones para salvaguardar tus datos y los de tus contactos.</p>
+        <h3 class="mb-2 text-left text-sm md:text-lg font-semibold">EL HACK</h3>
+        <p class="text-justify text-sm md:text-lg text-gray-600">Actuará directamente en tus aplicaciones para salvaguardar tus datos y los de tus contactos.</p>
       </div>
     </div>
   </section>
@@ -51,52 +63,54 @@ const cardHover = "transition duration-300 ease-in-out hover:shadow-xl hover:-tr
 
 
   <!-- Resultados -->
-  <section class="mx-auto mt-12 mb-8 w-full max-w-6xl" data-aos="fade-up" data-aos-duration="800">
-    <h2 class="mb-10 text-center text-2xl font-bold tracking-wide text-transparent bg-clip-text bg-purple-500 md:text-3xl">
-Los resultados nos respaldan
+  <section class="mx-auto mt-12 mb-8 w-full max-w-6xl px-4 md:px-0" data-aos="fade-up" data-aos-duration="800">
+    <h2 class="mb-10 text-center text-2xl font-bold tracking-wide text-transparent bg-clip-text bg-purple_mv md:text-3xl">
+        Los resultados nos respaldan
     </h2>
 
     <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
       <div class={`flex flex-col items-center text-center p-8 bg-white rounded-2xl shadow-lg ${cardHover}`}>
-        <img src="/corazon.png" alt="corazon" class="mx-auto mb-4 my-4 h-auto w-20" />
-        <div class="mb-1 text-2xl font-bold text-gray-800">+16,000 <span class="text-purple-500">Personas Impactadas</span></div>
-        <p class="text-justify text-lg text-gray-600">Sé parte de las miles de personas que confían en Movapp.</p>
+     
+      <Picture src={ImgCorazon} alt="corazon" class="mx-auto mb-4 my-4 h-auto w-20" />
+
+        <div class="mb-1 text-2xl font-bold text-gray-800">+1 Millón de <span class="text-purple_mv">Personas Impactadas</span></div>
+        <p class="text-justify text-sm md:text-lg text-gray-600">Sé parte de las personas que confían en Movapp.</p>
       </div>
 
       <div class={`flex flex-col items-center text-center p-8 bg-white rounded-2xl shadow-lg ${cardHover}`}>
-        <img src="/alerta.png" alt="alerta" class="mx-auto mb-4 my-4 h-auto w-20" />
-        <div class="mb-1 text-2xl font-bold text-gray-800">+2,200 <span class="text-purple-500">Emergencias</span></div>
-        <p class="text-justify text-lg text-gray-600">Hemos evitado que miles de personas dejen de pensar en desvivirse.</p>
+            <Picture src={ImgAlerta} alt="alerta" class="mx-auto mb-4 my-4 h-auto w-20" />
+        <div class="mb-1 text-2xl font-bold text-gray-800">+5,000 <span class="text-purple_mv">Emergencias</span></div>
+        <p class="text-justify text-sm md:text-lg text-gray-600">Hemos evitado que miles de personas dejen de pensar en desvivirse.</p>
       </div>
 
       <div class={`flex flex-col items-center text-center p-8 bg-white rounded-2xl shadow-lg ${cardHover}`}>
-        <img src="/planeta.png" alt="planeta" class="mx-auto mb-4 my-4 h-auto w-20" />
-        <div class="mb-1 text-2xl font-bold text-gray-800">7 <span class="text-purple-500">Países</span></div>
-        <p class="text-justify text-lg text-gray-600">Tenemos presencia en 7 países: México, Colombia, Perú, Ecuador, Chile, Bolivia y Argentina.</p>
+        <Picture src={ImgFlag} alt="planeta" class="mx-auto mb-4 my-4 h-auto w-20" />
+        <div class="mb-1 text-2xl font-bold text-gray-800">+20 <span class="text-purple_mv">Países</span></div>
+        <p class="text-justify text-sm md:text-lg text-gray-600">Tenemos presencia en: México, Bolivia, Argentina y más.</p>
       </div>
     </div>
   </section>
 
   <!-- Contenido y Blog -->
-  <section class="flex flex-col items-center" data-aos="fade-up" data-aos-duration="800">
+  <!-- <section class="flex flex-col items-center" data-aos="fade-up" data-aos-duration="800">
     <div class="w-full max-w-5xl rounded-2xl bg-white p-6 shadow-md">
-      <h2 class="mb-6 text-xl font-semibold text-purple-600">Nuestro contenido</h2>
+      <h2 class="mb-6 text-xl font-semibold text-purple_mv">Nuestro contenido</h2>
       <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
 
-        <!-- Transmisión -->
+  
         <div class="rounded-md p-2">
           <div class="flex h-32 items-center justify-center bg-gray-100"></div>
           <h3 class="mt-2 font-semibold">Transmisión del día</h3>
-          <p class="text-lg text-gray-600">Únete a Enigmático en un episodio muy especial</p>
+          <p class="text-sm md:text-lg text-gray-600">Únete a Enigmático en un episodio muy especial</p>
         </div>
 
-        <!-- Blogs -->
+
         <div class="flex flex-col gap-4 md:max-w-6xl max-w-xl">
           <div class="flex gap-2 rounded-md p-2">
             <div class="flex h-16 w-16 items-center justify-center bg-gray-100 text-2xl"></div>
             <div>
               <h4 class="font-semibold">Blog mente digital</h4>
-              <p class="text-lg text-gray-600">En el blog de esta semana exploramos los asuntos más...</p>
+              <p class="text-sm md:text-lg text-gray-600">En el blog de esta semana exploramos los asuntos más...</p>
             </div>
           </div>
 
@@ -104,23 +118,25 @@ Los resultados nos respaldan
             <div class="flex h-16 w-16 items-center justify-center bg-gray-100 text-2xl"></div>
             <div>
               <h4 class="font-semibold">Cuídate de mexdin</h4>
-              <p class="text-lg text-gray-600">Exploramos la aplicación más temida al día de hoy</p>
+              <p class="text-sm md:text-lg text-gray-600">Exploramos la aplicación más temida al día de hoy</p>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
 
     <!-- CTA WhatsApp -->
+    <section class="flex flex-col items-center px-4 md:px-0" data-aos="fade-up" data-aos-duration="800">
     <div class={`my-10 w-full max-w-2xl rounded-2xl
          bg-gradient-to-b from-gray-100 to-purple-100 
       p-6 py-10 text-center shadow-md ${cardHover}`} data-aos="fade-up" >
-      <h3 class="mb-4 text-xl font-semibold">No sufras, No estás solo. Nosotros estamos aquí.</h3>
+      <h3 class="mb-4 text-md md:text-xl  font-semibold">No sufras esto solo. Nosotros estamos aquí.</h3>
       <ButtonContact />
     </div>
 
+    </section>
     <!-- Únete al blog -->
     <!-- <JoinOurBlog /> -->
-  </section>
+    </section>
 
 </Layout>
