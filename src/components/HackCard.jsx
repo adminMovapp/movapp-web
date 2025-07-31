@@ -9,7 +9,7 @@ const HackCard = () => {
    const [isClosing, setIsClosing] = useState(false);
    const { country, config } = useCountryConfig();
 
-   const disabled = country === 'MX';
+   const disabled = country ;//=== 'MX';
    const productName = 'El Hack';
 
    const [form, setForm] = useState({
@@ -146,8 +146,8 @@ const HackCard = () => {
             codigopostal: form.codigoPostal,
             producto: productName,
             cantidad: count,
-            precio_unitario: config.precio.toFixed(2),
-            total: (config.precio * count).toFixed(2),
+            precio_unitario: config.precioMx.toFixed(2),
+            total: (config.precioMx * count).toFixed(2),
             pais: country,
          };
 
@@ -220,7 +220,21 @@ const HackCard = () => {
                   {config.simbolo} {(config.precio * count).toFixed(2)} {config.moneda}
                </p>
                <span className={`fi ${config.bandera} rounded-md`} style={{ fontSize: '2rem' }}></span>
+
+               
             </div>
+
+            {country !== 'MX' ? (
+               <div className="flex items-center space-x-2">
+                  <p className="text-sm font-light">
+                    {"$"} {(config.precioMx * count).toFixed(2)} {"mxn"}
+                  </p>
+            </div>
+            ) : null
+            }  
+
+
+
             <button
                className={`bg-purple_mv hover:bg-purple_mv text-white font-bold h-8 w-auto px-5 rounded-md flex justify-center items-center
             ${!disabled ? 'opacity-50 cursor-not-allowed' : ''}
