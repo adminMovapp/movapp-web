@@ -9,7 +9,7 @@ const HackCard = () => {
    const [isClosing, setIsClosing] = useState(false);
    const { country, config } = useCountryConfig();
 
-   const disabled = country ;//=== 'MX';
+   const disabled = country; //=== 'MX';
    const productName = 'El Hack';
 
    const [form, setForm] = useState({
@@ -217,24 +217,18 @@ const HackCard = () => {
             <p className="text-gray-600 text-sm md:text-lg text-center">Selecciona el número de hacks.</p>
             <div className="flex items-center space-x-2">
                <p className="text-xl font-bold">
-                Tu pago es de   {config.simbolo} {(config.precio * count).toFixed(2)} {config.moneda}
+                  Tu pago es de : {config.simbolo} {(config.precio * count).toFixed(2)} {config.moneda}
                </p>
                <span className={`fi ${config.bandera} rounded-md`} style={{ fontSize: '2rem' }}></span>
-
-               
             </div>
 
             {country !== 'MX' ? (
                <div className="flex items-center space-x-2">
-                  
                   <p className="text-md font-light">
-                   Y la conversión es de {"$"} {(config.precioMx * count).toFixed(2)} {"mxn"}
+                     Y la conversión es de : {'$'} {(config.precioMx * count).toFixed(2)} {'mxn'}
                   </p>
-            </div>
-            ) : null
-            }  
-
-
+               </div>
+            ) : null}
 
             <button
                className={`bg-purple_mv hover:bg-purple_mv text-white font-bold h-8 w-auto px-5 rounded-md flex justify-center items-center
