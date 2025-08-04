@@ -27,7 +27,7 @@ export const SOCIALS = [
       name: 'Facebook',
       url: URLS.facebook,
       icon: 'Icono-Facebook.png',
-      count: 3100,
+      count: 21000,
       description:
          'Únete a nuestra comunidad en Facebook para mantenerte al tanto de las últimas noticias y actualizaciones.',
    },
@@ -35,14 +35,14 @@ export const SOCIALS = [
       name: 'Instagram',
       url: URLS.instagram,
       icon: 'Icono-Instagram.png',
-      count: 3800,
+      count: 8400,
       description: '¡Síguenos para ver tips rápidos, noticias y contenido visual sobre cómo proteger tu información!',
    },
    {
       name: 'TikTok',
       url: URLS.tiktok,
       icon: 'Icono-Tik-Tok.png',
-      count: 3500,
+      count: 55100,
       description: 'Síguenos en TikTok para ver contenido dinámico y divertido sobre cómo proteger tus datos y más.',
    },
 ];

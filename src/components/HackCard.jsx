@@ -217,7 +217,7 @@ const HackCard = () => {
             <p className="text-gray-600 text-sm md:text-lg text-center">Selecciona el número de hacks.</p>
             <div className="flex items-center space-x-2">
                <p className="text-xl font-bold">
-                  {config.simbolo} {(config.precio * count).toFixed(2)} {config.moneda}
+                Tu pago es de   {config.simbolo} {(config.precio * count).toFixed(2)} {config.moneda}
                </p>
                <span className={`fi ${config.bandera} rounded-md`} style={{ fontSize: '2rem' }}></span>
 
@@ -226,8 +226,9 @@ const HackCard = () => {
 
             {country !== 'MX' ? (
                <div className="flex items-center space-x-2">
-                  <p className="text-sm font-light">
-                    {"$"} {(config.precioMx * count).toFixed(2)} {"mxn"}
+                  
+                  <p className="text-md font-light">
+                   Y la conversión es de {"$"} {(config.precioMx * count).toFixed(2)} {"mxn"}
                   </p>
             </div>
             ) : null

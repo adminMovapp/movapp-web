@@ -19,7 +19,9 @@ const useCountryConfig = () => {
                setConfig(fetchedConfig);
             } else {
                // Si no existe la configuración, usar la predeterminada
-               console.warn(`No se encontró configuración para el país ${defaultCountry}. Usando configuración predeterminada.`);
+               console.warn(
+                  `No se encontró configuración para el país ${defaultCountry}. Usando configuración predeterminada.`,
+               );
                setConfig(countries[defaultCountry] || {});
             }
          } catch (error) {
