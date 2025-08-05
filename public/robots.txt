@@ -1,0 +1,9 @@
+User-agent: *
+Disallow: /
+
+User-agent: *
+Allow: /
+Sitemap: https://movapp.org/sitemap.xml
+
+# Bloquear áreas sensibles
+Disallow: /api/

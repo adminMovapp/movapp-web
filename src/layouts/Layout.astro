@@ -5,31 +5,141 @@ import Footer from '@components/Footer.astro';
 import HeaderLayer from '@/components/HeaderLayer.astro';
 import InitAOS from '@/utils/InitAOS.jsx';
 
+import { siteConfig } from '@/utils/config.jsx';
+import { generateSEOTags, generateOrganizationSchema } from '@/utils/seo.jsx';
+
 const showHeaderLayer = import.meta.env.PUBLIC_SHOW_HEADER_LAYER === 'true';
 
 interface Props {
-   title: string;
+   title?: string;
+   description?: string;
+   keywords?: string;
+   image?: string;
+   type?: string;
+   noIndex?: boolean;
+   schema?: object;
 }
 const { title } = Astro.props;
+
+// Generar tags SEO
+const seoTags = generateSEOTags({
+  ...Astro.props,
+  url: new URL(Astro.url.pathname, siteConfig.canonicalUrl).href
+});
+const organizationSchema = generateOrganizationSchema();
+
+
+
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={siteConfig.site.language}>
    <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <link rel="icon" type="image/png" href="/ico-movapp.ico" />
+
+      <!-- Charset y viewport -->
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      
+      <!-- SEO básico -->
+      <title>{seoTags.title}</title>
+      <meta name="description" content={seoTags.description}>
+      <meta name="keywords" content={seoTags.keywords}>
+      <meta name="author" content={seoTags.author}>
+      <meta name="robots" content={seoTags.robots}>
+      
+      <!-- Canonical URL -->
+      <link rel="canonical" href={seoTags.canonical}>
+         
+         
+      <!-- Open Graph -->
+      <meta property="og:type" content={seoTags.type}>
+      <meta property="og:url" content={seoTags.canonical}>
+      <meta property="og:title" content={seoTags.title}>
+      <meta property="og:description" content={seoTags.description}>
+      <meta property="og:image" content={seoTags.image}>
+      <meta property="og:image:width" content="1200">
+      <meta property="og:image:height" content="630">
+      <meta property="og:site_name" content={siteConfig.site.name}>
+      <meta property="og:locale" content={siteConfig.site.locale}>
+      
+      <!-- Twitter Card -->
+      <meta name="twitter:card" content="summary_large_image">
+      <meta name="twitter:url" content={seoTags.canonical}>
+      <meta name="twitter:title" content={seoTags.title}>
+      <meta name="twitter:description" content={seoTags.description}>
+      <meta name="twitter:image" content={seoTags.image}>
+      <meta name="twitter:site" content={siteConfig.social.twitter}>
+      <meta name="twitter:creator" content={siteConfig.social.twitter}>
+      
+      <!-- Favicon -->
+      <!-- <link rel="icon" type="image/png" href="/ico-movapp.ico" /> -->
+      <link rel="icon" type="image/x-icon" href={siteConfig.assets.favicon}>
+      <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+      <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+      <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+      <link rel="manifest" href="/site.webmanifest">
+      <meta name="theme-color" content={siteConfig.seo.themeColor}>
+      
+      <!-- Headers de seguridad -->
+      <meta http-equiv="X-Content-Type-Options" content="nosniff">
+      <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
+      <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
       <meta name="generator" content={Astro.generator} />
+      
+      <!-- Fuentes extenas -->
       <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons/css/flag-icons.min.css" />
 
       <!-- SDK de MercadoPago -->
       <script is:inline src="https://sdk.mercadopago.com/js/v2"></script>
 
+       <!-- Schema.org JSON-LD -->
+      <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)}></script>
+      
+      <!-- Google Tag Manager -->
+      {siteConfig.gtmId && (
+         <script define:vars={{ gtmId: siteConfig.gtmId }} is:inline>
+            (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+            })(window,document,'script','dataLayer',gtmId);
+         </script>
+      )}
+      
+      <!-- Google Analytics 4 -->
+      {siteConfig.ga4Id && (
+         <>
+            <script async src={`https://www.googletagmanager.com/gtag/js?id=${siteConfig.ga4Id}`}></script>
+            <script define:vars={{ ga4Id: siteConfig.ga4Id, debugMode: siteConfig.debugMode }} is:inline>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', ga4Id, {
+               debug_mode: debugMode,
+               send_page_view: true
+            });
+            </script>
+         </>
+      )}
+
+         
       <title>{title}</title>
+   
    </head>
 
    <body class="bg-gray-100 text-gray-800 min-h-screen flex flex-col">
+
+      <!-- GTM noscript -->
+      {siteConfig.gtmId && (
+         <noscript>
+            <iframe src={`https://www.googletagmanager.com/ns.html?id=${siteConfig.gtmId}`}
+            height="0" width="0" style="display:none;visibility:hidden"></iframe>
+         </noscript>
+      )}
+      
       <InitAOS client:load />
 
       {showHeaderLayer ? <HeaderLayer /> : <div class="w-full h-5" />}

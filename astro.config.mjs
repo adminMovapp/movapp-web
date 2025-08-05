@@ -22,6 +22,7 @@ export default defineConfig({
             '@constants': '/src/constants/',
          },
       },
+      // assetsInclude: ['**/*.json']
    },
    output: 'static',
    build: {
@@ -30,5 +31,10 @@ export default defineConfig({
    server: {
       host: true,
       port: 7001,
+      headers: {
+      'X-Frame-Options': 'SAMEORIGIN',
+      'X-Content-Type-Options': 'nosniff',
+      'Referrer-Policy': 'strict-origin-when-cross-origin'
+    }
    },
 });
