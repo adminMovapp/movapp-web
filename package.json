@@ -4,9 +4,13 @@
    "version": "0.0.1",
    "scripts": {
       "dev": "astro dev",
+      "dev:staging": "astro dev",
+      "start": "astro dev",
       "build": "astro build",
       "preview": "astro preview",
       "astro": "astro",
+      "check": "astro check",
+      "sync": "astro sync",
       "format": "prettier --write ."
    },
    "dependencies": {
@@ -25,5 +29,8 @@
       "prettier": "^3.6.2",
       "prettier-plugin-astro": "^0.14.1",
       "tailwindcss": "^3.4.3"
-   }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+  }
 }
