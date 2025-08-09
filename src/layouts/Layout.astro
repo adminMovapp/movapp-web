@@ -11,6 +11,8 @@ import { generateSEOTags, generateOrganizationSchema } from '@/utils/seo.jsx';
 import GoogleTagManager from '@components/GoogleTagManager.astro';
 import GoogleAnalytics from '@components/GoogleAnalytics.astro';
 
+import MetaPixelScript from '@components/MetaPixelScript.astro';
+
 const showHeaderLayer = import.meta.env.PUBLIC_SHOW_HEADER_LAYER === 'true';
 
 interface Props {
@@ -102,6 +104,8 @@ const organizationSchema = generateOrganizationSchema();
    </head>
 
    <body class="bg-gray-100 text-gray-800 min-h-screen flex flex-col">
+      <MetaPixelScript pixelId={import.meta.env.PUBLIC_META_PIXEL_ID} />
+
       <InitAOS client:load />
 
       {showHeaderLayer ? <HeaderLayer /> : <div class="w-full h-5" />}
