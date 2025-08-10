@@ -2,19 +2,35 @@
 import { Picture } from 'astro:assets';
 import ImgWhatsapp from '@assets/whatsapp-logo.png';
 import { URLS } from '@constants/socials.ts';
+
+// wa__stt
+// wa__stt
 ---
 
 <a
    href={URLS.whatsapp.oficial}
-   class="inline-flex items-center gap-2
-   px-4
-    py-2
-    text-sm text-white
-    bg-green-500 hover:bg-green-600
-    rounded-3xl transition"
+   id="wa__stt"
+   class="wa__stt inline-flex items-center gap-2 px-4 py-2 text-sm text-white bg-green-500 hover:bg-green-600 rounded-3xl transition"
    target="_blank"
    rel="noopener noreferrer"
 >
    <Picture src={ImgWhatsapp} alt="Whatsapp" class="h-4 w-4 md:h-6 md:w-6" />
    <span>Contáctanos</span>
 </a>
+
+<script>
+   import { trackEvent } from '@utils/trackEvent.jsx';
+
+   document.addEventListener('DOMContentLoaded', () => {
+      // Seleccionar por ID O por clase
+      const button = document.getElementById('wa__stt') || document.querySelector('.wa__stt');
+
+      button?.addEventListener('click', () => {
+         trackEvent('wa__stt', {
+            category: 'Botón',
+            action: 'Clic',
+            label: 'Contáctanos',
+         });
+      });
+   });
+</script>

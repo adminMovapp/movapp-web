@@ -22,13 +22,19 @@ export default defineConfig({
             '@constants': '/src/constants/',
          },
       },
+      // assetsInclude: ['**/*.json']
    },
-   output: 'static',
+   output: 'server',
    build: {
       inlineStylesheets: 'auto',
    },
    server: {
       host: true,
       port: 7001,
+      headers: {
+         'X-Frame-Options': 'SAMEORIGIN',
+         'X-Content-Type-Options': 'nosniff',
+         'Referrer-Policy': 'strict-origin-when-cross-origin',
+      },
    },
 });

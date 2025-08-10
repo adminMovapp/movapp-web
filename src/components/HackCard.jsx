@@ -1,13 +1,17 @@
 import { useEffect, useState, useRef } from 'react';
 
-import useCountryConfig from '../hooks/useCountryConfig';
-import { createPreference } from '@/api/api';
+import useCountryConfig from '@hooks/useCountryConfig';
+import { createPreference } from '@api/api';
+
+import { useMetaPixel } from '@hooks/useMetaPixel';
 
 const HackCard = () => {
    const [count, setCount] = useState(1);
    const [isDrawerVisible, setIsDrawerVisible] = useState(false);
    const [isClosing, setIsClosing] = useState(false);
    const { country, config } = useCountryConfig();
+
+   const { trackPurchase, trackInitiateCheckout } = useMetaPixel(import.meta.env.PUBLIC_META_PIXEL_ID);
 
    const disabled = country; //=== 'MX';
    const productName = 'El Hack';
@@ -40,6 +44,10 @@ const HackCard = () => {
    const openDrawer = () => {
       setIsDrawerVisible(true);
       setIsClosing(false);
+
+      // Trackear inicio de checkout
+      const value = (config.precioMx * count).toFixed(2);
+      trackInitiateCheckout(parseFloat(value), 'MXN', [productName]);
    };
 
    const closeDrawer = () => {
@@ -138,6 +146,8 @@ const HackCard = () => {
       e.preventDefault();
 
       if (validateForm()) {
+         const totalValue = (config.precioMx * count).toFixed(2);
+
          const payload = {
             nombre: form.nombre,
             apellidos: form.apellidos,
@@ -147,14 +157,14 @@ const HackCard = () => {
             producto: productName,
             cantidad: count,
             precio_unitario: config.precioMx.toFixed(2),
-            total: (config.precioMx * count).toFixed(2),
+            total: totalValue,
             pais: country,
          };
 
          try {
             const response = await createPreference(payload);
-            console.log('Preferencia creada:', response);
-            console.log(mpRef.current);
+            // console.log('Preferencia creada:', response);
+            // console.log(mpRef.current);
 
             // if (!mpRef.current) {
             //    console.warn("MercadoPago no está inicializado aún.");
@@ -162,6 +172,36 @@ const HackCard = () => {
             // }
 
             if (response?.id) {
+               // Trackear compra completada (lado del cliente)
+               trackPurchase(parseFloat(totalValue), 'MXN', [productName]);
+
+               // Enviar evento a la API de Conversiones (servidor)
+               try {
+                  fetch('/api/track-purchase', { method: 'GET' })
+                     .then((r) => r.json())
+                     .then(console.log);
+
+                  await fetch('/api/track-purchase', {
+                     method: 'POST',
+                     headers: {
+                        'Content-Type': 'application/json',
+                     },
+                     body: JSON.stringify({
+                        email: form.email,
+                        phone: form.telefono,
+                        firstName: form.nombre,
+                        lastName: form.apellidos,
+                        zipCode: form.codigoPostal,
+                        value: totalValue,
+                        currency: 'MXN',
+                        contentIds: [productName],
+                        eventSourceUrl: window.location.href,
+                     }),
+                  });
+               } catch (trackingError) {
+                  console.error('Error tracking purchase:', trackingError);
+               }
+
                mpRef.current.checkout({
                   preference: {
                      id: response.id,
@@ -342,6 +382,7 @@ const HackCard = () => {
                            onChange={handleChange}
                            aria-label="Teléfono"
                            required
+                           maxLength={14}
                         />
                         {errors.telefono && <p className="text-red-500 text-sm mt-1">{errors.telefono}</p>}
                      </div>
@@ -357,6 +398,7 @@ const HackCard = () => {
                            onChange={handleChange}
                            aria-label="Código postal"
                            required
+                           maxLength={6}
                         />
                         {errors.codigoPostal && <p className="text-red-500 text-sm mt-1">{errors.codigoPostal}</p>}
                      </div>
