@@ -12,7 +12,7 @@ export const hashData = async (data) => {
       const hashHex = hashArray.map((byte) => byte.toString(16).padStart(2, '0')).join('');
       return hashHex;
    } catch (error) {
-      console.error('Error hashing data:', error);
+      // console.error('Error hashing data:', error);
       return null;
    }
 };
@@ -64,7 +64,7 @@ export const sendConversionEvent = async (
       });
 
       const result = await response.json();
-      console.log('Meta API response:', result);
+      // console.log('Meta API response:', result);
       return result;
    } catch (error) {
       console.error('Error sending Meta Conversion API event:', error);

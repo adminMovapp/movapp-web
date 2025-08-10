@@ -2,10 +2,10 @@ import { useEffect, useRef } from 'react';
 
 export const trackEvent = (eventName, parameters = {}) => {
    if (typeof window === 'undefined' || !window.fbq) {
-      console.warn('⚠️ Meta Pixel no disponible para:', eventName);
+      // console.warn('⚠️ Meta Pixel no disponible para:', eventName);
       return;
    }
-   console.log('📊 Tracking evento:', eventName, parameters);
+   // console.log('📊 Tracking evento:', eventName, parameters);
    window.fbq('track', eventName, parameters);
 };
 

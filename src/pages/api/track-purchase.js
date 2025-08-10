@@ -1,7 +1,7 @@
 import { createUserData, trackServerPurchase } from '@utils/metaConversionsApi.js';
 
 export async function POST({ request }) {
-   console.log('🔄 API track-purchase llamada', request);
+   // console.log('🔄 API track-purchase llamada', request);
 
    try {
       // Verificar que el request tenga contenido
@@ -20,7 +20,7 @@ export async function POST({ request }) {
       }
 
       const data = await request.json();
-      console.log('📥 Datos recibidos:', data);
+      // console.log('📥 Datos recibidos:', data);
 
       // Validar que tenemos los datos mínimos
       if (!data.email || !data.value) {
@@ -40,10 +40,10 @@ export async function POST({ request }) {
       const pixelId = import.meta.env.PUBLIC_META_PIXEL_ID;
       const accessToken = import.meta.env.META_ACCESS_TOKEN;
 
-      console.log('🔑 Variables de entorno:', {
-         pixelId: pixelId ? '✅ Configurado' : '❌ Faltante',
-         accessToken: accessToken ? '✅ Configurado' : '❌ Faltante',
-      });
+      // console.log('🔑 Variables de entorno:', {
+      //    pixelId: pixelId ? '✅ Configurado' : '❌ Faltante',
+      //    accessToken: accessToken ? '✅ Configurado' : '❌ Faltante',
+      // });
 
       if (!pixelId || !accessToken) {
          return new Response(
@@ -65,8 +65,6 @@ export async function POST({ request }) {
       // Crear datos de usuario
       const userData = await createUserData(data.email, data.phone, data.firstName, data.lastName, data.zipCode);
 
-      console.log('👤 User data creado (hashed)');
-
       // Enviar a Meta API
       const result = await trackServerPurchase(
          pixelId,
@@ -78,7 +76,7 @@ export async function POST({ request }) {
          data.eventSourceUrl || '',
       );
 
-      console.log('✅ Enviado a Meta API exitosamente');
+      // console.log('✅ Enviado a Meta API exitosamente');
 
       return new Response(
          JSON.stringify({

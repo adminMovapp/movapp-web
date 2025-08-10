@@ -163,8 +163,8 @@ const HackCard = () => {
 
          try {
             const response = await createPreference(payload);
-            console.log('Preferencia creada:', response);
-            console.log(mpRef.current);
+            // console.log('Preferencia creada:', response);
+            // console.log(mpRef.current);
 
             // if (!mpRef.current) {
             //    console.warn("MercadoPago no está inicializado aún.");
@@ -177,8 +177,6 @@ const HackCard = () => {
 
                // Enviar evento a la API de Conversiones (servidor)
                try {
-                  console.log('PREV: /api/track-purchase');
-
                   fetch('/api/track-purchase', { method: 'GET' })
                      .then((r) => r.json())
                      .then(console.log);

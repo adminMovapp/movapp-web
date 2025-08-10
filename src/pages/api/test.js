@@ -6,11 +6,11 @@ export async function GET() {
 }
 
 export async function POST({ request }) {
-   console.log('🔄 POST /api/test ejecutado');
+   // console.log('🔄 POST /api/test ejecutado');
 
    try {
       const data = await request.json();
-      console.log('📥 Data recibida:', data);
+      // console.log('📥 Data recibida:', data);
 
       return new Response(
          JSON.stringify({

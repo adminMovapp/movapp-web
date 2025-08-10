@@ -32,7 +32,7 @@ if (!pixelId) {
    is:inline
    set:html={`
   if (!('${pixelId}') || ('${pixelId}').length < 10) {
-    console.error('❌ Pixel ID inválido: ${pixelId}');
+    console.error('❌ Pixel ID inválido');
   } else if (window._metaPixelInitialized) {
     console.warn('⚠️ Meta Pixel ya está inicializado, saltando...');
   } else {
