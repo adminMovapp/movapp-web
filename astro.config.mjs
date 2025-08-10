@@ -2,6 +2,7 @@ import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 // import tailwindcss from "@tailwindcss/vite";
 import tailwind from '@astrojs/tailwind';
+import netlify from '@astrojs/netlify';
 
 export default defineConfig({
    integrations: [tailwind(), react()],
@@ -25,6 +26,7 @@ export default defineConfig({
       // assetsInclude: ['**/*.json']
    },
    output: 'server',
+   adapter: netlify(),
    build: {
       inlineStylesheets: 'auto',
    },
