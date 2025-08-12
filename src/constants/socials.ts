@@ -4,7 +4,7 @@ export const URLS = {
    youtube: 'https://www.youtube.com/@movappoficial',
    facebook: 'https://www.facebook.com/movappbymann',
    instagram: 'https://www.instagram.com/movappbymann',
-   tiktok: 'https://www.tiktok.com/@erikmanndp',
+   tiktok: 'https://www.tiktok.com/@movappbymann',
    whatsapp: {
       oficial: 'https://api.whatsapp.com/send/?phone=5215574360621&text&type=phone_number&app_absent=0',
       principal: 'https://api.whatsapp.com/send/?phone=5215578767442&text&type=phone_number&app_absent=0',
