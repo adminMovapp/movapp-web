@@ -1,30 +1,38 @@
 import { useEffect, useRef } from 'react';
 
-export const trackEvent = (eventName, parameters = {}) => {
-   if (typeof window === 'undefined' || !window.fbq) {
-      // console.warn('⚠️ Meta Pixel no disponible para:', eventName);
-      return;
-   }
-   // console.log('📊 Tracking evento:', eventName, parameters);
-   window.fbq('track', eventName, parameters);
+export const generateEventId = () => {
+   return 'evt_' + Date.now() + '_' + Math.random().toString(36).substring(2, 10);
 };
 
-export const trackPurchase = (value, currency = 'MXN', contentIds = []) => {
-   trackEvent('Purchase', {
-      value: value,
-      currency: currency,
-      content_ids: contentIds,
-      content_type: 'product',
-   });
+export const trackEvent = (eventName, parameters = {}, eventId = null) => {
+   if (typeof window === 'undefined' || !window.fbq) return;
+   window.fbq('track', eventName, parameters, eventId ? { eventID: eventId } : {});
 };
 
-export const trackInitiateCheckout = (value, currency = 'MXN', contentIds = []) => {
-   trackEvent('InitiateCheckout', {
-      value: value,
-      currency: currency,
-      content_ids: contentIds,
-      content_type: 'product',
-   });
+export const trackPurchase = (value, currency = 'MXN', contentIds = [], eventId = null) => {
+   trackEvent(
+      'Purchase',
+      {
+         value,
+         currency,
+         content_ids: contentIds,
+         content_type: 'product',
+      },
+      eventId,
+   );
+};
+
+export const trackInitiateCheckout = (value, currency = 'MXN', contentIds = [], eventId = null) => {
+   trackEvent(
+      'InitiateCheckout',
+      {
+         value,
+         currency,
+         content_ids: contentIds,
+         content_type: 'product',
+      },
+      eventId,
+   );
 };
 
 export const useMetaPixel = (pixelId) => {
@@ -34,9 +42,9 @@ export const useMetaPixel = (pixelId) => {
       if (typeof window !== 'undefined') {
          const checkPixel = () => {
             if (window.fbq) {
-               console.log('✅ Meta Pixel detectado y listo para tracking');
+               console.log('✅ Meta Pixel cargado');
             } else if (!hasWarned.current) {
-               console.warn('⚠️ Meta Pixel no detectado. Asegúrate de que MetaPixelScript esté cargado.');
+               console.warn('⚠️ Meta Pixel no detectado.');
                hasWarned.current = true;
             }
          };
@@ -47,8 +55,8 @@ export const useMetaPixel = (pixelId) => {
    }, [pixelId]);
 
    return {
+      trackEvent,
       trackPurchase,
       trackInitiateCheckout,
-      trackEvent,
    };
 };

@@ -27,8 +27,7 @@ if (!pixelId) {
 }
 ---
 
-<!-- Meta Pixel Code -->
-<script
+<!-- Meta Pixel Code --><!-- <script
    is:inline
    set:html={`
   if (!('${pixelId}') || ('${pixelId}').length < 10) {
@@ -76,8 +75,50 @@ if (!pixelId) {
     window._fbPixelLoaded = true;
   }
 `}
-/>
+/> -->
+<script
+   is:inline
+   set:html={`
+  if (!('${pixelId}') || ('${pixelId}').length < 10) {
+    console.error('❌ Pixel ID inválido');
+  } else if (window._metaPixelInitialized) {
+    console.warn('⚠️ Meta Pixel ya está inicializado, saltando...');
+  } else {
+    !(function (f, b, e, v, n, t, s) {
+      if (f.fbq) return;
+      n = f.fbq = function () {
+        n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
+      };
+      if (!f._fbq) f._fbq = n;
+      n.push = n;
+      n.loaded = !0;
+      n.version = '2.0';
+      n.queue = [];
+      t = b.createElement(e);
+      t.async = !0;
+      t.src = v;
+      s = b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t, s);
+    })(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
 
+    const advancedMatching = '${pageParams.userEmailHash}' ? { em: '${pageParams.userEmailHash}' } : {};
+    fbq('init', '${pixelId}', advancedMatching);
+
+    const eventId = 'evt_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    window._fb_event_id = eventId;
+
+    fbq('track', 'PageView', {
+      event_url: window.location.href,
+      page_title: document.title,
+      post_id: '${pageParams.postId}',
+      post_type: '${pageParams.postType}',
+      user_role: '${pageParams.userRole}'
+    }, { eventID: eventId });
+
+    window._metaPixelInitialized = true;
+  }
+`}
+/>
 <noscript>
    <img
       height="1"

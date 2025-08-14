@@ -18,19 +18,23 @@ import { URLS } from '@constants/socials.ts';
    <span>Contáctanos</span>
 </a>
 
-<script>
-   import { trackEvent } from '@utils/trackEvent.jsx';
+<script type="module">
+   import { trackEvent, generateEventId } from '@utils/useMetaPixel.js';
 
    document.addEventListener('DOMContentLoaded', () => {
-      // Seleccionar por ID O por clase
-      const button = document.getElementById('wa__stt') || document.querySelector('.wa__stt');
+      const btn = document.getElementById('wa__stt');
+      const eventId = generateEventId();
 
-      button?.addEventListener('click', () => {
-         trackEvent('wa__stt', {
-            category: 'Botón',
-            action: 'Clic',
-            label: 'Contáctanos',
-         });
+      btn?.addEventListener('click', () => {
+         trackEvent(
+            'wa__stt',
+            {
+               category: 'Botón',
+               action: 'Clic',
+               label: 'Contáctanos',
+            },
+            eventId,
+         );
       });
    });
 </script>
