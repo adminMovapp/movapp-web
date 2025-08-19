@@ -1,62 +1,53 @@
-import { useEffect, useRef } from 'react';
+// ==============================================
+// ✅ PASO 4: NUEVO HOOK COMPATIBLE
+// ==============================================
 
-export const generateEventId = () => {
-   return 'evt_' + Date.now() + '_' + Math.random().toString(36).substring(2, 10);
-};
+// src/hooks/useMetaPixel.js - NUEVA VERSIÓN COMPATIBLE
+import { trackEvent } from '@utils/metaPixel.js';
 
-export const trackEvent = (eventName, parameters = {}, eventId = null) => {
-   if (typeof window === 'undefined' || !window.fbq) return;
-   window.fbq('track', eventName, parameters, eventId ? { eventID: eventId } : {});
-};
+export function useMetaPixel(pixelId) {
+   const trackPurchase = async (value, currency, contentIds) => {
+      const userData = {}; // Se puede agregar email, phone, etc. desde el formulario
 
-export const trackPurchase = (value, currency = 'MXN', contentIds = [], eventId = null) => {
-   trackEvent(
-      'Purchase',
-      {
-         value,
-         currency,
-         content_ids: contentIds,
-         content_type: 'product',
-      },
-      eventId,
-   );
-};
+      return await trackEvent(
+         'Purchase',
+         {
+            value: parseFloat(value),
+            currency: currency,
+            content_ids: contentIds,
+            content_type: 'product',
+            num_items: contentIds.length,
+         },
+         userData,
+      );
+   };
 
-export const trackInitiateCheckout = (value, currency = 'MXN', contentIds = [], eventId = null) => {
-   trackEvent(
-      'InitiateCheckout',
-      {
-         value,
-         currency,
-         content_ids: contentIds,
-         content_type: 'product',
-      },
-      eventId,
-   );
-};
+   const trackInitiateCheckout = async (value, currency, contentIds) => {
+      return await trackEvent(
+         'InitiateCheckout',
+         {
+            value: parseFloat(value),
+            currency: currency,
+            content_ids: contentIds,
+            content_type: 'product',
+            num_items: contentIds.length,
+         },
+         {},
+      );
+   };
 
-export const useMetaPixel = (pixelId) => {
-   const hasWarned = useRef(false);
+   const trackLead = async (customData = {}, userData = {}) => {
+      return await trackEvent('Lead', customData, userData);
+   };
 
-   useEffect(() => {
-      if (typeof window !== 'undefined') {
-         const checkPixel = () => {
-            if (window.fbq) {
-               console.log('✅ Meta Pixel cargado');
-            } else if (!hasWarned.current) {
-               console.warn('⚠️ Meta Pixel no detectado.');
-               hasWarned.current = true;
-            }
-         };
-
-         checkPixel();
-         setTimeout(checkPixel, 1000);
-      }
-   }, [pixelId]);
+   const trackCustomEvent = async (eventName, customData = {}, userData = {}) => {
+      return await trackEvent(eventName, customData, userData);
+   };
 
    return {
-      trackEvent,
       trackPurchase,
       trackInitiateCheckout,
+      trackLead,
+      trackEvent: trackCustomEvent,
    };
-};
+}

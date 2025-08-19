@@ -1,129 +1,39 @@
 ---
-// Mapa de rutas para post_id
-const PAGE_MAP = {
-   '/': '11',
-   '/movapp': '1445',
-   '/hack': '1446',
-   '/store': '6150',
-   '/collaborations': '1448',
-   '/faqs': '1449',
-   '/testimonials': '1450',
-   '/mind': '1451',
-   '/red': '1452',
-};
-
-// Obtener parámetros de página
-const pageParams = {
-   postId: Astro.props.postId || PAGE_MAP[Astro.url.pathname] || 'home',
-   postType: Astro.props.postType || 'page',
-   userRole: Astro.props.userRole || 'guest',
-   userEmailHash: Astro.props.userEmailHash || null,
-};
-
-const pixelId = import.meta.env.PUBLIC_META_PIXEL_ID;
-
-if (!pixelId) {
-   console.error('❌ PUBLIC_META_PIXEL_ID no está configurado en .env');
+export interface Props {
+   pixelId: string;
 }
+
+const { pixelId } = Astro.props;
 ---
 
-<!-- Meta Pixel Code --><!-- <script
-   is:inline
-   set:html={`
-  if (!('${pixelId}') || ('${pixelId}').length < 10) {
-    console.error('❌ Pixel ID inválido');
-  } else if (window._metaPixelInitialized) {
-    console.warn('⚠️ Meta Pixel ya está inicializado, saltando...');
-  } else {
-    // Cargar script
-    !(function (f, b, e, v, n, t, s) {
-      if (f.fbq) return;
-      n = f.fbq = function () {
-        n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
+<script define:vars={{ pixelId }}>
+   document.addEventListener('DOMContentLoaded', async () => {
+      const { initMetaPixel, trackPageView } = await import('/src/utils/metaPixel.js');
+
+      // Inicializar pixel con PageView automático
+      initMetaPixel(pixelId);
+
+      // Hacer disponible globalmente
+      window.metaPixel = {
+         track: async (eventName, customData, userData) => {
+            const { trackEvent } = await import('/src/utils/metaPixel.js');
+            return trackEvent(eventName, customData, userData);
+         },
       };
-      if (!f._fbq) f._fbq = n;
-      n.push = n;
-      n.loaded = !0;
-      n.version = '2.0';
-      n.queue = [];
-      t = b.createElement(e);
-      t.async = !0;
-      t.src = v;
-      s = b.getElementsByTagName(e)[0];
-      s.parentNode.insertBefore(t, s);
-    })(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
 
-    // Configurar Advanced Matching con email hasheado
-    const advancedMatching = '${pageParams.userEmailHash}' ? { em: '${pageParams.userEmailHash}' } : {};
-    
-    fbq('init', '${pixelId}', advancedMatching);
-    
-    // Generar Event ID único
-    const eventId = 'evt_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-    
-    fbq('track', 'PageView', {
-      event_url: window.location.href,
-      page_title: document.title,
-      plugin: 'PixelYourSite',
-      post_id: '${pageParams.postId}',
-      post_type: '${pageParams.postType}',
-      user_role: '${pageParams.userRole}'
-    }, { eventID: eventId });
+      console.log('Meta Pixel initialized with deduplication');
+   });
 
-    // Marcar como inicializado
-    window._metaPixelInitialized = true;
-    window._fbPixelLoaded = true;
-  }
-`}
-/> -->
-<script
-   is:inline
-   set:html={`
-  if (!('${pixelId}') || ('${pixelId}').length < 10) {
-    console.error('❌ Pixel ID inválido');
-  } else if (window._metaPixelInitialized) {
-    console.warn('⚠️ Meta Pixel ya está inicializado, saltando...');
-  } else {
-    !(function (f, b, e, v, n, t, s) {
-      if (f.fbq) return;
-      n = f.fbq = function () {
-        n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
-      };
-      if (!f._fbq) f._fbq = n;
-      n.push = n;
-      n.loaded = !0;
-      n.version = '2.0';
-      n.queue = [];
-      t = b.createElement(e);
-      t.async = !0;
-      t.src = v;
-      s = b.getElementsByTagName(e)[0];
-      s.parentNode.insertBefore(t, s);
-    })(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
-
-    const advancedMatching = '${pageParams.userEmailHash}' ? { em: '${pageParams.userEmailHash}' } : {};
-    fbq('init', '${pixelId}', advancedMatching);
-
-    const eventId = 'evt_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-    window._fb_event_id = eventId;
-
-    fbq('track', 'PageView', {
-      event_url: window.location.href,
-      page_title: document.title,
-      post_id: '${pageParams.postId}',
-      post_type: '${pageParams.postType}',
-      user_role: '${pageParams.userRole}'
-    }, { eventID: eventId });
-
-    window._metaPixelInitialized = true;
-  }
-`}
-/>
-<noscript>
-   <img
-      height="1"
-      width="1"
-      style="display:none"
-      src={`https://www.facebook.com/tr?id=${pixelId}&ev=PageView&noscript=1&cd[post_id]=${pageParams.postId}&cd[post_type]=${pageParams.postType}&cd[user_role]=${pageParams.userRole}`}
-   />
-</noscript>
+   // Detectar navegación SPA
+   let lastUrl = location.href;
+   new MutationObserver(async () => {
+      const url = location.href;
+      if (url !== lastUrl) {
+         lastUrl = url;
+         if (window.metaPixel) {
+            const { trackPageView } = await import('/src/utils/metaPixel.js');
+            await trackPageView();
+         }
+      }
+   }).observe(document, { subtree: true, childList: true });
+</script>
