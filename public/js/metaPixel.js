@@ -1,26 +1,13 @@
-// Variables globales para manejo del pixel
 let pixelInitialized = false;
-let pixelId = null;
 
-// Utilidad para generar event_id único para deduplicación
-export function generateEventId() {
+function generateEventId() {
    return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 }
 
-// Utilidad para hashear datos sensibles (email, teléfono)
-export async function hashData(data) {
-   const encoder = new TextEncoder();
-   const dataBuffer = encoder.encode(data.toLowerCase().trim());
-   const hashBuffer = await crypto.subtle.digest('SHA-256', dataBuffer);
-   const hashArray = Array.from(new Uint8Array(hashBuffer));
-   return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
-}
-
-// Inicializar Facebook Pixel
-export function initMetaPixel(id) {
+function initMetaPixel(pixelId) {
    if (typeof window === 'undefined' || pixelInitialized) return;
 
-   pixelId = id;
+   console.log('🚀 Initializing Meta Pixel:', pixelId);
 
    // Cargar Facebook Pixel
    !(function (f, b, e, v, n, t, s) {
@@ -43,18 +30,24 @@ export function initMetaPixel(id) {
    window.fbq('init', pixelId);
    pixelInitialized = true;
 
-   // PageView automático con deduplicación
+   console.log('✅ Meta Pixel initialized');
    trackPageView();
 }
 
-// Enviar evento al servidor via Netlify Functions
 async function sendServerEvent(eventName, customData = {}, userData = {}, eventId) {
+   const isDev = window.location.hostname === 'localhost' || window.location.hostname.includes('192.168.');
+
+   if (isDev) {
+      console.log('🧪 DEV MODE - Server event simulated');
+      return { dev_mode: true };
+   }
+
    try {
+      console.log('📡 Sending server event:', eventName);
+
       const response = await fetch('/.netlify/functions/meta-conversion', {
          method: 'POST',
-         headers: {
-            'Content-Type': 'application/json',
-         },
+         headers: { 'Content-Type': 'application/json' },
          body: JSON.stringify({
             event_name: eventName,
             custom_data: customData,
@@ -64,37 +57,41 @@ async function sendServerEvent(eventName, customData = {}, userData = {}, eventI
       });
 
       if (!response.ok) {
-         throw new Error(`Server event failed: ${response.status}`);
+         const errorText = await response.text();
+         console.error('❌ Server event failed:', response.status, errorText);
+         return null;
       }
 
       const result = await response.json();
-      console.log('Server event sent successfully:', result);
+      console.log('✅ Server event success:', result);
       return result;
    } catch (error) {
-      console.error('Error sending server event:', error);
+      console.error('❌ Server event error:', error.message);
       return null;
    }
 }
 
-// Función principal para rastrear eventos
-export async function trackEvent(eventName, customData = {}, userData = {}) {
+async function trackEvent(eventName, customData = {}, userData = {}) {
    if (typeof window === 'undefined') return;
 
    const eventId = generateEventId();
 
-   // Evento del cliente
+   console.log(`🎯 Tracking ${eventName} with ID: ${eventId}`);
+
+   // Cliente
    if (window.fbq) {
       window.fbq('track', eventName, customData, { eventID: eventId });
+      console.log('✅ Client event sent');
+   } else {
+      console.warn('⚠️ Facebook Pixel not loaded');
    }
 
-   // También enviar al servidor para deduplicación
+   // Servidor
    await sendServerEvent(eventName, customData, userData, eventId);
-
    return eventId;
 }
 
-// Función específica para PageView
-export async function trackPageView(customData = {}) {
+async function trackPageView(customData = {}) {
    if (typeof window === 'undefined') return;
 
    const eventId = generateEventId();
@@ -105,13 +102,20 @@ export async function trackPageView(customData = {}) {
       ...customData,
    };
 
-   // Evento PageView del cliente
    if (window.fbq) {
       window.fbq('track', 'PageView', pageData, { eventID: eventId });
    }
 
-   // También enviar al servidor
    await sendServerEvent('PageView', pageData, {}, eventId);
-
    return eventId;
 }
+
+// Hacer disponible globalmente
+window.metaPixelUtils = {
+   initMetaPixel,
+   trackEvent,
+   trackPageView,
+   generateEventId,
+};
+
+console.log('📦 Meta Pixel utils loaded');
