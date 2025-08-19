@@ -6,13 +6,13 @@ export interface Props {
 const { pixelId } = Astro.props;
 ---
 
-<script src="/js/metaPixel.js"></script>
+<script src="/js/metaPixel.js" is:inline></script>
 <script define:vars={{ pixelId }}>
    document.addEventListener('DOMContentLoaded', () => {
       if (window.metaPixelUtils) {
          window.metaPixelUtils.initMetaPixel(pixelId);
 
-         // Alias global
+         // Alias global para fácil acceso
          window.metaPixel = {
             track: window.metaPixelUtils.trackEvent,
             trackPageView: window.metaPixelUtils.trackPageView,
