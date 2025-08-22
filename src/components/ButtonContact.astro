@@ -2,9 +2,6 @@
 import { Picture } from 'astro:assets';
 import ImgWhatsapp from '@assets/whatsapp-logo.png';
 import { URLS } from '@constants/socials.ts';
-
-// wa__stt
-// wa__stt
 ---
 
 <a
@@ -19,22 +16,28 @@ import { URLS } from '@constants/socials.ts';
 </a>
 
 <script type="module">
-   import { trackEvent, generateEventId } from '@utils/useMetaPixel.js';
+   import { trackEvent, generateEventId } from '@utils/metaPixel.js';
 
    document.addEventListener('DOMContentLoaded', () => {
       const btn = document.getElementById('wa__stt');
-      const eventId = generateEventId();
 
-      btn?.addEventListener('click', () => {
-         trackEvent(
-            'wa__stt',
+      btn?.addEventListener('click', async () => {
+         // Trackear con la API genérica y deduplicación automática
+         await trackEvent(
+            'Lead',
             {
-               category: 'Botón',
-               action: 'Clic',
-               label: 'Contáctanos',
+               content_name: 'WhatsApp Contact',
+               content_category: 'whatsapp_contact',
+               lead_type: 'contact_button',
+               page_url: window.location.href,
+               page_title: document.title,
+               value: 0,
+               currency: 'MXN',
             },
-            eventId,
+            {},
          );
+
+         console.log('WhatsApp contact tracked with deduplication');
       });
    });
 </script>

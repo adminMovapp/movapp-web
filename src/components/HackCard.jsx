@@ -3,7 +3,7 @@ import { useEffect, useState, useRef } from 'react';
 import useCountryConfig from '@hooks/useCountryConfig';
 import { createPreference } from '@api/api';
 
-import { useMetaPixel } from '@hooks/useMetaPixel';
+import { useMetaPixel } from '@hooks/useMetaPixel.jsx';
 
 const HackCard = () => {
    const [count, setCount] = useState(1);
@@ -41,13 +41,13 @@ const HackCard = () => {
       return () => clearInterval(interval);
    }, []);
 
-   const openDrawer = () => {
+   const openDrawer = async () => {
       setIsDrawerVisible(true);
       setIsClosing(false);
 
       // Trackear inicio de checkout
       const value = (config.precioMx * count).toFixed(2);
-      trackInitiateCheckout(parseFloat(value), 'MXN', [productName]);
+      await trackInitiateCheckout(parseFloat(value), 'MXN', [productName]);
    };
 
    const closeDrawer = () => {
@@ -147,8 +147,10 @@ const HackCard = () => {
 
       if (validateForm()) {
          const totalValue = (config.precioMx * count).toFixed(2);
+         const idProducto = config.id_producto;
 
          const payload = {
+            id_producto: idProducto,
             nombre: form.nombre,
             apellidos: form.apellidos,
             correo: form.email,
@@ -163,44 +165,10 @@ const HackCard = () => {
 
          try {
             const response = await createPreference(payload);
-            // console.log('Preferencia creada:', response);
-            // console.log(mpRef.current);
-
-            // if (!mpRef.current) {
-            //    console.warn("MercadoPago no está inicializado aún.");
-            //    return;
-            // }
 
             if (response?.id) {
                // Trackear compra completada (lado del cliente)
-               trackPurchase(parseFloat(totalValue), 'MXN', [productName]);
-
-               // Enviar evento a la API de Conversiones (servidor)
-               try {
-                  fetch('/api/track-purchase', { method: 'GET' })
-                     .then((r) => r.json())
-                     .then(console.log);
-
-                  await fetch('/api/track-purchase', {
-                     method: 'POST',
-                     headers: {
-                        'Content-Type': 'application/json',
-                     },
-                     body: JSON.stringify({
-                        email: form.email,
-                        phone: form.telefono,
-                        firstName: form.nombre,
-                        lastName: form.apellidos,
-                        zipCode: form.codigoPostal,
-                        value: totalValue,
-                        currency: 'MXN',
-                        contentIds: [productName],
-                        eventSourceUrl: window.location.href,
-                     }),
-                  });
-               } catch (trackingError) {
-                  console.error('Error tracking purchase:', trackingError);
-               }
+               await trackPurchase(parseFloat(totalValue), 'MXN', [productName]);
 
                mpRef.current.checkout({
                   preference: {

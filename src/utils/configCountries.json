@@ -1,58 +1,65 @@
 {
-    "MX": {
-        "nombre": "México",
-        "moneda": "MXN",
-        "simbolo": "$",
-        "precio": 500,
-        "bandera": "fi fi-mx",
-        "precioMx": 500
-    },
-    "PE": {
-        "nombre": "Perú",
-        "moneda": "PEN",
-        "simbolo": "S/",
-        "precio": 126,
-        "bandera": "fi fi-pe",
-        "precioMx": 666
-    },
-    "CO": {
-        "nombre": "Colombia",
-        "moneda": "COP",
-        "simbolo": "$",
-        "precio": 135000,
-        "bandera": "fi fi-co",
-        "precioMx": 608
-    },
-    "EC": {
-        "nombre": "Ecuador",
-        "moneda": "USD",
-        "simbolo": "$",
-        "precio": 33,
-        "bandera": "fi fi-ec",
-        "precioMx": 660
-    },
-    "BO": {
-        "nombre": "Bolivia",
-        "moneda": "BOB",
-        "simbolo": "$",
-        "precio": 228,
-        "bandera": "fi fi-bo",
-        "precioMx": 622
-    },
-    "AR": {
-        "nombre": "Argentina",
-        "moneda": "ARS",
-        "simbolo": "$",
-        "precio": 20000,
-        "bandera": "fi fi-ar",
-        "precioMx": 10
-    },
-    "CL": {
-        "nombre": "Chile",
-        "moneda": "CLP",
-        "simbolo": "$",
-        "precio": 31120,
-        "bandera": "fi fi-cl",
-        "precioMx": 598
-    }
+   "MX": {
+      "id_producto": 1,
+      "nombre": "México",
+      "moneda": "MXN",
+      "simbolo": "$",
+      "precio": 500,
+      "bandera": "fi fi-mx",
+      "precioMx": 500
+   },
+   "PE": {
+      "id_producto": 2,
+      "nombre": "Perú",
+      "moneda": "PEN",
+      "simbolo": "S/",
+      "precio": 126,
+      "bandera": "fi fi-pe",
+      "precioMx": 666
+   },
+   "CO": {
+      "id_producto": 3,
+      "nombre": "Colombia",
+      "moneda": "COP",
+      "simbolo": "$",
+      "precio": 135000,
+      "bandera": "fi fi-co",
+      "precioMx": 608
+   },
+   "EC": {
+      "id_producto": 4,
+      "nombre": "Ecuador",
+      "moneda": "USD",
+      "simbolo": "$",
+      "precio": 33,
+      "bandera": "fi fi-ec",
+      "precioMx": 660
+   },
+   "BO": {
+      "id_producto": 5,
+      "nombre": "Bolivia",
+      "moneda": "BOB",
+      "simbolo": "$",
+      "precio": 228,
+      "bandera": "fi fi-bo",
+      "precioMx": 622
+   },
+   "AR": {
+      "id_producto": 6,
+      "nombre": "Argentina",
+      "moneda": "ARS",
+      "simbolo": "$",
+      "precio": 20000,
+      "bandera": "fi fi-ar",
+      "precioMx": 10
+   },
+   "CL": {
+      "id_producto": 7,
+      "nombre": "Chile",
+      "moneda": "CLP",
+      "simbolo": "$",
+      "precio": 31120,
+      "bandera": "fi fi-cl",
+      "precioMx": 598
+   }
 }
