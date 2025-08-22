@@ -147,8 +147,10 @@ const HackCard = () => {
 
       if (validateForm()) {
          const totalValue = (config.precioMx * count).toFixed(2);
+         const idProducto = config.id_producto;
 
          const payload = {
+            id_producto: idProducto,
             nombre: form.nombre,
             apellidos: form.apellidos,
             correo: form.email,
