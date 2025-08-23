@@ -17,14 +17,14 @@ function extractFbp(cookieHeader) {
 }
 
 exports.handler = async (event, context) => {
-   console.log('=== META CONVERSION API CALLED ===');
-   console.log('Method:', event?.httpMethod);
-   console.log('Origin:', event?.headers?.origin);
-   console.log('User-Agent:', event?.headers?.['user-agent']);
+   // console.log('=== META CONVERSION API CALLED ===');
+   // console.log('Method:', event?.httpMethod);
+   // console.log('Origin:', event?.headers?.origin);
+   // console.log('User-Agent:', event?.headers?.['user-agent']);
 
    // CORS preflight
    if (event.httpMethod === 'OPTIONS') {
-      console.log('✅ CORS preflight handled');
+      // console.log('✅ CORS preflight handled');
       return {
          statusCode: 200,
          headers: {
@@ -37,7 +37,7 @@ exports.handler = async (event, context) => {
    }
 
    if (event.httpMethod !== 'POST') {
-      console.log('❌ Invalid method:', event.httpMethod);
+      // console.log('❌ Invalid method:', event.httpMethod);
       return {
          statusCode: 405,
          headers: { 'Access-Control-Allow-Origin': '*' },
@@ -47,7 +47,7 @@ exports.handler = async (event, context) => {
 
    // Verificar variables críticas
    if (!process.env.META_PIXEL_ID) {
-      console.error('❌ META_PIXEL_ID missing');
+      // console.error('❌ META_PIXEL_ID missing');
       return {
          statusCode: 500,
          headers: { 'Access-Control-Allow-Origin': '*' },
@@ -56,7 +56,7 @@ exports.handler = async (event, context) => {
    }
 
    if (!process.env.META_ACCESS_TOKEN) {
-      console.error('❌ META_ACCESS_TOKEN missing');
+      // console.error('❌ META_ACCESS_TOKEN missing');
       return {
          statusCode: 500,
          headers: { 'Access-Control-Allow-Origin': '*' },
@@ -65,12 +65,12 @@ exports.handler = async (event, context) => {
    }
 
    try {
-      console.log('📥 Request body:', event.body);
+      // console.log('📥 Request body:', event.body);
 
       const { event_name, custom_data, user_data, event_id } = JSON.parse(event.body || '{}');
 
       if (!event_name) {
-         console.log('❌ Missing event_name');
+         // console.log('❌ Missing event_name');
          return {
             statusCode: 400,
             headers: { 'Access-Control-Allow-Origin': '*' },
@@ -78,7 +78,7 @@ exports.handler = async (event, context) => {
          };
       }
 
-      console.log('🎯 Processing event:', event_name, 'ID:', event_id);
+      // console.log('🎯 Processing event:', event_name, 'ID:', event_id);
 
       // Construir evento para Meta
       const pixelEvent = {
@@ -103,11 +103,11 @@ exports.handler = async (event, context) => {
 
       // Hashear datos sensibles
       if (pixelEvent.user_data.em && Array.isArray(pixelEvent.user_data.em)) {
-         console.log('🔐 Hashing emails...');
+         // console.log('🔐 Hashing emails...');
          pixelEvent.user_data.em = await Promise.all(pixelEvent.user_data.em.map((email) => hashData(email)));
       }
       if (pixelEvent.user_data.ph && Array.isArray(pixelEvent.user_data.ph)) {
-         console.log('🔐 Hashing phones...');
+         // console.log('🔐 Hashing phones...');
          pixelEvent.user_data.ph = await Promise.all(
             pixelEvent.user_data.ph.map((phone) => hashData(phone.replace(/\D/g, ''))),
          );
@@ -120,9 +120,9 @@ exports.handler = async (event, context) => {
          }
       });
 
-      console.log('📤 Sending to Meta API...');
-      console.log('🎯 Event:', pixelEvent.event_name);
-      console.log('🆔 Event ID:', pixelEvent.event_id);
+      // console.log('📤 Sending to Meta API...');
+      // console.log('🎯 Event:', pixelEvent.event_name);
+      // console.log('🆔 Event ID:', pixelEvent.event_id);
 
       // Enviar a Meta API
       const metaPayload = {
@@ -132,7 +132,7 @@ exports.handler = async (event, context) => {
 
       if (process.env.META_TEST_EVENT_CODE) {
          metaPayload.test_event_code = process.env.META_TEST_EVENT_CODE;
-         console.log('🧪 Using test event code:', process.env.META_TEST_EVENT_CODE);
+         // console.log('🧪 Using test event code:', process.env.META_TEST_EVENT_CODE);
       }
 
       const metaUrl = `https://graph.facebook.com/v18.0/${process.env.META_PIXEL_ID}/events`;
@@ -143,10 +143,10 @@ exports.handler = async (event, context) => {
       });
 
       const result = await response.json();
-      console.log('📊 Meta API response:', response.status, result);
+      // console.log('📊 Meta API response:', response.status, result);
 
       if (!response.ok) {
-         console.error('❌ Meta API Error:', result);
+         // console.error('❌ Meta API Error:', result);
          return {
             statusCode: 400,
             headers: { 'Access-Control-Allow-Origin': '*' },
@@ -157,7 +157,7 @@ exports.handler = async (event, context) => {
          };
       }
 
-      console.log('✅ SUCCESS - Event sent to Meta Conversions API');
+      // console.log('✅ SUCCESS - Event sent to Meta Conversions API');
       return {
          statusCode: 200,
          headers: {
@@ -173,7 +173,7 @@ exports.handler = async (event, context) => {
          }),
       };
    } catch (error) {
-      console.error('❌ Function error:', error);
+      // console.error('❌ Function error:', error);
       return {
          statusCode: 500,
          headers: {
