@@ -4,6 +4,7 @@ import useCountryConfig from '@hooks/useCountryConfig';
 import { createPreference } from '@api/api';
 
 import { useMetaPixel } from '@hooks/useMetaPixel.jsx';
+import { encryptData } from '../utils/crypto';
 
 const HackCard = () => {
    const [count, setCount] = useState(1);
