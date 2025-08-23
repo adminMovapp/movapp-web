@@ -13,7 +13,7 @@ export function useMetaPixel(pixelId) {
             {},
          );
       } else {
-         console.warn('Meta Pixel not available');
+         // console.warn('Meta Pixel not available');
          return null;
       }
    };
@@ -32,7 +32,7 @@ export function useMetaPixel(pixelId) {
             {},
          );
       } else {
-         console.warn('Meta Pixel not available');
+         // console.warn('Meta Pixel not available');
          return null;
       }
    };

@@ -179,10 +179,10 @@ const HackCard = () => {
                   iframe: true, // abrir como modal
                });
             } else {
-               console.error('No se encontró init_point en la respuesta.');
+               // console.error('No se encontró init_point en la respuesta.');
             }
          } catch (error) {
-            console.error('Error al crear preferencia:', error);
+            // console.error('Error al crear preferencia:', error);
          }
          setCount(1);
          closeDrawer();

@@ -43,7 +43,7 @@ export const createPreference = async (payload) => {
       const data = await res.json();
       return data;
    } catch (err) {
-      console.error('Error al crear preferencia:', err.message);
+      // console.error('Error al crear preferencia:', err.message);
       throw err;
    }
 };
