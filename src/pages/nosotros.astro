@@ -19,20 +19,19 @@ import { Picture } from 'astro:assets';
 const cardHover =
    'transition duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1 hover:scale-105 cursor-pointer';
 
-
-   import { generateServiceSchema } from '@/utils/seo.jsx';
+import { generateServiceSchema } from '@/utils/seo.jsx';
 const serviceSchema = generateServiceSchema({
-  name: "Asesoría para víctimas de aplicaciones de préstamo fraudulentas",
-  description: "Ayudamos a personas víctimas de montadeudas con apoyo psicológico y asesoría legal"
+   name: 'Asesoría para víctimas de aplicaciones de préstamo fraudulentas',
+   description: 'Ayudamos a personas víctimas de montadeudas con apoyo psicológico y asesoría legal',
 });
-
 ---
 
-<Layout title="Movapp"
- description="Movapp es una organización que ayuda a personas víctimas de las aplicaciones de préstamo no reguladas mediante apoyo psicológico, asesoría personalizada y la aplicación de El Hack."
-         type="website"
-         schema={serviceSchema}
-         >
+<Layout
+   title="Movapp"
+   description="Movapp es una organización que ayuda a personas víctimas de las aplicaciones de préstamo no reguladas mediante apoyo psicológico, asesoría personalizada y la aplicación de El Hack."
+   type="website"
+   schema={serviceSchema}
+>
    <!-- Bienvenida -->
    <div class="mx-auto mb-4 max-w-2xl px-4 md:px-0" data-aos="fade-down">
       <div
