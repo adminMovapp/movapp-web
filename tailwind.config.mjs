@@ -2,9 +2,10 @@
 export default {
    theme: {
       extend: {
-         fontFamily: {
-            montserrat: ['Montserrat', 'sans-serif'],
-         },
+         // fontFamily: {
+         //    montserrat: ['Montserrat', 'sans-serif'],
+         // },
+
          colors: {
             debug: '#00ffff',
             purple_mv: '#8149E2',
