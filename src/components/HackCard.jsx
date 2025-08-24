@@ -4,7 +4,6 @@ import useCountryConfig from '@hooks/useCountryConfig';
 import { createPreference } from '@api/api';
 
 import { useMetaPixel } from '@hooks/useMetaPixel.jsx';
-import { encryptData } from '../utils/crypto';
 
 const HackCard = () => {
    const [count, setCount] = useState(1);
@@ -197,9 +196,14 @@ const HackCard = () => {
             </div>
          )}
 
-         <div className="bg-white rounded-lg shadow-md  p-6 flex flex-col items-center space-y-4 max-w-lg w-full">
+         <div
+            className="rounded-lg 
+         
+         
+         shadow-md  p-6 flex flex-col items-center space-y-4 max-w-lg w-full"
+         >
             <img src="../elhack-negro.png" alt="Movapp Logo" className="w-32 h-auto" />
-            <p className="text-gray-500 text-center text-sm md:text-lg">
+            <p className="text-white text-center text-sm md:text-lg">
                Nuestra solución al acoso de las apps de préstamo.
             </p>
 
@@ -211,7 +215,7 @@ const HackCard = () => {
                >
                   -
                </button>
-               <span className="text-xl font-bold" aria-live="polite">
+               <span className="text-xl font-bold text-white" aria-live="polite">
                   {count}
                </span>
                <button
@@ -223,9 +227,9 @@ const HackCard = () => {
                </button>
             </div>
 
-            <p className="text-gray-600 text-sm md:text-lg text-center">Selecciona el número de hacks.</p>
+            <p className="text-white text-sm md:text-lg text-center">Selecciona el número de hacks.</p>
             <div className="flex items-center space-x-2">
-               <p className="text-xl font-bold">
+               <p className="text-xl font-bold text-white mt-1">
                   Tu pago es de : {config.simbolo} {(config.precio * count).toFixed(2)} {config.moneda}
                </p>
                <span className={`fi ${config.bandera} rounded-md`} style={{ fontSize: '2rem' }}></span>
@@ -262,7 +266,7 @@ const HackCard = () => {
                <div
                   ref={drawerRef}
                   tabIndex={-1}
-                  className={`bg-white                 
+                  className={`bg-black/90                 
                      max-w-md md:max-w-lg md:w-full 
                      min-h-[400px]
                      rounded-t-xl p-5 md:p-8 relative shadow-xl ring-2 ring-purple-300 z-50
@@ -270,19 +274,19 @@ const HackCard = () => {
                >
                   <button
                      onClick={closeDrawer}
-                     className="absolute top-2 right-4 text-gray-400 text-2xl font-bold"
+                     className="absolute top-2 right-4 text-white text-2xl font-bold"
                      aria-label="Cerrar"
                   >
                      ×
                   </button>
 
                   <div className="mb-4 text-center">
-                     <div className="text-lg font-bold text-gray-700">
+                     <div className="text-lg font-bold text-white">
                         Producto: <span className="text-purple_mv">{productName}</span>
                      </div>
-                     <div className="text-lg font-bold text-gray-700">{`Cantidad = ${count}`}</div>
+                     <div className="text-lg font-bold text-white">{`Cantidad = ${count}`}</div>
                      <div className="flex items-center justify-center space-x-2">
-                        <div className="text-xl font-bold text-gray-700 mt-1">
+                        <div className="text-xl font-bold text-white mt-1">
                            {`Total = ${config.simbolo}
                            ${(config.precio * count).toFixed(2)} ${config.moneda}`}
                         </div>
@@ -290,12 +294,12 @@ const HackCard = () => {
                      </div>
                   </div>
 
-                  <h3 className="text-xl font-bold mb-4 text-center mt-5 text-gray-700">Completa tu información</h3>
+                  <h3 className="text-xl font-bold mb-4 text-center mt-5 text-white">Completa tu información</h3>
 
                   <form className="grid gap-3 max-w-md mx-auto" onSubmit={handleSubmit} noValidate>
                      <div>
                         <input
-                           className={`border p-2 rounded w-full  ${
+                           className={`border p-2 rounded w-full bg-black/70   ${
                               errors.nombre ? 'border-red-500' : 'border-gray-300'
                            }`}
                            placeholder="Nombre"
@@ -310,7 +314,7 @@ const HackCard = () => {
 
                      <div>
                         <input
-                           className={`border p-2 rounded w-full ${
+                           className={`border p-2 rounded w-full bg-black/70 ${
                               errors.apellidos ? 'border-red-500' : 'border-gray-300'
                            }`}
                            placeholder="Apellidos"
@@ -325,7 +329,7 @@ const HackCard = () => {
 
                      <div>
                         <input
-                           className={`border p-2 rounded w-full ${
+                           className={`border p-2 rounded w-full bg-black/70 ${
                               errors.email ? 'border-red-500' : 'border-gray-300'
                            }`}
                            placeholder="Correo electrónico"
@@ -341,7 +345,7 @@ const HackCard = () => {
 
                      <div>
                         <input
-                           className={`border p-2 rounded w-full ${
+                           className={`border p-2 rounded w-full bg-black/70 ${
                               errors.telefono ? 'border-red-500' : 'border-gray-300'
                            }`}
                            placeholder="Teléfono"
@@ -358,7 +362,7 @@ const HackCard = () => {
 
                      <div>
                         <input
-                           className={`border p-2 rounded w-full ${
+                           className={`border p-2 rounded w-full bg-black/70 ${
                               errors.codigoPostal ? 'border-red-500' : 'border-gray-300'
                            }`}
                            placeholder="Código postal"
