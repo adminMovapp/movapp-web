@@ -2,9 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
+/* body {
    font-family: 'Montserrat', sans-serif;
-}
+} */
 
 .paper-texture-bg {
    background-color: rgb(242 243 245); /* gris Tailwind: bg-gray-200 */
