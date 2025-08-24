@@ -37,13 +37,15 @@ export const createPreference = async (payload) => {
       });
 
       if (!res.ok) {
-         throw new Error(`Error HTTP: ${res.status}`);
+         const errorData = await res.text(); // Usar text() en lugar de json()
+         console.error('Error response:', errorData);
+         throw new Error(`Error HTTP: ${res.status} - ${errorData}`);
       }
 
       const data = await res.json();
       return data;
    } catch (err) {
-      // console.error('Error al crear preferencia:', err.message);
+      console.error('Error al crear preferencia:', err.message);
       throw err;
    }
 };
