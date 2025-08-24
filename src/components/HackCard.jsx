@@ -198,7 +198,7 @@ const HackCard = () => {
 
          <div
             className="rounded-lg 
-         
+         border border-white/10
          
          shadow-md  p-6 flex flex-col items-center space-y-4 max-w-lg w-full"
          >
@@ -244,7 +244,7 @@ const HackCard = () => {
             ) : null}
 
             <button
-               className={`bg-purple_mv hover:bg-purple_mv text-white font-bold h-8 w-auto px-5 rounded-md flex justify-center items-center
+               className={`bg-purple_mv  hover:bg-purple_mv text-white font-bold h-8 w-auto px-5 rounded-md flex justify-center items-center
             ${!disabled ? 'opacity-50 cursor-not-allowed' : ''}
           `}
                onClick={openDrawer}
@@ -259,7 +259,7 @@ const HackCard = () => {
          {isDrawerVisible && (
             <div
                id="drawer-overlay"
-               className="fixed inset-0 flex items-end justify-center bg-black/50 z-50"
+               className="fixed inset-0 flex items-end justify-center bg-black/50 z-50 "
                role="dialog"
                aria-modal="true"
             >
@@ -269,7 +269,7 @@ const HackCard = () => {
                   className={`bg-black/90                 
                      max-w-md md:max-w-lg md:w-full 
                      min-h-[400px]
-                     rounded-t-xl p-5 md:p-8 relative shadow-xl ring-2 ring-purple-300 z-50
+                     rounded-t-xl p-5 md:p-8 relative shadow-xl ring-1 ring-white/10 z-50
                    ${isClosing ? 'animate-slideDown' : 'animate-slideUp'} transform`}
                >
                   <button
@@ -299,7 +299,7 @@ const HackCard = () => {
                   <form className="grid gap-3 max-w-md mx-auto" onSubmit={handleSubmit} noValidate>
                      <div>
                         <input
-                           className={`border p-2 rounded w-full bg-black/70   ${
+                           className={`border  border-white/10 p-2 rounded w-full bg-black/70   ${
                               errors.nombre ? 'border-red-500' : 'border-gray-300'
                            }`}
                            placeholder="Nombre"
@@ -314,7 +314,7 @@ const HackCard = () => {
 
                      <div>
                         <input
-                           className={`border p-2 rounded w-full bg-black/70 ${
+                           className={`border border-white/10 p-2 rounded w-full bg-black/70 ${
                               errors.apellidos ? 'border-red-500' : 'border-gray-300'
                            }`}
                            placeholder="Apellidos"
@@ -329,7 +329,7 @@ const HackCard = () => {
 
                      <div>
                         <input
-                           className={`border p-2 rounded w-full bg-black/70 ${
+                           className={`border border-white/10 p-2 rounded w-full bg-black/70 ${
                               errors.email ? 'border-red-500' : 'border-gray-300'
                            }`}
                            placeholder="Correo electrónico"
@@ -345,7 +345,7 @@ const HackCard = () => {
 
                      <div>
                         <input
-                           className={`border p-2 rounded w-full bg-black/70 ${
+                           className={`border border-white/10 p-2 rounded w-full bg-black/70 ${
                               errors.telefono ? 'border-red-500' : 'border-gray-300'
                            }`}
                            placeholder="Teléfono"
@@ -362,7 +362,7 @@ const HackCard = () => {
 
                      <div>
                         <input
-                           className={`border p-2 rounded w-full bg-black/70 ${
+                           className={`border border-white/10 p-2 rounded w-full bg-black/70 ${
                               errors.codigoPostal ? 'border-red-500' : 'border-gray-300'
                            }`}
                            placeholder="Código postal"
