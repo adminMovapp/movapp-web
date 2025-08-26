@@ -35,8 +35,8 @@ const serviceSchema = generateServiceSchema({
       <div class="flex flex-col items-center gap-8 md:flex-row px-4 md:px-0">
          <!-- Texto -->
          <div class="flex-1 text-center md:text-left">
-            <h2 class="text-xl font-medium text-white">Tu protección digital comienza aquí</h2>
-            <h1 class="mt-2 mb-5 text-3xl font-bold sm:text-4xl text-white">
+            <h2 class="text-xl font-medium">Tu protección digital comienza aquí</h2>
+            <h1 class="mt-2 mb-5 text-3xl font-bold sm:text-4xl">
                ¿Has sido <span class="text-purple_mv">víctima de aplicaciones de préstamo</span> no reguladas?
             </h1>
             <ButtonContact />
@@ -56,7 +56,7 @@ const serviceSchema = generateServiceSchema({
       <!-- Cards -->
       <div class="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3">
          <div
-            class={`flex flex-col p-6  rounded-lg shadow-md text-white
+            class={`flex flex-col p-6  rounded-lg shadow-md 
          ${cardHover}`}
          >
             <h3 class="mb-2 text-left text-sm md:text-lg font-semibold">Una solución</h3>
@@ -65,15 +65,15 @@ const serviceSchema = generateServiceSchema({
                tu información y detener el acoso.
             </p>
          </div>
-         <div class={`flex flex-col p-6  rounded-lg shadow-md text-white ${cardHover}`}>
+         <div class={`flex flex-col p-6  rounded-lg shadow-md  ${cardHover}`}>
             <h3 class="mb-2 text-left text-sm md:text-lg font-semibold">Asesoría experta</h3>
-            <p class="text-justify text-sm md:text-lg text-white">
+            <p class="text-justify text-sm md:text-lg">
                Nuestro equipo de expertos te brindará asesoría personalizada y apoyo psicológico sin costo.
             </p>
          </div>
-         <div class={`flex flex-col p-6  rounded-lg shadow-md text-white ${cardHover}`}>
+         <div class={`flex flex-col p-6  rounded-lg shadow-md  ${cardHover}`}>
             <h3 class="mb-2 text-left text-sm md:text-lg font-semibold">EL HACK</h3>
-            <p class="text-justify text-sm md:text-lg text-white">
+            <p class="text-justify text-sm md:text-lg">
                Actuará directamente en tus aplicaciones para salvaguardar tus datos y los de tus contactos.
             </p>
          </div>
@@ -92,28 +92,26 @@ const serviceSchema = generateServiceSchema({
          <div class={`flex flex-col items-center text-center p-8  rounded-2xl shadow-lg ${cardHover}`}>
             <Picture src={ImgCorazon} alt="corazon" class="mx-auto mb-4 my-4 h-auto w-20" />
 
-            <div class="mb-1 text-2xl font-bold text-white">
+            <div class="mb-1 text-2xl font-bold">
                +1 Millón de <span class="text-purple_mv">Personas Impactadas</span>
             </div>
-            <p class="text-justify text-sm md:text-lg text-white">Sé parte de las personas que confían en Movapp.</p>
+            <p class="text-justify text-sm md:text-lg">Sé parte de las personas que confían en Movapp.</p>
          </div>
 
          <div class={`flex flex-col items-center text-center p-8  rounded-2xl shadow-lg ${cardHover}`}>
             <Picture src={ImgAlerta} alt="alerta" class="mx-auto mb-4 my-4 h-auto w-20" />
-            <div class="mb-1 text-2xl font-bold text-white">
+            <div class="mb-1 text-2xl font-bold">
                +5,000 <span class="text-purple_mv">Emergencias</span>
             </div>
-            <p class="text-justify text-sm md:text-lg text-white">
+            <p class="text-justify text-sm md:text-lg">
                Hemos evitado que miles de personas dejen de pensar en desvivirse.
             </p>
          </div>
 
          <div class={`flex flex-col items-center text-center p-8  rounded-2xl shadow-lg ${cardHover}`}>
             <Picture src={ImgFlag} alt="planeta" class="mx-auto mb-4 my-4 h-auto w-20" />
-            <div class="mb-1 text-2xl font-bold text-white">+20 <span class="text-purple_mv">Países</span></div>
-            <p class="text-justify text-sm md:text-lg text-white">
-               Tenemos presencia en: México, Bolivia, Argentina y más.
-            </p>
+            <div class="mb-1 text-2xl font-bold">+20 <span class="text-purple_mv">Países</span></div>
+            <p class="text-justify text-sm md:text-lg">Tenemos presencia en: México, Bolivia, Argentina y más.</p>
          </div>
       </div>
    </section>
@@ -126,9 +124,7 @@ const serviceSchema = generateServiceSchema({
          data-aos="fade-up"
       >
          <div class="p-6">
-            <h3 class="py-5 text-white text-md md:text-xl font-semibold">
-               No sufras esto solo. Nosotros estamos aquí.
-            </h3>
+            <h3 class="py-5 text-md md:text-xl font-semibold">No sufras esto solo. Nosotros estamos aquí.</h3>
 
             <div class="mx-auto my-2 flex justify-center items-center max-w-sm" data-aos="fade-left">
                <Picture src={ImgErik} alt="Erik" class="rounded-xl" />
