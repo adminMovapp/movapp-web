@@ -31,7 +31,7 @@ export default defineConfig({
       inlineStylesheets: 'auto',
    },
    server: {
-      host: '192.168.3.143', // host: true,
+      // host: '192.168.3.143', // host: true,
       port: 7001,
       headers: {
          'X-Frame-Options': 'SAMEORIGIN',
