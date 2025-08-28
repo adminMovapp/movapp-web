@@ -210,7 +210,7 @@ const HackCard = () => {
             <div className="flex items-center space-x-2">
                <button
                   onClick={decrement}
-                  className="bg-purple-300 px-3 py-2 rounded font-bold text-white"
+                  className="bg-text_banner/80 px-3 py-2 rounded font-bold text-white"
                   aria-label="Disminuir cantidad"
                >
                   -
@@ -220,7 +220,7 @@ const HackCard = () => {
                </span>
                <button
                   onClick={increment}
-                  className="bg-purple-300 px-3 py-2 rounded font-bold text-white"
+                  className="bg-text_banner/80 px-3 py-2 rounded font-bold text-white"
                   aria-label="Aumentar cantidad"
                >
                   +
@@ -244,7 +244,7 @@ const HackCard = () => {
             ) : null}
 
             <button
-               className={`bg-purple_mv  hover:bg-purple_mv text-white font-bold h-8 w-auto px-5 rounded-md flex justify-center items-center
+               className={`bg-text_banner  hover:bg-text_banner/70 text-white font-bold h-8 w-auto px-5 rounded-md flex justify-center items-center
             ${!disabled ? 'opacity-50 cursor-not-allowed' : ''}
           `}
                onClick={openDrawer}
@@ -282,7 +282,7 @@ const HackCard = () => {
 
                   <div className="mb-4 text-center">
                      <div className="text-lg font-bold text-white">
-                        Producto: <span className="text-purple_mv">{productName}</span>
+                        Producto: <span className="text-text_banner">{productName}</span>
                      </div>
                      <div className="text-lg font-bold text-white">{`Cantidad = ${count}`}</div>
                      <div className="flex items-center justify-center space-x-2">
@@ -378,7 +378,7 @@ const HackCard = () => {
 
                      <button
                         type="submit"
-                        className="mt-4w-full bg-purple_mv text-white font-bold py-2 rounded hover:bg-purple-700"
+                        className="mt-4w-full bg-text_banner text-white font-bold py-2 rounded hover:bg-purple-700"
                      >
                         Finaliza tu compra
                      </button>
