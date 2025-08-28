@@ -16,7 +16,7 @@ import CloseIcon from '@assets/CloseIcon.astro';
       </div>
 
       <!-- Mostrar el ícono de "X" si el menú está abierto -->
-      <div id="closeIcon" class="text-gray-800 hidden">
+      <div id="closeIcon" class="text-white hidden">
          <CloseIcon size={5} />
       </div>
    </button>
@@ -24,19 +24,19 @@ import CloseIcon from '@assets/CloseIcon.astro';
    <!-- Menú desplegable -->
    <nav
       id="menuNav"
-      class="absolute top-12 right-0 w-max bg-black/80 backdrop-blur-md shadow-lg rounded-lg p-4 flex flex-col gap-2 z-50 hidden"
+      class="absolute top-12 right-0 w-max bg-background_top/80 backdrop-blur-md shadow-lg rounded-lg p-4 flex flex-col gap-2 z-50 hidden"
    >
-      <a href="/" class="text-white text-sm hover:text-purple_mv">Inicio</a>
-      <a href="/nosotros" class="text-white text-sm hover:text-purple_mv">Movapp</a>
-      <a href="/el-hack" class="text-white text-sm hover:text-purple_mv">Hack</a>
-      <a href="/store" class="text-white text-sm hover:text-purple_mv">Tienda</a>
+      <a href="/" class="text-white text-sm hover:text-text_banner">Inicio</a>
+      <a href="/nosotros" class="text-white text-sm hover:text-text_banner">Movapp</a>
+      <a href="/el-hack" class="text-white text-sm hover:text-text_banner">Hack</a>
+      <a href="/store" class="text-white text-sm hover:text-text_banner">Tienda</a>
 
       <!-- Nuevas opciones dentro del menú principal -->
-      <a href="/collaborations" class="text-white text-sm hover:text-purple_mv">Colaboraciones</a>
-      <a href="/faqs" class="text-white text-sm hover:text-purple_mv">Preguntas frecuentes</a>
-      <a href="/testimonials" class="text-white text-sm hover:text-purple_mv">Testimonios</a>
-      <a href="/mind" class="text-white text-sm hover:text-purple_mv">Mente digital</a>
-      <a href="/red" class="text-white text-sm hover:text-purple_mv">Nuestras redes</a>
+      <a href="/collaborations" class="text-white text-sm hover:text-text_banner">Colaboraciones</a>
+      <a href="/faqs" class="text-white text-sm hover:text-text_banner">Preguntas frecuentes</a>
+      <a href="/testimonials" class="text-white text-sm hover:text-text_banner">Testimonios</a>
+      <a href="/mind" class="text-white text-sm hover:text-text_banner">Mente digital</a>
+      <a href="/red" class="text-white text-sm hover:text-text_banner">Nuestras redes</a>
    </nav>
 </div>
 

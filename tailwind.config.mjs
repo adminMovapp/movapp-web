@@ -8,9 +8,15 @@ export default {
 
          colors: {
             debug: '#00ffff',
-            purple_mv: '#8149E2',
             gray_mv: '#4A4A4A',
             greylight_mv: '#767676',
+
+            // purple_mv: '#8149E2',
+            purple_mv: '#1d4ed8',
+
+            background_top: '#02030A',
+            background_bottom: '#1d4ed8',
+            text_banner: '#1d4ed8',
          },
          keyframes: {
             slideUp: {
