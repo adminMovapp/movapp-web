@@ -14,7 +14,7 @@ export default {
             // purple_mv: '#8149E2',
             purple_mv: '#1d4ed8',
 
-            background_top: '#02030A',
+            background_top: '#0b1223',
             background_bottom: '#1d4ed8',
             text_banner: '#1d4ed8',
          },
