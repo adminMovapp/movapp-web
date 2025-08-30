@@ -12,12 +12,7 @@ const showHeaderLayer = import.meta.env.PUBLIC_SHOW_HEADER_LAYER === 'true';
          w-auto max-w-none bg-white/2 backdrop-blur-md
          shadow-lg px-8 py-4
          flex justify-between items-center rounded-3xl
-         md:h-20 
-
-      ${showHeaderLayer ? 'md:mt-1' : 'md:-mt-5'}
-
-         
-         
+         md:h-20       ${showHeaderLayer ? 'md:mt-1' : 'md:-mt-5'}     
          `}
 >
    <div class="flex items-center gap-2">
@@ -51,17 +46,21 @@ const showHeaderLayer = import.meta.env.PUBLIC_SHOW_HEADER_LAYER === 'true';
             id="submenu"
             class="absolute right-0 mt-8 w-48 bg-background_top/80 backdrop-blur-md rounded-lg p-3 hidden z-50"
          >
-            <a href="/collaborations" class="block py-1 text-sm text-white hover:bg-gray-200 rounded-lg px-2"
+            <a href="/collaborations" class="block py-1 text-sm text-white hover:text-text_banner rounded-lg px-2"
                >Colaboraciones</a
             >
-            <a href="/faqs" class="block py-1 text-sm text-white hover:bg-gray-200 rounded-lg px-2"
+            <a href="/faqs" class="block py-1 text-sm text-white hover:text-text_banner rounded-lg px-2"
                >Preguntas frecuentes</a
             >
-            <a href="/testimonials" class="block py-1 text-sm text-white hover:bg-gray-200 rounded-lg px-2"
+            <a href="/testimonials" class="block py-1 text-sm text-white hover:text-text_banner rounded-lg px-2"
                >Testimonios</a
             >
-            <a href="/mind" class="block py-1 text-sm text-white hover:bg-gray-200 rounded-lg px-2">Mente digital</a>
-            <a href="/red" class="block py-1 text-sm text-white hover:bg-gray-200 rounded-lg px-2">Nuestras redes</a>
+            <a href="/mind" class="block py-1 text-sm text-white hover:text-text_banner rounded-lg px-2"
+               >Mente digital</a
+            >
+            <a href="/red" class="block py-1 text-sm text-white hover:text-text_banner rounded-lg px-2"
+               >Nuestras redes</a
+            >
          </div>
       </div>
    </nav>

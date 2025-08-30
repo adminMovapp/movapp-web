@@ -16,7 +16,8 @@ export default {
 
             background_top: '#0b1223',
             background_bottom: '#0b2a63',
-            text_banner: '#174296',
+            text_banner: '#175996',
+            line_cards: '#ffffff',
          },
          keyframes: {
             slideUp: {

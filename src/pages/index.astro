@@ -29,53 +29,29 @@ const serviceSchema = generateServiceSchema({
 >
    <!-- Protección Digital -->
    <section
-      class="mx-auto mt-32 max-w-xl md:max-w-6xl px-8 py-8 /5 backdrop-blur-md rounded-xl shadow-lg"
+      class="mx-auto mt-32 max-w-xl md:max-w-6xl md:px-8 py-8 backdrop-blur-md rounded-xl shadow-lg"
       data-aos="fade-down"
    >
-      <div class="flex flex-col items-center gap-8 md:flex-row px-4 md:px-0">
+      <div class="flex flex-col items-center gap-8 md:flex-row px-0">
          <!-- Texto -->
          <div class="flex-1 text-center md:text-left">
-            <h2 class="text-xl font-medium text-white">Tu protección digital comienza aquí</h2>
-            <h1 class="mt-2 mb-5 text-3xl font-bold sm:text-4xl text-white">
+            <h2 class="text-2xl mx-1 font-medium text-white">Tu protección digital comienza aquí</h2>
+            <h1 class="mt-2 mx-1 mb-5 font-bold text-2xl md:text-4xl text-white">
                ¿Has sido <span class="text-text_banner">víctima de aplicaciones de préstamo</span> no reguladas?
             </h1>
             <ButtonContact />
          </div>
 
          <!-- Video -->
-         <div class="flex-1">
-            <iframe
-               src={VIDEOS.inicio}
-               class="w-full aspect-video rounded-lg shadow-md"
-               frameborder="0"
-               allow="autoplay; encrypted-media"
-               allowfullscreen></iframe>
-         </div>
-      </div>
-
-      <!-- Cards -->
-      <div class="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3">
-         <div
-            class={`flex flex-col p-6  rounded-lg shadow-md text-white
-         ${cardHover}`}
-         >
-            <h3 class="mb-2 text-left text-sm md:text-lg font-semibold">Una solución</h3>
-            <p class="text-justify text-sm md:text-lg">
-               En <span class="text-text_banner font-bold">Movapp</span>, te ofrecemos una solución integral para
-               proteger tu información y detener el acoso.
-            </p>
-         </div>
-         <div class={`flex flex-col p-6  rounded-lg shadow-md text-white ${cardHover}`}>
-            <h3 class="mb-2 text-left text-sm md:text-lg font-semibold">Asesoría experta</h3>
-            <p class="text-justify text-sm md:text-lg text-white">
-               Nuestro equipo de expertos te brindará asesoría personalizada y apoyo psicológico sin costo.
-            </p>
-         </div>
-         <div class={`flex flex-col p-6  rounded-lg shadow-md text-white ${cardHover}`}>
-            <h3 class="mb-2 text-left text-sm md:text-lg font-semibold">EL HACK</h3>
-            <p class="text-justify text-sm md:text-lg text-white">
-               Actuará directamente en tus aplicaciones para salvaguardar tus datos y los de tus contactos.
-            </p>
+         <div class="flex-1 w-full sm:w-full md:w-1/2 lg:w-1/2 xl:w-1/3 px-3">
+            <div class="aspect-video w-full">
+               <iframe
+                  src={VIDEOS.inicio}
+                  class="w-full h-full rounded-lg shadow-md"
+                  frameborder="0"
+                  allow="autoplay; encrypted-media"
+                  allowfullscreen></iframe>
+            </div>
          </div>
       </div>
    </section>
@@ -83,7 +59,7 @@ const serviceSchema = generateServiceSchema({
    <!-- Resultados -->
    <section class="mx-auto mt-12 mb-8 w-full max-w-6xl px-4 md:px-0" data-aos="fade-up" data-aos-duration="800">
       <h2
-         class="mb-10 text-center text-2xl font-bold tracking-wide text-transparent bg-clip-text bg-background_bottom md:text-3xl"
+         class="mb-10 text-center text-2xl font-bold tracking-wide text-text_banner bg-clip-text bg-background_bottom md:text-3xl"
       >
          Los resultados nos respaldan
       </h2>
