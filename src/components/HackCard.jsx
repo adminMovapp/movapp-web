@@ -202,7 +202,7 @@ const HackCard = () => {
          
          shadow-md  p-6 flex flex-col items-center space-y-4 max-w-lg w-full"
          >
-            <img src="../elhack-negro.png" alt="Movapp Logo" className="w-32 h-auto" />
+            <img src="../elhack-blanco.png" alt="Movapp Logo" className="w-32 h-auto" />
             <p className="text-white text-center text-sm md:text-lg">
                Nuestra solución al acoso de las apps de préstamo.
             </p>
