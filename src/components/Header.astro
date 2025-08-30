@@ -9,56 +9,58 @@ const showHeaderLayer = import.meta.env.PUBLIC_SHOW_HEADER_LAYER === 'true';
 <header
    class={`h-16 mt-3 fixed left-4 md:left-16 right-4 md:right-16 z-50
          top-4 md:top-6 lg:top-8 xl:top-10
-         w-auto max-w-none bg-white/50 backdrop-blur-md
+         w-auto max-w-none bg-white/2 backdrop-blur-md
          shadow-lg px-8 py-4
          flex justify-between items-center rounded-3xl
-         md:h-20 
-
-      ${showHeaderLayer ? 'md:mt-1' : 'md:-mt-5'}
-
-         
-         
+         md:h-20       ${showHeaderLayer ? 'md:mt-1' : 'md:-mt-5'}     
          `}
 >
    <div class="flex items-center gap-2">
       <img
-         src="/Logo-Morado.png"
+         src="/Logo-Blanco.png"
          alt="Movapp Logo"
          class="hidden md:block w-32 h-auto mx-auto my-4 transition-all duration-300"
       />
 
       <img
-         src="/Logo-M.png"
+         src="/Logo-M_blanco.png"
          alt="Movapp Logo pequeño"
          class="block md:hidden w-10 h-auto mx-auto transition-all duration-300"
       />
    </div>
 
    <nav class="hidden md:flex gap-6 text-sm text-gray-700 justify-end w-full">
-      <a href="/" class="hover:text-purple-300">Inicio</a>
-      <a href="/nosotros" class="hover:text-purple-300">Movapp</a>
-      <a href="/el-hack" class="hover:text-purple-300">Hack</a>
-      <a href="/store" class="hover:text-purple-300">Tienda</a>
+      <a href="/" class="text-white hover:text-text_banner">Inicio</a>
+      <a href="/nosotros" class="text-white hover:text-text_banner">Movapp</a>
+      <a href="/el-hack" class="text-white hover:text-text_banner">Hack</a>
+      <a href="/store" class="text-white hover:text-text_banner">Tienda</a>
 
       <div class="relative">
-         <button id="servicesButton" class="flex items-center gap-2 hover:text-purple-300">
+         <button id="servicesButton" class="flex items-center gap-2 text-white hover:text-text_banner">
             <span>Contenido</span>
             <ArrowIcon class="text-gray-800" id="arrowIcon" size={4} />
          </button>
 
          <!-- Submenú -->
-         <div id="submenu" class="absolute right-0 mt-8 w-48 bg-white/80 backdrop-blur-md rounded-lg p-3 hidden z-50">
-            <a href="/collaborations" class="block py-1 text-sm text-gray-700 hover:bg-gray-200 rounded-lg px-2"
+         <div
+            id="submenu"
+            class="absolute right-0 mt-8 w-48 bg-background_top/80 backdrop-blur-md rounded-lg p-3 hidden z-50"
+         >
+            <a href="/collaborations" class="block py-1 text-sm text-white hover:text-text_banner rounded-lg px-2"
                >Colaboraciones</a
             >
-            <a href="/faqs" class="block py-1 text-sm text-gray-700 hover:bg-gray-200 rounded-lg px-2"
+            <a href="/faqs" class="block py-1 text-sm text-white hover:text-text_banner rounded-lg px-2"
                >Preguntas frecuentes</a
             >
-            <a href="/testimonials" class="block py-1 text-sm text-gray-700 hover:bg-gray-200 rounded-lg px-2"
+            <a href="/testimonials" class="block py-1 text-sm text-white hover:text-text_banner rounded-lg px-2"
                >Testimonios</a
             >
-            <a href="/mind" class="block py-1 text-sm text-gray-700 hover:bg-gray-200 rounded-lg px-2">Mente digital</a>
-            <a href="/red" class="block py-1 text-sm text-gray-700 hover:bg-gray-200 rounded-lg px-2">Nuestras redes</a>
+            <a href="/mind" class="block py-1 text-sm text-white hover:text-text_banner rounded-lg px-2"
+               >Mente digital</a
+            >
+            <a href="/red" class="block py-1 text-sm text-white hover:text-text_banner rounded-lg px-2"
+               >Nuestras redes</a
+            >
          </div>
       </div>
    </nav>

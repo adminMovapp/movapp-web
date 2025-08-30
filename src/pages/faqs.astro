@@ -1,33 +1,33 @@
 ---
 import { Picture } from 'astro:assets';
 import Layout from '@layouts/Layout.astro';
-import ImgElHack from '@assets/elhack-negro.png';
+import ImgElHack from '@assets/elhack-blanco.png';
 const cardHover =
-   'transition duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1 hover:scale-105 cursor-pointer';
+   'border border-white/10 transition duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1 hover:scale-105 cursor-pointer';
 ---
 
 <Layout title="Preguntas frecuentes">
    <!-- Título principal -->
    <div
-      class="mt-4 mb-6 flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4 text-center md:text-left"
+      class="mt-32 mb-6 flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4 text-center md:text-left"
       data-aos="fade-down"
    >
-      <h2 class="text-xl md:text-3xl font-bold text-gray-600">Preguntas frecuentes sobre</h2>
+      <h2 class="text-xl md:text-3xl font-bold text-white">Preguntas frecuentes sobre</h2>
       <Picture src={ImgElHack} alt="Movapp Logo" class="w-28 md:w-32 h-auto" />
    </div>
 
    <!-- Contenedor de las tarjetas (Ajustado para móviles y escritorio) -->
-   <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mx-4 md:mx-48 mt-10">
+   <div class="grid grid-cols-1 gap-6 mx-8 md:mx-auto mt-10 max-w-xl">
       <!-- Card 1 -->
-      <div class={`card bg-white p-4 rounded-xl shadow-lg ${cardHover}`}>
-         <h2 class="text-xl md:text-2xl font-bold text-gray_mv">Proceso para adquirir EL HACK</h2>
+      <div class={`card p-4 rounded-xl shadow-lg ${cardHover}`}>
+         <h2 class="text-xl md:text-2xl font-bold text-white">Proceso para adquirir EL HACK</h2>
          <div class="mt-4">
             <div class="subtitle cursor-pointer flex items-center justify-between" id="title0">
-               <span class="text-sm md:text-lg text-gray_mv font-semibold"> ¿Cómo puedo adquirir EL HACK? </span>
-               <span class="text-gray-600" id="icon0">+</span>
+               <span class="text-sm md:text-lg text-white font-semibold"> ¿Cómo puedo adquirir EL HACK? </span>
+               <span class="text-white" id="icon0">+</span>
             </div>
-            <div id="detail0" class="detail hidden mt-2 text-gray-600 text-justify text-xs md:text-sm">
-               <p>
+            <div id="detail0" class="detail hidden mt-2 text-white text-justify text-xs md:text-sm">
+               <p class="italic">
                   Nuestras asistentes de chat te brindarán una primera atención.<br />
                   Están capacitadas para atenderte con empatía y de manera profesional.
                </p>
@@ -35,13 +35,13 @@ const cardHover =
          </div>
          <div class="mt-4">
             <div class="subtitle cursor-pointer flex items-center justify-between" id="title1">
-               <span class="text-sm md:text-lg text-gray_mv font-semibold">
+               <span class="text-sm md:text-lg text-white font-semibold">
                   ¿Qué indicaciones debo seguir después del HACK?
                </span>
-               <span class="text-gray-600" id="icon1">+</span>
+               <span class="text-white" id="icon1">+</span>
             </div>
-            <div id="detail1" class="detail hidden mt-2 text-gray-600 text-justify text-xs md:text-sm">
-               <p>
+            <div id="detail1" class="detail hidden mt-2 text-white text-justify text-xs md:text-sm">
+               <p class="italic">
                   Tenemos el más amplio catálogo de aplicaciones montadeudas sobre las que aplicamos el hack ya que
                   tenemos presencia en muchos países de latinoamérica.
                </p>
@@ -49,11 +49,11 @@ const cardHover =
          </div>
          <div class="mt-4">
             <div class="subtitle cursor-pointer flex items-center justify-between" id="title2">
-               <span class="text-sm md:text-lg text-gray_mv font-semibold"> ¿EL HACK lo aplica el asesor? </span>
-               <span class="text-gray-600" id="icon2">+</span>
+               <span class="text-sm md:text-lg text-white font-semibold"> ¿EL HACK lo aplica el asesor? </span>
+               <span class="text-white" id="icon2">+</span>
             </div>
-            <div id="detail2" class="detail hidden mt-2 text-gray-600 text-justify text-xs md:text-sm">
-               <p>
+            <div id="detail2" class="detail hidden mt-2 text-white text-justify text-xs md:text-sm">
+               <p class="italic">
                   Al igual que tú, todos nuestros asesores sufrieron de acoso por parte de los montadeudas. <br />
                   Llegaste al lugar más adecuado. Tu asesor te escuchará atentamente y será empático con tu situación.
                </p>
@@ -62,13 +62,13 @@ const cardHover =
 
          <div class="mt-4">
             <div class="subtitle cursor-pointer flex items-center justify-between" id="title3">
-               <span class="text-sm md:text-lg text-gray_mv font-semibold">
+               <span class="text-sm md:text-lg text-white font-semibold">
                   ¿Cuánto tiempo tarda el proceso de instalación del hack?
                </span>
-               <span class="text-gray-600" id="icon3">+</span>
+               <span class="text-white" id="icon3">+</span>
             </div>
-            <div id="detail3" class="detail hidden mt-2 text-gray-600 text-justify text-xs md:text-sm">
-               <p>
+            <div id="detail3" class="detail hidden mt-2 text-white text-justify text-xs md:text-sm">
+               <p class="italic">
                   Forma parte de las +16,000 personas que han confiado en nosotros y que han podido dejar este mal trago
                   detrás.
                </p>
@@ -76,14 +76,14 @@ const cardHover =
          </div>
       </div>
 
-      <div class={`card bg-white p-4 rounded-xl shadow-lg ${cardHover}`}>
-         <h2 class="text-xl md:text-2xl font-bold text-gray_mv">Funcionamiento Del Hack</h2>
+      <!-- <div class={`card bg-white p-4 rounded-xl shadow-lg ${cardHover}`}>
+         <h2 class="text-xl md:text-2xl font-bold text-white">Funcionamiento Del Hack</h2>
          <div class="mt-4">
             <div class="subtitle cursor-pointer flex items-center justify-between" id="title4">
-               <span class="text-sm md:text-lg text-gray_mv font-semibold"> ¿Cómo empezar el proceso? </span>
-               <span class="text-gray-600" id="icon4">+</span>
+               <span class="text-sm md:text-lg text-white font-semibold"> ¿Cómo empezar el proceso? </span>
+               <span class="text-white" id="icon4">+</span>
             </div>
-            <div id="detail4" class="detail hidden mt-2 text-gray-600 text-justify text-xs md:text-sm">
+            <div id="detail4" class="detail hidden mt-2 text-white text-justify text-xs md:text-sm">
                <p>
                   Este es el detalle de cómo empezar el proceso. <br />
                   Aquí proporcionamos los pasos iniciales para que puedas empezar rápidamente.
@@ -93,13 +93,13 @@ const cardHover =
       </div>
 
       <div class={`card bg-white p-4 rounded-xl shadow-lg ${cardHover}`}>
-         <h2 class="text-xl md:text-2xl font-bold text-gray_mv">Costos</h2>
+         <h2 class="text-xl md:text-2xl font-bold text-white">Costos</h2>
          <div class="mt-4">
             <div class="subtitle cursor-pointer flex items-center justify-between" id="title4">
-               <span class="text-lg text-gray_mv font-semibold"> ¿Cómo empezar el proceso? </span>
-               <span class="text-gray-600" id="icon4">+</span>
+               <span class="text-lg text-white font-semibold"> ¿Cómo empezar el proceso? </span>
+               <span class="text-white" id="icon4">+</span>
             </div>
-            <div id="detail4" class="detail hidden mt-2 text-gray-600 text-justify">
+            <div id="detail4" class="detail hidden mt-2 text-white text-justify">
                <p>
                   Este es el detalle de cómo empezar el proceso. <br />
                   Aquí proporcionamos los pasos iniciales para que puedas empezar rápidamente.
@@ -109,20 +109,20 @@ const cardHover =
       </div>
 
       <div class={`card bg-white p-4 rounded-xl shadow-lg ${cardHover}`}>
-         <h2 class="text-xl md:text-2xl font-bold text-gray_mv">Seguridad De Tus Datos</h2>
+         <h2 class="text-xl md:text-2xl font-bold text-white">Seguridad De Tus Datos</h2>
          <div class="mt-4">
             <div class="subtitle cursor-pointer flex items-center justify-between" id="title4">
-               <span class="text-lg text-gray_mv font-semibold"> ¿Cómo empezar el proceso? </span>
-               <span class="text-gray-600" id="icon4">+</span>
+               <span class="text-lg text-white font-semibold"> ¿Cómo empezar el proceso? </span>
+               <span class="text-white" id="icon4">+</span>
             </div>
-            <div id="detail4" class="detail hidden mt-2 text-gray-600 text-justify">
+            <div id="detail4" class="detail hidden mt-2 text-white text-justify">
                <p>
                   Este es el detalle de cómo empezar el proceso. <br />
                   Aquí proporcionamos los pasos iniciales para que puedas empezar rápidamente.
                </p>
             </div>
          </div>
-      </div>
+      </div> -->
    </div>
 
    <script type="module">

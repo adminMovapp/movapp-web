@@ -12,7 +12,7 @@ import { VIDEOS } from '@constants/socials.ts';
 import { Picture } from 'astro:assets';
 
 const cardHover =
-   'transition duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1 hover:scale-105 cursor-pointer';
+   'border border-white/10 transition duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1 hover:scale-105 cursor-pointer';
 
 import { generateServiceSchema } from '@/utils/seo.jsx';
 const serviceSchema = generateServiceSchema({
@@ -29,50 +29,29 @@ const serviceSchema = generateServiceSchema({
 >
    <!-- Protección Digital -->
    <section
-      class="mx-auto my-1 max-w-xl md:max-w-6xl px-8 py-8 bg-white/70 backdrop-blur-md rounded-xl shadow-lg"
+      class="mx-auto mt-32 max-w-xl md:max-w-6xl md:px-8 py-8 backdrop-blur-md rounded-xl shadow-lg"
       data-aos="fade-down"
    >
-      <div class="flex flex-col items-center gap-8 md:flex-row px-4 md:px-0">
+      <div class="flex flex-col items-center gap-8 md:flex-row px-0">
          <!-- Texto -->
          <div class="flex-1 text-center md:text-left">
-            <h2 class="text-xl font-medium text-gray-700">Tu protección digital comienza aquí</h2>
-            <h1 class="mt-2 mb-5 text-3xl font-bold sm:text-4xl">
-               ¿Has sido <span class="text-purple_mv">víctima de aplicaciones de préstamo</span> no reguladas?
+            <h2 class="text-2xl mx-1 font-medium text-white">Tu protección digital comienza aquí</h2>
+            <h1 class="mt-2 mx-1 mb-5 font-bold text-2xl md:text-4xl text-white">
+               ¿Has sido <span class="text-text_banner">víctima de aplicaciones de préstamo</span> no reguladas?
             </h1>
             <ButtonContact />
          </div>
 
          <!-- Video -->
-         <div class="flex-1">
-            <iframe
-               src={VIDEOS.inicio}
-               class="w-full aspect-video rounded-lg shadow-md"
-               frameborder="0"
-               allow="autoplay; encrypted-media"
-               allowfullscreen></iframe>
-         </div>
-      </div>
-
-      <!-- Cards -->
-      <div class="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3">
-         <div class={`flex flex-col p-6 bg-white rounded-lg shadow-md ${cardHover}`}>
-            <h3 class="mb-2 text-left text-sm md:text-lg font-semibold">Una solución</h3>
-            <p class="text-justify text-sm md:text-lg text-gray-600">
-               En <span class="text-purple_mv font-bold">Movapp</span>, te ofrecemos una solución integral para proteger
-               tu información y detener el acoso.
-            </p>
-         </div>
-         <div class={`flex flex-col p-6 bg-white rounded-lg shadow-md ${cardHover}`}>
-            <h3 class="mb-2 text-left text-sm md:text-lg font-semibold">Asesoría experta</h3>
-            <p class="text-justify text-sm md:text-lg text-gray-600">
-               Nuestro equipo de expertos te brindará asesoría personalizada y apoyo psicológico sin costo.
-            </p>
-         </div>
-         <div class={`flex flex-col p-6 bg-white rounded-lg shadow-md ${cardHover}`}>
-            <h3 class="mb-2 text-left text-sm md:text-lg font-semibold">EL HACK</h3>
-            <p class="text-justify text-sm md:text-lg text-gray-600">
-               Actuará directamente en tus aplicaciones para salvaguardar tus datos y los de tus contactos.
-            </p>
+         <div class="flex-1 w-full sm:w-full md:w-1/2 lg:w-1/2 xl:w-1/3 px-3">
+            <div class="aspect-video w-full">
+               <iframe
+                  src={VIDEOS.inicio}
+                  class="w-full h-full rounded-lg shadow-md"
+                  frameborder="0"
+                  allow="autoplay; encrypted-media"
+                  allowfullscreen></iframe>
+            </div>
          </div>
       </div>
    </section>
@@ -80,35 +59,35 @@ const serviceSchema = generateServiceSchema({
    <!-- Resultados -->
    <section class="mx-auto mt-12 mb-8 w-full max-w-6xl px-4 md:px-0" data-aos="fade-up" data-aos-duration="800">
       <h2
-         class="mb-10 text-center text-2xl font-bold tracking-wide text-transparent bg-clip-text bg-purple_mv md:text-3xl"
+         class="mb-10 text-center text-2xl font-bold tracking-wide text-text_banner bg-clip-text bg-background_bottom md:text-3xl"
       >
          Los resultados nos respaldan
       </h2>
 
       <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
-         <div class={`flex flex-col items-center text-center p-8 bg-white rounded-2xl shadow-lg ${cardHover}`}>
+         <div class={`flex flex-col items-center text-center p-8  rounded-2xl shadow-lg ${cardHover}`}>
             <Picture src={ImgCorazon} alt="corazon" class="mx-auto mb-4 my-4 h-auto w-20" />
 
-            <div class="mb-1 text-2xl font-bold text-gray-800">
-               +1 Millón de <span class="text-purple_mv">Personas Impactadas</span>
+            <div class="mb-1 text-2xl font-bold text-white">
+               +1 Millón de <span class="text-text_banner">Personas Impactadas</span>
             </div>
-            <p class="text-justify text-sm md:text-lg text-gray-600">Sé parte de las personas que confían en Movapp.</p>
+            <p class="text-justify text-sm md:text-lg text-white">Sé parte de las personas que confían en Movapp.</p>
          </div>
 
-         <div class={`flex flex-col items-center text-center p-8 bg-white rounded-2xl shadow-lg ${cardHover}`}>
+         <div class={`flex flex-col items-center text-center p-8  rounded-2xl shadow-lg ${cardHover}`}>
             <Picture src={ImgAlerta} alt="alerta" class="mx-auto mb-4 my-4 h-auto w-20" />
-            <div class="mb-1 text-2xl font-bold text-gray-800">
-               +5,000 <span class="text-purple_mv">Emergencias</span>
+            <div class="mb-1 text-2xl font-bold text-white">
+               +5,000 <span class="text-text_banner">Emergencias</span>
             </div>
-            <p class="text-justify text-sm md:text-lg text-gray-600">
+            <p class="text-justify text-sm md:text-lg text-white">
                Hemos evitado que miles de personas dejen de pensar en desvivirse.
             </p>
          </div>
 
-         <div class={`flex flex-col items-center text-center p-8 bg-white rounded-2xl shadow-lg ${cardHover}`}>
+         <div class={`flex flex-col items-center text-center p-8  rounded-2xl shadow-lg ${cardHover}`}>
             <Picture src={ImgFlag} alt="planeta" class="mx-auto mb-4 my-4 h-auto w-20" />
-            <div class="mb-1 text-2xl font-bold text-gray-800">+20 <span class="text-purple_mv">Países</span></div>
-            <p class="text-justify text-sm md:text-lg text-gray-600">
+            <div class="mb-1 text-2xl font-bold text-white">+20 <span class="text-text_banner">Países</span></div>
+            <p class="text-justify text-sm md:text-lg text-white">
                Tenemos presencia en: México, Bolivia, Argentina y más.
             </p>
          </div>
@@ -118,12 +97,14 @@ const serviceSchema = generateServiceSchema({
    <section class="flex flex-col items-center px-2 md:px-0" data-aos="fade-up" data-aos-duration="800">
       <div
          class={` max-w-2xl rounded-2xl
-      bg-gradient-to-b from-gray-100 to-purple-100 
+ 
        text-center shadow-md ${cardHover}`}
          data-aos="fade-up"
       >
          <div class="p-6">
-            <h3 class="py-5 text-md md:text-xl font-semibold">No sufras esto solo. Nosotros estamos aquí.</h3>
+            <h3 class="py-5 text-white text-md md:text-xl font-semibold">
+               No sufras esto solo. Nosotros estamos aquí.
+            </h3>
 
             <div class="mx-auto my-2 flex justify-center items-center max-w-sm" data-aos="fade-left">
                <Picture src={ImgErik} alt="Erik" class="rounded-xl" />

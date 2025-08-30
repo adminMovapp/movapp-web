@@ -2,14 +2,22 @@
 export default {
    theme: {
       extend: {
-         fontFamily: {
-            montserrat: ['Montserrat', 'sans-serif'],
-         },
+         // fontFamily: {
+         //    montserrat: ['Montserrat', 'sans-serif'],
+         // },
+
          colors: {
             debug: '#00ffff',
-            purple_mv: '#8149E2',
             gray_mv: '#4A4A4A',
             greylight_mv: '#767676',
+
+            // purple_mv: '#8149E2',
+            purple_mv: '#123C8C',
+
+            background_top: '#0b1223',
+            background_bottom: '#0b2a63',
+            text_banner: '#175996',
+            line_cards: '#ffffff',
          },
          keyframes: {
             slideUp: {
