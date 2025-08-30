@@ -6,11 +6,16 @@ export const URLS = {
    instagram: 'https://www.instagram.com/movappbymann',
    tiktok: 'https://www.tiktok.com/@movappbymann',
    whatsapp: {
-      oficial: 'https://api.whatsapp.com/send/?phone=5215574360621&text&type=phone_number&app_absent=0',
-      principal: 'https://api.whatsapp.com/send/?phone=5215578767442&text&type=phone_number&app_absent=0',
-      colombia: 'https://api.whatsapp.com/send/?phone=573045829040&text&type=phone_number&app_absent=0',
-      ecuador: 'https://api.whatsapp.com/send/?phone=593983639715&text&type=phone_number&app_absent=0',
-      peru: 'https://api.whatsapp.com/send/?phone=51958102730&text&type=phone_number&app_absent=0',
+      // oficial: 'https://api.whatsapp.com/send/?phone=5215574360621&text&type=phone_number&app_absent=0',
+      // principal: 'https://api.whatsapp.com/send/?phone=5215578767442&text&type=phone_number&app_absent=0',
+      // colombia: 'https://api.whatsapp.com/send/?phone=573045829040&text&type=phone_number&app_absent=0',
+      // ecuador: 'https://api.whatsapp.com/send/?phone=593983639715&text&type=phone_number&app_absent=0',
+      // peru: 'https://api.whatsapp.com/send/?phone=51958102730&text&type=phone_number&app_absent=0',
+      oficial: '+5215574360621',
+      principal: '+5215578767442',
+      colombia: '+573045829040',
+      ecuador: '+593983639715',
+      peru: '+51958102730',
    },
 };
 

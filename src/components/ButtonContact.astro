@@ -6,7 +6,7 @@ const mensaje = '¡Hola! Quiero más información sobre El Hack.';
 ---
 
 <a
-   href={`${URLS.whatsapp.principal}&text=${encodeURIComponent(mensaje)}`}
+   href={`https://api.whatsapp.com/send/?phone=${URLS.whatsapp.principal.replace('+', '')}&text=${encodeURIComponent(mensaje)}&type=phone_number&app_absent=0`}
    id="wa__stt"
    class="wa__stt inline-flex items-center gap-2 px-4 py-2 text-sm text-white bg-green-500 hover:bg-green-600 rounded-3xl transition"
    target="_blank"
