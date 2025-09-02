@@ -92,31 +92,31 @@ async function trackEvent(eventName, customData = {}, userData = {}) {
 
    const eventId = generateEventId();
 
-   // console.log(`🎯 === TRACKING ${eventName} ===`);
-   // console.log('🆔 Event ID:', eventId);
-   // console.log('📦 Custom data:', customData);
-   // console.log('👤 User data:', userData);
+   console.log(`🎯 === TRACKING ${eventName} ===`);
+   console.log('🆔 Event ID:', eventId);
+   console.log('📦 Custom data:', customData);
+   console.log('👤 User data:', userData);
 
-   // 1. CLIENTE (Facebook Pixel)
+   //1. CLIENTE (Facebook Pixel)
    if (window.fbq) {
       window.fbq('track', eventName, customData, { eventID: eventId });
-      // console.log('✅ CLIENT event sent to Facebook Pixel');
+      console.log('✅ CLIENT event sent to Facebook Pixel');
    } else {
-      // console.warn('⚠️ Facebook Pixel not loaded - CLIENT event skipped');
+      console.warn('⚠️ Facebook Pixel not loaded - CLIENT event skipped');
    }
 
    // 2. SERVIDOR (Conversions API)
-   // console.log('📡 Sending SERVER event...');
+   console.log('📡 Sending SERVER event...');
    const serverResult = await sendServerEvent(eventName, customData, userData, eventId);
 
    if (serverResult && serverResult.success) {
-      // console.log('✅ SERVER event sent to Conversions API');
-      // console.log('🔄 Both events use same ID for deduplication:', eventId);
+      console.log('✅ SERVER event sent to Conversions API');
+      console.log('🔄 Both events use same ID for deduplication:', eventId);
    } else {
-      // console.warn('⚠️ SERVER event failed - only client event sent');
+      console.warn('⚠️ SERVER event failed - only client event sent');
    }
 
-   // console.log(`🏁 === END TRACKING ${eventName} ===`);
+   console.log(`🏁 === END TRACKING ${eventName} ===`);
    return eventId;
 }
 
@@ -152,12 +152,9 @@ async function trackPageView(customData = {}) {
    return eventId;
 }
 
-// Hacer disponible globalmente
 window.metaPixelUtils = {
    initMetaPixel,
    trackEvent,
    trackPageView,
    generateEventId,
 };
-
-// console.log('📦 Meta Pixel utils loaded with server support');

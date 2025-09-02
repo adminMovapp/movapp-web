@@ -1,6 +1,7 @@
 const crypto = require('crypto');
 
 async function hashData(data) {
+   if (!data || data === '') return undefined;
    return crypto.createHash('sha256').update(data.toLowerCase().trim()).digest('hex');
 }
 
@@ -47,7 +48,6 @@ export async function handler(event, context) {
 
    // Verificar variables críticas
    if (!process.env.META_PIXEL_ID) {
-      // console.error('❌ META_PIXEL_ID missing');
       return {
          statusCode: 500,
          headers: { 'Access-Control-Allow-Origin': '*' },
@@ -56,7 +56,6 @@ export async function handler(event, context) {
    }
 
    if (!process.env.META_ACCESS_TOKEN) {
-      // console.error('❌ META_ACCESS_TOKEN missing');
       return {
          statusCode: 500,
          headers: { 'Access-Control-Allow-Origin': '*' },
@@ -85,7 +84,7 @@ export async function handler(event, context) {
          event_name,
          event_time: Math.floor(Date.now() / 1000),
          action_source: 'website',
-         event_source_url: event.headers?.referer || event.headers?.origin || 'https://stage.movapp.org',
+         event_source_url: event.headers?.referer || event.headers?.origin || 'https://movapp.org',
          event_id: event_id || `server-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
          user_data: {
             client_ip_address:
@@ -96,26 +95,72 @@ export async function handler(event, context) {
             client_user_agent: event.headers?.['user-agent'] || 'Unknown',
             fbc: extractFbc(event.headers?.cookie),
             fbp: extractFbp(event.headers?.cookie),
-            ...(user_data || {}),
          },
          custom_data: custom_data || {},
       };
 
-      // Hashear datos sensibles
-      if (pixelEvent.user_data.em && Array.isArray(pixelEvent.user_data.em)) {
-         console.log('🔐 Hashing emails...');
-         pixelEvent.user_data.em = await Promise.all(pixelEvent.user_data.em.map((email) => hashData(email)));
-      }
-      if (pixelEvent.user_data.ph && Array.isArray(pixelEvent.user_data.ph)) {
-         console.log('🔐 Hashing phones...');
-         pixelEvent.user_data.ph = await Promise.all(
-            pixelEvent.user_data.ph.map((phone) => hashData(phone.replace(/\D/g, ''))),
-         );
+      // Hashear TODOS los datos personales del usuario
+      if (user_data) {
+         console.log('🔐 Hashing all user data...');
+
+         // Emails - ya estaba funcionando
+         if (user_data.em && Array.isArray(user_data.em)) {
+            pixelEvent.user_data.em = await Promise.all(
+               user_data.em.filter((email) => email).map((email) => hashData(email)),
+            );
+         }
+
+         // Teléfonos - ya estaba funcionando
+         if (user_data.ph && Array.isArray(user_data.ph)) {
+            pixelEvent.user_data.ph = await Promise.all(
+               user_data.ph.filter((phone) => phone).map((phone) => hashData(phone.replace(/\D/g, ''))),
+            );
+         }
+
+         // NUEVOS: Hashear nombres, apellidos, código postal y país
+         if (user_data.fn && Array.isArray(user_data.fn)) {
+            pixelEvent.user_data.fn = await Promise.all(
+               user_data.fn.filter((name) => name).map((name) => hashData(name)),
+            );
+         }
+
+         if (user_data.ln && Array.isArray(user_data.ln)) {
+            pixelEvent.user_data.ln = await Promise.all(
+               user_data.ln.filter((lastName) => lastName).map((lastName) => hashData(lastName)),
+            );
+         }
+
+         if (user_data.zp && Array.isArray(user_data.zp)) {
+            pixelEvent.user_data.zp = await Promise.all(user_data.zp.filter((zip) => zip).map((zip) => hashData(zip)));
+         }
+
+         if (user_data.country && Array.isArray(user_data.country)) {
+            pixelEvent.user_data.country = await Promise.all(
+               user_data.country.filter((country) => country).map((country) => hashData(country)),
+            );
+         }
+
+         // Otros campos si los tienes
+         if (user_data.ct && Array.isArray(user_data.ct)) {
+            pixelEvent.user_data.ct = await Promise.all(
+               user_data.ct.filter((city) => city).map((city) => hashData(city)),
+            );
+         }
+
+         if (user_data.st && Array.isArray(user_data.st)) {
+            pixelEvent.user_data.st = await Promise.all(
+               user_data.st.filter((state) => state).map((state) => hashData(state)),
+            );
+         }
       }
 
-      // Limpiar datos vacíos
+      // Limpiar datos vacíos o undefined
       Object.keys(pixelEvent.user_data).forEach((key) => {
-         if (pixelEvent.user_data[key] === undefined || pixelEvent.user_data[key] === null) {
+         if (
+            pixelEvent.user_data[key] === undefined ||
+            pixelEvent.user_data[key] === null ||
+            (Array.isArray(pixelEvent.user_data[key]) && pixelEvent.user_data[key].length === 0)
+         ) {
             delete pixelEvent.user_data[key];
          }
       });
@@ -130,7 +175,7 @@ export async function handler(event, context) {
          access_token: process.env.META_ACCESS_TOKEN,
       };
 
-      if (process.env.META_TEST_EVENT_CODE) {
+      if (process.env.NODE_ENV !== 'production' && process.env.META_TEST_EVENT_CODE) {
          metaPayload.test_event_code = process.env.META_TEST_EVENT_CODE;
          console.log('🧪 Using test event code:', process.env.META_TEST_EVENT_CODE);
       }
@@ -146,7 +191,6 @@ export async function handler(event, context) {
       console.log('📊 Meta API response:', response.status, result);
 
       if (!response.ok) {
-         // console.error('❌ Meta API Error:', result);
          return {
             statusCode: 400,
             headers: { 'Access-Control-Allow-Origin': '*' },
@@ -173,7 +217,6 @@ export async function handler(event, context) {
          }),
       };
    } catch (error) {
-      // console.error('❌ Function error:', error);
       return {
          statusCode: 500,
          headers: {
