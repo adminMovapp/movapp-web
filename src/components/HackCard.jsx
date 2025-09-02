@@ -299,7 +299,7 @@ const HackCard = () => {
                   <form className="grid gap-3 max-w-md mx-auto" onSubmit={handleSubmit} noValidate>
                      <div>
                         <input
-                           className={`border  border-white/10 p-2 rounded w-full bg-black/70   ${
+                           className={`border  border-white/10 p-2 rounded w-full bg-black/70 text-white ${
                               errors.nombre ? 'border-red-500' : 'border-gray-300'
                            }`}
                            placeholder="Nombre"
@@ -314,7 +314,7 @@ const HackCard = () => {
 
                      <div>
                         <input
-                           className={`border border-white/10 p-2 rounded w-full bg-black/70 ${
+                           className={`border border-white/10 p-2 rounded w-full bg-black/70 text-white ${
                               errors.apellidos ? 'border-red-500' : 'border-gray-300'
                            }`}
                            placeholder="Apellidos"
@@ -329,7 +329,7 @@ const HackCard = () => {
 
                      <div>
                         <input
-                           className={`border border-white/10 p-2 rounded w-full bg-black/70 ${
+                           className={`border border-white/10 p-2 rounded w-full bg-black/70 text-white ${
                               errors.email ? 'border-red-500' : 'border-gray-300'
                            }`}
                            placeholder="Correo electrónico"
@@ -345,7 +345,7 @@ const HackCard = () => {
 
                      <div>
                         <input
-                           className={`border border-white/10 p-2 rounded w-full bg-black/70 ${
+                           className={`border border-white/10 p-2 rounded w-full bg-black/70 text-white ${
                               errors.telefono ? 'border-red-500' : 'border-gray-300'
                            }`}
                            placeholder="Teléfono"
@@ -362,7 +362,7 @@ const HackCard = () => {
 
                      <div>
                         <input
-                           className={`border border-white/10 p-2 rounded w-full bg-black/70 ${
+                           className={`border border-white/10 p-2 rounded w-full bg-black/70 text-white ${
                               errors.codigoPostal ? 'border-red-500' : 'border-gray-300'
                            }`}
                            placeholder="Código postal"
@@ -378,7 +378,7 @@ const HackCard = () => {
 
                      <button
                         type="submit"
-                        className="mt-4w-full bg-text_banner text-white font-bold py-2 rounded hover:bg-purple-700"
+                        className="mt-4 w-full bg-text_banner text-white font-bold py-2 rounded hover:bg-text_banner/70 transition"
                      >
                         Finaliza tu compra
                      </button>
