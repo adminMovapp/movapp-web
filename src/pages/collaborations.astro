@@ -20,14 +20,16 @@ const cardHover =
       </div>
    </div>
 
-   <div class="w-full aspect-video overflow-hidden rounded-lg">
-      <iframe
-         src={VIDEOS.colaboraciones}
-         class="w-full h-full sm:w-full lg:w-full max-w-full"
-         frameborder="0"
-         allow="autoplay; encrypted-media"
-         allowfullscreen
-      >
-      </iframe>
+   <div class="mx-auto my-8 w-full max-w-full sm:max-w-xl md:max-w-md lg:max-w-2xl px-4 md:px-0" data-aos="fade-up">
+      <div class="w-full aspect-video overflow-hidden rounded-lg">
+         <iframe
+            src={VIDEOS.colaboraciones}
+            class="w-full h-full sm:w-full lg:w-full max-w-full"
+            frameborder="0"
+            allow="autoplay; encrypted-media"
+            allowfullscreen
+         >
+         </iframe>
+      </div>
    </div>
 </Layout>
