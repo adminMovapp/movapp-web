@@ -11,7 +11,9 @@ const HackCard = () => {
    const [isClosing, setIsClosing] = useState(false);
    const { country, config } = useCountryConfig();
 
-   const { trackPurchase, trackInitiateCheckout } = useMetaPixel(import.meta.env.PUBLIC_META_PIXEL_ID);
+   const { trackPurchase, trackInitiateCheckout, trackViewContent } = useMetaPixel(
+      import.meta.env.PUBLIC_META_PIXEL_ID,
+   );
 
    const disabled = country; //=== 'MX';
    const productName = 'El Hack';
@@ -41,13 +43,39 @@ const HackCard = () => {
       return () => clearInterval(interval);
    }, []);
 
+   // Agregar useEffect para trackear cuando ven el producto
+   useEffect(() => {
+      if (config && config.precioMx) {
+         trackViewContent(config.precioMx, 'MXN', [productName], {
+            productName: productName,
+            country: country,
+            unitPrice: config.precioMx,
+         });
+      }
+   }, [config]);
+
    const openDrawer = async () => {
       setIsDrawerVisible(true);
       setIsClosing(false);
 
       // Trackear inicio de checkout
       const value = (config.precioMx * count).toFixed(2);
-      await trackInitiateCheckout(parseFloat(value), 'MXN', [productName]);
+
+      await trackAddToCart(parseFloat(value), 'MXN', [productName], {
+         productName: productName,
+         quantity: count,
+         unitPrice: config.precioMx,
+         country: country,
+      });
+
+      await trackInitiateCheckout(parseFloat(value), 'MXN', [productName], {
+         productName: productName,
+         quantity: count,
+         unitPrice: config.precioMx,
+         country: country,
+         paymentMethod: 'mercadopago',
+         customerType: 'prospect',
+      });
    };
 
    const closeDrawer = () => {
@@ -168,7 +196,19 @@ const HackCard = () => {
 
             if (response?.id) {
                // Trackear compra completada (lado del cliente)
-               await trackPurchase(parseFloat(totalValue), 'MXN', [productName]);
+               await trackPurchase(parseFloat(totalValue), 'MXN', [productName], {
+                  email: form.email,
+                  phone: form.telefono,
+                  name: `${form.nombre} ${form.apellidos}`,
+                  postalCode: form.codigoPostal,
+                  productName: productName,
+                  quantity: count,
+                  unitPrice: config.precioMx,
+                  country: country,
+                  orderId: response.id,
+                  paymentMethod: 'mercadopago',
+                  customerType: 'new_customer',
+               });
 
                mpRef.current.checkout({
                   preference: {
