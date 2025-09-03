@@ -7,8 +7,8 @@ function generateEventId() {
 function initMetaPixel(pixelId) {
    if (typeof window === 'undefined' || pixelInitialized) return;
 
-   // console.log('🚀 Initializing Meta Pixel:', pixelId);
-   // console.log('🌐 Environment:', window.location.hostname);
+   // // console.log('🚀 Initializing Meta Pixel:', pixelId);
+   // // console.log('🌐 Environment:', window.location.hostname);
 
    // Cargar Facebook Pixel
    !(function (f, b, e, v, n, t, s) {
@@ -31,13 +31,13 @@ function initMetaPixel(pixelId) {
    window.fbq('init', pixelId);
    pixelInitialized = true;
 
-   // console.log('✅ Meta Pixel initialized');
+   // // console.log('✅ Meta Pixel initialized');
    trackPageView();
 }
 
 async function sendServerEvent(eventName, customData = {}, userData = {}, eventId) {
    // NO SIMULAR EN DESARROLLO - SIEMPRE INTENTAR ENVIAR AL SERVIDOR
-   // console.log('📡 Attempting server event:', eventName, 'ID:', eventId);
+   // // console.log('📡 Attempting server event:', eventName, 'ID:', eventId);
 
    try {
       const response = await fetch('/.netlify/functions/meta-conversion', {
@@ -54,7 +54,7 @@ async function sendServerEvent(eventName, customData = {}, userData = {}, eventI
          }),
       });
 
-      // console.log('📊 Server response status:', response.status);
+      // // console.log('📊 Server response status:', response.status);
 
       if (!response.ok) {
          const errorText = await response.text();
@@ -71,12 +71,12 @@ async function sendServerEvent(eventName, customData = {}, userData = {}, eventI
       }
 
       const result = await response.json();
-      // console.log('✅ Server event SUCCESS:', result);
+      // // console.log('✅ Server event SUCCESS:', result);
 
       // Confirmar que llegó al servidor
       if (result.success) {
-         // console.log('🎉 Event sent to Meta Conversions API successfully');
-         // console.log('🔄 Event ID for deduplication:', result.event_id);
+         // // console.log('🎉 Event sent to Meta Conversions API successfully');
+         // // console.log('🔄 Event ID for deduplication:', result.event_id);
       }
 
       return result;
@@ -92,31 +92,31 @@ async function trackEvent(eventName, customData = {}, userData = {}) {
 
    const eventId = generateEventId();
 
-   console.log(`🎯 === TRACKING ${eventName} ===`);
-   console.log('🆔 Event ID:', eventId);
-   console.log('📦 Custom data:', customData);
-   console.log('👤 User data:', userData);
+   // console.log(`🎯 === TRACKING ${eventName} ===`);
+   // console.log('🆔 Event ID:', eventId);
+   // console.log('📦 Custom data:', customData);
+   // console.log('👤 User data:', userData);
 
    //1. CLIENTE (Facebook Pixel)
    if (window.fbq) {
       window.fbq('track', eventName, customData, { eventID: eventId });
-      console.log('✅ CLIENT event sent to Facebook Pixel');
+      // console.log('✅ CLIENT event sent to Facebook Pixel');
    } else {
       console.warn('⚠️ Facebook Pixel not loaded - CLIENT event skipped');
    }
 
    // 2. SERVIDOR (Conversions API)
-   console.log('📡 Sending SERVER event...');
+   // console.log('📡 Sending SERVER event...');
    const serverResult = await sendServerEvent(eventName, customData, userData, eventId);
 
    if (serverResult && serverResult.success) {
-      console.log('✅ SERVER event sent to Conversions API');
-      console.log('🔄 Both events use same ID for deduplication:', eventId);
+      // console.log('✅ SERVER event sent to Conversions API');
+      // console.log('🔄 Both events use same ID for deduplication:', eventId);
    } else {
       console.warn('⚠️ SERVER event failed - only client event sent');
    }
 
-   console.log(`🏁 === END TRACKING ${eventName} ===`);
+   // console.log(`🏁 === END TRACKING ${eventName} ===`);
    return eventId;
 }
 
@@ -131,24 +131,24 @@ async function trackPageView(customData = {}) {
       ...customData,
    };
 
-   // console.log('📄 === TRACKING PAGEVIEW ===');
-   // console.log('🆔 Event ID:', eventId);
-   // console.log('📄 Page data:', pageData);
+   // // console.log('📄 === TRACKING PAGEVIEW ===');
+   // // console.log('🆔 Event ID:', eventId);
+   // // console.log('📄 Page data:', pageData);
 
    // Cliente
    if (window.fbq) {
       window.fbq('track', 'PageView', pageData, { eventID: eventId });
-      // console.log('✅ CLIENT PageView sent');
+      // // console.log('✅ CLIENT PageView sent');
    }
 
    // Servidor
    const serverResult = await sendServerEvent('PageView', pageData, {}, eventId);
    if (serverResult && serverResult.success) {
-      // console.log('✅ SERVER PageView sent');
-      // console.log('🔄 Deduplication ID:', eventId);
+      // // console.log('✅ SERVER PageView sent');
+      // // console.log('🔄 Deduplication ID:', eventId);
    }
 
-   // console.log('🏁 === END PAGEVIEW ===');
+   // // console.log('🏁 === END PAGEVIEW ===');
    return eventId;
 }
 

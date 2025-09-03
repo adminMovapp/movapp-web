@@ -36,9 +36,16 @@ const showHeaderLayer = import.meta.env.PUBLIC_SHOW_HEADER_LAYER === 'true';
       <a href="/store" class="text-white hover:text-text_banner">Tienda</a>
 
       <div class="relative">
-         <button id="servicesButton" class="flex items-center gap-2 text-white hover:text-text_banner">
+         <!-- <button id="servicesButton" class="flex items-center gap-2 text-white hover:text-text_banner">
             <span>Contenido</span>
             <ArrowIcon class="text-gray-800" id="arrowIcon" size={4} />
+         </button> -->
+
+         <button id="servicesButton" class="flex items-center gap-2 text-white hover:text-text_banner">
+            <span>Contenido</span>
+            <div class="arrow-icon transition-transform duration-200">
+               <ArrowIcon class="text-gray-800" size={4} />
+            </div>
          </button>
 
          <!-- Submenú -->
@@ -68,7 +75,7 @@ const showHeaderLayer = import.meta.env.PUBLIC_SHOW_HEADER_LAYER === 'true';
    <MenuMobile />
 </header>
 
-<script>
+<!-- <script>
    const servicesButton = document.getElementById('servicesButton');
    const submenu = document.getElementById('submenu');
    const arrowIcon = document.getElementById('arrowIcon');
@@ -76,5 +83,17 @@ const showHeaderLayer = import.meta.env.PUBLIC_SHOW_HEADER_LAYER === 'true';
    servicesButton.addEventListener('click', () => {
       submenu.classList.toggle('hidden');
       arrowIcon.classList.toggle('rotate-180');
+   });
+</script> -->
+
+<script is:inline>
+   document.addEventListener('click', function (e) {
+      if (e.target.closest('#servicesButton')) {
+         const submenu = document.getElementById('submenu');
+         const arrow = document.querySelector('.arrow-icon');
+
+         if (submenu) submenu.classList.toggle('hidden');
+         if (arrow) arrow.classList.toggle('rotate-180');
+      }
    });
 </script>

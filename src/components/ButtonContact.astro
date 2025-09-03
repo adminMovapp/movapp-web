@@ -18,7 +18,7 @@ const mensaje = '¡Hola! Quiero más información sobre El Hack.';
 </a>
 
 <script type="module">
-   import { trackEvent } from '@utils/metaPixel.js';
+   const { trackEvent } = window.metaPixelUtils;
 
    document.addEventListener('DOMContentLoaded', () => {
       const btn = document.getElementById('wa__stt');
