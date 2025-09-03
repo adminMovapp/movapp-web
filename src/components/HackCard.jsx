@@ -11,7 +11,7 @@ const HackCard = () => {
    const [isClosing, setIsClosing] = useState(false);
    const { country, config } = useCountryConfig();
 
-   const { trackPurchase, trackInitiateCheckout, trackViewContent } = useMetaPixel(
+   const { trackPurchase, trackInitiateCheckout, trackAddToCart, trackViewContent } = useMetaPixel(
       import.meta.env.PUBLIC_META_PIXEL_ID,
    );
 
