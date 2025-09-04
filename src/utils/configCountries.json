@@ -49,9 +49,9 @@
       "nombre": "Argentina",
       "moneda": "ARS",
       "simbolo": "$",
-      "precio": 20000,
+      "precio": 35000,
       "bandera": "fi fi-ar",
-      "precioMx": 10
+      "precioMx": 481
    },
    "CL": {
       "id_producto": 7,
