@@ -1,6 +1,8 @@
 import countries from '../utils/configCountries.json';
 const urlApi = import.meta.env.PUBLIC_API_LINK;
 
+import { encryptData, decryptData } from '../utils/crypto.js'; // Ajusta la ruta según tu estructura
+
 export const getCountry = async (defaultCode = 'MX') => {
    try {
       const res = await fetch(import.meta.env.PUBLIC_IPAPI_LINK);
@@ -23,17 +25,21 @@ export const getCountry = async (defaultCode = 'MX') => {
 };
 
 export const createPreference = async (payload) => {
+   const encryptedPayload = encryptData(payload);
+
    try {
       const res = await fetch(`${urlApi}/payments/create-preference`, {
          method: 'POST',
          headers: {
             'Content-Type': 'application/json',
          },
-         body: JSON.stringify(payload),
+         body: JSON.stringify({ data: encryptedPayload }),
       });
 
       if (!res.ok) {
-         throw new Error(`Error HTTP: ${res.status}`);
+         const errorData = await res.text(); // Usar text() en lugar de json()
+         console.error('Error response:', errorData);
+         throw new Error(`Error HTTP: ${res.status} - ${errorData}`);
       }
 
       const data = await res.json();

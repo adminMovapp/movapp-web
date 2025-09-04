@@ -11,7 +11,9 @@ const HackCard = () => {
    const [isClosing, setIsClosing] = useState(false);
    const { country, config } = useCountryConfig();
 
-   const { trackPurchase, trackInitiateCheckout } = useMetaPixel(import.meta.env.PUBLIC_META_PIXEL_ID);
+   const { trackPurchase, trackInitiateCheckout, trackAddToCart, trackViewContent } = useMetaPixel(
+      import.meta.env.PUBLIC_META_PIXEL_ID,
+   );
 
    const disabled = country; //=== 'MX';
    const productName = 'El Hack';
@@ -41,13 +43,39 @@ const HackCard = () => {
       return () => clearInterval(interval);
    }, []);
 
+   // Agregar useEffect para trackear cuando ven el producto
+   useEffect(() => {
+      if (config && config.precioMx) {
+         trackViewContent(config.precioMx, 'MXN', [productName], {
+            productName: productName,
+            country: country,
+            unitPrice: config.precioMx,
+         });
+      }
+   }, [config]);
+
    const openDrawer = async () => {
       setIsDrawerVisible(true);
       setIsClosing(false);
 
       // Trackear inicio de checkout
       const value = (config.precioMx * count).toFixed(2);
-      await trackInitiateCheckout(parseFloat(value), 'MXN', [productName]);
+
+      await trackAddToCart(parseFloat(value), 'MXN', [productName], {
+         productName: productName,
+         quantity: count,
+         unitPrice: config.precioMx,
+         country: country,
+      });
+
+      await trackInitiateCheckout(parseFloat(value), 'MXN', [productName], {
+         productName: productName,
+         quantity: count,
+         unitPrice: config.precioMx,
+         country: country,
+         paymentMethod: 'mercadopago',
+         customerType: 'prospect',
+      });
    };
 
    const closeDrawer = () => {
@@ -168,7 +196,19 @@ const HackCard = () => {
 
             if (response?.id) {
                // Trackear compra completada (lado del cliente)
-               await trackPurchase(parseFloat(totalValue), 'MXN', [productName]);
+               await trackPurchase(parseFloat(totalValue), 'MXN', [productName], {
+                  email: form.email,
+                  phone: form.telefono,
+                  name: `${form.nombre} ${form.apellidos}`,
+                  postalCode: form.codigoPostal,
+                  productName: productName,
+                  quantity: count,
+                  unitPrice: config.precioMx,
+                  country: country,
+                  orderId: response.id,
+                  paymentMethod: 'mercadopago',
+                  customerType: 'new_customer',
+               });
 
                mpRef.current.checkout({
                   preference: {
@@ -178,10 +218,10 @@ const HackCard = () => {
                   iframe: true, // abrir como modal
                });
             } else {
-               console.error('No se encontró init_point en la respuesta.');
+               // console.error('No se encontró init_point en la respuesta.');
             }
          } catch (error) {
-            console.error('Error al crear preferencia:', error);
+            // console.error('Error al crear preferencia:', error);
          }
          setCount(1);
          closeDrawer();
@@ -196,35 +236,40 @@ const HackCard = () => {
             </div>
          )}
 
-         <div className="bg-white rounded-lg shadow-md  p-6 flex flex-col items-center space-y-4 max-w-lg w-full">
-            <img src="../elhack-negro.png" alt="Movapp Logo" className="w-32 h-auto" />
-            <p className="text-gray-500 text-center text-sm md:text-lg">
+         <div
+            className="rounded-lg 
+         border border-white/10
+         
+         shadow-md  p-6 flex flex-col items-center space-y-4 max-w-lg w-full"
+         >
+            <img src="../elhack-blanco.png" alt="Movapp Logo" className="w-32 h-auto" />
+            <p className="text-white text-center text-sm md:text-lg">
                Nuestra solución al acoso de las apps de préstamo.
             </p>
 
             <div className="flex items-center space-x-2">
                <button
                   onClick={decrement}
-                  className="bg-purple-300 px-3 py-2 rounded font-bold text-white"
+                  className="bg-text_banner/80 px-3 py-2 rounded font-bold text-white"
                   aria-label="Disminuir cantidad"
                >
                   -
                </button>
-               <span className="text-xl font-bold" aria-live="polite">
+               <span className="text-xl font-bold text-white" aria-live="polite">
                   {count}
                </span>
                <button
                   onClick={increment}
-                  className="bg-purple-300 px-3 py-2 rounded font-bold text-white"
+                  className="bg-text_banner/80 px-3 py-2 rounded font-bold text-white"
                   aria-label="Aumentar cantidad"
                >
                   +
                </button>
             </div>
 
-            <p className="text-gray-600 text-sm md:text-lg text-center">Selecciona el número de hacks.</p>
+            <p className="text-white text-sm md:text-lg text-center">Selecciona el número de hacks.</p>
             <div className="flex items-center space-x-2">
-               <p className="text-xl font-bold">
+               <p className="text-xl font-bold text-white mt-1">
                   Tu pago es de : {config.simbolo} {(config.precio * count).toFixed(2)} {config.moneda}
                </p>
                <span className={`fi ${config.bandera} rounded-md`} style={{ fontSize: '2rem' }}></span>
@@ -239,7 +284,7 @@ const HackCard = () => {
             ) : null}
 
             <button
-               className={`bg-purple_mv hover:bg-purple_mv text-white font-bold h-8 w-auto px-5 rounded-md flex justify-center items-center
+               className={`bg-text_banner  hover:bg-text_banner/70 text-white font-bold h-8 w-auto px-5 rounded-md flex justify-center items-center
             ${!disabled ? 'opacity-50 cursor-not-allowed' : ''}
           `}
                onClick={openDrawer}
@@ -254,34 +299,34 @@ const HackCard = () => {
          {isDrawerVisible && (
             <div
                id="drawer-overlay"
-               className="fixed inset-0 flex items-end justify-center bg-black/50 z-50"
+               className="fixed inset-0 flex items-end justify-center bg-black/50 z-50 "
                role="dialog"
                aria-modal="true"
             >
                <div
                   ref={drawerRef}
                   tabIndex={-1}
-                  className={`bg-white                 
+                  className={`bg-black/90                 
                      max-w-md md:max-w-lg md:w-full 
                      min-h-[400px]
-                     rounded-t-xl p-5 md:p-8 relative shadow-xl ring-2 ring-purple-300 z-50
+                     rounded-t-xl p-5 md:p-8 relative shadow-xl ring-1 ring-white/10 z-50
                    ${isClosing ? 'animate-slideDown' : 'animate-slideUp'} transform`}
                >
                   <button
                      onClick={closeDrawer}
-                     className="absolute top-2 right-4 text-gray-400 text-2xl font-bold"
+                     className="absolute top-2 right-4 text-white text-2xl font-bold"
                      aria-label="Cerrar"
                   >
                      ×
                   </button>
 
                   <div className="mb-4 text-center">
-                     <div className="text-lg font-bold text-gray-700">
-                        Producto: <span className="text-purple_mv">{productName}</span>
+                     <div className="text-lg font-bold text-white">
+                        Producto: <span className="text-text_banner">{productName}</span>
                      </div>
-                     <div className="text-lg font-bold text-gray-700">{`Cantidad = ${count}`}</div>
+                     <div className="text-lg font-bold text-white">{`Cantidad = ${count}`}</div>
                      <div className="flex items-center justify-center space-x-2">
-                        <div className="text-xl font-bold text-gray-700 mt-1">
+                        <div className="text-xl font-bold text-white mt-1">
                            {`Total = ${config.simbolo}
                            ${(config.precio * count).toFixed(2)} ${config.moneda}`}
                         </div>
@@ -289,12 +334,12 @@ const HackCard = () => {
                      </div>
                   </div>
 
-                  <h3 className="text-xl font-bold mb-4 text-center mt-5 text-gray-700">Completa tu información</h3>
+                  <h3 className="text-xl font-bold mb-4 text-center mt-5 text-white">Completa tu información</h3>
 
                   <form className="grid gap-3 max-w-md mx-auto" onSubmit={handleSubmit} noValidate>
                      <div>
                         <input
-                           className={`border p-2 rounded w-full  ${
+                           className={`border  border-white/10 p-2 rounded w-full bg-black/70 text-white ${
                               errors.nombre ? 'border-red-500' : 'border-gray-300'
                            }`}
                            placeholder="Nombre"
@@ -309,7 +354,7 @@ const HackCard = () => {
 
                      <div>
                         <input
-                           className={`border p-2 rounded w-full ${
+                           className={`border border-white/10 p-2 rounded w-full bg-black/70 text-white ${
                               errors.apellidos ? 'border-red-500' : 'border-gray-300'
                            }`}
                            placeholder="Apellidos"
@@ -324,7 +369,7 @@ const HackCard = () => {
 
                      <div>
                         <input
-                           className={`border p-2 rounded w-full ${
+                           className={`border border-white/10 p-2 rounded w-full bg-black/70 text-white ${
                               errors.email ? 'border-red-500' : 'border-gray-300'
                            }`}
                            placeholder="Correo electrónico"
@@ -340,7 +385,7 @@ const HackCard = () => {
 
                      <div>
                         <input
-                           className={`border p-2 rounded w-full ${
+                           className={`border border-white/10 p-2 rounded w-full bg-black/70 text-white ${
                               errors.telefono ? 'border-red-500' : 'border-gray-300'
                            }`}
                            placeholder="Teléfono"
@@ -357,7 +402,7 @@ const HackCard = () => {
 
                      <div>
                         <input
-                           className={`border p-2 rounded w-full ${
+                           className={`border border-white/10 p-2 rounded w-full bg-black/70 text-white ${
                               errors.codigoPostal ? 'border-red-500' : 'border-gray-300'
                            }`}
                            placeholder="Código postal"
@@ -373,7 +418,7 @@ const HackCard = () => {
 
                      <button
                         type="submit"
-                        className="mt-4w-full bg-purple_mv text-white font-bold py-2 rounded hover:bg-purple-700"
+                        className="mt-4 w-full bg-text_banner text-white font-bold py-2 rounded hover:bg-text_banner/70 transition"
                      >
                         Finaliza tu compra
                      </button>

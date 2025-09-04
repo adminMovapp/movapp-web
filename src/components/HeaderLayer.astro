@@ -1,6 +1,6 @@
-<div class="w-full bg-red-500 text-white text-center text-sm h-6 flex items-center justify-center mb-4 md:mb-5">
+<div class="w-full bg-red-500 text-white text-center text-sm h-6 md:h-8 flex items-center justify-center">
    <a
-      href="${import.meta.env.PUBLIC_SHOW_HEADER_URL}"
+      href={`${import.meta.env.PUBLIC_SHOW_HEADER_URL}`}
       class="pulsing-text font-semibold underline hover:text-yellow-200 transition-colors duration-200"
       target="_blank"
       rel="noopener noreferrer"
@@ -22,5 +22,17 @@
 
    .pulsing-text {
       animation: pulse-text 2s ease-in-out infinite;
+   }
+
+   /* Eliminar el padding y el margen por defecto */
+   a {
+      padding: 0; /* Elimina cualquier padding */
+      margin: 0; /* Elimina cualquier margen */
+      line-height: 1; /* Asegura que la altura de la línea esté ajustada */
+   }
+
+   /* Para evitar cualquier espacio adicional en el contenedor */
+   .w-full {
+      margin-bottom: 0 !important; /* Asegúrate de que no haya márgenes adicionales */
    }
 </style>
