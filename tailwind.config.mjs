@@ -12,11 +12,11 @@ export default {
             greylight_mv: '#767676',
 
             // purple_mv: '#8149E2',
-            purple_mv: '#123C8C',
+            purple_mv: '#8149E2',
 
-            background_top: '#0b1223',
-            background_bottom: '#0b2a63',
-            text_banner: '#175996',
+            background_top: '#8149E2',
+            background_bottom: '#050505',
+            text_banner: '#8149E2',
             line_cards: '#ffffff',
          },
          keyframes: {
