@@ -1,109 +1,106 @@
 ---
 import { URLS } from '@/constants/socials';
 
-const cardHover =
-   'border border-white/5  border border-black/5 transition duration-300 ease-in-out will-change-transform hover:shadow-xl hover:-translate-y-1 hover:scale-105 hover:bg-purple_mv/2 hover:backdrop-blur-md cursor-pointer';
+const navLinks = [
+   { label: 'Movapp', href: '/nosotros' },
+   { label: 'El Hack', href: '/el-hack' },
+   { label: 'Tienda', href: '/tienda' },
+   { label: 'Colaboraciones', href: '/collaborations' },
+   { label: 'Testimonios', href: '/testimonials' },
+];
+
+const contentLinks = [
+   { label: 'Mente digital', href: '/mind' },
+   { label: 'Nuestras redes', href: '/red' },
+   { label: 'Preguntas frecuentes', href: '/faqs' },
+   { label: 'Política de privacidad', href: '/privacypolicy' },
+];
+
+const socials = [
+   { href: URLS.youtube, label: 'YouTube', icon: '/logo-youtube.png' },
+   { href: URLS.tiktok, label: 'TikTok', icon: '/logo-tiktok.png' },
+   { href: URLS.facebook, label: 'Facebook', icon: '/logo-facebook.png' },
+   { href: URLS.instagram, label: 'Instagram', icon: '/logo-instagram.png' },
+];
+
+const year = new Date().getFullYear();
 ---
-
-<section class="mt-5 flex flex-col items-center justify-center px-6 py-5">
-   <section class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3 items-stretch w-full max-w-5xl">
-      <!-- Acerca de Nosotros -->
-      <div data-aos="fade-right" class="h-full">
-         <div class={`h-full flex flex-col justify-start p-6 rounded-2xl  shadow-md ${cardHover}`}>
-            <h3 class="mb-1 font-semibold text-white">Acerca de nosotros</h3>
-            <ul class="space-y-1 text-sm text-white italic">
-               <li><a href="/nosotros" class="hover:text-blue-300">Movapp</a></li>
-               <li><a href="/collaborations" class="hover:text-blue-300">Colaboraciones</a></li>
-               <li><a href="/el-hack" class="hover:text-blue-300">Hack</a></li>
-               <li><a href="/faqs">Preguntas frecuentes</a></li>
-               <li><a href="/testimonials">Testimonios</a></li>
-            </ul>
-         </div>
-      </div>
-
-      <!-- Contenido -->
-      <div data-aos="fade-up" class="h-full">
-         <div class={`h-full flex flex-col justify-start p-6 rounded-2xl  shadow-md ${cardHover}`}>
-            <h3 class="mb-1 font-semibold text-white">Contenido</h3>
-            <ul class="space-y-1 text-sm text-white italic">
-               <li><a href="/mind" class="hover:text-blue-300">Mente digital</a></li>
-               <li><a href="/red" class="hover:text-blue-300">Nuestras redes sociales</a></li>
-            </ul>
-         </div>
-      </div>
-
-      <!-- Adquiere El Hack -->
-      <div data-aos="fade-left" class="h-full">
-         <div class={`h-full flex flex-col justify-start p-6 rounded-2xl  shadow-md ${cardHover}`}>
-            <h3 class="mb-1 font-semibold text-white">Adquiere EL HACK</h3>
-            <ul class="space-y-1 text-sm text-white italic">
-               <li><a href="/tienda" class="hover:text-blue-300 mb-8">Tienda</a></li>
-               <!-- <li><span class="font-semibold">Legal</span></li> -->
-
-               <h3 class="mt-10 font-semibold text-white">Legal</h3>
-               <li>
-                  <li>
-                     <a href="/privacypolicy" class="hover:text-blue-300">Política de privacidad</a>
-                  </li>
-               </li>
-            </ul>
-         </div>
-      </div>
-   </section>
-</section>
 
 <!-- Footer -->
 <footer
-   class="mt-8 mb-16 rounded-3xl bg-background_top md:bg-gradient-to-l md:from-background_top md:to-background_bottom/80
-px-10 md:px-16 py-6 shadow-lg text-white
-flex flex-col items-center justify-between gap-6 md:flex-row max-w-7xl mx-5 md:mx-auto"
+   class="mt-16 w-full border-t border-black/10 bg-gray-100 text-gray-700 transition-colors duration-300 dark:border-white/10 dark:bg-zinc-950 dark:text-white/80"
 >
-   <!-- Logo + Descripción -->
-   <div class="max-w-md text-center md:text-left">
-      <img src="/Logo-Blanco.png" alt="Movapp Logo" class="mx-auto my-4 w-32 h-auto" />
-      <p class="mt-2 text-sm text-justify">
-         Movapp es una organización que ayuda a personas víctimas de las aplicaciones de préstamo no reguladas mediante
-         apoyo psicológico, asesoría personalizada y la aplicación del Hack.
-      </p>
-   </div>
+   <div class="mx-auto max-w-7xl px-6 py-12 md:px-10">
+      <!-- Fila superior: marca + enlaces -->
+      <div class="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-4">
+         <!-- Marca + descripción -->
+         <div class="lg:col-span-2 max-w-md">
+            <a href="/" class="inline-block" aria-label="Movapp - Inicio">
+               <img src="/Logo-Morado.png" alt="Movapp" class="block h-10 w-auto dark:hidden" />
+               <img src="/Logo-Blanco.png" alt="Movapp" class="hidden h-10 w-auto dark:block" />
+            </a>
+            <p class="mt-4 text-sm leading-relaxed text-gray-600 dark:text-white/70">
+               Movapp es una organización que ayuda a personas víctimas de las aplicaciones de préstamo no reguladas
+               mediante apoyo psicológico, asesoría personalizada y la aplicación de El Hack.
+            </p>
 
-   <!-- Redes Sociales + Derechos -->
-   <div
-      class="flex flex-col items-center text-center justify-between
-             md:items-end md:text-right md:justify-end"
-   >
-      <div class="mb-2 flex justify-center gap-4 text-lg md:justify-end">
-         <a href={URLS.youtube} aria-label="YouTube" class="hover:text-gray-300">
-            <img src="/logo-youtube.png" alt="YouTube" class="mx-auto my-4 w-7 h-auto" />
-         </a>
-         <a
-            href={URLS.tiktok}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="TikTok"
-            class="hover:text-gray-300"
-         >
-            <img src="/logo-tiktok.png" alt="TikTok" class="mx-auto my-4 w-7 h-auto" />
-         </a>
-         <a
-            href={URLS.facebook}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Facebook"
-            class="hover:text-gray-300"
-         >
-            <img src="/logo-facebook.png" alt="Facebook" class="mx-auto my-4 w-7 h-auto" />
-         </a>
-         <a
-            href={URLS.instagram}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Instagram"
-            class="hover:text-gray-300"
-         >
-            <img src="/logo-instagram.png" alt="Instagram" class="mx-auto my-4 w-7 h-auto" />
-         </a>
+            <!-- Redes sociales -->
+            <div class="mt-6 flex gap-3">
+               {
+                  socials.map((s) => (
+                     <a
+                        href={s.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={s.label}
+                        class="flex h-10 w-10 items-center justify-center rounded-full border border-black/10 bg-white transition hover:-translate-y-0.5 hover:border-purple_mv/50 dark:border-white/10 dark:bg-white/5"
+                     >
+                        <img src={s.icon} alt={s.label} class="h-5 w-auto" />
+                     </a>
+                  ))
+               }
+            </div>
+         </div>
+
+         <!-- Navegación -->
+         <div>
+            <h3 class="mb-4 text-sm font-bold uppercase tracking-wide text-text_banner">Navegación</h3>
+            <ul class="space-y-2 text-sm">
+               {
+                  navLinks.map((l) => (
+                     <li>
+                        <a href={l.href} class="transition-colors hover:text-text_banner">
+                           {l.label}
+                        </a>
+                     </li>
+                  ))
+               }
+            </ul>
+         </div>
+
+         <!-- Contenido + Legal -->
+         <div>
+            <h3 class="mb-4 text-sm font-bold uppercase tracking-wide text-text_banner">Contenido</h3>
+            <ul class="space-y-2 text-sm">
+               {
+                  contentLinks.map((l) => (
+                     <li>
+                        <a href={l.href} class="transition-colors hover:text-text_banner">
+                           {l.label}
+                        </a>
+                     </li>
+                  ))
+               }
+            </ul>
+         </div>
       </div>
-      <p class="text-sm">Movappbyerikmann © - Todos Los Derechos Reservados - 2025</p>
+
+      <!-- Barra inferior -->
+      <div
+         class="mt-10 flex flex-col items-center justify-between gap-4 border-t border-black/10 pt-6 text-sm text-gray-500 dark:border-white/10 dark:text-white/60 md:flex-row"
+      >
+         <p>Movappbyerikmann © - Todos Los Derechos Reservados - {year}</p>
+         <a href="/privacypolicy" class="transition-colors hover:text-text_banner">Política de privacidad</a>
+      </div>
    </div>
 </footer>

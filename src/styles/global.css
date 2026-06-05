@@ -2,14 +2,141 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+   scroll-behavior: smooth;
+}
+
 body {
    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.paper-texture-bg {
-   background-color: rgb(242 243 245); /* gris Tailwind: bg-gray-200 */
-   background-image: url('/asset.png');
-   background-repeat: repeat;
-   background-size: initial;
-   background-blend-mode: multiply;
+/* ============================================================
+   TEMA LIGHT — overrides globales
+   Todo el sitio usa text-white / bg-white/x hardcodeado sobre fondo
+   oscuro. En light reinterpretamos esas utilidades para mantener
+   legibilidad sin reescribir cada página. El acento morado
+   (text_banner / purple_mv) NO se toca porque no usa text-white.
+   ============================================================ */
+html:not(.dark) .text-white {
+   color: #1a1a1a;
+}
+html:not(.dark) [class*='text-white\/'] {
+   color: rgba(26, 26, 26, 0.85);
+}
+/* Cards translúcidas que desaparecen en light → fondo claro de respaldo */
+html:not(.dark) [class*='bg-white\/'] {
+   background-color: rgba(0, 0, 0, 0.04);
+}
+
+/* Secciones que SIEMPRE son oscuras (estilo softree): el texto blanco y los
+   fondos translúcidos se conservan también en light. */
+html:not(.dark) .dark-section .text-white,
+html:not(.dark) .dark-section [class*='text-white\/'] {
+   color: rgba(255, 255, 255, 0.9);
+}
+html:not(.dark) .dark-section [class*='bg-white\/'] {
+   background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* ============================================================
+   GLASS CARD — glassfrost translúcido, idéntico comportamiento
+   en light y dark. No usa utilidades bg-white/x para evitar que
+   los overrides de tema lo pisen.
+   ============================================================ */
+.glass-card {
+   background: linear-gradient(135deg, rgba(129, 73, 226, 0.12), rgba(255, 255, 255, 0.04));
+   -webkit-backdrop-filter: blur(16px) saturate(140%);
+   backdrop-filter: blur(16px) saturate(140%);
+}
+html:not(.dark) .glass-card {
+   background: linear-gradient(135deg, rgba(129, 73, 226, 0.1), rgba(255, 255, 255, 0.55));
+   border-color: rgba(129, 73, 226, 0.25);
+}
+
+
+/* ============================================================
+   MARQUEE — carrusel horizontal infinito que se desplaza a la
+   izquierda. La pista lleva los logos duplicados (2 copias), por
+   eso desplazar -50% produce un bucle perfecto.
+   ============================================================ */
+@keyframes marqueeScroll {
+   from {
+      transform: translateX(0);
+   }
+   to {
+      transform: translateX(-50%);
+   }
+}
+.marquee-track {
+   animation: marqueeScroll 25s linear infinite;
+}
+.marquee:hover .marquee-track {
+   animation-play-state: paused;
+}
+
+/* ============================================================
+   REVEAL escalonado (independiente de AOS, funciona también en
+   móvil <768px donde AOS está deshabilitado). Se activa con la
+   clase .in-view añadida por IntersectionObserver.
+   ============================================================ */
+@keyframes cardReveal {
+   from {
+      opacity: 0;
+      transform: translateY(20px);
+   }
+   to {
+      opacity: 1;
+      transform: none;
+   }
+}
+
+.reveal-stagger > * {
+   opacity: 0;
+}
+.reveal-stagger.in-view > * {
+   animation: cardReveal 0.6s ease-out forwards;
+}
+.reveal-stagger.in-view > *:nth-child(1) {
+   animation-delay: 0.05s;
+}
+.reveal-stagger.in-view > *:nth-child(2) {
+   animation-delay: 0.1s;
+}
+.reveal-stagger.in-view > *:nth-child(3) {
+   animation-delay: 0.15s;
+}
+.reveal-stagger.in-view > *:nth-child(4) {
+   animation-delay: 0.2s;
+}
+.reveal-stagger.in-view > *:nth-child(5) {
+   animation-delay: 0.25s;
+}
+.reveal-stagger.in-view > *:nth-child(6) {
+   animation-delay: 0.3s;
+}
+.reveal-stagger.in-view > *:nth-child(7) {
+   animation-delay: 0.35s;
+}
+.reveal-stagger.in-view > *:nth-child(8) {
+   animation-delay: 0.4s;
+}
+.reveal-stagger.in-view > *:nth-child(9) {
+   animation-delay: 0.45s;
+}
+
+/* ============================================================
+   Accesibilidad: respetar reduced-motion
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+   *,
+   *::before,
+   *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+   }
+   .reveal-stagger > * {
+      opacity: 1;
+   }
 }

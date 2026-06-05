@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+   darkMode: 'class',
    theme: {
       extend: {
          // fontFamily: {
@@ -28,10 +29,20 @@ export default {
                '0%': { transform: 'translateY(0)' },
                '100%': { transform: 'translateY(100%)' },
             },
+            fadeIn: {
+               '0%': { opacity: '0', transform: 'translateY(12px)' },
+               '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            floatSlow: {
+               '0%, 100%': { transform: 'translateY(0)' },
+               '50%': { transform: 'translateY(-20px)' },
+            },
          },
          animation: {
             slideUp: 'slideUp 0.3s ease-out forwards',
             slideDown: 'slideDown 0.3s ease-in forwards',
+            fadeIn: 'fadeIn 0.7s ease-out forwards',
+            floatSlow: 'floatSlow 8s ease-in-out infinite',
          },
       },
    },
