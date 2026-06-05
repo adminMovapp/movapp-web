@@ -27,10 +27,10 @@ const stats = [
 
 // ── Colaboraciones (logos) ──────────────────────────────────
 const collaborations = [
-   { src: '/migracion/cenepred.webp', alt: 'Cenepred' },
-   { src: '/migracion/mvs-noticias.webp', alt: 'MVS Noticias' },
-   { src: '/migracion/werevertumorro.webp', alt: 'Werevertumorro' },
-   { src: '/migracion/oye.webp', alt: 'Oye' },
+   { src: '/img/migracion/cenepred.webp', alt: 'Cenepred' },
+   { src: '/img/migracion/mvs-noticias.webp', alt: 'MVS Noticias' },
+   { src: '/img/migracion/werevertumorro.webp', alt: 'Werevertumorro' },
+   { src: '/img/migracion/oye.webp', alt: 'Oye' },
 ];
 
 // ── Beneficios: "Esto es lo que obtienes al instalar El Hack" ─
@@ -99,12 +99,12 @@ const testimonials = [
 
 // ── Contenido Destacado ─────────────────────────────────────
 const featured = [
-   { title: '¿Qué Tan Confiable Es Movapp?', href: '/nosotros' },
-   { title: 'Noticias de montadeudas', href: '/red' },
-   { title: 'Pagos de El Hack', href: '/tienda' },
-   { title: 'Sección Mente Digital', href: '/mind' },
-   { title: 'Historias reales', href: '/testimonials' },
-   { title: 'Aclara tus dudas', href: '/faqs' },
+   { title: '¿Qué Tan Confiable Es Movapp?', desc: 'Conoce quiénes somos y por qué confían en nosotros.', href: '/nosotros' },
+   { title: 'Noticias de montadeudas', desc: 'Mantente informado sobre el acoso y cómo combatirlo.', href: '/red' },
+   { title: 'Pagos de El Hack', desc: 'Todo lo que necesitas para adquirir El Hack.', href: '/tienda' },
+   { title: 'Sección Mente Digital', desc: 'Cuida tu bienestar emocional en el mundo digital.', href: '/mind' },
+   { title: 'Historias reales', desc: 'Testimonios de quienes recuperaron su paz.', href: '/testimonials' },
+   { title: 'Aclara tus dudas', desc: 'Respuestas a las preguntas más frecuentes.', href: '/faqs' },
 ];
 ---
 
@@ -183,12 +183,12 @@ const featured = [
    </div>
 
    <!-- ───────────── CTA Contáctanos ───────────── -->
-   <section class="relative mx-auto my-16 w-full max-w-5xl px-4" data-aos="fade-up">
+   <section class="relative mx-auto my-8 w-full max-w-5xl px-4" data-aos="fade-up">
       <div
          class="glass-card relative overflow-hidden rounded-3xl border border-purple_mv/30 p-10 shadow-[0_0_40px_rgba(129,73,226,0.15)] md:p-14"
       >
          <!-- Resplandor decorativo -->
-         <div class="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-purple_mv/30 blur-3xl"></div>
+         <div class="pointer-events-none absolute -right-16 -top-8 h-56 w-56 rounded-full bg-purple_mv/30 blur-3xl"></div>
          <div
             class="pointer-events-none absolute -bottom-20 -left-16 h-56 w-56 rounded-full bg-purple_mv/20 blur-3xl"
          >
@@ -236,7 +236,8 @@ const featured = [
 
    <!-- ───────────────── COLABORACIONES (CARRUSEL) ───────────────── -->
    <section class="relative mx-auto my-16 w-full max-w-4xl px-4 text-center" data-aos="fade-up">
-   
+     <h3 class="mt-16 mb-8 text-center text-xl md:text-2xl font-bold text-white">
+Algunas de nuestras colaboraciones         </h3>
 
       <!-- Carrusel marquee horizontal (se desplaza a la izquierda) -->
       <div class="marquee relative w-full overflow-hidden">
@@ -311,7 +312,7 @@ const featured = [
                   <div class="group flex flex-col rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm transition duration-300 hover:-translate-y-1 hover:border-purple_mv/50 hover:bg-white/10 hover:shadow-[0_0_25px_rgba(129,73,226,0.25)]">
                      <div class="mb-2 flex items-center gap-3">
                         <img
-                           src="/migracion/checkmark-circle.webp"
+                           src="/img/migracion/checkmark-circle.webp"
                            alt="check"
                            class="h-6 w-6 flex-shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6"
                         />
@@ -365,20 +366,52 @@ const featured = [
    </section>
 
    <!-- ───────────────── CONTENIDO DESTACADO ───────────────── -->
-   <section class="relative mx-auto my-16 w-full max-w-6xl px-4" data-aos="fade-up">
-      <h2 class="mb-10 text-center text-2xl md:text-3xl font-bold text-text_banner">Contenido Destacado</h2>
-      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+   <section class="relative mx-auto my-24 w-full max-w-5xl px-4" data-aos="fade-up">
+      <!-- Encabezado alineado a la izquierda (rompe el patrón centrado) -->
+      <div class="mb-8 flex items-end justify-between gap-4 border-b border-purple_mv/20 pb-4">
+         <div>
+            <span class="text-xs font-semibold uppercase tracking-widest text-text_banner">Explora</span>
+            <h2 class="mt-1 text-2xl md:text-4xl font-bold text-gray-900 dark:text-white">Contenido Destacado</h2>
+         </div>
+         <span class="hidden text-sm text-gray-500 dark:text-white/50 sm:block">{featured.length} secciones</span>
+      </div>
+
+      <!-- Lista tipo índice numerado -->
+      <ul class="flex flex-col">
          {
-            featured.map((f) => (
-               <a href={f.href} class={`group flex items-center justify-between gap-3 p-8 rounded-2xl shadow-lg ${cardHover}`}>
-                  <span class="text-lg font-semibold text-gray-900 dark:text-white">{f.title}</span>
-                  <span class="translate-x-0 text-text_banner opacity-0 transition-all duration-300 group-hover:translate-x-1 group-hover:opacity-100">
-                     →
-                  </span>
-               </a>
+            featured.map((f, i) => (
+               <li>
+                  <a
+                     href={f.href}
+                     class="group relative flex items-center gap-5 border-b border-gray-200/70 py-5 transition-colors dark:border-white/10 md:gap-8"
+                  >
+                     {/* Barra de acento que aparece al hover */}
+                     <span class="absolute left-0 top-1/2 h-0 w-0.5 -translate-y-1/2 bg-text_banner transition-all duration-300 group-hover:h-2/3" />
+
+                     {/* Número */}
+                     <span class="w-10 flex-shrink-0 text-2xl font-bold tabular-nums text-gray-300 transition-colors group-hover:text-text_banner dark:text-white/20 md:text-3xl">
+                        {String(i + 1).padStart(2, '0')}
+                     </span>
+
+                     {/* Título + descripción */}
+                     <div class="flex-1">
+                        <h3 class="text-lg font-semibold text-gray-900 transition-colors group-hover:text-text_banner dark:text-white md:text-xl">
+                           {f.title}
+                        </h3>
+                        <p class="mt-0.5 text-sm text-gray-500 dark:text-white/60">{f.desc}</p>
+                     </div>
+
+                     {/* Flecha */}
+                     <span class="flex-shrink-0 text-text_banner transition-transform duration-300 group-hover:translate-x-1.5">
+                        <svg class="h-5 w-5 md:h-6 md:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                           <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                        </svg>
+                     </span>
+                  </a>
+               </li>
             ))
          }
-      </div>
+      </ul>
    </section>
 
    <!-- ───────────────── DESCARGA NUESTRA APP ───────────────── -->
@@ -387,7 +420,7 @@ const featured = [
          <!-- Mockup -->
          <div class="flex-1 flex justify-center">
             <img
-               src="/migracion/Mockup-celular-movapp-1.webp"
+               src="/img/migracion/Mockup-celular-movapp-1.webp"
                alt="App Movapp"
                class="max-h-96 w-auto drop-shadow-[0_0_40px_rgba(129,73,226,0.35)]"
             />
@@ -395,17 +428,17 @@ const featured = [
 
          <!-- Texto + badges -->
          <div class="flex-1 text-center md:text-left">
-            <img src="/migracion/Logo-Movapp_calado-5.webp" alt="Movapp" class="mx-auto md:mx-0 mb-4 h-12 w-auto" />
+            <img src="/img/migracion/Logo-Movapp_calado-5.webp" alt="Movapp" class="mx-auto md:mx-0 mb-4 h-12 w-auto" />
             <h2 class="mb-5 text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">Descarga nuestra app</h2>
             <p class="mb-6 text-sm md:text-base text-gray-700 dark:text-white/90">
                Únete a los millones que ya disfrutan de paz. Descarga la app de Movapp y aplica El Hack hoy.
             </p>
             <div class="flex flex-wrap items-center justify-center md:justify-start gap-4">
                <a href="#" aria-label="Descargar en Google Play" class="transition hover:scale-105">
-                  <img src="/migracion/play-store-v2.webp" alt="Google Play" class="h-12 w-auto" />
+                  <img src="/img/migracion/play-store-v2.webp" alt="Google Play" class="h-12 w-auto" />
                </a>
                <a href="#" aria-label="Descargar en App Store" class="transition hover:scale-105">
-                  <img src="/migracion/app-store-v2.webp" alt="App Store" class="h-12 w-auto" />
+                  <img src="/img/migracion/app-store-v2.webp" alt="App Store" class="h-12 w-auto" />
                </a>
             </div>
          </div>
