@@ -20,6 +20,13 @@ body {
 html:not(.dark) .text-white {
    color: #1a1a1a;
 }
+/* Elementos con fondo de color fijo (ej. botón verde de WhatsApp) que deben
+   conservar su texto blanco en ambos temas. */
+html:not(.dark) .keep-white,
+html:not(.dark) .keep-white .text-white,
+html:not(.dark) .keep-white [class*='text-white'] {
+   color: #ffffff;
+}
 html:not(.dark) [class*='text-white\/'] {
    color: rgba(26, 26, 26, 0.85);
 }
