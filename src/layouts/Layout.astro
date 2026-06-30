@@ -3,9 +3,10 @@ import '@styles/global.css';
 import Header from '@components/Header.astro';
 import Footer from '@components/Footer.astro';
 import HeaderLayer from '@/components/HeaderLayer.astro';
+import BackgroundGrid from '@components/BackgroundGrid.astro';
 import InitAOS from '@/utils/InitAOS.jsx';
 
-import { siteConfig } from '@/utils/config.jsx';
+import { getSiteConfig } from '@/utils/config.jsx';
 import { generateSEOTags, generateOrganizationSchema } from '@/utils/seo.jsx';
 
 import GoogleTagManager from '@components/GoogleTagManager.astro';
@@ -23,20 +24,36 @@ interface Props {
    type?: string;
    noIndex?: boolean;
    schema?: object;
+   showGrid?: boolean;
 }
-const { title } = Astro.props;
+const { title, showGrid = true } = Astro.props;
+
+const siteConfig = getSiteConfig(Astro.request);
 
 // Generar tags SEO
 const seoTags = generateSEOTags({
    ...Astro.props,
    url: new URL(Astro.url.pathname, siteConfig.canonicalUrl).href,
-});
-const organizationSchema = generateOrganizationSchema();
+}, Astro.request);
+const organizationSchema = generateOrganizationSchema(Astro.request);
 ---
 
 <!doctype html>
-<html lang={siteConfig.site.language}>
+<html lang={siteConfig.site.language} class="dark">
    <head>
+      <!-- Tema: aplicar antes del paint para evitar flash (default DARK) -->
+      <script is:inline>
+         (function () {
+            try {
+               var t = localStorage.getItem('theme');
+               if (t === 'light') document.documentElement.classList.remove('dark');
+               else document.documentElement.classList.add('dark');
+            } catch (e) {
+               document.documentElement.classList.add('dark');
+            }
+         })();
+      </script>
+
       <!-- Charset y viewport -->
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -48,7 +65,7 @@ const organizationSchema = generateOrganizationSchema();
       <meta name="description" content={seoTags.description} />
       <meta name="keywords" content={seoTags.keywords} />
       <meta name="author" content={seoTags.author} />
-      <meta name="robots" content={seoTags.robots} />
+      {!siteConfig.isProduction && <meta name="robots" content={seoTags.robots} />}
 
       <!-- Canonical URL -->
       <link rel="canonical" href={seoTags.canonical} />
@@ -108,7 +125,9 @@ const organizationSchema = generateOrganizationSchema();
       <title>{title}</title>
    </head>
 
-   <body class="bg-gray-100 text-gray-800 min-h-screen flex flex-col">
+   <body
+      class="bg-gray-50 text-gray-900 dark:bg-[#050505] dark:text-white min-h-screen flex flex-col transition-colors duration-300"
+   >
       <MetaPixelScript pixelId={import.meta.env.PUBLIC_META_PIXEL_ID} />
 
       <InitAOS client:load />
@@ -117,14 +136,12 @@ const organizationSchema = generateOrganizationSchema();
 
       <Header />
 
-      <main
-         class="bg-gradient-to-b from-background_top from-[0%] to-background_bottom to-[100%] via-background_top via-[50%]
-                     min-h-screen"
-      >
-         <!-- <div class="bg-gray-200 text-gray-800 min-h-screen pt-24 -my-1 rounded-2xl shadow-lg pb-1"> -->
-         <slot />
-         <Footer />
-         <!-- </div> -->
+      <main class="relative min-h-screen isolate">
+         {showGrid && <BackgroundGrid />}
+         <div class="relative z-10">
+            <slot />
+            <Footer />
+         </div>
       </main>
    </body>
 </html>
