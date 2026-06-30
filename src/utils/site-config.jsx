@@ -14,6 +14,10 @@ export const siteConfigData = {
     staging: "https://stage.movapp.org",
     development: "http://localhost:7001"
   },
+  stagingHostnames: [
+    "stage-movapp.netlify.app",
+    "stage.movapp.org",
+  ],
   social: {
     twitter: "@movapp_oficial",
     facebook: "https://facebook.com/movapp",

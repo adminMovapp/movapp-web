@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { siteConfig } from '@/utils/config.jsx';
+import { getSiteConfig } from '@/utils/config.jsx';
 
 const pages = [
   { path: '/',               changefreq: 'weekly',  priority: '1.0' },
@@ -14,8 +14,8 @@ const pages = [
   { path: '/privacypolicy',  changefreq: 'yearly',  priority: '0.3' },
 ];
 
-export const GET: APIRoute = () => {
-  const base = siteConfig.siteUrl.replace(/\/$/, '');
+export const GET: APIRoute = ({ request }) => {
+  const base = getSiteConfig(request).siteUrl.replace(/\/$/, '');
 
   const urls = pages
     .map(

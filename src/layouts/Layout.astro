@@ -6,8 +6,10 @@ import HeaderLayer from '@/components/HeaderLayer.astro';
 import BackgroundGrid from '@components/BackgroundGrid.astro';
 import InitAOS from '@/utils/InitAOS.jsx';
 
-import { siteConfig } from '@/utils/config.jsx';
+import { getSiteConfig } from '@/utils/config.jsx';
 import { generateSEOTags, generateOrganizationSchema } from '@/utils/seo.jsx';
+
+const siteConfig = getSiteConfig(Astro.request);
 
 import GoogleTagManager from '@components/GoogleTagManager.astro';
 import GoogleAnalytics from '@components/GoogleAnalytics.astro';
