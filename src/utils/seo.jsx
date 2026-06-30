@@ -1,15 +1,16 @@
-import { siteConfig } from './config.jsx';
+import { getSiteConfig } from './config.jsx';
 
 // Generar meta tags SEO
-export function generateSEOTags(props = {}) {
+export function generateSEOTags(props = {}, request = null) {
+  const cfg = getSiteConfig(request);
   const {
-    title = `${siteConfig.site.name} - ${siteConfig.site.title}`,
-    description = siteConfig.site.description,
-    keywords = siteConfig.site.keywords,
-    image = siteConfig.defaultImage,
+    title = `${cfg.site.name} - ${cfg.site.title}`,
+    description = cfg.site.description,
+    keywords = cfg.site.keywords,
+    image = cfg.defaultImage,
     type = 'website',
-    url = siteConfig.siteUrl,
-    author = siteConfig.site.author,
+    url = cfg.siteUrl,
+    author = cfg.site.author,
     publishedTime,
     modifiedTime,
     noIndex = false
@@ -25,46 +26,48 @@ export function generateSEOTags(props = {}) {
     author,
     publishedTime,
     modifiedTime,
-    canonical: new URL(url, siteConfig.canonicalUrl).href,
-    robots: noIndex || siteConfig.noIndex ? 'noindex, nofollow' : siteConfig.robotsContent
+    canonical: new URL(url, cfg.canonicalUrl).href,
+    robots: noIndex || cfg.noIndex ? 'noindex, nofollow' : cfg.robotsContent
   };
 }
 
 // Generar Schema.org para la organización
-export function generateOrganizationSchema() {
+export function generateOrganizationSchema(request = null) {
+  const cfg = getSiteConfig(request);
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "name": siteConfig.site.name,
-    "description": siteConfig.site.description,
-    "url": siteConfig.canonicalUrl,
-    "logo": `${siteConfig.canonicalUrl}${siteConfig.assets.logo}`,
+    "name": cfg.site.name,
+    "description": cfg.site.description,
+    "url": cfg.canonicalUrl,
+    "logo": `${cfg.canonicalUrl}${cfg.assets.logo}`,
     "contactPoint": {
       "@type": "ContactPoint",
-      "contactType": siteConfig.business.contactType,
-      "availableLanguage": siteConfig.business.availableLanguage
+      "contactType": cfg.business.contactType,
+      "availableLanguage": cfg.business.availableLanguage
     },
     "sameAs": [
-      siteConfig.social.facebook,
-      siteConfig.social.twitter.replace('@', 'https://twitter.com/'),
-      siteConfig.social.instagram
+      cfg.social.facebook,
+      cfg.social.twitter.replace('@', 'https://twitter.com/'),
+      cfg.social.instagram
     ],
     "areaServed": {
       "@type": "Country",
-      "name": siteConfig.business.country
+      "name": cfg.business.country
     },
-    "serviceType": siteConfig.business.serviceType
+    "serviceType": cfg.business.serviceType
   };
 }
 
 // Generar Schema.org para servicios
-export function generateServiceSchema(serviceData) {
+export function generateServiceSchema(serviceData, request = null) {
+  const cfg = getSiteConfig(request);
   const {
     name,
     description,
-    provider = siteConfig.site.name,
-    areaServed = siteConfig.business.country,
-    serviceType = siteConfig.business.serviceType
+    provider = cfg.site.name,
+    areaServed = cfg.business.country,
+    serviceType = cfg.business.serviceType
   } = serviceData;
 
   return {

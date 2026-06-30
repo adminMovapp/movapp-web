@@ -9,8 +9,6 @@ import InitAOS from '@/utils/InitAOS.jsx';
 import { getSiteConfig } from '@/utils/config.jsx';
 import { generateSEOTags, generateOrganizationSchema } from '@/utils/seo.jsx';
 
-const siteConfig = getSiteConfig(Astro.request);
-
 import GoogleTagManager from '@components/GoogleTagManager.astro';
 import GoogleAnalytics from '@components/GoogleAnalytics.astro';
 
@@ -30,12 +28,14 @@ interface Props {
 }
 const { title, showGrid = true } = Astro.props;
 
+const siteConfig = getSiteConfig(Astro.request);
+
 // Generar tags SEO
 const seoTags = generateSEOTags({
    ...Astro.props,
    url: new URL(Astro.url.pathname, siteConfig.canonicalUrl).href,
-});
-const organizationSchema = generateOrganizationSchema();
+}, Astro.request);
+const organizationSchema = generateOrganizationSchema(Astro.request);
 ---
 
 <!doctype html>
