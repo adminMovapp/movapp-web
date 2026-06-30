@@ -1,25 +1,28 @@
 import { siteConfigData } from './site-config.jsx';
 
+const env = import.meta.env.PUBLIC_SITE_ENV ?? 'production';
+
 // Configuración centralizada
 export const siteConfig = {
    // Datos de la configuración
    ...siteConfigData,
 
-   // Asumimos que el entorno es producción por defecto
-   environment: 'production',
-   isDev: false,
-   isStaging: false,
-   isProduction: true,
-   debugMode: false,
+   environment: env,
+   isDev: env === 'development',
+   isStaging: env === 'staging',
+   isProduction: env === 'production',
+   debugMode: env !== 'production',
 
    // URLs dinámicas
    get siteUrl() {
+      if (this.isStaging) return this.urls.staging;
+      if (this.isDev) return this.urls.development;
       return this.urls.production;
    },
 
-   // URL canónica (siempre producción para SEO)
+   // URL canónica: en staging apunta a sí mismo, no a producción
    get canonicalUrl() {
-      return this.urls.production;
+      return this.siteUrl;
    },
 
    // Control de indexación
@@ -28,7 +31,9 @@ export const siteConfig = {
    },
 
    get robotsContent() {
-      return this.seo.robots.production;
+      return this.isStaging || this.isDev
+         ? this.seo.robots.staging
+         : this.seo.robots.production;
    },
 
    // URLs de assets
