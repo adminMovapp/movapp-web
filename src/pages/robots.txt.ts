@@ -5,40 +5,8 @@ const ROBOTS_STAGING = `User-agent: *
 Disallow: /
 `;
 
-const ROBOTS_PRODUCTION = `# BEGIN Cloudflare Managed content
-
-User-agent: *
-Content-Signal: search=yes,ai-train=no
+const ROBOTS_PRODUCTION = `User-agent: *
 Allow: /
-
-User-agent: Amazonbot
-Disallow: /
-
-User-agent: Applebot-Extended
-Disallow: /
-
-User-agent: Bytespider
-Disallow: /
-
-User-agent: CCBot
-Disallow: /
-
-User-agent: ClaudeBot
-Disallow: /
-
-User-agent: CloudflareBrowserRenderingCrawler
-Disallow: /
-
-User-agent: Google-Extended
-Disallow: /
-
-User-agent: GPTBot
-Disallow: /
-
-User-agent: meta-externalagent
-Disallow: /
-
-# END Cloudflare Managed Content
 `;
 
 export const GET: APIRoute = ({ request }) => {
