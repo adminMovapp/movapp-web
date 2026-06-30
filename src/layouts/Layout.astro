@@ -65,7 +65,7 @@ const organizationSchema = generateOrganizationSchema(Astro.request);
       <meta name="description" content={seoTags.description} />
       <meta name="keywords" content={seoTags.keywords} />
       <meta name="author" content={seoTags.author} />
-      {!siteConfig.isProduction && <meta name="robots" content={seoTags.robots} />}
+      <!-- {!siteConfig.isProduction && <meta name="robots" content={seoTags.robots} />} -->
 
       <!-- Canonical URL -->
       <link rel="canonical" href={seoTags.canonical} />
