@@ -27,7 +27,7 @@ export function generateSEOTags(props = {}, request = null) {
     publishedTime,
     modifiedTime,
     canonical: new URL(url, cfg.canonicalUrl).href,
-    // robots: noIndex || cfg.noIndex ? 'noindex, nofollow' : cfg.robotsContent
+    robots: noIndex || cfg.noIndex ? 'noindex, nofollow' : cfg.robotsContent
   };
 }
 

@@ -36,7 +36,7 @@ export const siteConfigData = {
   },
   seo: {
     robots: {
-      // staging: "noindex, nofollow",
+      staging: "noindex, nofollow",
       production: "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"
     },
     themeColor: "#1a365d"
