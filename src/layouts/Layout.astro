@@ -109,9 +109,6 @@ const organizationSchema = generateOrganizationSchema(Astro.request);
       <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons/css/flag-icons.min.css" />
 
-      <!-- SDK de MercadoPago -->
-      <script is:inline src="https://sdk.mercadopago.com/js/v2"></script>
-
       <!-- Schema.org JSON-LD -->
       <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
 
