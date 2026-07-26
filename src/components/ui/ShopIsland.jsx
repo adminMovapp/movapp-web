@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 
 import { CartProvider, useCart } from '@context/CartContext.jsx';
 import useConfig from '@hooks/useConfig.jsx';
-import StripeCheckout from '@components/StripeCheckout.jsx';
+import StripeCheckout from '@components/ui/StripeCheckout.jsx';
 import { useMetaPixel } from '@hooks/useMetaPixel.jsx';
 
 const fmt = (n) => Number(n || 0).toFixed(2);

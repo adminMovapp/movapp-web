@@ -1,0 +1,130 @@
+---
+const benefits = [
+   {
+      title: 'Asesores especializados',
+      text: 'Tienen toda la experiencia porque pasaron por lo mismo, y han ayudado a miles de víctimas.',
+   },
+   {
+      title: 'Empatía',
+      text: 'En Movapp también pasamos por lo que estás pasando y te entendemos, por lo que nuestro trato es humano y personal.',
+   },
+   {
+      title: 'Recuperas la paz',
+      text: 'Ya no más llamadas insistentes, te enseñamos cómo bloquear a los montadeudas.',
+   },
+   {
+      title: 'Tu trabajo a salvo',
+      text: 'Los montadeudas contactan a tus colaboradores, El Hack evita que los contacten.',
+   },
+   {
+      title: 'Protección de tu información',
+      text: 'En Movapp somos conscientes de tu privacidad y somos extremadamente cuidadosos con ella.',
+   },
+   {
+      title: 'Familia tranquila',
+      text: 'Ya no permites que sigan molestando a tus familiares cuando aplicas El Hack.',
+   },
+   {
+      title: 'Software comprobado',
+      text: 'El Hack es de Movapp, y como creadores hemos probado su eficacia hasta perfeccionarlo.',
+   },
+   {
+      title: 'Equipo especializado',
+      text: 'Contamos con años de experiencia y trabajamos más aplicaciones que nadie más, nuestro servicio es el mejor.',
+   },
+   {
+      title: 'Asesoría gratuita',
+      text: 'La asesoría no te compromete a nada y te llevas tips garantizados.',
+   },
+];
+---
+
+<section
+   class="dark-section relative my-16 w-full overflow-hidden bg-gradient-to-b from-[#1a0b33] to-[#0a0414] py-20 md:py-28"
+   data-aos="fade-up"
+>
+   <!-- Patrón de puntos -->
+   <div class="pointer-events-none absolute inset-0 opacity-[0.07]" aria-hidden="true">
+      <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+         <defs>
+            <pattern id="dots" width="30" height="30" patternUnits="userSpaceOnUse">
+               <circle cx="2" cy="2" r="1.5" fill="white"></circle>
+            </pattern>
+         </defs>
+         <rect width="100%" height="100%" fill="url(#dots)"></rect>
+      </svg>
+   </div>
+
+   <!-- Glow central morado -->
+   <div
+      class="pointer-events-none absolute left-1/2 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-purple_mv/25 blur-[120px]"
+      aria-hidden="true"
+   >
+   </div>
+
+   <div class="relative z-10 mx-auto max-w-6xl px-4">
+      <div class="mx-auto max-w-3xl text-center">
+         <span
+            class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-medium text-white/70"
+         >
+            <span class="h-1.5 w-1.5 rounded-full bg-purple_mv"></span>
+            La solución
+         </span>
+         <h2 class="mt-6 text-3xl md:text-5xl font-bold leading-tight tracking-tight text-white">
+            El Hack hacia un nuevo inicio,
+            <span class="block bg-gradient-to-r from-purple-300 to-purple_mv bg-clip-text text-transparent">
+               recupera tu vida
+            </span>
+         </h2>
+      </div>
+
+      <!-- Beneficios -->
+      <h3 class="mt-16 mb-8 text-center text-xl md:text-2xl font-bold text-white">
+         Esto es lo que obtienes al instalar El Hack de Movapp
+      </h3>
+      <div id="benefitsGrid" class="reveal-stagger grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+         {
+            benefits.map((b) => (
+               <div class="group flex flex-col rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm transition duration-300 hover:-translate-y-1 hover:border-purple_mv/50 hover:bg-white/10 hover:shadow-[0_0_25px_rgba(129,73,226,0.25)]">
+                  <div class="mb-2 flex items-center gap-3">
+                     <img
+                        src="/img/migracion/checkmark-circle.webp"
+                        alt="check"
+                        class="h-6 w-6 flex-shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6"
+                     />
+                     <span class="text-lg font-bold text-purple-300">{b.title}</span>
+                  </div>
+                  <p class="text-sm text-white/70">{b.text}</p>
+               </div>
+            ))
+         }
+      </div>
+   </div>
+</section>
+
+<script is:inline>
+   (function () {
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      // ── Reveal escalonado de beneficios (funciona también en móvil) ──
+      var grid = document.getElementById('benefitsGrid');
+      if (grid) {
+         if (reduce || !('IntersectionObserver' in window)) {
+            grid.classList.add('in-view');
+         } else {
+            var io = new IntersectionObserver(
+               function (entries) {
+                  entries.forEach(function (entry) {
+                     if (entry.isIntersecting) {
+                        entry.target.classList.add('in-view');
+                        io.unobserve(entry.target);
+                     }
+                  });
+               },
+               { threshold: 0.15 }
+            );
+            io.observe(grid);
+         }
+      }
+   })();
+</script>

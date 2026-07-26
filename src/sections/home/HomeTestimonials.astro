@@ -1,0 +1,61 @@
+---
+const testimonials = [
+   {
+      name: 'Diego',
+      text: 'Estoy muy agradecida con el equipo Movapp. Ellos me han ayudado bastante. Les recomiendo mucho contactarse y no tener miedo, son de suma confianza. Cada uno de sus asesores te van a brindar información y aclararán tus dudas. Ya verás que en tu proceso en Movapp sentirás de nuevo la paz y tranquilidad que tenías.',
+   },
+   {
+      name: 'Caro',
+      text: 'Estoy muy agradecido que me ayudaron a salir de ese círculo del que nunca iba a salir. Estoy más que agradecido, mucho, con ustedes y todo su equipo.',
+   },
+   {
+      name: 'Rubi',
+      text: 'Estoy muy agradecida con ustedes y con Dios porque desde que me dieron el apoyo ya no me han mandado mensajes. Les agradezco el apoyo, Dios me los bendiga.',
+   },
+   {
+      name: 'Sandra',
+      text: 'Ya las llamadas son menos y ya no me mandan mensajes, tenían razón. Ya no molestan a mis contactos. Son lo máximo, gracias por ayudarme, sin duda los recomendaría.',
+   },
+   {
+      name: 'Alma',
+      text: 'Ha bajado 100% el hostigamiento por whatsapp y correos así que estoy muy feliz con los resultados y el apoyo que se me ha brindado en todo este proceso. Movapp, son lo mejor.',
+   },
+];
+---
+
+<section class="relative mx-auto my-16 w-full max-w-6xl px-4" data-aos="fade-up">
+   <div class="mb-10 text-center">
+      <h2 class="text-2xl md:text-3xl font-bold text-text_banner">Únete a los millones que ya disfrutan de paz</h2>
+      <p class="mt-3 text-sm md:text-base text-gray-700 dark:text-white/80">
+         Historias reales de personas que recuperaron su tranquilidad con Movapp.
+      </p>
+   </div>
+
+   <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {
+         testimonials.map((t, i) => (
+            <div
+               class:list={[
+                  'glass-card relative flex flex-col justify-between overflow-hidden rounded-2xl border border-purple_mv/30 p-6 shadow-[0_0_30px_rgba(129,73,226,0.18)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_0_40px_rgba(129,73,226,0.3)]',
+                  i === 0 ? 'lg:col-span-2' : '',
+               ]}
+            >
+               <span class="pointer-events-none absolute -top-4 left-3 select-none text-7xl font-serif text-purple_mv/30">
+                  “
+               </span>
+               <p class="relative z-10 mt-6 text-sm text-gray-700 dark:text-white/90">{t.text}</p>
+               <p class="relative z-10 mt-4 text-right font-bold text-text_banner">— {t.name}</p>
+            </div>
+         ))
+      }
+   </div>
+
+   <div class="mt-10 flex justify-center">
+      <a
+         href="/testimonials"
+         class="inline-block rounded-3xl border border-text_banner px-8 py-3 text-sm md:text-base font-bold uppercase text-text_banner transition hover:scale-105 hover:bg-text_banner hover:text-white"
+      >
+         Ver más testimonios
+      </a>
+   </div>
+</section>

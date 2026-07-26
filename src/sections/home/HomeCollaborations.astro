@@ -1,0 +1,31 @@
+---
+const collaborations = [
+   { src: '/img/migracion/cenepred.webp', alt: 'Cenepred' },
+   { src: '/img/migracion/mvs-noticias.webp', alt: 'MVS Noticias' },
+   { src: '/img/migracion/werevertumorro.webp', alt: 'Werevertumorro' },
+   { src: '/img/migracion/oye.webp', alt: 'Oye' },
+];
+---
+
+<section class="relative mx-auto my-16 w-full max-w-4xl px-4 text-center" data-aos="fade-up">
+   <h3 class="mt-16 mb-8 text-center text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
+      Algunas de nuestras colaboraciones
+   </h3>
+
+   <!-- Carrusel marquee horizontal (se desplaza a la izquierda) -->
+   <div class="marquee relative w-full overflow-hidden">
+      <!-- Difuminado en los bordes -->
+      <div class="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-gray-50 to-transparent dark:from-[#050505]"></div>
+      <div class="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-gray-50 to-transparent dark:from-[#050505]"></div>
+
+      <div class="marquee-track flex w-max items-center gap-8">
+         {
+            [...collaborations, ...collaborations].map((logo) => (
+               <div class="flex h-20 flex-shrink-0 items-center justify-center rounded-xl bg-white/90 px-8 py-4 shadow-md">
+                  <img src={logo.src} alt={logo.alt} class="h-10 md:h-14 w-auto object-contain" />
+               </div>
+            ))
+         }
+      </div>
+   </div>
+</section>

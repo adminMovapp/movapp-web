@@ -1,18 +1,18 @@
 ---
 import '@styles/global.css';
-import Header from '@components/Header.astro';
-import Footer from '@components/Footer.astro';
-import HeaderLayer from '@/components/HeaderLayer.astro';
-import BackgroundGrid from '@components/BackgroundGrid.astro';
+import Header from '@components/layout/Header.astro';
+import Footer from '@components/layout/Footer.astro';
+import HeaderLayer from '@/components/layout/HeaderLayer.astro';
+import BackgroundGrid from '@components/layout/BackgroundGrid.astro';
 import InitAOS from '@/utils/InitAOS.jsx';
 
 import { getSiteConfig } from '@/utils/config.jsx';
 import { generateSEOTags, generateOrganizationSchema } from '@/utils/seo.jsx';
 
-import GoogleTagManager from '@components/GoogleTagManager.astro';
-import GoogleAnalytics from '@components/GoogleAnalytics.astro';
+import GoogleTagManager from '@components/layout/GoogleTagManager.astro';
+import GoogleAnalytics from '@components/layout/GoogleAnalytics.astro';
 
-import MetaPixelScript from '@components/MetaPixelScript.astro';
+import MetaPixelScript from '@components/layout/MetaPixelScript.astro';
 
 const showHeaderLayer = import.meta.env.PUBLIC_SHOW_HEADER_LAYER === 'true';
 

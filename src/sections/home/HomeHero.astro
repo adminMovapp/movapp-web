@@ -1,0 +1,33 @@
+---
+const heroChecks = [
+   'Detén las llamadas y los mensajes de acoso a ti, así como a tus contactos.',
+   'Recupera tu estabilidad emocional.',
+   'Protege a tus contactos, tu familia y tu trabajo.',
+];
+---
+
+<section class="relative mx-auto flex min-h-[85vh] max-w-5xl flex-col items-center justify-center px-4 pt-16 pb-12 text-center">
+   <!-- Título -->
+   <h1 class="mx-auto max-w-4xl text-4xl font-bold leading-tight text-gray-900 dark:text-white md:text-6xl animate-fadeIn">
+      Recupera Tu Tranquilidad <span class="text-text_banner drop-shadow-[0_0_25px_rgba(129,73,226,0.35)]">HOY</span>,
+      adiós aplicaciones de <span class="text-text_banner drop-shadow-[0_0_25px_rgba(129,73,226,0.35)]">préstamos montadeudas</span>
+   </h1>
+
+   <!-- Subtítulo -->
+   <h2 class="mx-auto mt-6 max-w-2xl text-lg text-gray-700 dark:text-white/80 md:text-xl">
+      Detén las llamadas y los mensajes de acoso a ti, así como a tus contactos.
+      <span class="font-semibold text-text_banner">¡Recupera tu estabilidad emocional!</span>
+   </h2>
+
+   <!-- Checks -->
+   <ul class="mx-auto mt-8 flex max-w-3xl flex-col flex-wrap justify-center gap-3 sm:flex-row">
+      {
+         heroChecks.map((item) => (
+            <li class="glass-card inline-flex items-center gap-2 rounded-full border border-purple_mv/20 px-4 py-2 text-sm text-gray-700 dark:border-white/10 dark:text-white/90">
+               <img src="/img/migracion/check-purple.webp" alt="check" class="h-4 w-4 flex-shrink-0" />
+               <span>{item}</span>
+            </li>
+         ))
+      }
+   </ul>
+</section>
