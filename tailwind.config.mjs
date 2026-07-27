@@ -53,7 +53,7 @@ export default {
          animation: {
             slideUp: 'slideUp 0.3s ease-out forwards',
             slideDown: 'slideDown 0.3s ease-in forwards',
-            fadeIn: 'fadeIn 0.7s ease-out forwards',
+            fadeIn: 'fadeIn 0.7s ease-out both',
             floatSlow: 'floatSlow 8s ease-in-out infinite',
             slideInRight: 'slideInRight 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards',
             slideOutRight: 'slideOutRight 0.3s ease-in forwards',

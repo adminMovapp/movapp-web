@@ -1,0 +1,299 @@
+---
+// Preloader.astro
+---
+
+<div
+   id="global-preloader"
+   style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 999999; display: flex; align-items: center; justify-content: center; overflow: hidden; background-color: #0a0414; select-none;"
+>
+   <!-- Filtro SVG Oculto para Distorsión Estática/Ruido -->
+   <svg style="position: absolute; width: 0; height: 0;" aria-hidden="true">
+      <filter id="glitch-distortion-filter">
+         <feTurbulence type="fractalNoise" baseFrequency="0.05 0.9" numOctaves="2" result="warp"></feTurbulence>
+         <feDisplacementMap xChannelSelector="R" yChannelSelector="G" scale="45" in="SourceGraphic" in2="warp"
+         ></feDisplacementMap>
+      </filter>
+   </svg>
+
+   <!-- Contenedor Principal -->
+   <div
+      id="preloader-content"
+      style="position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; gap: 24px;"
+   >
+      <!-- Círculo Central con Posición Inicial Arriba -->
+      <div
+         id="circle-container"
+         class="circle-drop-in"
+         style="position: relative; width: 250px; height: 250px; border-radius: 50%; border: 3px solid rgba(239,68,68,0.5); display: flex; align-items: center; justify-content: center; background-color: rgba(0,0,0,0.5); box-shadow: 0 0 30px rgba(239,68,68,0.3);"
+      >
+         <!-- Ilustración (Vector Montadeudas) -->
+         <svg
+            id="montadeudas-svg"
+            viewBox="0 0 200 200"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            style="position: absolute; width: 150px; height: 150px; color: #ef4444; filter: drop-shadow(0 0 10px rgba(239,68,68,0.6)); display: none; transition: filter 0.1s ease, transform 0.1s ease;"
+         >
+            <!-- Smartphone -->
+            <rect x="60" y="20" width="80" height="150" rx="12" stroke="currentColor" stroke-width="8"></rect>
+            <line x1="90" y1="35" x2="110" y2="35" stroke="currentColor" stroke-width="6" stroke-linecap="round"></line>
+            <!-- Calavera -->
+            <path
+               d="M100 70 C85 70 75 80 75 95 C75 105 80 110 85 110 V120 H115 V110 C120 110 125 105 125 95 C125 80 115 70 100 70 Z"
+               fill="currentColor"></path>
+            <circle cx="90" cy="95" r="5" fill="#0a0414"></circle>
+            <circle cx="110" cy="95" r="5" fill="#0a0414"></circle>
+            <!-- Alerta -->
+            <path
+               d="M140 40 H180 V80 H160 L140 100 V80 H140 Z"
+               fill="currentColor"
+               stroke="#0a0414"
+               stroke-width="4"
+               stroke-linejoin="round"></path>
+            <text x="151" y="70" fill="#0a0414" font-family="sans-serif" font-size="28" font-weight="900">!</text>
+            <!-- Huesos cruzados -->
+            <line x1="75" y1="125" x2="125" y2="145" stroke="currentColor" stroke-width="6" stroke-linecap="round"
+            ></line>
+            <line x1="125" y1="125" x2="75" y2="145" stroke="currentColor" stroke-width="6" stroke-linecap="round"
+            ></line>
+         </svg>
+
+         <!-- Logo de Movapp -->
+         <img
+            id="movapp-logo-center"
+            src="/img/Logo-Blanco.png"
+            alt="Movapp"
+            style="position: absolute; width: 170px; height: auto; opacity: 0; transform: scale(0.5); display: none; transition: opacity 0.3s ease-in, transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);"
+         />
+      </div>
+
+      <!-- Barra de Carga de Progreso -->
+      <div
+         id="progress-wrapper"
+         class="progress-drop-in"
+         style="width: 200px; display: flex; flex-direction: column; align-items: center; gap: 6px;"
+      >
+         <div
+            style="width: 100%; height: 6px; background-color: rgba(255, 255, 255, 0.1); border-radius: 999px; overflow: hidden; border: 1px solid rgba(239, 68, 68, 0.3); box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);"
+         >
+            <div
+               id="progress-bar"
+               style="width: 0%; height: 100%; background: linear-gradient(90deg, #ef4444, #ff2a2a, #ffffff); border-radius: 999px; box-shadow: 0 0 12px #ef4444; transition: width 0.05s linear;"
+            >
+            </div>
+         </div>
+         <span
+            id="progress-text"
+            style="font-family: monospace; font-size: 12px; font-weight: 700; color: rgba(239, 68, 68, 0.9); letter-spacing: 1px;"
+            >0%</span
+         >
+      </div>
+   </div>
+</div>
+
+<style is:global>
+   html.skip-preloader #global-preloader {
+      display: none !important;
+      opacity: 0 !important;
+      visibility: hidden !important;
+   }
+
+   /* 1. Caída RÁPIDA del círculo y barra desde arriba (0.4s) */
+   .circle-drop-in,
+   .progress-drop-in {
+      animation: drop-from-top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+   }
+
+   @keyframes drop-from-top {
+      0% {
+         transform: translateY(-120vh);
+         opacity: 0;
+      }
+      100% {
+         transform: translateY(0);
+         opacity: 1;
+      }
+   }
+
+   /* 2. Pulsación dinámica del círculo */
+   .gl-animate-pulse {
+      animation: gl-pulse-beat 0.35s cubic-bezier(0.215, 0.61, 0.355, 1);
+   }
+
+   @keyframes gl-pulse-beat {
+      0% {
+         transform: scale(1);
+         box-shadow: 0 0 30px rgba(239, 68, 68, 0.3);
+         border-color: rgba(239, 68, 68, 0.5);
+      }
+      50% {
+         transform: scale(1.18);
+         box-shadow:
+            0 0 60px rgba(239, 68, 68, 0.9),
+            0 0 100px rgba(239, 68, 68, 0.4);
+         border-color: rgba(255, 255, 255, 0.9);
+      }
+      100% {
+         transform: scale(1);
+         box-shadow: 0 0 30px rgba(239, 68, 68, 0.3);
+         border-color: rgba(239, 68, 68, 0.5);
+      }
+   }
+
+   /* 3. Vibración Glitch */
+   .gl-animate-glitch {
+      animation: gl-glitch-move 0.2s linear infinite;
+   }
+
+   @keyframes gl-glitch-move {
+      0% {
+         transform: translate(0, 0);
+         clip-path: inset(0 0 0 0);
+      }
+      20% {
+         transform: translate(-6px, 3px);
+         clip-path: inset(10% 0 60% 0);
+      }
+      40% {
+         transform: translate(6px, -3px);
+         clip-path: inset(40% 0 20% 0);
+      }
+      60% {
+         transform: translate(-4px, 6px);
+         clip-path: inset(60% 0 10% 0);
+      }
+      80% {
+         transform: translate(4px, -6px);
+         clip-path: inset(20% 0 80% 0);
+      }
+      100% {
+         transform: translate(0, 0);
+      }
+   }
+
+   /* 4. Salida veloz hacia abajo (0.5s) */
+   .preloader-exit-down {
+      transition:
+         transform 0.5s cubic-bezier(0.6, -0.28, 0.735, 0.045),
+         opacity 0.4s ease-in !important;
+      transform: translateY(120vh) !important;
+      opacity: 0 !important;
+   }
+</style>
+
+<script>
+   (function () {
+      const preloader = document.getElementById('global-preloader');
+      if (!preloader) return;
+
+      const navEntry = performance.getEntriesByType('navigation')[0];
+      const isReload = navEntry && navEntry.type === 'reload';
+      const isFirstVisit = !sessionStorage.getItem('movapp_preloader_seen');
+
+      if (document.documentElement.classList.contains('skip-preloader')) {
+         preloader.remove();
+         return;
+      }
+
+      sessionStorage.setItem('movapp_preloader_seen', 'true');
+      console.log('🚀 Preloader Ultrarrápido con Barra de Carga (<3s)...');
+
+      const svg = document.getElementById('montadeudas-svg');
+      const logo = document.getElementById('movapp-logo-center');
+      const circle = document.getElementById('circle-container');
+      const progressBar = document.getElementById('progress-bar');
+      const progressText = document.getElementById('progress-text');
+
+      // Animación progresiva de la barra de carga de 0 a 100% en 2.3s
+      let currentProgress = 0;
+      const totalDuration = 2300; // ms
+      const intervalTime = 30; // ms
+      const increment = 100 / (totalDuration / intervalTime);
+
+      const progressInterval = setInterval(() => {
+         currentProgress += increment;
+         if (currentProgress >= 100) {
+            currentProgress = 100;
+            clearInterval(progressInterval);
+         }
+         if (progressBar) progressBar.style.width = `${currentProgress}%`;
+         if (progressText) progressText.innerText = `${Math.floor(currentProgress)}%`;
+      }, intervalTime);
+
+      const triggerGlitchFilter = (duration: number) => {
+         if (svg) {
+            svg.style.filter = 'drop-shadow(0 0 10px rgba(239,68,68,0.6)) url(#glitch-distortion-filter)';
+            setTimeout(() => {
+               svg.style.filter = 'drop-shadow(0 0 10px rgba(239,68,68,0.6))';
+            }, duration);
+         }
+      };
+
+      const triggerPulse = () => {
+         if (circle) {
+            circle.classList.remove('gl-animate-pulse');
+            void circle.offsetWidth;
+            circle.classList.add('gl-animate-pulse');
+         }
+      };
+
+      // --- TIMELINE EXPRESS (MAX 3.0s) ---
+
+      // 1. TELÉFONO + PULSACIÓN 1 (0.4s)
+      setTimeout(() => {
+         triggerPulse();
+
+         if (svg) {
+            svg.style.display = 'block';
+            svg.classList.add('gl-animate-glitch');
+         }
+         triggerGlitchFilter(150);
+      }, 400);
+
+      // Pausa breve de lectura (0.8s)
+      setTimeout(() => {
+         if (svg) svg.classList.remove('gl-animate-glitch');
+      }, 800);
+
+      // 2. CAMBIO DE LOGO + PULSACIÓN 2 (1.3s)
+      setTimeout(() => {
+         if (svg) {
+            svg.classList.add('gl-animate-glitch');
+            triggerGlitchFilter(200);
+         }
+
+         triggerPulse();
+
+         setTimeout(() => {
+            if (svg) svg.style.display = 'none';
+
+            if (logo) {
+               logo.style.display = 'block';
+               requestAnimationFrame(() => {
+                  logo.style.opacity = '1';
+                  logo.style.transform = 'scale(1)';
+               });
+            }
+
+            if (circle) {
+               circle.style.transition = 'all 0.3s ease';
+               circle.style.borderColor = 'rgba(255,255,255,0.3)';
+               circle.style.boxShadow = '0 0 40px rgba(255,255,255,0.2)';
+               circle.style.backgroundColor = 'transparent';
+            }
+
+            // Cambiar los colores de la barra de carga cuando aparece el logo de Movapp
+            if (progressText) progressText.style.color = 'rgba(255, 255, 255, 0.9)';
+         }, 120);
+      }, 1300);
+
+      // 3. SALIDA HACIA ABAJO (2.3s)
+      setTimeout(() => {
+         preloader.classList.add('preloader-exit-down');
+
+         setTimeout(() => {
+            preloader.remove();
+         }, 500); // 2.3s + 0.5s = 2.8s tiempo total hasta borrarse del DOM
+      }, 2300);
+   })();
+</script>

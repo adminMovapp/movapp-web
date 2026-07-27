@@ -3,11 +3,11 @@ import '@styles/global.css';
 import Header from '@components/layout/Header.astro';
 import Footer from '@components/layout/Footer.astro';
 import HeaderLayer from '@/components/layout/HeaderLayer.astro';
+import Preloader from '@/components/layout/Preloader.astro';
 import BackgroundGrid from '@components/layout/BackgroundGrid.astro';
 import InitAOS from '@/utils/InitAOS.jsx';
 
-import { getSiteConfig } from '@/utils/config.jsx';
-import { generateSEOTags, generateOrganizationSchema } from '@/utils/seo.jsx';
+import { getSiteConfig, generateSEOTags, generateOrganizationSchema } from '@/utils/config.jsx';
 
 import GoogleTagManager from '@components/layout/GoogleTagManager.astro';
 import GoogleAnalytics from '@components/layout/GoogleAnalytics.astro';
@@ -15,6 +15,7 @@ import GoogleAnalytics from '@components/layout/GoogleAnalytics.astro';
 import MetaPixelScript from '@components/layout/MetaPixelScript.astro';
 
 const showHeaderLayer = import.meta.env.PUBLIC_SHOW_HEADER_LAYER === 'true';
+const showPreloader = import.meta.env.PUBLIC_SHOW_PRELOADER === 'true';
 
 interface Props {
    title?: string;
@@ -31,10 +32,13 @@ const { title, showGrid = true } = Astro.props;
 const siteConfig = getSiteConfig(Astro.request);
 
 // Generar tags SEO
-const seoTags = generateSEOTags({
-   ...Astro.props,
-   url: new URL(Astro.url.pathname, siteConfig.canonicalUrl).href,
-}, Astro.request);
+const seoTags = generateSEOTags(
+   {
+      ...Astro.props,
+      url: new URL(Astro.url.pathname, siteConfig.canonicalUrl).href,
+   },
+   Astro.request,
+);
 const organizationSchema = generateOrganizationSchema(Astro.request);
 ---
 
@@ -53,6 +57,20 @@ const organizationSchema = generateOrganizationSchema(Astro.request);
             }
          })();
       </script>
+      {showPreloader && (
+         <script is:inline>
+            (function () {
+               try {
+                  var navEntry = performance.getEntriesByType("navigation")[0];
+                  var isReload = navEntry && navEntry.type === 'reload';
+                  var isFirstVisit = !sessionStorage.getItem('movapp_preloader_seen');
+                  if (!isReload && !isFirstVisit) {
+                     document.documentElement.classList.add('skip-preloader');
+                  }
+               } catch(e) {}
+            })();
+         </script>
+      )}
 
       <!-- Charset y viewport -->
       <meta charset="UTF-8" />
@@ -119,15 +137,26 @@ const organizationSchema = generateOrganizationSchema(Astro.request);
 
       <GoogleTagManager />
       <GoogleAnalytics />
+      <noscript>
+         <style>
+            [data-aos] {
+               opacity: 1 !important;
+               transform: none !important;
+            }
+            #global-preloader {
+               display: none !important;
+            }
+         </style>
+      </noscript>
       <title>{title}</title>
    </head>
 
    <body
       class="bg-gray-50 text-gray-900 dark:bg-[#050505] dark:text-white min-h-screen flex flex-col transition-colors duration-300"
    >
+      {showPreloader && <Preloader />}
+      <InitAOS client:only="react" />
       <MetaPixelScript pixelId={import.meta.env.PUBLIC_META_PIXEL_ID} />
-
-      <InitAOS client:load />
 
       {showHeaderLayer ? <HeaderLayer /> : null}
 
@@ -146,7 +175,8 @@ const organizationSchema = generateOrganizationSchema(Astro.request);
          is:inline
          src="https://widgets.leadconnectorhq.com/loader.js"
          data-resources-url="https://widgets.leadconnectorhq.com/chat-widget/loader.js"
-         data-widget-id="6a629fdd6f3b01a586db9391"
-      ></script>
+         data-widget-id="6a629fdd6f3b01a586db9391"></script>
    </body>
 </html>
+
+<!-- bust cache -->
