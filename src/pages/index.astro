@@ -1,13 +1,13 @@
 ---
 import Layout from '@layouts/Layout.astro';
 import HomeHero from '@sections/home/HomeHero.astro';
-import HomeCTA from '@sections/home/HomeCTA.astro';
-import HomeStats from '@sections/home/HomeStats.astro';
-import HomeCollaborations from '@sections/home/HomeCollaborations.astro';
-import HomeBenefits from '@sections/home/HomeBenefits.astro';
-import HomeTestimonials from '@sections/home/HomeTestimonials.astro';
+import HomeSymptoms from '@sections/home/HomeSymptoms.astro';
+import HomeHowItWorks from '@sections/home/HomeHowItWorks.astro';
 import HomeFeatured from '@sections/home/HomeFeatured.astro';
-import HomeAppDownload from '@sections/home/HomeAppDownload.astro';
+import HomeTrust from '@sections/home/HomeTrust.astro';
+import HomeFAQ from '@sections/home/HomeFAQ.astro';
+import HomeResources from '@sections/home/HomeResources.astro';
+import HomeCTA from '@sections/home/HomeCTA.astro';
 
 import { generateServiceSchema } from '@/utils/config.jsx';
 const serviceSchema = generateServiceSchema({
@@ -17,17 +17,17 @@ const serviceSchema = generateServiceSchema({
 ---
 
 <Layout
-   title="Movapp - El Hack hacia un nuevo inicio"
-   description="Movapp es una organización que ayuda a personas víctimas de las aplicaciones de préstamo no reguladas mediante apoyo psicológico, asesoría personalizada y la aplicación de El Hack."
+   title="Movapp | Frena el acoso de apps de préstamo"
+   description="Movapp te ayuda a frenar el acoso de las apps de préstamo. Habla gratis con un asesor por WhatsApp y recupera tu tranquilidad hoy."
    type="website"
    schema={serviceSchema}
 >
    <HomeHero />
-   <HomeCTA />
-   <HomeStats />
-   <HomeCollaborations />
-   <HomeBenefits />
-   <HomeTestimonials />
+   <HomeSymptoms />
+   <HomeHowItWorks />
    <HomeFeatured />
-   <HomeAppDownload />
+   <HomeTrust />
+   <HomeFAQ />
+   <HomeResources />
+   <HomeCTA />
 </Layout>

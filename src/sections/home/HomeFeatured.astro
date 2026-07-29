@@ -1,11 +1,20 @@
 ---
-const featured = [
-   { title: '¿Qué Tan Confiable Es Movapp?', desc: 'Conoce quiénes somos y por qué confían en nosotros.', href: '/nosotros' },
-   { title: 'Noticias de montadeudas', desc: 'Mantente informado sobre el acoso y cómo combatirlo.', href: '/red' },
-   { title: 'Pagos de El Hack', desc: 'Todo lo que necesitas para adquirir El Hack.', href: '/tienda' },
-   { title: 'Sección Mente Digital', desc: 'Cuida tu bienestar emocional en el mundo digital.', href: '/mind' },
-   { title: 'Historias reales', desc: 'Testimonios de quienes recuperaron su paz.', href: '/testimonials' },
-   { title: 'Aclara tus dudas', desc: 'Respuestas a las preguntas más frecuentes.', href: '/faqs' },
+const hub = [
+   {
+      title: 'El Hack',
+      desc: 'La solución que frena el acoso y protege tu teléfono; la obtienes hablando con un asesor.',
+      href: '/el-hack/',
+   },
+   {
+      title: 'Directorio de apps',
+      desc: 'Consulta si una app de préstamo es legal o tiene reportes antes de usarla.',
+      href: '/directorio-de-apps/',
+   },
+   {
+      title: 'Recursos y guías',
+      desc: 'Aprende a defenderte de las apps montadeudas y a cuidar tu salud financiera.',
+      href: '/recursos/',
+   },
 ];
 ---
 
@@ -14,15 +23,17 @@ const featured = [
    <div class="mb-8 flex items-end justify-between gap-4 border-b border-purple_mv/20 pb-4">
       <div>
          <span class="text-xs font-semibold uppercase tracking-widest text-text_banner">Explora</span>
-         <h2 class="mt-1 text-2xl md:text-4xl font-bold text-gray-900 dark:text-white">Contenido Destacado</h2>
+         <h2 class="mt-1 text-2xl md:text-4xl font-bold text-gray-900 dark:text-white">Cómo te ayuda Movapp</h2>
+         <p class="mt-2 max-w-xl text-sm text-gray-600 dark:text-white/60">
+            Estés donde estés en tu situación, aquí encuentras el siguiente paso.
+         </p>
       </div>
-      <span class="hidden text-sm text-gray-500 dark:text-white/50 sm:block">{featured.length} secciones</span>
    </div>
 
    <!-- Lista tipo índice numerado -->
    <ul class="flex flex-col">
       {
-         featured.map((f, i) => (
+         hub.map((f, i) => (
             <li>
                <a
                   href={f.href}

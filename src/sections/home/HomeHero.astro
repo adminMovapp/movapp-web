@@ -1,33 +1,129 @@
 ---
-const heroChecks = [
-   'Detén las llamadas y los mensajes de acoso a ti, así como a tus contactos.',
-   'Recupera tu estabilidad emocional.',
-   'Protege a tus contactos, tu familia y tu trabajo.',
-];
+import ButtonContact from '@components/ui/ButtonContact.astro';
 ---
 
 <section class="relative mx-auto flex min-h-[85vh] max-w-5xl flex-col items-center justify-center px-4 pt-16 pb-12 text-center">
-   <!-- Título -->
-   <h1 class="mx-auto max-w-4xl text-4xl font-bold leading-tight text-gray-900 dark:text-white md:text-6xl animate-fadeIn">
-      Recupera Tu Tranquilidad <span class="text-text_banner drop-shadow-[0_0_25px_rgba(129,73,226,0.35)]">HOY</span>,
-      adiós aplicaciones de <span class="text-text_banner drop-shadow-[0_0_25px_rgba(129,73,226,0.35)]">préstamos montadeudas</span>
+   <!-- Animación de Órbita de Protección (Fondo) -->
+   <div class="absolute inset-0 z-[-1] overflow-hidden pointer-events-none flex items-center justify-center opacity-30 dark:opacity-40" aria-hidden="true">
+
+      <!-- Círculo interior (decorativo) -->
+      <div id="hero-orbit-inner" class="absolute w-[150px] h-[150px] md:w-[400px] md:h-[400px] rounded-full border-[1.5px] border-purple_mv/20 border-dashed"></div>
+
+      <!-- Círculo Exterior (Órbita de Escudos) -->
+      <div id="hero-orbit-outer" class="absolute w-[260px] h-[260px] md:w-[600px] md:h-[600px] rounded-full border border-purple_mv/30">
+
+         <!-- Escudo 1 (Arriba: 0 grados) -->
+         <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 md:w-16 md:h-16 text-purple_mv">
+            <div class="w-full h-full hero-orbit-item">
+               <svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full drop-shadow-[0_0_8px_rgba(129,73,226,0.6)]">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill-opacity="0.15" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+               </svg>
+            </div>
+         </div>
+
+         <!-- Escudo 2 (Abajo Izquierda: 120 grados) -->
+         <div class="absolute top-[75%] left-[6.7%] -translate-x-1/2 -translate-y-1/2 w-10 h-10 md:w-16 md:h-16 text-purple_mv">
+            <div class="w-full h-full hero-orbit-item">
+               <svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full drop-shadow-[0_0_8px_rgba(129,73,226,0.6)]">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill-opacity="0.15" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+               </svg>
+            </div>
+         </div>
+
+         <!-- Escudo 3 (Abajo Derecha: 240 grados) -->
+         <div class="absolute top-[75%] left-[93.3%] -translate-x-1/2 -translate-y-1/2 w-10 h-10 md:w-16 md:h-16 text-purple_mv">
+            <div class="w-full h-full hero-orbit-item">
+               <svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full drop-shadow-[0_0_8px_rgba(129,73,226,0.6)]">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill-opacity="0.15" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+               </svg>
+            </div>
+         </div>
+
+      </div>
+   </div>
+
+   <!-- Eyebrow -->
+   <p class="text-sm font-semibold uppercase tracking-widest text-text_banner animate-fadeIn">
+      Ayuda real para víctimas de apps montadeudas
+   </p>
+
+   <!-- H1 (único H1 de la página) -->
+   <h1 class="mx-auto mt-4 max-w-4xl text-4xl font-bold leading-tight text-gray-900 dark:text-white md:text-6xl animate-fadeIn">
+      Recupera tu tranquilidad <span class="text-text_banner drop-shadow-[0_0_25px_rgba(129,73,226,0.35)]">hoy</span>.
+      Adiós al acoso de las <span class="text-text_banner drop-shadow-[0_0_25px_rgba(129,73,226,0.35)]">apps de préstamo</span>.
    </h1>
 
-   <!-- Subtítulo -->
-   <h2 class="mx-auto mt-6 max-w-2xl text-lg text-gray-700 dark:text-white/80 md:text-xl">
-      Detén las llamadas y los mensajes de acoso a ti, así como a tus contactos.
-      <span class="font-semibold text-text_banner">¡Recupera tu estabilidad emocional!</span>
-   </h2>
+   <!-- Cuerpo -->
+   <p class="mx-auto mt-6 max-w-2xl text-lg text-gray-700 dark:text-white/80 md:text-xl">
+      Habla gratis con un asesor y conoce las opciones para reducir el acoso, a ti y a tus contactos. Si El Hack
+      aplica a tu caso, el asesor te informa su costo antes de contratar.
+   </p>
 
-   <!-- Checks -->
-   <ul class="mx-auto mt-8 flex max-w-3xl flex-col flex-wrap justify-center gap-3 sm:flex-row">
-      {
-         heroChecks.map((item) => (
-            <li class="glass-card inline-flex items-center gap-2 rounded-full border border-purple_mv/20 px-4 py-2 text-sm text-gray-700 dark:border-white/10 dark:text-white/90">
-               <img src="/img/migracion/check-purple.webp" alt="check" class="h-4 w-4 flex-shrink-0" />
-               <span>{item}</span>
-            </li>
-         ))
-      }
-   </ul>
+   <!-- CTA primario: WhatsApp, el más grande y el primero -->
+   <div class="mt-8">
+      <ButtonContact label="Hablar con un asesor gratis por WhatsApp" size="lg" />
+   </div>
+
+   <!-- CTA secundario: descarga de la app de Movapp (acción independiente) -->
+   <div class="mt-6 flex flex-col items-center gap-2">
+      <span class="text-xs text-gray-500 dark:text-white/50">Descargar la app de Movapp</span>
+      <div class="flex items-center gap-3">
+         <a href="#" aria-label="Descargar en Google Play" class="transition hover:scale-105">
+            <img src="/img/migracion/play-store-v2.webp" alt="Google Play" class="h-9 w-auto" />
+         </a>
+         <a href="#" aria-label="Descargar en App Store" class="transition hover:scale-105">
+            <img src="/img/migracion/app-store-v2.webp" alt="App Store" class="h-9 w-auto" />
+         </a>
+      </div>
+   </div>
 </section>
+
+<script>
+   const initOrbit = () => {
+      const inner = document.getElementById('hero-orbit-inner');
+      const outer = document.getElementById('hero-orbit-outer');
+      const items = document.querySelectorAll('.hero-orbit-item');
+
+      if (!inner || !outer) return;
+
+      let angle = 0;
+      let lastTime = performance.now();
+
+      const animate = (time) => {
+         // Calcular delta time para un giro fluido en cualquier pantalla (60hz, 120hz, etc)
+         const dt = time - lastTime;
+         lastTime = time;
+
+         // 25 grados por segundo -> vuelta completa en ~14 segundos
+         angle += (25 * dt) / 1000;
+         if (angle >= 360) angle -= 360;
+
+         // Aplicar rotaciones
+         outer.style.transform = `rotate(${angle}deg)`;
+         inner.style.transform = `rotate(-${angle * 1.3}deg)`; // Interior inverso y un poco más rápido
+
+         // Contra-rotar los escudos para que no se pongan de cabeza
+         items.forEach(item => {
+            // TypeScript/JS asume HTMLElement
+            item.style.transform = `rotate(-${angle}deg)`;
+         });
+
+         window.heroOrbitFrame = requestAnimationFrame(animate);
+      };
+
+      // Evitar múltiples ciclos si Astro recarga la página con ViewTransitions
+      if (window.heroOrbitFrame) {
+         cancelAnimationFrame(window.heroOrbitFrame);
+      }
+
+      window.heroOrbitFrame = requestAnimationFrame(animate);
+   };
+
+   // Iniciar inmediatamente
+   initOrbit();
+   // Escuchar el evento de Astro para navegaciones internas
+   document.addEventListener('astro:page-load', initOrbit);
+</script>
