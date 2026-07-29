@@ -3,7 +3,8 @@ import ArrowIcon from '@assets/ArrowIcon.astro';
 ---
 
 <header
-   class="sticky top-0 z-50 w-full bg-white/90 dark:bg-zinc-950/85 backdrop-blur-md border-b border-black/5 dark:border-white/10 px-6 md:px-10 lg:px-16 py-4 hidden lg:flex justify-between items-center transition-colors duration-300"
+   id="siteHeader"
+   class="fixed top-0 inset-x-0 z-50 bg-white/90 dark:bg-zinc-950/85 backdrop-blur-md px-6 md:px-10 lg:px-16 py-4 hidden lg:flex justify-between items-center transition-colors duration-300"
 >
    <!-- Logo (morado en light, blanco en dark) -->
    <a href="/" class="flex items-center" aria-label="Movapp - Inicio" data-home-link>
@@ -135,6 +136,92 @@ import ArrowIcon from '@assets/ArrowIcon.astro';
 
    </nav>
 </header>
+
+<!--
+   Spacer: el header es position:fixed (no sticky), así que no reserva su
+   propio espacio en el documento. Este div compensa esa altura para que el
+   contenido de abajo no quede tapado. Solo aplica en lg+ (mismo breakpoint
+   en el que el header se muestra). 74px = altura medida del header sin
+   scroll (py-4 + logo h-10).
+-->
+<div class="hidden lg:block" style="height: 74px;" aria-hidden="true"></div>
+
+<style>
+   /*
+      La transformación a píldora está ligada 1:1 al scroll (scroll-scrubbed),
+      no es una transición por tiempo: el script de abajo escribe la variable
+      --pill (0 a 1) en cada frame según window.scrollY, y todo lo demás sale
+      de esa única variable vía calc(). Así nunca "se adelanta" a tu scroll —
+      si scrolleas rápido, la ves pasar rápido por los estados intermedios; si
+      scrolleas lento, la ves moverse lento. No hay salto porque no depende de
+      un temporizador independiente del gesto.
+
+      El header usa position:fixed (no sticky): un elemento sticky no permite
+      leer una posición "a medio camino" de forma confiable para este cálculo.
+
+      --pill-target-width lo fija el script en píxeles (min(100vw - 4rem,
+      72rem)), así el ancho final de la píldora queda igual que antes
+      (antes: width: calc(100% - 4rem); max-width: 72rem).
+   */
+   #siteHeader {
+      --pill: 0;
+      --pill-target-width: 100%;
+      --pill-border-alpha: 0.08;
+      --pill-shadow-alpha: 0.2;
+      margin-top: calc(var(--pill) * 0.75rem);
+      margin-inline: auto;
+      width: calc(100% - (var(--pill) * (100% - var(--pill-target-width))));
+      border-radius: calc(var(--pill) * 2.5rem);
+      border: 1px solid rgb(0 0 0 / calc(var(--pill) * var(--pill-border-alpha)));
+      padding-top: calc(1rem - (var(--pill) * 0.35rem));
+      padding-bottom: calc(1rem - (var(--pill) * 0.35rem));
+      box-shadow:
+         0 calc(var(--pill) * 10px) calc(var(--pill) * 30px) calc(var(--pill) * -10px) rgb(0 0 0 /
+               calc(var(--pill) * var(--pill-shadow-alpha)));
+      transition:
+         background-color 0.3s ease,
+         color 0.3s ease;
+   }
+
+   :global(html.dark) #siteHeader {
+      --pill-border-alpha: 0.1;
+      --pill-shadow-alpha: 0.6;
+      border-color: rgb(255 255 255 / calc(var(--pill) * var(--pill-border-alpha)));
+   }
+</style>
+
+<script is:inline>
+   (function () {
+      var header = document.getElementById('siteHeader');
+      if (!header) return;
+
+      // Cuántos px de scroll toma completar la transformación a píldora.
+      var RANGE = 120;
+
+      function computeTargetWidth() {
+         var target = Math.min(window.innerWidth - 64, 1152);
+         header.style.setProperty('--pill-target-width', target + 'px');
+      }
+
+      var ticking = false;
+      function update() {
+         var progress = Math.min(Math.max(window.scrollY / RANGE, 0), 1);
+         header.style.setProperty('--pill', progress.toFixed(4));
+         ticking = false;
+      }
+      function onScroll() {
+         if (!ticking) {
+            requestAnimationFrame(update);
+            ticking = true;
+         }
+      }
+
+      computeTargetWidth();
+      update();
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', computeTargetWidth, { passive: true });
+   })();
+</script>
 
 <!-- <script>
    const servicesButton = document.getElementById('servicesButton');
