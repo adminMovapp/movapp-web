@@ -16,6 +16,7 @@ import aosHref from 'aos/dist/aos.css?url';
 // isla ni siquiera se hidrata, así que también se difiere a este script.
 const flagIconsHref = 'https://cdn.jsdelivr.net/npm/flag-icons/css/flag-icons.min.css';
 import Header from '@components/layout/Header.astro';
+import MobileBottomNav from '@components/layout/MobileBottomNav.astro';
 import Footer from '@components/layout/Footer.astro';
 import HeaderLayer from '@/components/layout/HeaderLayer.astro';
 import Preloader from '@/components/layout/Preloader.astro';
@@ -181,7 +182,7 @@ const organizationSchema = generateOrganizationSchema(Astro.request);
    </head>
 
    <body
-      class="bg-gray-50 text-gray-900 dark:bg-[#050505] dark:text-white min-h-screen flex flex-col transition-colors duration-300"
+      class="bg-gray-50 text-gray-900 dark:bg-[#050505] dark:text-white min-h-screen flex flex-col pb-16 lg:pb-0 transition-colors duration-300"
    >
       {showPreloader && <Preloader />}
       <InitAOS client:only="react" />
@@ -199,12 +200,44 @@ const organizationSchema = generateOrganizationSchema(Astro.request);
          </div>
       </main>
 
+      <MobileBottomNav />
+
       <!-- Widget de chat LeadConnector -->
       <script
          is:inline
          src="https://widgets.leadconnectorhq.com/loader.js"
          data-resources-url="https://widgets.leadconnectorhq.com/chat-widget/loader.js"
          data-widget-id="6a629fdd6f3b01a586db9391"></script>
+
+      <!--
+         El widget de LeadConnector fija su burbuja a bottom:20px dentro de su
+         propio shadow DOM (no llega el CSS normal). En móvil eso queda encima
+         de la barra de navegación inferior, así que la reubicamos por JS.
+      -->
+      <script is:inline>
+         (function () {
+            function repositionChatWidget() {
+               var host = document.querySelector('chat-widget');
+               var root = host && host.shadowRoot;
+               var box = root && root.getElementById('lc_text-widget');
+               var btn = root && root.getElementById('lc_text-widget--btn');
+               if (!box || !btn) return false;
+               var isMobile = window.matchMedia('(max-width: 1023px)').matches;
+               var offset = isMobile ? 'calc(4.5rem + env(safe-area-inset-bottom))' : '20px';
+               box.style.bottom = offset;
+               btn.style.bottom = offset;
+               return true;
+            }
+
+            window.addEventListener('resize', repositionChatWidget);
+
+            var attempts = 0;
+            var poll = setInterval(function () {
+               attempts++;
+               if (repositionChatWidget() || attempts > 30) clearInterval(poll);
+            }, 300);
+         })();
+      </script>
    </body>
 </html>
 
