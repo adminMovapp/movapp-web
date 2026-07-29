@@ -151,11 +151,12 @@ html:not(.dark) .glass-card {
    }
 
    /*
-      Excepciones puntuales: estos tres efectos son movimiento
+      Excepciones puntuales: estos efectos son movimiento
       mínimo/decorativo (un marquee lento, un flotado de pocos px,
-      un reveal de entrada) que el dueño del sitio pidió ver
-      explícitamente, así que se restauran aquí. El resto del sitio
-      sigue respetando reduced-motion sin cambios.
+      un reveal de entrada, una estrella fugaz ocasional) que el
+      dueño del sitio pidió ver explícitamente, así que se restauran
+      aquí. El resto del sitio sigue respetando reduced-motion sin
+      cambios.
    */
    .marquee-track {
       animation-duration: 25s !important;
@@ -164,6 +165,10 @@ html:not(.dark) .glass-card {
    .float-anim {
       animation-duration: var(--float-dur, 6s) !important;
       animation-iteration-count: infinite !important;
+   }
+   .field-shooting-star {
+      animation-duration: var(--shoot-dur, 1.1s) !important;
+      animation-iteration-count: 1 !important;
    }
    .reveal-stagger > * {
       transition-duration: 0.6s !important;

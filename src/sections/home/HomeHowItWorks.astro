@@ -19,29 +19,10 @@ const cardHover =
 
 import ButtonContact from '@components/ui/ButtonContact.astro';
 import StarField from '@components/decorative/StarField.astro';
-
-// Constelación: escalera ascendente (progreso/pasos).
-const constellationPoints = [
-   { x: 15, y: 75 },
-   { x: 35, y: 75 },
-   { x: 35, y: 60 },
-   { x: 50, y: 60 },
-   { x: 50, y: 45 },
-   { x: 65, y: 45 },
-   { x: 65, y: 28 },
-];
-const constellationEdges: [number, number][] = [
-   [0, 1],
-   [1, 2],
-   [2, 3],
-   [3, 4],
-   [4, 5],
-   [5, 6],
-];
 ---
 
 <section class="relative mx-auto my-16 w-full max-w-6xl px-4" data-aos="fade-up">
-   <StarField points={constellationPoints} edges={constellationEdges} id="how-it-works" ambientCount={40} />
+   <StarField id="how-it-works" ambientCount={40} />
 
    <div class="mb-10 text-center">
       <span class="text-xs font-semibold uppercase tracking-widest text-text_banner">La solución</span>

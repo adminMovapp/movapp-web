@@ -1,23 +1,11 @@
 ---
 // Fondo decorativo reutilizable para las secciones del home (excepto el
 // hero, que tiene su propio fondo independiente y no usa este componente).
-// Dibuja estrellas titilantes ambiente + una "constelación" propia por
-// sección: unos puntos más grandes/brillantes unidos por líneas finas,
-// formando una figura distinta en cada lugar donde se usa.
-//
-// Los puntos van en un espacio porcentual (0-100 x, 0-100 y); las líneas
-// son un <svg> con preserveAspectRatio="none" para que use exactamente ese
-// mismo espacio (así los puntos de las estrellas y los extremos de las
-// líneas siempre coinciden, sin importar el alto/ancho real de la sección).
-
-interface Point {
-   x: number;
-   y: number;
-}
+// Dibuja estrellas titilantes ambiente + estrellas fugaces que cruzan la
+// sección de vez en cuando, más el mismo resplandor morado tenue del hero
+// (para que el lenguaje visual sea consistente en todo el home).
 
 interface Props {
-   points: Point[];
-   edges: [number, number][];
    id: string;
    ambientCount?: number;
    // false para secciones donde el fondo debe quedarse dentro de su propio
@@ -26,45 +14,31 @@ interface Props {
    fullBleed?: boolean;
 }
 
-const { points, edges, id, ambientCount = 45, fullBleed = true } = Astro.props;
+const { id, ambientCount = 45, fullBleed = true } = Astro.props;
 
 const wrapperClass = fullBleed
    ? 'field-root pointer-events-none absolute inset-y-0 left-1/2 -z-10 w-screen -translate-x-1/2 overflow-hidden'
    : 'field-root pointer-events-none absolute inset-0 -z-10 overflow-hidden';
 ---
 
-<div class={wrapperClass} data-field-id={id} data-ambient={ambientCount} data-points={JSON.stringify(points)} aria-hidden="true">
+<div class={wrapperClass} data-field-id={id} data-ambient={ambientCount} aria-hidden="true">
+   <!-- Resplandor superior tenue, mismo tono que el del hero -->
+   <div
+      class="pointer-events-none absolute left-1/2 top-0 h-40 w-[70%] max-w-[900px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-purple_mv/[0.06] blur-[120px] dark:bg-purple_mv/[0.18]"
+   >
+   </div>
+
    <!-- Estrellas ambiente (pobladas por el script de abajo) -->
    <div class="field-stars absolute inset-0 text-purple_mv/40 dark:text-white/70"></div>
 
-   <!-- Líneas de la constelación -->
-   <svg
-      class="absolute inset-0 h-full w-full text-purple_mv/30 dark:text-white/25"
-      viewBox="0 0 100 100"
-      preserveAspectRatio="none"
-   >
-      {
-         edges.map(([a, b]) => (
-            <line
-               x1={points[a].x}
-               y1={points[a].y}
-               x2={points[b].x}
-               y2={points[b].y}
-               stroke="currentColor"
-               stroke-width="1.1"
-               vector-effect="non-scaling-stroke"
-            />
-         ))
-      }
-   </svg>
-
-   <!-- Nodos de la constelación: estrellas más grandes/brillantes -->
-   <div class="field-nodes absolute inset-0 text-purple_mv/80 dark:text-white"></div>
+   <!-- Estrellas fugaces: cruzan la sección de vez en cuando (JS más abajo) -->
+   <div class="field-shooting-stars absolute inset-0 overflow-hidden text-purple_mv/70 dark:text-white"></div>
 </div>
 
 <style>
    :global(.field-star) {
       position: absolute;
+      transform: translate(-50%, -50%);
       border-radius: 9999px;
       background-color: currentColor;
       animation-name: fieldTwinkle;
@@ -76,13 +50,54 @@ const wrapperClass = fullBleed
       0%,
       100% {
          opacity: var(--star-min, 0.15);
-         transform: scale(0.8);
          box-shadow: 0 0 0 currentColor;
       }
       50% {
          opacity: var(--star-max, 0.9);
-         transform: scale(1.3);
          box-shadow: 0 0 var(--star-glow, 2px) currentColor;
+      }
+   }
+
+   :global(.field-shooting-star) {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 2.5px;
+      height: 2.5px;
+      border-radius: 9999px;
+      background-color: currentColor;
+      box-shadow: 0 0 6px 1px currentColor;
+      opacity: 0;
+      animation-name: fieldShootingStar;
+      animation-duration: var(--shoot-dur, 1.1s);
+      animation-timing-function: cubic-bezier(0.2, 0.6, 0.3, 1);
+      animation-fill-mode: forwards;
+   }
+   :global(.field-shooting-star::after) {
+      content: '';
+      position: absolute;
+      top: 50%;
+      right: 100%;
+      width: var(--trail-length, 90px);
+      height: 1px;
+      background: linear-gradient(90deg, transparent, currentColor);
+      transform: translateY(-50%);
+   }
+
+   @keyframes fieldShootingStar {
+      0% {
+         opacity: 0;
+         transform: rotate(var(--angle, 25deg)) translateX(0);
+      }
+      8% {
+         opacity: 1;
+      }
+      70% {
+         opacity: 1;
+      }
+      100% {
+         opacity: 0;
+         transform: rotate(var(--angle, 25deg)) translateX(var(--distance, 180px));
       }
    }
 </style>
@@ -90,10 +105,10 @@ const wrapperClass = fullBleed
 <script>
    const AMBIENT_MIN_SIZE = 1;
    const AMBIENT_MAX_SIZE = 2.2;
-   const NODE_MIN_SIZE = 2.5;
-   const NODE_MAX_SIZE = 3.5;
+   const SHOOT_MIN_INTERVAL_MS = 2500;
+   const SHOOT_MAX_INTERVAL_MS = 6000;
 
-   const makeStar = (size: number) => {
+   const makeAmbientStar = (size: number) => {
       const star = document.createElement('span');
       star.className = 'field-star';
 
@@ -105,6 +120,8 @@ const wrapperClass = fullBleed
 
       star.style.width = `${size}px`;
       star.style.height = `${size}px`;
+      star.style.top = `${Math.random() * 100}%`;
+      star.style.left = `${Math.random() * 100}%`;
       star.style.animationDuration = `${duration}s`;
       star.style.animationDelay = `${delay}s`;
       star.style.setProperty('--star-min', minOpacity.toFixed(2));
@@ -114,41 +131,72 @@ const wrapperClass = fullBleed
       return star;
    };
 
+   const hashId = (id: string) => {
+      let hash = 0;
+      for (let i = 0; i < id.length; i++) {
+         hash = (hash * 31 + id.charCodeAt(i)) >>> 0;
+      }
+      return hash;
+   };
+
+   const spawnShootingStar = (container: Element) => {
+      const star = document.createElement('span');
+      star.className = 'field-shooting-star';
+
+      const startTop = Math.random() * 55;
+      const startLeft = Math.random() * 70;
+      const angle = 15 + Math.random() * 25;
+      const distance = 140 + Math.random() * 140;
+      const duration = 0.9 + Math.random() * 0.6;
+      const trailLength = distance * 0.5;
+
+      star.style.top = `${startTop}%`;
+      star.style.left = `${startLeft}%`;
+      star.style.setProperty('--shoot-dur', `${duration}s`);
+      star.style.setProperty('--angle', `${angle}deg`);
+      star.style.setProperty('--distance', `${distance}px`);
+      star.style.setProperty('--trail-length', `${trailLength}px`);
+
+      star.addEventListener('animationend', () => star.remove());
+      container.appendChild(star);
+   };
+
+   const scheduleShootingStars = (container: Element, initialDelay: number) => {
+      const loop = () => {
+         spawnShootingStar(container);
+         const next = SHOOT_MIN_INTERVAL_MS + Math.random() * (SHOOT_MAX_INTERVAL_MS - SHOOT_MIN_INTERVAL_MS);
+         setTimeout(loop, next);
+      };
+      setTimeout(loop, initialDelay);
+   };
+
    const initField = (root: Element) => {
       if (root.getAttribute('data-populated') === 'true') return;
       root.setAttribute('data-populated', 'true');
 
       const starsContainer = root.querySelector('.field-stars');
-      const nodesContainer = root.querySelector('.field-nodes');
-      if (!starsContainer || !nodesContainer) return;
-
       const ambientCount = parseInt(root.getAttribute('data-ambient') || '45', 10);
-      let points: { x: number; y: number }[] = [];
-      try {
-         points = JSON.parse(root.getAttribute('data-points') || '[]');
-      } catch (e) {
-         points = [];
+      if (starsContainer) {
+         const fragment = document.createDocumentFragment();
+         for (let i = 0; i < ambientCount; i++) {
+            const size = AMBIENT_MIN_SIZE + Math.random() * (AMBIENT_MAX_SIZE - AMBIENT_MIN_SIZE);
+            fragment.appendChild(makeAmbientStar(size));
+         }
+         starsContainer.appendChild(fragment);
       }
 
-      const ambientFragment = document.createDocumentFragment();
-      for (let i = 0; i < ambientCount; i++) {
-         const size = AMBIENT_MIN_SIZE + Math.random() * (AMBIENT_MAX_SIZE - AMBIENT_MIN_SIZE);
-         const star = makeStar(size);
-         star.style.top = `${Math.random() * 100}%`;
-         star.style.left = `${Math.random() * 100}%`;
-         ambientFragment.appendChild(star);
+      // Las estrellas fugaces se muestran siempre (incluso con
+      // prefers-reduced-motion), igual que el marquee y el flotado: es
+      // movimiento mínimo/decorativo que el dueño del sitio pidió ver
+      // explícitamente en todas las secciones.
+      const shootContainer = root.querySelector('.field-shooting-stars');
+      if (shootContainer) {
+         // Offset inicial por instancia (según su id) para que las distintas
+         // secciones no lancen su primera estrella fugaz todas a la vez.
+         const id = root.getAttribute('data-field-id') || '';
+         const initialDelay = hashId(id) % 2500;
+         scheduleShootingStars(shootContainer, initialDelay);
       }
-      starsContainer.appendChild(ambientFragment);
-
-      const nodesFragment = document.createDocumentFragment();
-      points.forEach((p) => {
-         const size = NODE_MIN_SIZE + Math.random() * (NODE_MAX_SIZE - NODE_MIN_SIZE);
-         const star = makeStar(size);
-         star.style.top = `${p.y}%`;
-         star.style.left = `${p.x}%`;
-         nodesFragment.appendChild(star);
-      });
-      nodesContainer.appendChild(nodesFragment);
    };
 
    const initAllFields = () => {
