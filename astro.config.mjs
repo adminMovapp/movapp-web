@@ -5,7 +5,11 @@ import tailwind from '@astrojs/tailwind';
 import netlify from '@astrojs/netlify';
 
 export default defineConfig({
-   integrations: [tailwind(), react()],
+   // applyBaseStyles: false — evita que la integración inyecte su propio
+   // <link> con las directivas @tailwind en cada página. El único punto de
+   // entrada de Tailwind es src/styles/global.css, importado en Layout.astro
+   // como ?url para poder cargarlo solo cuando hay JavaScript.
+   integrations: [tailwind({ applyBaseStyles: false }), react()],
 
    vite: {
       // plugins: [tailwindcss()],

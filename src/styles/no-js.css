@@ -1,0 +1,132 @@
+/* ============================================================
+   BASE SIN JAVASCRIPT
+   Hoja de estilos mínima, escrita a mano (no Tailwind), pensada
+   para pesar lo menos posible. Se carga siempre (con o sin JS),
+   pero cada regla empieza con "html.no-js" para que nunca compita
+   con el diseño completo de Tailwind: en cuanto hay JavaScript la
+   clase "no-js" desaparece del <html> (ver Layout.astro) y este
+   archivo deja de tener efecto.
+
+   Objetivo: que el texto (que ya es 100% del contenido real) se
+   lea ordenado, con jerarquía y espaciado, sin agregar peso de
+   diseño. No busca replicar el look final del sitio.
+   ============================================================ */
+
+html.no-js,
+html.no-js body {
+   margin: 0;
+   padding: 0;
+}
+
+html.no-js * {
+   box-sizing: border-box;
+}
+
+/* --- Tipografía --- */
+html.no-js body {
+   font-family:
+      -apple-system,
+      BlinkMacSystemFont,
+      'Segoe UI',
+      Roboto,
+      Arial,
+      sans-serif;
+   line-height: 1.6;
+   color: #1a1a1a;
+   background: #fafafa;
+}
+
+html.no-js h1,
+html.no-js h2,
+html.no-js h3,
+html.no-js h4 {
+   line-height: 1.3;
+   margin: 1.4em 0 0.5em;
+   color: #111111;
+}
+html.no-js h1 {
+   font-size: 1.9rem;
+}
+html.no-js h2 {
+   font-size: 1.5rem;
+}
+html.no-js h3 {
+   font-size: 1.15rem;
+}
+html.no-js p {
+   margin: 0 0 1em;
+}
+
+/* --- Ancho de lectura --- */
+html.no-js header > *,
+html.no-js main,
+html.no-js footer > * {
+   max-width: 760px;
+   margin-inline: auto;
+   padding-inline: 1.25rem;
+}
+
+/* --- Enlaces --- */
+html.no-js a {
+   color: #6b3fd4;
+}
+html.no-js a:hover {
+   color: #4d2b9e;
+}
+
+/* --- CTA de WhatsApp: única clase estable que ya usa el sitio --- */
+html.no-js .wa__stt {
+   display: inline-block;
+   margin: 0.75rem 0;
+   padding: 0.65rem 1.25rem;
+   background: #25d366;
+   color: #ffffff;
+   text-decoration: none;
+   border-radius: 6px;
+   font-weight: 700;
+}
+
+/* --- Listas: se usan como grillas de tarjetas, no como viñetas --- */
+html.no-js ul,
+html.no-js ol {
+   list-style: none;
+   margin: 0 0 1.5rem;
+   padding: 0;
+}
+html.no-js li {
+   margin-block: 0.6rem;
+}
+
+/* --- Imágenes e iconos --- */
+html.no-js img {
+   max-width: 100%;
+   height: auto;
+}
+html.no-js svg {
+   width: 1.4rem;
+   height: 1.4rem;
+}
+
+/* --- Separación entre bloques principales --- */
+html.no-js section,
+html.no-js header,
+html.no-js footer {
+   margin-block: 2rem;
+   padding-block: 1.25rem;
+   border-top: 1px solid #e5e5e5;
+}
+html.no-js header {
+   border-top: none;
+}
+
+/* --- FAQ (usa <details>/<summary> nativos, ya funcionan sin JS) --- */
+html.no-js details {
+   margin-bottom: 0.75rem;
+   padding: 0.75rem 1rem;
+   border: 1px solid #e5e5e5;
+   border-radius: 6px;
+}
+html.no-js summary {
+   cursor: pointer;
+   font-weight: 600;
+}

@@ -1,5 +1,20 @@
 ---
-import '@styles/global.css';
+// Importado como URL (no como hoja de estilos auto-inyectada): así el <link>
+// se agrega a mano vía JS más abajo y solo se descarga cuando hay JavaScript.
+// Sin JS, el sitio se sirve como HTML semántico sin CSS de Tailwind: mismo
+// texto, sin el peso del diseño.
+import stylesheetHref from '@styles/global.css?url';
+// Este sí se importa normal (siempre se carga, con o sin JS): es una hoja de
+// estilos mínima y liviana que le da estructura al HTML cuando Tailwind no
+// está disponible. Ver src/styles/no-js.css.
+import '@styles/no-js.css';
+// CSS de la librería AOS (animaciones on-scroll): solo tiene efecto si AOS.init()
+// corre (dentro de InitAOS, un componente client:only), así que se carga igual
+// que Tailwind, vía el script condicionado a JavaScript de más abajo.
+import aosHref from 'aos/dist/aos.css?url';
+// Solo lo usa la isla de React de la tienda (bandera de país); sin JS esa
+// isla ni siquiera se hidrata, así que también se difiere a este script.
+const flagIconsHref = 'https://cdn.jsdelivr.net/npm/flag-icons/css/flag-icons.min.css';
 import Header from '@components/layout/Header.astro';
 import Footer from '@components/layout/Footer.astro';
 import HeaderLayer from '@/components/layout/HeaderLayer.astro';
@@ -43,8 +58,29 @@ const organizationSchema = generateOrganizationSchema(Astro.request);
 ---
 
 <!doctype html>
-<html lang={siteConfig.site.language} class="dark">
+<html lang={siteConfig.site.language} class="no-js dark">
    <head>
+      <!--
+         Carga del CSS condicionada a JavaScript: si el navegador (o el bot)
+         no ejecuta este script, la hoja de estilos de Tailwind nunca se pide
+         y la página se sirve como HTML plano, mucho más ligero. Con
+         JavaScript, se agrega el <link> y la página luce con el diseño
+         completo (colores, animaciones, etc.).
+      -->
+      <script is:inline define:vars={{ stylesheetHref, aosHref, flagIconsHref }}>
+         (function () {
+            document.documentElement.classList.remove('no-js');
+            document.documentElement.classList.add('js');
+
+            [stylesheetHref, aosHref, flagIconsHref].forEach(function (href) {
+               var link = document.createElement('link');
+               link.rel = 'stylesheet';
+               link.href = href;
+               document.head.appendChild(link);
+            });
+         })();
+      </script>
+
       <!-- Tema: aplicar antes del paint para evitar flash (default DARK) -->
       <script is:inline>
          (function () {
@@ -123,17 +159,11 @@ const organizationSchema = generateOrganizationSchema(Astro.request);
       <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
       <meta name="generator" content={Astro.generator} />
 
-      <!-- Fuentes extenas -->
-      <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
-      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons/css/flag-icons.min.css" />
-
       <!-- Schema.org JSON-LD -->
       <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
 
       <!-- Header meta-pixel  -->
       <meta name="facebook-domain-verification" content="uffghfhff1th1z040abwzgjgjto9mi" />
-
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
 
       <GoogleTagManager />
       <GoogleAnalytics />
