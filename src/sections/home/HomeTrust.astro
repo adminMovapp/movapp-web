@@ -57,10 +57,11 @@ const collaborations = [
          testimonials.map((t, i) => (
             <div
                class:list={[
-                  'glass-card relative flex flex-col justify-between overflow-hidden rounded-2xl border border-purple_mv/30 p-6 shadow-[0_0_30px_rgba(129,73,226,0.18)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_0_40px_rgba(129,73,226,0.3)]',
+                  'float-anim glass-card relative flex flex-col justify-between overflow-hidden rounded-2xl border border-purple_mv/30 p-6 shadow-[0_0_30px_rgba(129,73,226,0.18)] transition duration-300 hover:shadow-[0_0_40px_rgba(129,73,226,0.3)]',
                   i === 0 ? 'lg:col-span-2' : '',
                   i >= 2 ? 'hidden md:flex' : '',
                ]}
+               style={`--float-dur: ${5.6 + i * 0.3}s; --float-delay: ${i * 0.2}s;`}
             >
                <span class="pointer-events-none absolute -top-4 left-3 select-none text-7xl font-serif text-purple_mv/30">
                   “
@@ -75,7 +76,8 @@ const collaborations = [
    <div class="mt-8 flex justify-center md:hidden">
       <a
          href="/testimonios/"
-         class="inline-block rounded-3xl border border-text_banner px-8 py-3 text-sm font-bold uppercase text-text_banner transition hover:scale-105 hover:bg-text_banner hover:text-white"
+         class="float-anim inline-block rounded-3xl border border-text_banner px-8 py-3 text-sm font-bold uppercase text-text_banner transition hover:bg-text_banner hover:text-white"
+         style="--float-dur: 5.8s; --float-delay: 0s;"
       >
          Ver más
       </a>
@@ -83,7 +85,8 @@ const collaborations = [
    <div class="mt-10 hidden justify-center md:flex">
       <a
          href="/testimonios/"
-         class="inline-block rounded-3xl border border-text_banner px-8 py-3 text-sm md:text-base font-bold uppercase text-text_banner transition hover:scale-105 hover:bg-text_banner hover:text-white"
+         class="float-anim inline-block rounded-3xl border border-text_banner px-8 py-3 text-sm md:text-base font-bold uppercase text-text_banner transition hover:bg-text_banner hover:text-white"
+         style="--float-dur: 5.8s; --float-delay: 0s;"
       >
          Ver más testimonios
       </a>

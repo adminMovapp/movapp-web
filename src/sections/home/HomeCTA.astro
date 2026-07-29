@@ -4,7 +4,10 @@ import StarField from '@components/decorative/StarField.astro';
 ---
 
 <section class="relative mx-auto my-8 w-full max-w-5xl px-4" data-aos="fade-up">
-   <div class="glass-card relative overflow-hidden rounded-3xl border border-purple_mv/30 p-10 text-center shadow-[0_0_40px_rgba(129,73,226,0.15)] md:p-14">
+   <div
+      class="float-anim glass-card relative overflow-hidden rounded-3xl border border-purple_mv/30 p-10 text-center shadow-[0_0_40px_rgba(129,73,226,0.15)] md:p-14"
+      style="--float-dur: 6.2s; --float-delay: 0s;"
+   >
       <StarField id="cta" ambientCount={25} fullBleed={false} />
 
       <!-- Resplandor decorativo -->
@@ -17,7 +20,9 @@ import StarField from '@components/decorative/StarField.astro';
             No tienes que enfrentar esto solo. Escríbenos por WhatsApp y recupera tu tranquilidad.
          </p>
 
-         <ButtonContact label="Hablar con un asesor gratis por WhatsApp" size="lg" />
+         <div class="float-anim" style="--float-dur: 5.8s; --float-delay: 0.3s;">
+            <ButtonContact label="Hablar con un asesor gratis por WhatsApp" size="lg" />
+         </div>
 
          <div class="mt-2 flex flex-col items-center gap-2">
             <span class="text-xs text-gray-500 dark:text-white/50">Descargar la app de Movapp</span>

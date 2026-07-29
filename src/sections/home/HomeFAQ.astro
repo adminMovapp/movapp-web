@@ -28,8 +28,11 @@ const faqs = [
 
    <div class="mt-10 flex flex-col gap-4">
       {
-         faqs.map((item) => (
-            <details class="group glass-card rounded-2xl border border-purple_mv/20 p-5 dark:border-white/10">
+         faqs.map((item, i) => (
+            <details
+               class="float-anim group glass-card rounded-2xl border border-purple_mv/20 p-5 dark:border-white/10"
+               style={`--float-dur: ${5.6 + i * 0.3}s; --float-delay: ${i * 0.2}s;`}
+            >
                <summary class="flex cursor-pointer list-none items-center justify-between gap-4 font-semibold text-gray-900 dark:text-white">
                   {item.q}
                   <span class="flex-shrink-0 text-text_banner transition-transform duration-200 group-open:rotate-45">
