@@ -47,24 +47,24 @@ const year = new Date().getFullYear();
 
 <!-- Footer -->
 <footer
-   class="mt-16 w-full border-t border-black/10 bg-gray-100 text-gray-700 transition-colors duration-300 dark:border-white/10 dark:bg-zinc-950 dark:text-white/80"
+   class="mt-10 w-full border-t border-black/10 bg-gray-100 text-gray-700 transition-colors duration-300 dark:border-white/10 dark:bg-zinc-950 dark:text-white/80 md:mt-16"
 >
-   <div class="mx-auto max-w-7xl px-6 py-12 md:px-10">
+   <div class="mx-auto max-w-7xl px-6 py-8 md:px-10 md:py-12">
       <!-- Fila superior: marca + enlaces -->
-      <div class="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-4">
+      <div class="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-10 lg:grid-cols-4">
          <!-- Marca + descripción -->
          <div class="lg:col-span-2 max-w-md">
-            <a href="/" class="inline-block" aria-label="Movapp - Inicio">
+            <a href="/" class="inline-block" aria-label="Movapp - Inicio" data-home-link>
                <img src="/img/Logo.png" alt="Movapp" class="block h-10 w-auto dark:hidden" />
                <img src="/img/Logo-Blanco.png" alt="Movapp" class="hidden h-10 w-auto dark:block" />
             </a>
-            <p class="mt-4 text-sm leading-relaxed text-gray-600 dark:text-white/70">
+            <p class="mt-3 text-sm leading-relaxed text-gray-600 dark:text-white/70 md:mt-4">
                Movapp es una organización que ayuda a personas víctimas de las aplicaciones de préstamo no reguladas
                mediante apoyo psicológico, asesoría personalizada y la aplicación de El Hack.
             </p>
 
             <!-- Redes sociales -->
-            <div class="mt-6 flex gap-3">
+            <div class="mt-4 flex gap-3 md:mt-6">
                {
                   socials.map((s) => (
                      <a
@@ -83,45 +83,67 @@ const year = new Date().getFullYear();
             </div>
          </div>
 
-         <!-- Navegación -->
-         <div>
-            <h3 class="mb-4 text-sm font-bold uppercase tracking-wide text-text_banner">Navegación</h3>
-            <ul class="space-y-2 text-sm">
-               {
-                  navLinks.map((l) => (
-                     <li>
-                        <a href={l.href} class="transition-colors hover:text-text_banner">
-                           {l.label}
-                        </a>
-                     </li>
-                  ))
-               }
-            </ul>
-         </div>
+         <!-- Navegación + Contenido: en móvil van uno junto al otro para aprovechar el ancho -->
+         <div class="grid grid-cols-2 gap-4 md:contents">
+            <div>
+               <h3 class="mb-2 text-sm font-bold uppercase tracking-wide text-text_banner md:mb-4">Navegación</h3>
+               <ul class="space-y-1.5 text-sm md:space-y-2">
+                  {
+                     navLinks.map((l) => (
+                        <li>
+                           <a href={l.href} class="transition-colors hover:text-text_banner">
+                              {l.label}
+                           </a>
+                        </li>
+                     ))
+                  }
+               </ul>
+            </div>
 
-         <!-- Contenido + Legal -->
-         <div>
-            <h3 class="mb-4 text-sm font-bold uppercase tracking-wide text-text_banner">Contenido</h3>
-            <ul class="space-y-2 text-sm">
-               {
-                  contentLinks.map((l) => (
-                     <li>
-                        <a href={l.href} class="transition-colors hover:text-text_banner">
-                           {l.label}
-                        </a>
-                     </li>
-                  ))
-               }
-            </ul>
+            <div>
+               <h3 class="mb-2 text-sm font-bold uppercase tracking-wide text-text_banner md:mb-4">Contenido</h3>
+               <ul class="space-y-1.5 text-sm md:space-y-2">
+                  {
+                     contentLinks.map((l) => (
+                        <li>
+                           <a href={l.href} class="transition-colors hover:text-text_banner">
+                              {l.label}
+                           </a>
+                        </li>
+                     ))
+                  }
+               </ul>
+            </div>
          </div>
       </div>
 
       <!-- Barra inferior -->
       <div
-         class="mt-10 flex flex-col items-center justify-between gap-4 border-t border-black/10 pt-6 text-sm text-gray-500 dark:border-white/10 dark:text-white/60 md:flex-row"
+         class="mt-6 flex flex-col items-center justify-between gap-4 border-t border-black/10 pt-4 text-sm text-gray-500 dark:border-white/10 dark:text-white/60 md:mt-10 md:pt-6 md:flex-row"
       >
          <p>Movappbyerikmann © - Todos Los Derechos Reservados - {year}</p>
          <a href="/privacypolicy" class="transition-colors hover:text-text_banner">Política de privacidad</a>
       </div>
+
+      <!-- Volver arriba -->
+      <div class="mt-6 flex justify-center md:mt-8">
+         <button
+            id="backToTopButton"
+            type="button"
+            class="flex items-center gap-2 rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-medium text-gray-600 transition hover:-translate-y-0.5 hover:border-purple_mv/50 hover:text-text_banner dark:border-white/10 dark:bg-white/5 dark:text-white/70 dark:hover:text-text_banner"
+         >
+            <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+               <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
+            </svg>
+            Volver arriba
+         </button>
+      </div>
    </div>
 </footer>
+
+<script>
+   const backToTopButton = document.getElementById('backToTopButton');
+   backToTopButton?.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+   });
+</script>
