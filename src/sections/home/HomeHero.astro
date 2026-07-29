@@ -3,8 +3,32 @@ import ButtonContact from '@components/ui/ButtonContact.astro';
 ---
 
 <section class="relative mx-auto flex min-h-[85vh] max-w-5xl flex-col items-center justify-center px-4 pt-16 pb-12 text-center">
+   <!--
+      Fondo espacial: full-bleed (ignora el max-w del section con el truco
+      left-1/2 + w-screen + -translate-x-1/2) para que llene todo el ancho
+      de la pantalla y no se vea como un recuadro morado aparte. La base es
+      del mismo tono que el fondo del body; el morado queda solo como un
+      resplandor superior tenue, y las estrellas se crean por JS más abajo.
+   -->
+   <div
+      class="pointer-events-none absolute -top-24 -bottom-24 left-1/2 -z-20 w-screen -translate-x-1/2 overflow-hidden"
+      aria-hidden="true"
+   >
+      <!-- Base: mismo tono que el fondo del body -->
+      <div class="absolute inset-0 dark:bg-[#050505]"></div>
+
+      <!-- Resplandor superior: el "toque morado", tenue -->
+      <div
+         class="absolute left-1/2 top-[-160px] h-[460px] w-[70%] max-w-[900px] -translate-x-1/2 rounded-full bg-purple_mv/[0.06] blur-[150px] dark:bg-purple_mv/[0.18]"
+      >
+      </div>
+
+      <!-- Estrellas: el contenedor solo define el color (currentColor); las estrellas las crea el script de más abajo -->
+      <div id="hero-stars" class="absolute inset-0 text-purple_mv/50 dark:text-white/90"></div>
+   </div>
+
    <!-- Animación de Órbita de Protección (Fondo) -->
-   <div class="absolute inset-0 z-[-1] overflow-hidden pointer-events-none flex items-center justify-center opacity-30 dark:opacity-40" aria-hidden="true">
+   <div class="absolute inset-0 z-[-10] overflow-hidden pointer-events-none flex items-center justify-center opacity-30 dark:opacity-40" aria-hidden="true">
 
       <!-- Círculo interior (decorativo) -->
       <div id="hero-orbit-inner" class="absolute w-[150px] h-[150px] md:w-[400px] md:h-[400px] rounded-full border-[1.5px] border-purple_mv/20 border-dashed"></div>
@@ -46,29 +70,44 @@ import ButtonContact from '@components/ui/ButtonContact.astro';
    </div>
 
    <!-- Eyebrow -->
-   <p class="text-sm font-semibold uppercase tracking-widest text-text_banner animate-fadeIn">
+   <p
+      class="hero-float-combo text-sm font-semibold uppercase tracking-widest text-text_banner"
+      style="--float-dur: 6s; --float-delay: 0s; animation: heroFadeIn 0.7s ease-out both, heroFloat 6s ease-in-out 0s infinite;"
+   >
       Ayuda real para víctimas de apps montadeudas
    </p>
 
    <!-- H1 (único H1 de la página) -->
-   <h1 class="mx-auto mt-4 max-w-4xl text-4xl font-bold leading-tight text-gray-900 dark:text-white md:text-6xl animate-fadeIn">
+   <h1
+      class="hero-float-combo mx-auto mt-4 max-w-4xl text-4xl font-bold leading-tight text-gray-900 dark:text-white md:text-6xl"
+      style="--float-dur: 6.5s; --float-delay: 0.3s; animation: heroFadeIn 0.7s ease-out both, heroFloat 6.5s ease-in-out 0.3s infinite;"
+   >
       Recupera tu tranquilidad <span class="text-text_banner drop-shadow-[0_0_25px_rgba(129,73,226,0.35)]">hoy</span>.
       Adiós al acoso de las <span class="text-text_banner drop-shadow-[0_0_25px_rgba(129,73,226,0.35)]">apps de préstamo</span>.
    </h1>
 
    <!-- Cuerpo -->
-   <p class="mx-auto mt-6 max-w-2xl text-lg text-gray-700 dark:text-white/80 md:text-xl">
+   <p
+      class="hero-float-solo mx-auto mt-6 max-w-2xl text-lg text-gray-700 dark:text-white/80 md:text-xl"
+      style="--float-dur: 6.2s; --float-delay: 0.6s; animation: heroFloat 6.2s ease-in-out 0.6s infinite;"
+   >
       Habla gratis con un asesor y conoce las opciones para reducir el acoso, a ti y a tus contactos. Si El Hack
       aplica a tu caso, el asesor te informa su costo antes de contratar.
    </p>
 
    <!-- CTA primario: WhatsApp, el más grande y el primero -->
-   <div class="mt-8">
+   <div
+      class="hero-float-solo mt-8"
+      style="--float-dur: 5.8s; --float-delay: 0.9s; animation: heroFloat 5.8s ease-in-out 0.9s infinite;"
+   >
       <ButtonContact label="Hablar con un asesor gratis por WhatsApp" size="lg" />
    </div>
 
    <!-- CTA secundario: descarga de la app de Movapp (acción independiente) -->
-   <div class="mt-6 flex flex-col items-center gap-2">
+   <div
+      class="hero-float-solo mt-6 flex flex-col items-center gap-2"
+      style="--float-dur: 6.4s; --float-delay: 1.2s; animation: heroFloat 6.4s ease-in-out 1.2s infinite;"
+   >
       <span class="text-xs text-gray-500 dark:text-white/50">Descargar la app de Movapp</span>
       <div class="flex items-center gap-3">
          <a href="#" aria-label="Descargar en Google Play" class="transition hover:scale-105">
@@ -80,6 +119,84 @@ import ButtonContact from '@components/ui/ButtonContact.astro';
       </div>
    </div>
 </section>
+
+<style>
+   /*
+      Las estrellas las crea el script de más abajo (posiciones/tamaños random),
+      así que el keyframe/clase debe quedar sin scope de Astro: si no, el hash
+      de scoping no llega a nodos insertados por JS después del render inicial.
+   */
+   :global(.home-hero-star) {
+      position: absolute;
+      border-radius: 9999px;
+      background-color: currentColor;
+      animation-name: homeHeroTwinkle;
+      animation-timing-function: ease-in-out;
+      animation-iteration-count: infinite;
+   }
+
+   /* Titileo + un pequeño "destello" (halo) tenue en el punto más brillante */
+   @keyframes homeHeroTwinkle {
+      0%,
+      100% {
+         opacity: var(--star-min, 0.15);
+         transform: scale(0.8);
+         box-shadow: 0 0 0 currentColor;
+      }
+      50% {
+         opacity: var(--star-max, 0.9);
+         transform: scale(1.3);
+         box-shadow: 0 0 var(--star-glow, 2px) currentColor;
+      }
+   }
+
+   /*
+      Animaciones del contenido del hero (aplicadas vía atributo style en cada
+      elemento, no como utilidad de Tailwind): así evitamos que choquen con
+      otras reglas de "animation" y que dependan de motion-safe, que en
+      algunos navegadores/SO no llega a activarse.
+   */
+   @keyframes heroFadeIn {
+      0% {
+         opacity: 0;
+         transform: translateY(12px);
+      }
+      100% {
+         opacity: 1;
+         transform: translateY(0);
+      }
+   }
+
+   @keyframes heroFloat {
+      0%,
+      100% {
+         transform: translateY(0);
+      }
+      50% {
+         transform: translateY(-6px);
+      }
+   }
+
+   /*
+      El sitio tiene una regla global (src/styles/global.css) que, para
+      accesibilidad, fuerza animation-duration a ~0 cuando el sistema pide
+      "reducir movimiento" — eso apaga el flotado del hero por completo en
+      cualquier navegador/SO con esa preferencia activada. Este flotado es
+      un efecto ambiental muy leve (pocos px, lento), así que lo restauramos
+      explícitamente aquí: es una excepción puntual a esa regla, no un
+      cambio a la política de accesibilidad del resto del sitio.
+   */
+   @media (prefers-reduced-motion: reduce) {
+      :global(.hero-float-combo) {
+         animation-duration: 0.7s, var(--float-dur, 6s) !important;
+         animation-iteration-count: 1, infinite !important;
+      }
+      :global(.hero-float-solo) {
+         animation-duration: var(--float-dur, 6s) !important;
+         animation-iteration-count: infinite !important;
+      }
+   }
+</style>
 
 <script>
    const initOrbit = () => {
@@ -122,8 +239,53 @@ import ButtonContact from '@components/ui/ButtonContact.astro';
       window.heroOrbitFrame = requestAnimationFrame(animate);
    };
 
+   // Cantidad de estrellas y rango de tamaño/opacidad (puntitos pequeños y tenues)
+   const STAR_COUNT = 150;
+   const STAR_MIN_SIZE = 1;
+   const STAR_MAX_SIZE = 2.5;
+
+   const initStars = () => {
+      const container = document.getElementById('hero-stars');
+      if (!container) return;
+
+      // Evitar duplicar estrellas si Astro re-ejecuta el script (ViewTransitions)
+      if (container.dataset.populated === 'true') return;
+      container.dataset.populated = 'true';
+
+      const fragment = document.createDocumentFragment();
+
+      for (let i = 0; i < STAR_COUNT; i++) {
+         const star = document.createElement('span');
+         star.className = 'home-hero-star';
+
+         const size = STAR_MIN_SIZE + Math.random() * (STAR_MAX_SIZE - STAR_MIN_SIZE);
+         const duration = 2 + Math.random() * 3; // 2s a 5s por parpadeo
+         const delay = Math.random() * 5;
+         const minOpacity = 0.08 + Math.random() * 0.12;
+         const maxOpacity = 0.6 + Math.random() * 0.4;
+         // Halo del "destello" proporcional al tamaño, siempre tenue (2 a 6px)
+         const glow = size * 2.2;
+
+         star.style.top = `${Math.random() * 100}%`;
+         star.style.left = `${Math.random() * 100}%`;
+         star.style.width = `${size}px`;
+         star.style.height = `${size}px`;
+         star.style.animationDuration = `${duration}s`;
+         star.style.animationDelay = `${delay}s`;
+         star.style.setProperty('--star-min', minOpacity.toFixed(2));
+         star.style.setProperty('--star-max', maxOpacity.toFixed(2));
+         star.style.setProperty('--star-glow', `${glow.toFixed(2)}px`);
+
+         fragment.appendChild(star);
+      }
+
+      container.appendChild(fragment);
+   };
+
    // Iniciar inmediatamente
    initOrbit();
+   initStars();
    // Escuchar el evento de Astro para navegaciones internas
    document.addEventListener('astro:page-load', initOrbit);
+   document.addEventListener('astro:page-load', initStars);
 </script>

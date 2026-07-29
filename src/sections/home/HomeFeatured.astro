@@ -1,4 +1,25 @@
 ---
+import StarField from '@components/decorative/StarField.astro';
+
+// Constelación: brújula/estrella de 6 puntas (explorar).
+const constellationPoints = [
+   { x: 50, y: 50 },
+   { x: 80, y: 50 },
+   { x: 65, y: 28 },
+   { x: 35, y: 28 },
+   { x: 20, y: 50 },
+   { x: 35, y: 72 },
+   { x: 65, y: 72 },
+];
+const constellationEdges: [number, number][] = [
+   [0, 1],
+   [0, 2],
+   [0, 3],
+   [0, 4],
+   [0, 5],
+   [0, 6],
+];
+
 const hub = [
    {
       title: 'El Hack',
@@ -19,6 +40,8 @@ const hub = [
 ---
 
 <section class="relative mx-auto my-24 w-full max-w-5xl px-4" data-aos="fade-up">
+   <StarField points={constellationPoints} edges={constellationEdges} id="featured" ambientCount={40} />
+
    <!-- Encabezado alineado a la izquierda (rompe el patrón centrado) -->
    <div class="mb-8 flex items-end justify-between gap-4 border-b border-purple_mv/20 pb-4">
       <div>

@@ -81,7 +81,57 @@ html:not(.dark) .glass-card {
    animation-play-state: paused;
 }
 
+/* ============================================================
+   FLOAT — flotado ambiental sutil y reutilizable. Cada elemento
+   define su propio --float-dur / --float-delay inline para que no
+   todos floten exactamente igual (se ve más orgánico).
+   ============================================================ */
+@keyframes floatY {
+   0%,
+   100% {
+      transform: translateY(0);
+   }
+   50% {
+      transform: translateY(-6px);
+   }
+}
+.float-anim {
+   animation: floatY var(--float-dur, 6s) ease-in-out var(--float-delay, 0s) infinite;
+}
 
+/* ============================================================
+   REVEAL STAGGER — "timelapse": los hijos directos aparecen uno
+   tras otro (con transition-delay creciente) cuando el contenedor
+   entra en viewport. El toggle de la clase "in-view" ya lo hace un
+   IntersectionObserver en cada sección que usa este patrón
+   (HomeHowItWorks, NosotrosTimeline, el-hack).
+   ============================================================ */
+.reveal-stagger > * {
+   opacity: 0;
+   transform: translateY(24px);
+   transition:
+      opacity 0.6s ease-out,
+      transform 0.6s ease-out;
+}
+.reveal-stagger.in-view > * {
+   opacity: 1;
+   transform: translateY(0);
+}
+.reveal-stagger.in-view > *:nth-child(1) {
+   transition-delay: 0.05s;
+}
+.reveal-stagger.in-view > *:nth-child(2) {
+   transition-delay: 0.25s;
+}
+.reveal-stagger.in-view > *:nth-child(3) {
+   transition-delay: 0.45s;
+}
+.reveal-stagger.in-view > *:nth-child(4) {
+   transition-delay: 0.65s;
+}
+.reveal-stagger.in-view > *:nth-child(5) {
+   transition-delay: 0.85s;
+}
 
 /* ============================================================
    Accesibilidad: respetar reduced-motion
@@ -94,5 +144,24 @@ html:not(.dark) .glass-card {
       animation-iteration-count: 1 !important;
       transition-duration: 0.001ms !important;
       scroll-behavior: auto !important;
+   }
+
+   /*
+      Excepciones puntuales: estos tres efectos son movimiento
+      mínimo/decorativo (un marquee lento, un flotado de pocos px,
+      un reveal de entrada) que el dueño del sitio pidió ver
+      explícitamente, así que se restauran aquí. El resto del sitio
+      sigue respetando reduced-motion sin cambios.
+   */
+   .marquee-track {
+      animation-duration: 25s !important;
+      animation-iteration-count: infinite !important;
+   }
+   .float-anim {
+      animation-duration: var(--float-dur, 6s) !important;
+      animation-iteration-count: infinite !important;
+   }
+   .reveal-stagger > * {
+      transition-duration: 0.6s !important;
    }
 }

@@ -1,9 +1,38 @@
 ---
 import ButtonContact from '@components/ui/ButtonContact.astro';
+import StarField from '@components/decorative/StarField.astro';
+
+// Constelación: avión de papel (enviar un mensaje), contenida dentro de la
+// tarjeta (fullBleed={false}) porque esta tarjeta ya tiene overflow-hidden.
+// Va compacta en la esquina superior derecha (junto al resplandor decorativo
+// que ya existe ahí) para no cruzar líneas sobre el texto central.
+const constellationPoints = [
+   { x: 95, y: 14 },
+   { x: 72, y: 5 },
+   { x: 85, y: 12 },
+   { x: 72, y: 19 },
+   { x: 88, y: 16 },
+];
+const constellationEdges: [number, number][] = [
+   [0, 1],
+   [1, 2],
+   [2, 0],
+   [0, 4],
+   [4, 3],
+   [3, 0],
+];
 ---
 
 <section class="relative mx-auto my-8 w-full max-w-5xl px-4" data-aos="fade-up">
    <div class="glass-card relative overflow-hidden rounded-3xl border border-purple_mv/30 p-10 text-center shadow-[0_0_40px_rgba(129,73,226,0.15)] md:p-14">
+      <StarField
+         points={constellationPoints}
+         edges={constellationEdges}
+         id="cta"
+         ambientCount={25}
+         fullBleed={false}
+      />
+
       <!-- Resplandor decorativo -->
       <div class="pointer-events-none absolute -right-16 -top-8 h-56 w-56 rounded-full bg-purple_mv/30 blur-3xl"></div>
       <div class="pointer-events-none absolute -bottom-20 -left-16 h-56 w-56 rounded-full bg-purple_mv/20 blur-3xl"></div>
