@@ -63,22 +63,26 @@ html:not(.dark) .glass-card {
 
 /* ============================================================
    MARQUEE — carrusel horizontal infinito que se desplaza a la
-   izquierda. La pista lleva los logos duplicados (2 copias), por
-   eso desplazar -50% produce un bucle perfecto.
+   izquierda. La pista tiene 4 grupos idénticos (cada uno con su
+   propio gap interno + un padding-right que reproduce ese mismo
+   gap como "costura" entre grupos), así los 4 grupos miden
+   exactamente lo mismo y translateX(-25%) cae justo donde empieza
+   el segundo grupo -> bucle perfecto, sin salto/reinicio visible.
+   Son 4 copias (no 2) para que el contenedor visible -que es más
+   ancho que un solo grupo de logos- nunca se quede sin contenido
+   a la derecha mientras la pista avanza. No se pausa en hover:
+   debe verse siempre en movimiento.
    ============================================================ */
 @keyframes marqueeScroll {
    from {
       transform: translateX(0);
    }
    to {
-      transform: translateX(-50%);
+      transform: translateX(-25%);
    }
 }
 .marquee-track {
    animation: marqueeScroll 25s linear infinite;
-}
-.marquee:hover .marquee-track {
-   animation-play-state: paused;
 }
 
 /* ============================================================
