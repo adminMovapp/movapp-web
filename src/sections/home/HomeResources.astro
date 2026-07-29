@@ -21,22 +21,32 @@ const guides = [
       </p>
    </div>
 
-   <ul class="mx-auto mt-8 flex max-w-xl flex-col gap-3">
+   <div
+      class="float-anim mx-auto mt-8 max-w-xl overflow-hidden rounded-2xl border border-purple_mv/25 bg-gradient-to-br from-purple_mv/[0.07] to-transparent shadow-[0_0_20px_rgba(129,73,226,0.1)] dark:border-white/10 dark:from-purple_mv/[0.14] dark:to-black/20"
+      style="--float-dur: 6s; --float-delay: 0s;"
+   >
       {
          guides.map((g, i) => (
-            <li
-               class="float-anim"
-               style={`--float-dur: ${5.6 + i * 0.3}s; --float-delay: ${i * 0.2}s;`}
+            <a
+               href={g.href}
+               class:list={[
+                  'group flex items-center justify-between gap-4 px-5 py-4 transition-colors hover:bg-purple_mv/10 dark:hover:bg-purple_mv/[0.12]',
+                  i > 0 ? 'border-t border-purple_mv/15 dark:border-white/10' : '',
+               ]}
             >
-               <a
-                  href={g.href}
-                  class="flex items-center justify-between rounded-xl border border-gray-200 px-5 py-4 text-sm font-semibold text-gray-800 transition hover:border-purple_mv/50 hover:text-text_banner dark:border-white/10 dark:text-white/80"
-               >
-                  {g.title}
-                  <span class="text-text_banner">→</span>
-               </a>
-            </li>
+               <span class="flex items-center gap-4">
+                  <span class="bg-gradient-to-br from-purple_mv to-purple_mv/50 bg-clip-text text-2xl font-extrabold tabular-nums text-transparent">
+                     {String(i + 1).padStart(2, '0')}
+                  </span>
+                  <span class="text-sm font-semibold text-gray-800 transition-colors group-hover:text-text_banner dark:text-white/80">
+                     {g.title}
+                  </span>
+               </span>
+               <span class="flex-shrink-0 text-text_banner transition-transform duration-300 group-hover:translate-x-1">
+                  →
+               </span>
+            </a>
          ))
       }
-   </ul>
+   </div>
 </section>

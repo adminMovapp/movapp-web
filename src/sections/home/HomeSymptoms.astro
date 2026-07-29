@@ -1,22 +1,58 @@
 ---
 import StarField from '@components/decorative/StarField.astro';
 
+// Insignia de alerta (triángulo con "!") que se superpone al ícono en las
+// tarjetas que representan una amenaza activa (llamadas, mensajes).
+const alertBadge = `
+   <svg viewBox="0 0 24 24" class="h-full w-full">
+      <path d="M12 2.5 22.5 21h-21L12 2.5z" fill="#8149E2" stroke="white" stroke-width="1.2" stroke-linejoin="round" />
+      <rect x="11" y="9" width="2" height="6" rx="1" fill="white" />
+      <rect x="11" y="16.5" width="2" height="2" rx="1" fill="white" />
+   </svg>
+`;
+
 const symptoms = [
    {
       title: 'Llamadas de acoso sin parar.',
       text: 'Te llaman a toda hora, incluso desde números distintos.',
+      alert: true,
+      icon: `
+         <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="h-7 w-7">
+            <path d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9a6 6 0 0 0-12 0v.75a8.967 8.967 0 0 1-2.312 6.022 23.848 23.848 0 0 0 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+         </svg>
+      `,
    },
    {
       title: 'Mensajes que amenazan.',
       text: 'Recibes textos con insultos o amenazas para presionarte a pagar.',
+      alert: true,
+      icon: `
+         <svg viewBox="0 -2 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="h-7 w-7">
+            <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v6A2.5 2.5 0 0 1 17.5 14H13.5l-1.5 3-1.5-3H6.5A2.5 2.5 0 0 1 4 11.5v-6z" />
+         </svg>
+      `,
    },
    {
       title: 'Contactan a tu familia y amigos.',
       text: 'Usan tu lista de contactos para avergonzarte y presionarte.',
+      alert: false,
+      icon: `
+         <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="h-7 w-7">
+            <circle cx="12" cy="8" r="3.2" />
+            <path d="M5 19c0-3.3 3.1-6 7-6s7 2.7 7 6" />
+         </svg>
+      `,
    },
    {
       title: 'Angustia que no te deja vivir.',
       text: 'El miedo y la ansiedad se apoderan de tu día a día.',
+      alert: false,
+      icon: `
+         <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="h-7 w-7">
+            <circle cx="12" cy="12" r="3" />
+            <path d="M12 3v2.5M12 18.5V21M21 12h-2.5M5.5 12H3M18.4 5.6l-1.8 1.8M7.4 16.6l-1.8 1.8M18.4 18.4l-1.8-1.8M7.4 7.4 5.6 5.6" />
+         </svg>
+      `,
    },
 ];
 ---
@@ -31,13 +67,20 @@ const symptoms = [
       </p>
    </div>
 
-   <ul class="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2">
+   <ul class="mt-10 grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-6">
       {
          symptoms.map((s, i) => (
             <li
-               class="float-anim glass-card rounded-2xl border border-purple_mv/20 p-6 transition-colors duration-300 hover:border-purple_mv/50 hover:bg-purple_mv/10 dark:border-white/10 dark:hover:bg-purple_mv/[0.18]"
+               class="float-anim relative flex flex-col items-center overflow-hidden rounded-2xl border border-purple_mv/25 bg-gradient-to-br from-purple_mv/[0.07] to-transparent p-5 text-center shadow-[0_0_18px_rgba(129,73,226,0.1)] transition-all duration-300 hover:border-purple_mv/45 hover:shadow-[0_0_26px_rgba(129,73,226,0.2)] dark:border-white/10 dark:from-purple_mv/[0.14] dark:to-black/20 md:p-6"
                style={`--float-dur: ${5.6 + i * 0.3}s; --float-delay: ${i * 0.2}s;`}
             >
+               <div class="relative mb-4 h-12 w-12">
+                  <div
+                     class="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-purple_mv to-purple_mv/60 shadow-[0_0_16px_rgba(129,73,226,0.3)]"
+                     set:html={s.icon}
+                  />
+                  {s.alert && <span class="absolute -right-1.5 -top-1.5 h-5 w-5" set:html={alertBadge} />}
+               </div>
                <p class="relative font-bold text-gray-900 dark:text-white">{s.title}</p>
                <p class="relative mt-1 text-sm text-gray-600 dark:text-white/70">{s.text}</p>
             </li>

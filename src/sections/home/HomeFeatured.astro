@@ -1,5 +1,8 @@
 ---
 import StarField from '@components/decorative/StarField.astro';
+import { Picture } from 'astro:assets';
+import ImgElHack from '@assets/elhack-blanco.png';
+import ImgMenteDigital from '@assets/MenteDigital.jpg';
 
 const hub = [
    {
@@ -11,11 +14,14 @@ const hub = [
       title: 'Directorio de apps',
       desc: 'Consulta si una app de préstamo es legal o tiene reportes antes de usarla.',
       href: '/directorio-de-apps/',
+      photo: '/img/migracion/threat_phone.png',
+      alt: 'Persona revisando en su teléfono si una app de préstamo es confiable',
    },
    {
       title: 'Recursos y guías',
       desc: 'Aprende a defenderte de las apps montadeudas y a cuidar tu salud financiera.',
       href: '/recursos/',
+      alt: 'Persona aprendiendo a cuidar su bienestar frente al acoso digital',
    },
 ];
 ---
@@ -23,51 +29,165 @@ const hub = [
 <section class="relative mx-auto my-24 w-full max-w-5xl px-4" data-aos="fade-up">
    <StarField id="featured" ambientCount={40} />
 
-   <!-- Encabezado alineado a la izquierda (rompe el patrón centrado) -->
-   <div class="mb-8 flex items-end justify-between gap-4 border-b border-purple_mv/20 pb-4">
-      <div>
-         <span class="text-xs font-semibold uppercase tracking-widest text-text_banner">Explora</span>
-         <h2 class="mt-1 text-2xl md:text-4xl font-bold text-gray-900 dark:text-white">Cómo te ayuda Movapp</h2>
-         <p class="mt-2 max-w-xl text-sm text-gray-600 dark:text-white/60">
-            Estés donde estés en tu situación, aquí encuentras el siguiente paso.
-         </p>
-      </div>
+   <div class="mb-8 text-center md:mb-10">
+      <span class="text-xs font-semibold uppercase tracking-widest text-text_banner">Explora</span>
+      <h2 class="mt-1 text-2xl md:text-4xl font-bold text-gray-900 dark:text-white">Cómo te ayuda Movapp</h2>
+      <p class="mx-auto mt-2 max-w-xl text-sm text-gray-600 dark:text-white/60">
+         Estés donde estés en tu situación, aquí encuentras el siguiente paso.
+      </p>
    </div>
 
-   <!-- Lista tipo índice numerado -->
-   <ul class="flex flex-col">
+   <!--
+      Mobile: carrusel deslizable (scroll-snap nativo, funciona sin JS). El
+      ancho de tarjeta/padding usa "vw" (no "%") a propósito: el % de un hijo
+      flex se calcula contra el content-box del contenedor (excluye el propio
+      padding del contenedor), lo que rompía la simetría del peek izquierda/
+      derecha. "vw" no tiene ese problema, así que ambos lados quedan iguales.
+      Desktop (md:): grid estático de 3 columnas, sin scroll ni flechas -- las
+      3 tarjetas siempre visibles y con más protagonismo (más grandes).
+   -->
+   <div
+      id="featuredCarousel"
+      class="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-[11vw] pb-2 md:grid md:grid-cols-3 md:gap-8 md:overflow-visible md:px-0 md:pb-0"
+   >
       {
-         hub.map((f, i) => (
-            <li>
-               <a
-                  href={f.href}
-                  class="group relative flex items-center gap-5 border-b border-gray-200/70 py-5 transition-colors dark:border-white/10 md:gap-8"
-               >
-                  {/* Barra de acento que aparece al hover */}
-                  <span class="absolute left-0 top-1/2 h-0 w-0.5 -translate-y-1/2 bg-text_banner transition-all duration-300 group-hover:h-2/3" />
+         hub.map((item, i) => (
+            <a
+               href={item.href}
+               class="featured-card float-anim group w-[78vw] flex-shrink-0 snap-center overflow-hidden rounded-3xl border border-purple_mv/25 bg-gradient-to-b from-purple_mv/[0.06] to-transparent shadow-[0_0_25px_rgba(129,73,226,0.12)] transition-colors duration-300 hover:border-purple_mv/50 hover:shadow-[0_0_35px_rgba(129,73,226,0.22)] dark:border-white/10 dark:from-purple_mv/[0.1] dark:to-black/30 md:w-full"
+               style={`--float-dur: ${5.8 + i * 0.3}s; --float-delay: ${i * 0.2}s;`}
+            >
+               <div class="relative aspect-[4/3] w-full overflow-hidden md:aspect-square md:grayscale md:transition-[filter] md:duration-500 md:group-hover:grayscale-0">
+                  {i === 0 ? (
+                     <div class="featured-grid flex h-full w-full items-center justify-center bg-[#0b0614]">
+                        <Picture
+                           src={ImgElHack}
+                           alt={item.alt || item.title}
+                           class="relative z-10 w-1/2 drop-shadow-[0_0_18px_rgba(129,73,226,0.55)]"
+                        />
+                     </div>
+                  ) : item.photo ? (
+                     <img src={item.photo} alt={item.alt || item.title} class="h-full w-full object-cover" loading="lazy" />
+                  ) : (
+                     <Picture src={ImgMenteDigital} alt={item.alt || item.title} class="h-full w-full object-cover" />
+                  )}
+               </div>
 
-                  {/* Número */}
-                  <span class="w-10 flex-shrink-0 text-2xl font-bold tabular-nums text-gray-300 transition-colors group-hover:text-text_banner dark:text-white/20 md:text-3xl">
-                     {String(i + 1).padStart(2, '0')}
-                  </span>
-
-                  {/* Título + descripción */}
-                  <div class="flex-1">
-                     <h3 class="text-lg font-semibold text-gray-900 transition-colors group-hover:text-text_banner dark:text-white md:text-xl">
-                        {f.title}
-                     </h3>
-                     <p class="mt-0.5 text-sm text-gray-500 dark:text-white/60">{f.desc}</p>
-                  </div>
-
-                  {/* Flecha */}
-                  <span class="flex-shrink-0 text-text_banner transition-transform duration-300 group-hover:translate-x-1.5">
-                     <svg class="h-5 w-5 md:h-6 md:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+               <div class="p-5 text-center md:p-7">
+                  <h3 class="text-lg font-bold text-gray-900 dark:text-white md:text-2xl">{item.title}</h3>
+                  <p class="mt-1 text-xs text-gray-600 dark:text-white/60 md:mt-2 md:text-base">{item.desc}</p>
+                  <span class="mt-3 inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wide text-text_banner md:mt-4 md:text-sm">
+                     Ver más
+                     <svg
+                        class="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1 md:h-4 md:w-4"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        stroke-width="2.5"
+                     >
                         <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                      </svg>
                   </span>
-               </a>
-            </li>
+               </div>
+            </a>
          ))
       }
-   </ul>
+   </div>
+
+   <!-- Pista de swipe: solo en móvil, siempre visible en el HTML (no depende de JS) -->
+   <div class="swipe-hint mx-auto mt-5 flex w-fit items-center gap-2 rounded-full border border-purple_mv/25 bg-purple_mv/5 px-4 py-1.5 text-[11px] font-medium text-gray-500 dark:border-white/10 dark:bg-white/5 dark:text-white/50 md:hidden">
+      <svg class="swipe-hint-arrow h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+         <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+      </svg>
+      Desliza para ver más
+      <svg class="swipe-hint-arrow h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+         <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+      </svg>
+   </div>
 </section>
+
+<style>
+   .no-scrollbar::-webkit-scrollbar {
+      display: none;
+   }
+   .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+   }
+
+   .featured-grid {
+      background-image:
+         linear-gradient(rgba(129, 73, 226, 0.35) 1px, transparent 1px),
+         linear-gradient(90deg, rgba(129, 73, 226, 0.35) 1px, transparent 1px);
+      background-size: 28px 28px;
+   }
+
+   /* La tarjeta activa (centrada, solo aplica en el carrusel móvil) siempre
+      se ve al 100% -- el atenuado de las demás es un realce que solo agrega
+      el JS de abajo, y solo cuando hay algo que deslizar. Así, si JS no
+      corre (o en desktop, donde ya no hay scroll), las tarjetas quedan
+      siempre perfectamente legibles. */
+   .featured-card {
+      transition:
+         transform 0.4s ease,
+         opacity 0.4s ease,
+         filter 0.4s ease;
+   }
+   .featured-card.is-dimmed {
+      opacity: 0.5;
+      transform: scale(0.94);
+      filter: saturate(0.7);
+   }
+
+   @keyframes swipeNudge {
+      0%,
+      100% {
+         transform: translateX(0);
+      }
+      50% {
+         transform: translateX(3px);
+      }
+   }
+   .swipe-hint-arrow {
+      animation: swipeNudge 1.6s ease-in-out infinite;
+   }
+   .swipe-hint-arrow:first-child {
+      animation-direction: reverse;
+   }
+</style>
+
+<script>
+   const initFeaturedCarousel = () => {
+      const track = document.getElementById('featuredCarousel');
+      if (!track || track.getAttribute('data-carousel-ready') === 'true') return;
+      track.setAttribute('data-carousel-ready', 'true');
+
+      const cards = Array.from(track.querySelectorAll('.featured-card'));
+      // Sin nada que deslizar (p. ej. el grid estático de escritorio, donde
+      // las 3 tarjetas ya caben completas) no tiene sentido atenuar ninguna.
+      if (!cards.length || track.scrollWidth <= track.clientWidth + 1) return;
+
+      const setActive = (activeEl: Element) => {
+         cards.forEach((c) => c.classList.toggle('is-dimmed', c !== activeEl));
+      };
+
+      if ('IntersectionObserver' in window) {
+         const io = new IntersectionObserver(
+            (entries) => {
+               let best: IntersectionObserverEntry | null = null;
+               entries.forEach((entry) => {
+                  if (entry.isIntersecting && (!best || entry.intersectionRatio > best.intersectionRatio)) {
+                     best = entry;
+                  }
+               });
+               if (best) setActive(best.target);
+            },
+            { root: track, threshold: [0.5, 0.6, 0.7, 0.8, 0.9, 1] },
+         );
+         cards.forEach((c) => io.observe(c));
+      }
+   };
+
+   initFeaturedCarousel();
+   document.addEventListener('astro:page-load', initFeaturedCarousel);
+</script>
