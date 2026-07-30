@@ -174,3 +174,63 @@ html:not(.dark) .glass-card {
       transition-duration: 0.6s !important;
    }
 }
+
+/* ============================================================
+   Scrollbar de escritorio: el thumb se difumina de morado
+   (purple_mv) al color de fondo del sitio, y el track lleva el
+   mismo patrón de estrellitas tenues que StarField/el hero. Solo
+   en md+ -- en móvil el navegador ya usa su propio scrollbar
+   (overlay, sin espacio propio), así que no hay nada que estilizar.
+   ============================================================ */
+@media (min-width: 768px) {
+   html {
+      scrollbar-width: thin;
+      scrollbar-color: #8149e2 #050505;
+   }
+   html:not(.dark) {
+      scrollbar-color: #8149e2 #f9fafb;
+   }
+
+   html::-webkit-scrollbar {
+      width: 12px;
+   }
+
+   html::-webkit-scrollbar-track {
+      background-color: #050505;
+      background-image:
+         radial-gradient(1px 1px at 20% 8%, rgba(255, 255, 255, 0.55), transparent 60%),
+         radial-gradient(1px 1px at 65% 22%, rgba(255, 255, 255, 0.35), transparent 60%),
+         radial-gradient(1.4px 1.4px at 35% 42%, rgba(255, 255, 255, 0.5), transparent 60%),
+         radial-gradient(1px 1px at 80% 58%, rgba(255, 255, 255, 0.3), transparent 60%),
+         radial-gradient(1px 1px at 15% 75%, rgba(255, 255, 255, 0.42), transparent 60%),
+         radial-gradient(1.2px 1.2px at 60% 90%, rgba(255, 255, 255, 0.32), transparent 60%);
+      background-repeat: repeat-y;
+      background-size: 100% 220px;
+   }
+   html:not(.dark)::-webkit-scrollbar-track {
+      background-color: #f9fafb;
+      background-image:
+         radial-gradient(1px 1px at 20% 8%, rgba(129, 73, 226, 0.4), transparent 60%),
+         radial-gradient(1px 1px at 65% 22%, rgba(129, 73, 226, 0.28), transparent 60%),
+         radial-gradient(1.4px 1.4px at 35% 42%, rgba(129, 73, 226, 0.35), transparent 60%),
+         radial-gradient(1px 1px at 80% 58%, rgba(129, 73, 226, 0.22), transparent 60%),
+         radial-gradient(1px 1px at 15% 75%, rgba(129, 73, 226, 0.3), transparent 60%),
+         radial-gradient(1.2px 1.2px at 60% 90%, rgba(129, 73, 226, 0.24), transparent 60%);
+   }
+
+   /* Morado arriba, fondo abajo, con una zona difuminada en medio */
+   html::-webkit-scrollbar-thumb {
+      border-radius: 9999px;
+      background-image: linear-gradient(180deg, #8149e2 0%, #8149e2 35%, #050505 65%, #050505 100%);
+   }
+   html:not(.dark)::-webkit-scrollbar-thumb {
+      background-image: linear-gradient(180deg, #8149e2 0%, #8149e2 35%, #f9fafb 65%, #f9fafb 100%);
+   }
+
+   html::-webkit-scrollbar-thumb:hover {
+      background-image: linear-gradient(180deg, #9563e8 0%, #9563e8 35%, #101010 65%, #101010 100%);
+   }
+   html:not(.dark)::-webkit-scrollbar-thumb:hover {
+      background-image: linear-gradient(180deg, #9563e8 0%, #9563e8 35%, #eceef2 65%, #eceef2 100%);
+   }
+}
