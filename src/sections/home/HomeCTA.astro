@@ -14,24 +14,32 @@ import StarField from '@components/decorative/StarField.astro';
       <div class="pointer-events-none absolute -right-16 -top-8 h-56 w-56 rounded-full bg-purple_mv/30 blur-3xl"></div>
       <div class="pointer-events-none absolute -bottom-20 -left-16 h-56 w-56 rounded-full bg-purple_mv/20 blur-3xl"></div>
 
-      <div class="relative z-10 flex flex-col items-center gap-6">
-         <h2 class="text-2xl font-bold leading-tight text-gray-900 dark:text-white md:text-3xl">Da el primer paso hoy</h2>
-         <p class="max-w-xl text-sm text-gray-600 dark:text-white/80 md:text-base">
-            No tienes que enfrentar esto solo. Escríbenos por WhatsApp y recupera tu tranquilidad.
-         </p>
-
-         <div class="float-anim" style="--float-dur: 5.8s; --float-delay: 0.3s;">
-            <ButtonContact label="Hablar con un asesor gratis por WhatsApp" size="lg" />
+      <div class="relative z-10 grid grid-cols-1 items-center gap-8 md:grid-cols-2 md:gap-12">
+         <!-- Imagen (placeholder: por ahora un SVG genérico hasta tener la foto real) -->
+         <div class="flex aspect-[4/3] items-center justify-center rounded-2xl border border-purple_mv/20 bg-purple_mv/5 dark:border-white/10 dark:bg-white/5 md:aspect-square">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" class="h-14 w-14 text-purple_mv/50 md:h-16 md:w-16">
+               <rect x="7" y="2" width="10" height="20" rx="2" />
+               <path d="M11 18.2h2" stroke-linecap="round" />
+            </svg>
          </div>
 
-         <div class="mt-2 flex flex-col items-center gap-2">
-            <span class="text-xs text-gray-500 dark:text-white/50">Descargar la app de Movapp</span>
-            <div class="flex items-center gap-3">
+         <div class="text-center md:text-left">
+            <span class="text-xs font-semibold uppercase tracking-widest text-text_banner">Movapp</span>
+            <h2 class="mt-1 text-2xl font-bold leading-tight text-gray-900 dark:text-white md:text-3xl">Da el primer paso hoy</h2>
+            <p class="mx-auto mt-3 max-w-xl text-sm text-gray-600 dark:text-white/80 md:mx-0 md:text-base">
+               No tienes que enfrentar esto solo. Escríbenos por WhatsApp y recupera tu tranquilidad.
+            </p>
+
+            <div class="float-anim mt-6 flex justify-center md:justify-start" style="--float-dur: 5.8s; --float-delay: 0.3s;">
+               <ButtonContact label="Hablar con un asesor por WhatsApp" size="lg" />
+            </div>
+
+            <div class="mt-6 flex flex-col items-center gap-3 md:items-start">
                <a href="#" aria-label="Descargar en Google Play" class="transition hover:scale-105">
-                  <img src="/img/migracion/play-store-v2.webp" alt="Google Play" class="h-9 w-auto" />
+                  <img src="/img/migracion/play-store-v2.webp" alt="Google Play" class="h-12 w-auto" />
                </a>
                <a href="#" aria-label="Descargar en App Store" class="transition hover:scale-105">
-                  <img src="/img/migracion/app-store-v2.webp" alt="App Store" class="h-9 w-auto" />
+                  <img src="/img/migracion/app-store-v2.webp" alt="App Store" class="h-12 w-auto" />
                </a>
             </div>
          </div>

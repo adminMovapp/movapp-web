@@ -1,14 +1,13 @@
 ---
 import StarField from '@components/decorative/StarField.astro';
-import { Picture } from 'astro:assets';
-import ImgElHack from '@assets/elhack-blanco.png';
-import ImgMenteDigital from '@assets/MenteDigital.jpg';
 
 const hub = [
    {
       title: 'El Hack',
       desc: 'La solución que frena el acoso y protege tu teléfono; la obtienes hablando con un asesor.',
       href: '/el-hack/',
+      photo: '/img/elhack-blanco.png',
+      alt: 'El Hack',
    },
    {
       title: 'Directorio de apps',
@@ -21,6 +20,7 @@ const hub = [
       title: 'Recursos y guías',
       desc: 'Aprende a defenderte de las apps montadeudas y a cuidar tu salud financiera.',
       href: '/recursos/',
+      photo: '/img/migracion/guia.webp',
       alt: 'Persona aprendiendo a cuidar su bienestar frente al acoso digital',
    },
 ];
@@ -31,7 +31,7 @@ const hub = [
 
    <div class="mb-8 text-center md:mb-10">
       <span class="text-xs font-semibold uppercase tracking-widest text-text_banner">Explora</span>
-      <h2 class="mt-1 text-2xl md:text-4xl font-bold text-gray-900 dark:text-white">Cómo te ayuda Movapp</h2>
+      <h2 class="mt-1 text-2xl md:text-4xl font-bold text-gray-900 dark:text-white">¿Cómo te ayuda Movapp?</h2>
       <p class="mx-auto mt-2 max-w-xl text-sm text-gray-600 dark:text-white/60">
          Estés donde estés en tu situación, aquí encuentras el siguiente paso.
       </p>
@@ -60,16 +60,14 @@ const hub = [
                <div class="relative aspect-[4/3] w-full overflow-hidden md:aspect-square md:grayscale md:transition-[filter] md:duration-500 md:group-hover:grayscale-0">
                   {i === 0 ? (
                      <div class="featured-grid flex h-full w-full items-center justify-center bg-[#0b0614]">
-                        <Picture
-                           src={ImgElHack}
+                        <img
+                           src={item.photo}
                            alt={item.alt || item.title}
                            class="relative z-10 w-1/2 drop-shadow-[0_0_18px_rgba(129,73,226,0.55)]"
                         />
                      </div>
-                  ) : item.photo ? (
-                     <img src={item.photo} alt={item.alt || item.title} class="h-full w-full object-cover" loading="lazy" />
                   ) : (
-                     <Picture src={ImgMenteDigital} alt={item.alt || item.title} class="h-full w-full object-cover" />
+                     <img src={item.photo} alt={item.alt || item.title} class="h-full w-full object-cover" loading="lazy" />
                   )}
                </div>
 
