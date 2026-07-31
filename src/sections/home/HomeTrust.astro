@@ -50,28 +50,163 @@ const collaborations = [
       </p>
    </div>
 
-   <!-- Historias reales -->
+   <!--
+      Historias reales -- mismo lenguaje visual que "¿Cómo te ayuda Movapp?"
+      (HomeFeatured.astro): carrusel deslizable en móvil (scroll-snap nativo,
+      funciona sin JS) y grid estático de 3 columnas en escritorio. En vez de
+      foto (son testimonios anónimos) cada tarjeta lleva el mismo tratamiento
+      de "icono sobre grid punteado" que usa la primera tarjeta de esa
+      sección, con un ícono de persona anónima.
+   -->
    <h3 class="mb-6 text-center text-lg font-bold text-text_banner">Historias reales</h3>
-   <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-      {
-         testimonials.map((t, i) => (
-            <div
-               class:list={[
-                  'float-anim glass-card relative flex flex-col justify-between overflow-hidden rounded-2xl border border-purple_mv/30 p-6 shadow-[0_0_30px_rgba(129,73,226,0.18)] transition duration-300 hover:shadow-[0_0_40px_rgba(129,73,226,0.3)]',
-                  i === 0 ? 'lg:col-span-2' : '',
-                  i >= 2 ? 'hidden md:flex' : '',
-               ]}
-               style={`--float-dur: ${5.6 + i * 0.3}s; --float-delay: ${i * 0.2}s;`}
-            >
-               <span class="pointer-events-none absolute -top-4 left-3 select-none text-7xl font-serif text-purple_mv/30">
-                  “
-               </span>
-               <p class="relative z-10 mt-6 text-sm text-gray-700 dark:text-white/90">{t.text}</p>
-               <p class="relative z-10 mt-4 text-right font-bold text-text_banner">— {t.name}</p>
-            </div>
-         ))
-      }
+
+   <!-- Móvil: carrusel deslizable, igual que antes (todos los 5 testimonios, scroll-snap). -->
+   <div class="md:hidden">
+      <div
+         id="trustCarousel"
+         class="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-[11vw] pb-2"
+      >
+         {
+            testimonials.map((t, i) => (
+               <div
+                  class="testimonial-card float-anim w-[78vw] flex-shrink-0 snap-center overflow-hidden rounded-3xl border border-purple_mv/25 bg-gradient-to-b from-purple_mv/[0.06] to-transparent shadow-[0_0_25px_rgba(129,73,226,0.12)] transition-colors duration-300 hover:border-purple_mv/50 hover:shadow-[0_0_35px_rgba(129,73,226,0.22)] dark:border-white/10 dark:from-purple_mv/[0.1] dark:to-black/30"
+                  style={`--float-dur: ${5.6 + i * 0.3}s; --float-delay: ${i * 0.2}s;`}
+               >
+                  <div class="testimonial-grid relative flex aspect-[4/3] w-full items-center justify-center overflow-hidden bg-[#0b0614]">
+                     <svg
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        class="relative z-10 h-14 w-14 text-purple_mv drop-shadow-[0_0_18px_rgba(129,73,226,0.55)]"
+                        aria-hidden="true"
+                     >
+                        <path d="M12 12c2.7 0 4.9-2.2 4.9-4.9S14.7 2.2 12 2.2 7.1 4.4 7.1 7.1 9.3 12 12 12zm0 2.5c-3.3 0-9.8 1.6-9.8 4.9v2.4h19.6v-2.4c0-3.3-6.5-4.9-9.8-4.9z" />
+                     </svg>
+                  </div>
+
+                  <div class="relative p-5 text-left">
+                     <span class="pointer-events-none absolute -top-2 left-4 select-none text-6xl font-serif text-purple_mv/30">
+                        “
+                     </span>
+                     <p class="relative z-10 mt-5 text-sm text-gray-700 dark:text-white/90">{t.text}</p>
+                     <p class="relative z-10 mt-4 text-right font-bold text-text_banner">— {t.name}</p>
+                  </div>
+               </div>
+            ))
+         }
+      </div>
+
+      <!-- Pista de swipe: siempre visible en el HTML (no depende de JS) -->
+      <div class="swipe-hint mx-auto mt-5 flex w-fit items-center gap-2 rounded-full border border-purple_mv/25 bg-purple_mv/5 px-4 py-1.5 text-[11px] font-medium text-gray-500 dark:border-white/10 dark:bg-white/5 dark:text-white/50">
+         <svg class="swipe-hint-arrow h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+         </svg>
+         Desliza para ver más
+         <svg class="swipe-hint-arrow h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+         </svg>
+      </div>
    </div>
+
+   <!--
+      Escritorio: PÁGINAS de 3 testimonios distintos (no una ventana
+      deslizante) -- cada testimonio aparece en una sola página, nunca se
+      repite entre un click y el siguiente. Si el total no es múltiplo de 3,
+      la última página simplemente trae menos tarjetas (con 5 testimonios:
+      página 0 = 3, página 1 = 2) en vez de completar con repetidos. Las
+      flechas ciclan entre páginas (de la última vuelve a la primera).
+
+      Cada tarjeta tiene DOS capas de texto superpuestas en la misma celda de
+      grid (grid-area 1/1 -- así se apilan sin necesitar position:absolute ni
+      una altura fija). En reposo, la capa "a" está visible (opacity 1) y ya
+      trae el testimonio real en el HTML; la "b" está oculta (opacity 0) y
+      vacía. Al cambiar de página:
+      - Si el puesto sigue teniendo testimonio en ambas páginas: se cruzan las
+        opacidades de las dos capas de texto al mismo tiempo (transition-
+        opacity en las dos) -- "las de ahora se desvanecen mientras las
+        nuevas van apareciendo", no un fade-out seguido de un fade-in.
+      - Si el puesto se queda sin testimonio (última página más corta): toda
+        la tarjeta se desvanece (clase .trust-card-hidden, reutiliza la
+        transition de .testimonial-card) y al terminar se saca del flujo con
+        "hidden" -- así no deja un hueco con borde vacío.
+      - Si el puesto reaparece (al volver de la página corta a una completa):
+        se reincorpora al flujo y hace fade-in desde 0.
+      El ícono (igual para todos) queda fuera de las capas: no hace falta
+      cruzarlo.
+
+      El "min-h" en .trust-stack (más abajo) es a propósito: el testimonio de
+      Diego es mucho más largo que el resto, y sin un mínimo fijo la fila
+      entera (grid) crecía/encogía de golpe cada vez que ese testimonio
+      entraba o salía de pantalla. El valor se midió para que el testimonio
+      más largo quepa completo en el ancho de tarjeta de cada breakpoint.
+   -->
+   <div class="hidden md:flex md:items-center md:justify-center md:gap-4 lg:gap-6">
+      <button
+         id="trustPrev"
+         type="button"
+         aria-label="Testimonio anterior"
+         class="trust-arrow flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full border border-purple_mv/40 text-purple_mv transition hover:bg-text_banner hover:text-white dark:border-white/20"
+      >
+         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+         </svg>
+      </button>
+
+      <div id="trustSlots" class="grid w-full grid-cols-3 gap-5 md:max-w-3xl lg:max-w-4xl lg:gap-6">
+         {
+            [0, 1, 2].map((slot) => (
+               <div
+                  class:list={[
+                     'testimonial-card float-anim overflow-hidden rounded-3xl border border-purple_mv/25 bg-gradient-to-b from-purple_mv/[0.06] to-transparent shadow-[0_0_25px_rgba(129,73,226,0.12)] transition-colors duration-300 hover:border-purple_mv/50 hover:shadow-[0_0_35px_rgba(129,73,226,0.22)] dark:border-white/10 dark:from-purple_mv/[0.1] dark:to-black/30',
+                     slot >= testimonials.length ? 'trust-card-hidden hidden' : '',
+                  ]}
+                  style={`--float-dur: ${5.6 + slot * 0.3}s; --float-delay: ${slot * 0.2}s;`}
+               >
+                  <div class="testimonial-grid relative flex aspect-[4/3] w-full items-center justify-center overflow-hidden bg-[#0b0614]">
+                     <svg
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        class="relative z-10 h-12 w-12 text-purple_mv drop-shadow-[0_0_18px_rgba(129,73,226,0.55)] lg:h-14 lg:w-14"
+                        aria-hidden="true"
+                     >
+                        <path d="M12 12c2.7 0 4.9-2.2 4.9-4.9S14.7 2.2 12 2.2 7.1 4.4 7.1 7.1 9.3 12 12 12zm0 2.5c-3.3 0-9.8 1.6-9.8 4.9v2.4h19.6v-2.4c0-3.3-6.5-4.9-9.8-4.9z" />
+                     </svg>
+                  </div>
+
+                  <div class="trust-stack relative min-h-[440px] p-4 text-left lg:min-h-[340px] lg:p-5">
+                     <div class="trust-layer trust-layer-a" data-role="a">
+                        <span class="pointer-events-none select-none text-5xl font-serif text-purple_mv/30">“</span>
+                        <p class="trust-slot-text relative z-10 mt-3 text-sm text-gray-700 dark:text-white/90">
+                           {testimonials[slot]?.text}
+                        </p>
+                        <p class="trust-slot-name relative z-10 mt-3 text-right font-bold text-text_banner">
+                           {testimonials[slot] && `— ${testimonials[slot].name}`}
+                        </p>
+                     </div>
+                     <div class="trust-layer trust-layer-b" data-role="b">
+                        <span class="pointer-events-none select-none text-5xl font-serif text-purple_mv/30">“</span>
+                        <p class="trust-slot-text relative z-10 mt-3 text-sm text-gray-700 dark:text-white/90" />
+                        <p class="trust-slot-name relative z-10 mt-3 text-right font-bold text-text_banner" />
+                     </div>
+                  </div>
+               </div>
+            ))
+         }
+      </div>
+
+      <button
+         id="trustNext"
+         type="button"
+         aria-label="Siguiente testimonio"
+         class="trust-arrow flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full border border-purple_mv/40 text-purple_mv transition hover:bg-text_banner hover:text-white dark:border-white/20"
+      >
+         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+         </svg>
+      </button>
+   </div>
+
+   <!-- Datos completos de los 5 testimonios para el script del carrusel de escritorio (las 3 tarjetas de arriba solo pintan los índices 0, 1 y 2 al cargar). -->
+   <script type="application/json" id="trust-data" is:inline set:html={JSON.stringify(testimonials)} />
 
    <div class="mt-8 flex justify-center md:hidden">
       <a
@@ -126,4 +261,226 @@ const collaborations = [
       </div>
    </div>
 </section>
+
+<style>
+   .no-scrollbar::-webkit-scrollbar {
+      display: none;
+   }
+   .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+   }
+
+   .testimonial-grid {
+      background-image:
+         linear-gradient(rgba(129, 73, 226, 0.35) 1px, transparent 1px),
+         linear-gradient(90deg, rgba(129, 73, 226, 0.35) 1px, transparent 1px);
+      background-size: 28px 28px;
+   }
+
+   /* La tarjeta activa (centrada, solo aplica en el carrusel móvil) siempre
+      se ve al 100% -- el atenuado de las demás es un realce que solo agrega
+      el JS de abajo, y solo cuando hay algo que deslizar. Así, si JS no
+      corre (o en desktop, donde ya no hay scroll), las tarjetas quedan
+      siempre perfectamente legibles. */
+   .testimonial-card {
+      transition:
+         transform 0.4s ease,
+         opacity 0.4s ease,
+         filter 0.4s ease;
+   }
+   .testimonial-card.is-dimmed {
+      opacity: 0.5;
+      transform: scale(0.94);
+      filter: saturate(0.7);
+   }
+
+   @keyframes swipeNudge {
+      0%,
+      100% {
+         transform: translateX(0);
+      }
+      50% {
+         transform: translateX(3px);
+      }
+   }
+   .swipe-hint-arrow {
+      animation: swipeNudge 1.6s ease-in-out infinite;
+   }
+   .swipe-hint-arrow:first-child {
+      animation-direction: reverse;
+   }
+
+   /*
+      Crossfade de escritorio: las dos capas de texto ocupan la MISMA celda
+      de grid ("grid-area: 1 / 1"), así se apilan una sobre otra sin
+      position:absolute ni una altura fija -- el contenedor mide lo que mida
+      la capa más alta de las dos en cada momento. Se cruzan las opacidades
+      (una baja a 0 mientras la otra sube a 1) con la misma duración/curva,
+      así el efecto es un verdadero cruce, no un fundido a negro seguido de
+      una aparición.
+   */
+   .trust-stack {
+      display: grid;
+   }
+   .trust-layer {
+      grid-area: 1 / 1;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+   }
+   .trust-layer-a {
+      opacity: 1;
+   }
+
+   /* Tarjeta sin testimonio en la página actual (última página incompleta):
+      se desvanece con la misma transition de .testimonial-card, en vez de un
+      corte seco a "display:none". El "hidden" real se agrega recién cuando
+      termina la transición (ver script). */
+   .trust-card-hidden {
+      opacity: 0;
+      pointer-events: none;
+   }
+
+   .trust-arrow:disabled {
+      opacity: 0.35;
+      pointer-events: none;
+   }
+</style>
+
+<script>
+   const initTrustCarousel = () => {
+      const track = document.getElementById('trustCarousel');
+      if (!track || track.getAttribute('data-carousel-ready') === 'true') return;
+      track.setAttribute('data-carousel-ready', 'true');
+
+      const cards = Array.from(track.querySelectorAll('.testimonial-card'));
+      // Sin nada que deslizar (p. ej. el grid estático de escritorio, donde
+      // las tarjetas ya caben completas) no tiene sentido atenuar ninguna.
+      if (!cards.length || track.scrollWidth <= track.clientWidth + 1) return;
+
+      const setActive = (activeEl: Element) => {
+         cards.forEach((c) => c.classList.toggle('is-dimmed', c !== activeEl));
+      };
+
+      if ('IntersectionObserver' in window) {
+         const io = new IntersectionObserver(
+            (entries) => {
+               let best: IntersectionObserverEntry | null = null;
+               entries.forEach((entry) => {
+                  if (entry.isIntersecting && (!best || entry.intersectionRatio > best.intersectionRatio)) {
+                     best = entry;
+                  }
+               });
+               if (best) setActive(best.target);
+            },
+            { root: track, threshold: [0.5, 0.6, 0.7, 0.8, 0.9, 1] },
+         );
+         cards.forEach((c) => io.observe(c));
+      }
+   };
+
+   initTrustCarousel();
+   document.addEventListener('astro:page-load', initTrustCarousel);
+
+   // Carrusel de escritorio: páginas de 3 testimonios distintos (sin
+   // repetir), flechas izq/der, crossfade de texto (ver comentario junto al
+   // markup y a .trust-stack/.trust-card-hidden en el <style>).
+   const FADE_MS = 400;
+   const PAGE_SIZE = 3;
+
+   const initTrustDesktop = () => {
+      const slotsContainer = document.getElementById('trustSlots');
+      const dataScript = document.getElementById('trust-data');
+      if (!slotsContainer || !dataScript || slotsContainer.dataset.ready === 'true') return;
+      slotsContainer.dataset.ready = 'true';
+
+      const testimonialsData = JSON.parse(dataScript.textContent || '[]');
+      if (!testimonialsData.length) return;
+
+      const totalPages = Math.max(1, Math.ceil(testimonialsData.length / PAGE_SIZE));
+
+      type TestimonialItem = { text: string; name: string };
+      const itemFor = (p: number, i: number): TestimonialItem | undefined => testimonialsData[p * PAGE_SIZE + i];
+
+      const slots = Array.from(slotsContainer.querySelectorAll(':scope > .testimonial-card')).map((card) => ({
+         card,
+         front: card.querySelector('.trust-layer-a'),
+         back: card.querySelector('.trust-layer-b'),
+      }));
+
+      let page = 0;
+      let animating = false;
+
+      const fillLayer = (layer: Element | null | undefined, item: TestimonialItem) => {
+         if (!layer) return;
+         const text = layer.querySelector('.trust-slot-text');
+         const name = layer.querySelector('.trust-slot-name');
+         if (text) text.textContent = item.text;
+         if (name) name.textContent = `— ${item.name}`;
+      };
+
+      const go = (delta: number) => {
+         if (animating || totalPages <= 1) return;
+         const nextPage = (page + delta + totalPages) % totalPages;
+         if (nextPage === page) return;
+         animating = true;
+
+         // Un plan por puesto: sigue habiendo testimonio en ambas páginas
+         // ("crossfade" de texto), ya no hay en la nueva página
+         // ("disappear", última página incompleta) o aparece uno donde antes
+         // no había ("appear", al volver de esa página incompleta).
+         const plans = slots.map((slot, i) => {
+            const currentItem = itemFor(page, i);
+            const nextItem = itemFor(nextPage, i);
+            if (currentItem && nextItem) return { slot, kind: 'crossfade' as const, nextItem };
+            if (currentItem && !nextItem) return { slot, kind: 'disappear' as const };
+            if (!currentItem && nextItem) return { slot, kind: 'appear' as const, nextItem };
+            return { slot, kind: 'none' as const };
+         });
+
+         plans.forEach(({ slot, kind, nextItem }) => {
+            if (kind === 'crossfade' && nextItem) fillLayer(slot.back, nextItem);
+            if (kind === 'disappear') slot.card.classList.add('trust-card-hidden');
+            if (kind === 'appear' && nextItem) {
+               slot.card.classList.remove('hidden');
+               fillLayer(slot.front, nextItem);
+            }
+         });
+
+         // Forzar reflow antes de cruzar las opacidades: si no, el navegador
+         // puede fusionar el cambio de contenido de arriba con el toggle de
+         // clases de abajo en un mismo frame y saltarse la transición.
+         void slotsContainer.offsetHeight;
+
+         plans.forEach(({ slot, kind }) => {
+            if (kind === 'crossfade') {
+               slot.front?.classList.remove('trust-layer-a');
+               slot.front?.classList.add('trust-layer-b');
+               slot.back?.classList.remove('trust-layer-b');
+               slot.back?.classList.add('trust-layer-a');
+            }
+            if (kind === 'appear') slot.card.classList.remove('trust-card-hidden');
+         });
+
+         setTimeout(() => {
+            plans.forEach(({ slot, kind }) => {
+               if (kind === 'crossfade') {
+                  const tmp = slot.front;
+                  slot.front = slot.back;
+                  slot.back = tmp;
+               }
+               if (kind === 'disappear') slot.card.classList.add('hidden');
+            });
+            page = nextPage;
+            animating = false;
+         }, FADE_MS);
+      };
+
+      document.getElementById('trustPrev')?.addEventListener('click', () => go(-1));
+      document.getElementById('trustNext')?.addEventListener('click', () => go(1));
+   };
+
+   initTrustDesktop();
+   document.addEventListener('astro:page-load', initTrustDesktop);
+</script>
 

@@ -180,6 +180,14 @@ html:not(.dark) .glass-card {
    .reveal-stagger > * {
       transition-duration: 0.6s !important;
    }
+   /* Crossfade del carrusel de "Historias reales" en escritorio (HomeTrust.astro):
+      sin esta excepción, la regla de arriba deja la transition-duration en
+      ~0 y el cambio de página se ve como un corte instantáneo en vez de un
+      cruce de opacidades. */
+   .trust-layer,
+   .testimonial-card {
+      transition-duration: 0.4s !important;
+   }
 }
 
 /* ============================================================
