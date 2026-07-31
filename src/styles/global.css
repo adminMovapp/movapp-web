@@ -46,18 +46,20 @@ html:not(.dark) .dark-section [class*='bg-white\/'] {
 }
 
 /* ============================================================
-   GLASS CARD — glassfrost translúcido, idéntico comportamiento
-   en light y dark. No usa utilidades bg-white/x para evitar que
-   los overrides de tema lo pisen.
+   GLASS CARD — mismo glassfrost que usa el Header al volverse
+   píldora (bg-white/90 dark:bg-zinc-950/85 + backdrop-blur-md),
+   para que todas las secciones compartan un único lenguaje visual
+   de "vidrio". Color plano en vez de gradiente a propósito, y sin
+   usar las utilidades bg-white/x de Tailwind para evitar que los
+   overrides de tema (más arriba en este archivo) lo pisen.
    ============================================================ */
 .glass-card {
-   background: linear-gradient(135deg, rgba(129, 73, 226, 0.12), rgba(255, 255, 255, 0.04));
-   -webkit-backdrop-filter: blur(16px) saturate(140%);
-   backdrop-filter: blur(16px) saturate(140%);
+   background-color: rgba(9, 9, 11, 0.85);
+   -webkit-backdrop-filter: blur(12px);
+   backdrop-filter: blur(12px);
 }
 html:not(.dark) .glass-card {
-   background: linear-gradient(135deg, rgba(129, 73, 226, 0.1), rgba(255, 255, 255, 0.55));
-   border-color: rgba(129, 73, 226, 0.25);
+   background-color: rgba(255, 255, 255, 0.9);
 }
 
 

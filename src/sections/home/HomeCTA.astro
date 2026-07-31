@@ -15,12 +15,14 @@ import StarField from '@components/decorative/StarField.astro';
       <div class="pointer-events-none absolute -bottom-20 -left-16 h-56 w-56 rounded-full bg-purple_mv/20 blur-3xl"></div>
 
       <div class="relative z-10 grid grid-cols-1 items-center gap-8 md:grid-cols-2 md:gap-12">
-         <!-- Imagen (placeholder: por ahora un SVG genérico hasta tener la foto real) -->
+         <!-- Mockup de la app en la App Store -->
          <div class="flex aspect-[4/3] items-center justify-center rounded-2xl border border-purple_mv/20 bg-purple_mv/5 dark:border-white/10 dark:bg-white/5 md:aspect-square">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" class="h-14 w-14 text-purple_mv/50 md:h-16 md:w-16">
-               <rect x="7" y="2" width="10" height="20" rx="2" />
-               <path d="M11 18.2h2" stroke-linecap="round" />
-            </svg>
+            <img
+               src="/img/migracion/Mockup-celular-movapp-1.webp"
+               alt="Vista previa de Movapp en la App Store"
+               class="h-full w-full object-contain p-4"
+               loading="lazy"
+            />
          </div>
 
          <div class="text-center md:text-left">

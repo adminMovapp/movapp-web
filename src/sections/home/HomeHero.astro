@@ -27,118 +27,130 @@ import ButtonContact from '@components/ui/ButtonContact.astro';
       <div id="hero-stars" class="absolute inset-0 text-purple_mv/50 dark:text-white/90"></div>
    </div>
 
-   <!-- Animación de Órbita de Protección (Fondo) -- versión escritorio: como estaba antes, centrada en toda la sección -->
-   <div
-      class="hero-orbit-group pointer-events-none absolute inset-0 z-[-10] hidden items-center justify-center overflow-hidden opacity-30 dark:opacity-40 md:flex"
-      aria-hidden="true"
-   >
-      <!-- Círculo interior (decorativo) -->
-      <div class="hero-orbit-inner absolute w-[400px] h-[400px] rounded-full border-[1.5px] border-purple_mv/20 border-dashed"></div>
-
-      <!-- Círculo Exterior (Órbita de Escudos) -->
-      <div class="hero-orbit-outer absolute w-[600px] h-[600px] rounded-full border border-purple_mv/30">
-
-         <!-- Escudo 1 (Arriba: 0 grados) -->
-         <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 text-purple_mv">
-            <div class="w-full h-full hero-orbit-item">
-               <svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full drop-shadow-[0_0_8px_rgba(129,73,226,0.6)]">
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill-opacity="0.15" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path>
-                  <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
-               </svg>
-            </div>
-         </div>
-
-         <!-- Escudo 2 (Abajo Izquierda: 120 grados) -->
-         <div class="absolute top-[75%] left-[6.7%] -translate-x-1/2 -translate-y-1/2 w-16 h-16 text-purple_mv">
-            <div class="w-full h-full hero-orbit-item">
-               <svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full drop-shadow-[0_0_8px_rgba(129,73,226,0.6)]">
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill-opacity="0.15" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path>
-                  <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
-               </svg>
-            </div>
-         </div>
-
-         <!-- Escudo 3 (Abajo Derecha: 240 grados) -->
-         <div class="absolute top-[75%] left-[93.3%] -translate-x-1/2 -translate-y-1/2 w-16 h-16 text-purple_mv">
-            <div class="w-full h-full hero-orbit-item">
-               <svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full drop-shadow-[0_0_8px_rgba(129,73,226,0.6)]">
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill-opacity="0.15" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path>
-                  <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
-               </svg>
-            </div>
-         </div>
-
-      </div>
-   </div>
-
    <!--
-      Bloque del título: en móvil (donde la tarjeta de "Asesoría gratuita"
-      alarga mucho la sección) la órbita de escudos se ancla al centro de
-      ESTE bloque en vez de al de toda la sección, para que la animación se
-      quede junto al título. En escritorio se deja la versión de arriba,
-      igual que antes.
+      Bloque del título + animación: en móvil, una sola columna centrada con
+      la órbita de escudos anclada detrás del título (como antes). En
+      escritorio (md+) se abre a 2 columnas: el texto queda a la izquierda y
+      la órbita, que antes era un fondo difuso detrás de todo el bloque, pasa
+      a ser el elemento visual de la columna derecha (así se aprovecha el
+      espacio que deja el texto al dejar de estar centrado).
    -->
-   <div class="relative">
-      <!-- Animación de Órbita de Protección (Fondo) -- versión móvil: anclada al título -->
-      <div
-         class="hero-orbit-group pointer-events-none absolute left-1/2 top-1/2 z-[-10] flex -translate-x-1/2 -translate-y-1/2 items-center justify-center opacity-30 dark:opacity-40 md:hidden"
-         aria-hidden="true"
-      >
-         <!-- Círculo interior (decorativo) -->
-         <div class="hero-orbit-inner absolute w-[150px] h-[150px] rounded-full border-[1.5px] border-purple_mv/20 border-dashed"></div>
+   <div class="relative w-full md:grid md:grid-cols-2 md:items-center md:gap-10 lg:gap-16">
+      <div class="relative">
+         <!-- Animación de Órbita de Protección (Fondo) -- versión móvil: anclada al título -->
+         <div
+            class="hero-orbit-group pointer-events-none absolute left-1/2 top-1/2 z-[-10] flex -translate-x-1/2 -translate-y-1/2 items-center justify-center opacity-30 dark:opacity-40 md:hidden"
+            aria-hidden="true"
+         >
+            <!-- Círculo interior (decorativo) -->
+            <div class="hero-orbit-inner absolute w-[150px] h-[150px] rounded-full border-[1.5px] border-purple_mv/20 border-dashed"></div>
 
-         <!-- Círculo Exterior (Órbita de Escudos) -->
-         <div class="hero-orbit-outer absolute w-[260px] h-[260px] rounded-full border border-purple_mv/30">
+            <!-- Círculo Exterior (Órbita de Escudos) -->
+            <div class="hero-orbit-outer absolute w-[260px] h-[260px] rounded-full border border-purple_mv/30">
 
-            <!-- Escudo 1 (Arriba: 0 grados) -->
-            <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 text-purple_mv">
-               <div class="w-full h-full hero-orbit-item">
-                  <svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full drop-shadow-[0_0_8px_rgba(129,73,226,0.6)]">
-                     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill-opacity="0.15" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path>
-                     <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
-                  </svg>
+               <!-- Escudo 1 (Arriba: 0 grados) -->
+               <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 text-purple_mv">
+                  <div class="w-full h-full hero-orbit-item">
+                     <svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full drop-shadow-[0_0_8px_rgba(129,73,226,0.6)]">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill-opacity="0.15" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+                     </svg>
+                  </div>
                </div>
-            </div>
 
-            <!-- Escudo 2 (Abajo Izquierda: 120 grados) -->
-            <div class="absolute top-[75%] left-[6.7%] -translate-x-1/2 -translate-y-1/2 w-10 h-10 text-purple_mv">
-               <div class="w-full h-full hero-orbit-item">
-                  <svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full drop-shadow-[0_0_8px_rgba(129,73,226,0.6)]">
-                     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill-opacity="0.15" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path>
-                     <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
-                  </svg>
+               <!-- Escudo 2 (Abajo Izquierda: 120 grados) -->
+               <div class="absolute top-[75%] left-[6.7%] -translate-x-1/2 -translate-y-1/2 w-10 h-10 text-purple_mv">
+                  <div class="w-full h-full hero-orbit-item">
+                     <svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full drop-shadow-[0_0_8px_rgba(129,73,226,0.6)]">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill-opacity="0.15" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+                     </svg>
+                  </div>
                </div>
-            </div>
 
-            <!-- Escudo 3 (Abajo Derecha: 240 grados) -->
-            <div class="absolute top-[75%] left-[93.3%] -translate-x-1/2 -translate-y-1/2 w-10 h-10 text-purple_mv">
-               <div class="w-full h-full hero-orbit-item">
-                  <svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full drop-shadow-[0_0_8px_rgba(129,73,226,0.6)]">
-                     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill-opacity="0.15" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path>
-                     <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
-                  </svg>
+               <!-- Escudo 3 (Abajo Derecha: 240 grados) -->
+               <div class="absolute top-[75%] left-[93.3%] -translate-x-1/2 -translate-y-1/2 w-10 h-10 text-purple_mv">
+                  <div class="w-full h-full hero-orbit-item">
+                     <svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full drop-shadow-[0_0_8px_rgba(129,73,226,0.6)]">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill-opacity="0.15" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+                     </svg>
+                  </div>
                </div>
-            </div>
 
+            </div>
          </div>
+
+         <!-- Eyebrow -->
+         <p
+            class="hero-float-combo text-sm font-semibold uppercase tracking-widest text-text_banner md:text-left"
+            style="--float-dur: 6s; --float-delay: 0s; animation: heroFadeIn 0.7s ease-out both, heroFloat 6s ease-in-out 0s infinite;"
+         >
+            Ayuda real para víctimas de apps montadeudas
+         </p>
+
+         <!-- H1 (único H1 de la página) -->
+         <h1
+            class="hero-float-combo mx-auto mt-4 max-w-4xl text-4xl font-bold leading-tight text-gray-900 dark:text-white md:mx-0 md:text-left md:text-6xl"
+            style="--float-dur: 6.5s; --float-delay: 0.3s; animation: heroFadeIn 0.7s ease-out both, heroFloat 6.5s ease-in-out 0.3s infinite;"
+         >
+            Recupera tu tranquilidad <span class="text-text_banner drop-shadow-[0_0_25px_rgba(129,73,226,0.35)]">hoy</span>,
+            adiós al acoso de las <span class="text-text_banner drop-shadow-[0_0_25px_rgba(129,73,226,0.35)]">apps de préstamos</span>
+         </h1>
       </div>
 
-      <!-- Eyebrow -->
-      <p
-         class="hero-float-combo text-sm font-semibold uppercase tracking-widest text-text_banner"
-         style="--float-dur: 6s; --float-delay: 0s; animation: heroFadeIn 0.7s ease-out both, heroFloat 6s ease-in-out 0s infinite;"
-      >
-         Ayuda real para víctimas de apps montadeudas
-      </p>
+      <!-- Animación de Órbita de Protección -- versión escritorio: columna derecha, protagonista (ya no es fondo de toda la sección) -->
+      <div class="relative hidden md:flex md:items-center md:justify-center" aria-hidden="true">
+         <!--
+            Mismo patrón que la versión móvil de arriba: el grupo es un
+            contenedor flex centrado sin tamaño propio, y los círculos son
+            hijos "absolute" con solo ancho/alto (sin translate) -- el
+            navegador los centra en el punto medio del grupo por las reglas
+            de alineación de flex para hijos posicionados. No se puede
+            centrar con translate-x/y aquí porque el script de más abajo
+            reemplaza por completo el transform de .hero-orbit-inner/outer
+            en cada frame (solo para rotar), y lo pisaría.
+         -->
+         <div class="hero-orbit-group pointer-events-none relative z-[-10] flex items-center justify-center opacity-30 dark:opacity-40">
+            <!-- Círculo interior (decorativo) -->
+            <div class="hero-orbit-inner absolute h-[170px] w-[170px] rounded-full border-[1.5px] border-purple_mv/20 border-dashed lg:h-[230px] lg:w-[230px] xl:h-[280px] xl:w-[280px]"></div>
 
-      <!-- H1 (único H1 de la página) -->
-      <h1
-         class="hero-float-combo mx-auto mt-4 max-w-4xl text-4xl font-bold leading-tight text-gray-900 dark:text-white md:text-6xl"
-         style="--float-dur: 6.5s; --float-delay: 0.3s; animation: heroFadeIn 0.7s ease-out both, heroFloat 6.5s ease-in-out 0.3s infinite;"
-      >
-         Recupera tu tranquilidad <span class="text-text_banner drop-shadow-[0_0_25px_rgba(129,73,226,0.35)]">hoy</span>,
-         adiós al acoso de las <span class="text-text_banner drop-shadow-[0_0_25px_rgba(129,73,226,0.35)]">apps de préstamos</span>
-      </h1>
+            <!-- Círculo Exterior (Órbita de Escudos) -->
+            <div class="hero-orbit-outer absolute h-[260px] w-[260px] rounded-full border border-purple_mv/30 lg:h-[340px] lg:w-[340px] xl:h-[420px] xl:w-[420px]">
+
+               <!-- Escudo 1 (Arriba: 0 grados) -->
+               <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-11 h-11 text-purple_mv lg:w-14 lg:h-14 xl:w-16 xl:h-16">
+                  <div class="w-full h-full hero-orbit-item">
+                     <svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full drop-shadow-[0_0_8px_rgba(129,73,226,0.6)]">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill-opacity="0.15" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+                     </svg>
+                  </div>
+               </div>
+
+               <!-- Escudo 2 (Abajo Izquierda: 120 grados) -->
+               <div class="absolute top-[75%] left-[6.7%] -translate-x-1/2 -translate-y-1/2 w-11 h-11 text-purple_mv lg:w-14 lg:h-14 xl:w-16 xl:h-16">
+                  <div class="w-full h-full hero-orbit-item">
+                     <svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full drop-shadow-[0_0_8px_rgba(129,73,226,0.6)]">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill-opacity="0.15" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+                     </svg>
+                  </div>
+               </div>
+
+               <!-- Escudo 3 (Abajo Derecha: 240 grados) -->
+               <div class="absolute top-[75%] left-[93.3%] -translate-x-1/2 -translate-y-1/2 w-11 h-11 text-purple_mv lg:w-14 lg:h-14 xl:w-16 xl:h-16">
+                  <div class="w-full h-full hero-orbit-item">
+                     <svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full drop-shadow-[0_0_8px_rgba(129,73,226,0.6)]">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill-opacity="0.15" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+                     </svg>
+                  </div>
+               </div>
+
+            </div>
+         </div>
+      </div>
    </div>
 
    <!-- Asesoría gratuita -->
