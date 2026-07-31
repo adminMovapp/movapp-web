@@ -181,8 +181,25 @@ const organizationSchema = generateOrganizationSchema(Astro.request);
       </noscript>
    </head>
 
+   <!--
+      min-h-[100svh], NO min-h-screen (100vh) ni min-h-[100dvh]:
+      - "100vh" mide el viewport con la barra de direcciones del navegador
+        oculta (su tamaño máximo). Cuando esa barra aparece/desaparece al
+        hacer scroll, el body "crece y encoge" y la barra inferior fija
+        (MobileBottomNav, bottom:0) se ve como si flotara seguiendo ese cambio.
+      - "100dvh" (dynamic) en teoría es "la medida correcta en cada momento",
+        pero por eso mismo se RECALCULA en cada frame mientras la barra del
+        navegador está animando (mostrándose/ocultándose) -- eso genera el
+        reflow que se ve como que la barra inferior "se traba"/tartamudea
+        durante el scroll, en vez de flotar suave.
+      - "100svh" (small) asume que la barra del navegador SIEMPRE está
+        visible: es un valor fijo que no cambia nunca con el scroll, así que
+        el layout no se recalcula y la barra inferior queda perfectamente
+        quieta. El costo es un pequeño margen sin usar cuando el navegador
+        oculta su barra, aceptable frente al jank.
+   -->
    <body
-      class="bg-gray-50 text-gray-900 dark:bg-[#050505] dark:text-white min-h-screen flex flex-col overflow-x-hidden pb-16 lg:pb-0 transition-colors duration-300"
+      class="bg-gray-50 text-gray-900 dark:bg-[#050505] dark:text-white min-h-[100svh] flex flex-col overflow-x-hidden pb-16 lg:pb-0 transition-colors duration-300"
    >
       {showPreloader && <Preloader />}
       <InitAOS client:only="react" />
@@ -192,7 +209,7 @@ const organizationSchema = generateOrganizationSchema(Astro.request);
 
       <Header />
 
-      <main class="relative min-h-screen isolate">
+      <main class="relative min-h-[100svh] isolate">
          {showGrid && <BackgroundGrid />}
          <div class="relative z-10">
             <slot />
@@ -210,9 +227,16 @@ const organizationSchema = generateOrganizationSchema(Astro.request);
          data-widget-id="6a629fdd6f3b01a586db9391"></script>
 
       <!--
-         El widget de LeadConnector fija su burbuja a bottom:20px dentro de su
-         propio shadow DOM (no llega el CSS normal). En móvil eso queda encima
-         de la barra de navegación inferior, así que la reubicamos por JS.
+         El widget de LeadConnector se posiciona a sí mismo dentro de su
+         propio shadow DOM (no llega el CSS normal) fijando "right: 20px"
+         inline UNA SOLA VEZ al montar. En móvil lo reubicamos por JS -- y,
+         a pedido, también lo pasamos de la derecha a la izquierda. Ojo con
+         esto: si al volver a escritorio simplemente LIMPIÁBAMOS ese
+         left/right (pensando que así "vuelve al default"), no vuelve solo
+         -- el widget no lo recalcula en resize, así que queda pegado a la
+         izquierda para siempre (confirmado). Por eso, al volver a
+         escritorio, hay que RESTAURAR explícitamente "right: 20px" en vez
+         de solo limpiar.
       -->
       <script is:inline>
          (function () {
@@ -223,9 +247,23 @@ const organizationSchema = generateOrganizationSchema(Astro.request);
                var btn = root && root.getElementById('lc_text-widget--btn');
                if (!box || !btn) return false;
                var isMobile = window.matchMedia('(max-width: 1023px)').matches;
-               var offset = isMobile ? 'calc(4.5rem + env(safe-area-inset-bottom))' : '20px';
-               box.style.bottom = offset;
-               btn.style.bottom = offset;
+               var bottomOffset = isMobile ? 'calc(4.5rem + env(safe-area-inset-bottom))' : '20px';
+               var leftOffset = 'calc(20px + env(safe-area-inset-left))';
+               [box, btn].forEach(function (el) {
+                  el.style.bottom = bottomOffset;
+                  if (isMobile) {
+                     el.style.right = 'auto';
+                     el.style.left = leftOffset;
+                     el.dataset.lcForcedLeft = '1';
+                  } else if (el.dataset.lcForcedLeft) {
+                     // Volvimos de móvil a escritorio sin recargar: restauramos
+                     // el default real del widget (right:20px), no lo dejamos
+                     // "sin setear" -- eso no alcanza, ver comentario arriba.
+                     el.style.left = '';
+                     el.style.right = '20px';
+                     delete el.dataset.lcForcedLeft;
+                  }
+               });
                return true;
             }
 
