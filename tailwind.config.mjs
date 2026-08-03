@@ -6,7 +6,7 @@ export default {
          // fontFamily: {
          //    montserrat: ['Montserrat', 'sans-serif'],
          // },
-
+         //
          colors: {
             debug: '#00ffff',
             gray_mv: '#4A4A4A',
@@ -19,6 +19,14 @@ export default {
             background_bottom: '#050505',
             text_banner: '#8149E2',
             line_cards: '#ffffff',
+         },
+         // Tratamiento estándar de "card" (glow morado), tomado como referencia
+         // de HomeFeatured.astro (sección "¿Cómo te ayuda Movapp?"). Reunido
+         // acá para poder ajustar el color/intensidad del glow desde un solo
+         // lugar sin tener que tocar cada sección.
+         boxShadow: {
+            card: '0 0 25px rgba(129, 73, 226, 0.12)',
+            'card-hover': '0 0 35px rgba(129, 73, 226, 0.22)',
          },
          keyframes: {
             slideUp: {

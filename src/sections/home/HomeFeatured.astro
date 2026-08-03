@@ -54,7 +54,7 @@ const hub = [
          hub.map((item, i) => (
             <a
                href={item.href}
-               class="featured-card float-anim group w-[78vw] flex-shrink-0 snap-center overflow-hidden rounded-3xl border border-purple_mv/25 bg-gradient-to-b from-purple_mv/[0.06] to-transparent shadow-[0_0_25px_rgba(129,73,226,0.12)] transition-colors duration-300 hover:border-purple_mv/50 hover:shadow-[0_0_35px_rgba(129,73,226,0.22)] dark:border-white/10 dark:from-purple_mv/[0.1] dark:to-black/30 md:w-full"
+               class="featured-card float-anim group w-[78vw] flex-shrink-0 snap-center overflow-hidden rounded-3xl border border-purple_mv/25 shadow-card transition-colors duration-300 hover:border-purple_mv/50 hover:shadow-card-hover dark:border-white/10 md:w-full"
                style={`--float-dur: ${5.8 + i * 0.3}s; --float-delay: ${i * 0.2}s;`}
             >
                <div class="relative aspect-[4/3] w-full overflow-hidden md:aspect-square md:grayscale md:transition-[filter] md:duration-500 md:group-hover:grayscale-0">
@@ -71,7 +71,7 @@ const hub = [
                   )}
                </div>
 
-               <div class="p-5 text-center md:p-7">
+               <div class="bg-gradient-to-b from-purple_mv/[0.06] to-transparent p-5 text-center dark:from-purple_mv/[0.1] dark:to-black/30 md:p-7">
                   <h3 class="text-lg font-bold text-gray-900 dark:text-white md:text-2xl">{item.title}</h3>
                   <p class="mt-1 text-xs text-gray-600 dark:text-white/60 md:mt-2 md:text-base">{item.desc}</p>
                   <span class="mt-3 inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wide text-text_banner md:mt-4 md:text-sm">
