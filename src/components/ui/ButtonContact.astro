@@ -1,11 +1,8 @@
 ---
-import { Picture } from 'astro:assets';
-import ImgWhatsapp from '@assets/whatsapp-logo.png';
 import { URLS } from '@constants/socials.ts';
 
 interface Props {
    label?: string;
-   size?: 'sm' | 'lg';
    // A todo el ancho de su contenedor en móvil (útil cuando el label es largo,
    // como "Hablar con un asesor por WhatsApp": si no, el botón queda angosto
    // -ajustado al contenido- y el texto se parte en 2 líneas apretadas contra
@@ -13,23 +10,40 @@ interface Props {
    fullWidth?: boolean;
 }
 
-const { label = 'Contáctanos', size = 'sm', fullWidth = false } = Astro.props;
+const { label = 'Contáctanos', fullWidth = false } = Astro.props;
 
 const mensaje = '¡Hola! Quiero más información sobre El Hack.';
 
-const sizeClasses =
-   size === 'lg' ? 'gap-3 px-6 py-4 text-base md:text-lg' : 'gap-2 px-4 py-2 text-sm';
-const iconClasses = size === 'lg' ? 'h-7 w-7 md:h-8 md:w-8' : 'h-4 w-4 md:h-6 md:w-6';
+// Un solo tamaño estandarizado para TODOS los usos del botón en el sitio
+// (antes había una variante "sm"/"lg" que hacía que se viera distinto según
+// la página). No se expone como prop a propósito -- si se necesitara otro
+// tamaño en el futuro, mejor un componente nuevo que reabrir esta variación.
 const widthClasses = fullWidth ? 'w-full md:w-auto' : '';
 ---
 
 <a
    href={`https://api.whatsapp.com/send/?phone=${URLS.whatsapp.principal.replace('+', '')}&text=${encodeURIComponent(mensaje)}&type=phone_number&app_absent=0`}
-   class={`wa__stt keep-white inline-flex items-center justify-center font-bold text-white bg-green-500 hover:bg-green-600 rounded-3xl transition ${sizeClasses} ${widthClasses}`}
+   class={`wa__stt keep-white inline-flex items-center justify-center gap-3 rounded-3xl bg-green-500 px-6 py-4 text-base font-bold text-white transition hover:bg-green-600 md:text-lg ${widthClasses}`}
    target="_blank"
    rel="noopener noreferrer"
 >
-   <Picture src={ImgWhatsapp} alt="Whatsapp" class={iconClasses} />
+   <!--
+      SVG inline en vez de un <img> (o el <Picture> de astro:assets que había
+      antes): <Picture> envuelve el <img> real en un <picture>, y ese
+      <picture> -no el <img>- es el hijo directo del flex container, así que
+      las clases de tamaño/flex-shrink-0 que se le ponían al <img> no
+      importaban: quien de verdad se angostaba en flex era el <picture> (sin
+      ninguna clase encima), y el <img> quedaba comprimido por su propio
+      max-width:100% (preflight de Tailwind) siguiendo ese ancho angosto --
+      de ahí el óvalo aplastado. Con un solo elemento <svg> como hijo directo
+      del flex container, flex-shrink-0 sí aplica donde debe.
+   -->
+   <svg class="h-8 w-8 flex-shrink-0" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true">
+      <path
+         d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.2 10.3 77.6 29.8 111.4L1.9 480l117.4-30.8c32.5 17.8 69.1 27.1 106.5 27.1h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-69.1-157.2zM223.9 438.1c-33.2 0-65.7-8.9-93.9-25.8l-6.7-4-69.8 18.3 18.6-68-4.4-7C50.1 320.9 40.9 289.3 40.9 254c0-100.9 82.1-183 183.1-183 48.9 0 94.8 19.1 129.4 53.7 34.6 34.6 56.8 80.5 56.7 129.4 0 100.9-84.2 183-186.2 183zm101.2-135.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.7-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-53.9-29.1-75.3-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.6-9.7-1.5-2.8-13.4-32.3-18.3-44.2-4.8-11.6-9.7-10-13.3-10.2-3.4-.2-7.3-.2-11.3-.2-4 0-10.5 1.5-16 7.4-5.5 5.9-21 20.5-21 50 0 29.5 21.5 58 24.5 62 3 4 41.6 63.5 100.9 86.5 50.4 19.6 60.7 15.7 71.7 14.7 11-.9 35.5-14.5 40.5-28.6 5-14 5-26 3.5-28.6-1.5-2.6-5.5-4.1-11-6.9z"
+      ></path>
+   </svg>
+   <span class="h-8 w-px flex-shrink-0 self-stretch bg-white/30" aria-hidden="true"></span>
    <span>{label}</span>
 </a>
 

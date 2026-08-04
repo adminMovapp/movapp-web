@@ -32,8 +32,22 @@ import StarField from '@components/decorative/StarField.astro';
                No tienes que enfrentar esto solo. Escríbenos por WhatsApp y recupera tu tranquilidad.
             </p>
 
-            <div class="float-anim mt-6 flex justify-center md:justify-start" style="--float-dur: 5.8s; --float-delay: 0.3s;">
-               <ButtonContact label="Hablar con un asesor por WhatsApp" size="lg" />
+            <!--
+               -mx-6 en móvil: el botón es w-full (fullWidth), así que su
+               ancho real depende de cuánto le sobre a esta columna -- y el
+               p-10 de la card (40px por lado) le deja muy poco margen al
+               texto largo ("Hablar con un asesor por WhatsApp"), partiéndolo
+               en 3 líneas apretadas. Este margen negativo solo ensancha la
+               FILA del botón (no toca el padding del resto de la card:
+               título, párrafo, mockup), dándole ~24px más de ancho por lado
+               sin afectar el resto del diseño. En md+ se anula (mx-0) porque
+               ahí el botón vuelve a su ancho natural (no es fullWidth).
+            -->
+            <div
+               class="float-anim -mx-6 mt-6 flex justify-center md:mx-0 md:justify-start"
+               style="--float-dur: 5.8s; --float-delay: 0.3s;"
+            >
+               <ButtonContact label="Hablar con un asesor por WhatsApp" fullWidth />
             </div>
 
             <div class="mt-6 flex flex-col items-center gap-3 md:items-start">
