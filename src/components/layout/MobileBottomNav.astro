@@ -3,8 +3,25 @@ import MenuMobile from '@components/layout/MenuMobile.astro';
 import StoreIcon from '@assets/StoreIcon.astro';
 ---
 
+<!--
+   "sticky bottom-0", NO "fixed bottom-0" (lo que había antes, y varios
+   intentos de compensarlo por JS que no terminaron de resolverlo -- ver
+   historial). "position: fixed" en móvil se ancla al *layout viewport*, que
+   en iOS/Android se desincroniza brevemente del área realmente visible
+   cada vez que el navegador anima su barra de direcciones/gestos --como
+   ese desfase lo genera el navegador, cualquier corrección por JS siempre
+   llega un frame tarde (confirmado con un diagnóstico en el propio sitio:
+   window.innerHeight oscilaba solo, con el celular quieto, sin que ningún
+   script propio ni de terceros -incluido el widget de chat- estuviera
+   corriendo). "position: sticky" calcula su posición como parte del scroll
+   normal del documento, que sí está sincronizado con lo que se ve, así que
+   no sufre ese desfase. Como es el último elemento del body y no hay nada
+   después, se queda pegado al fondo del viewport en todo el rango de
+   scroll, igual que "fixed" pero sin el bug.
+-->
 <nav
-   class="fixed bottom-0 inset-x-0 z-[999999999] flex items-stretch justify-around bg-gradient-to-t from-purple_mv/[0.06] to-white/90 dark:from-purple_mv/[0.08] dark:to-zinc-950/85 backdrop-blur-md border-t border-purple_mv/25 dark:border-white/10 shadow-[0_-8px_25px_-10px_rgba(129,73,226,0.15)] pb-[env(safe-area-inset-bottom)] lg:hidden"
+   id="mobileBottomNav"
+   class="sticky bottom-0 z-[999999999] flex items-stretch justify-around bg-gradient-to-t from-purple_mv/[0.06] to-white/90 dark:from-purple_mv/[0.08] dark:to-zinc-950/85 backdrop-blur-md border-t border-purple_mv/25 dark:border-white/10 shadow-[0_-8px_25px_-10px_rgba(129,73,226,0.15)] pb-[env(safe-area-inset-bottom)] lg:hidden"
 >
    <!-- Logo / Home -->
    <a
@@ -30,3 +47,11 @@ import StoreIcon from '@assets/StoreIcon.astro';
    <!-- Menú (hamburguesa con el resto de opciones) -->
    <MenuMobile />
 </nav>
+
+<style>
+   #mobileBottomNav {
+      will-change: transform;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+   }
+</style>

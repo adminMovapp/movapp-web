@@ -36,25 +36,36 @@ const wrapperClass = fullBleed
 </div>
 
 <style>
+   /*
+      box-shadow FIJO (no animado): con hasta ~45 estrellas por sección y
+      varias secciones en el Home, animar el radio del box-shadow fuerza un
+      repintado por elemento en cada frame -- confirmado con un
+      diagnóstico en el propio sitio como causa real de que la barra
+      inferior (MobileBottomNav) pareciera "flotar" en móvil. Solo opacity
+      anima acá (el compositor la mueve sin tocar el hilo principal); el
+      halo queda del tamaño de su punto más brillante todo el tiempo, y su
+      intensidad sube/baja igual gracias a que "opacity" afecta el
+      elemento completo, box-shadow incluido.
+   */
    :global(.field-star) {
       position: absolute;
       transform: translate(-50%, -50%);
       border-radius: 9999px;
       background-color: currentColor;
+      box-shadow: 0 0 var(--star-glow, 2px) currentColor;
       animation-name: fieldTwinkle;
       animation-timing-function: ease-in-out;
       animation-iteration-count: infinite;
+      will-change: opacity;
    }
 
    @keyframes fieldTwinkle {
       0%,
       100% {
          opacity: var(--star-min, 0.15);
-         box-shadow: 0 0 0 currentColor;
       }
       50% {
          opacity: var(--star-max, 0.9);
-         box-shadow: 0 0 var(--star-glow, 2px) currentColor;
       }
    }
 
@@ -170,7 +181,16 @@ const wrapperClass = fullBleed
       setTimeout(loop, initialDelay);
    };
 
+   // DIAGNÓSTICO TEMPORAL -- borrar junto con el resto del diagnóstico de
+   // "navdebug" una vez resuelto el flote de la barra inferior. ?nostars=1
+   // desactiva por completo las estrellas ambiente y fugaces de todas las
+   // instancias de StarField en la página, para aislar si son ellas las
+   // que disparan el bug (confirmado: pasa en Home real pero no en una
+   // página de prueba sin StarField).
+   const starsDisabled = new URLSearchParams(location.search).get('nostars') === '1';
+
    const initField = (root: Element) => {
+      if (starsDisabled) return;
       if (root.getAttribute('data-populated') === 'true') return;
       root.setAttribute('data-populated', 'true');
 

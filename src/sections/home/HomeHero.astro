@@ -252,27 +252,39 @@ import ButtonContact from '@components/ui/ButtonContact.astro';
       así que el keyframe/clase debe quedar sin scope de Astro: si no, el hash
       de scoping no llega a nodos insertados por JS después del render inicial.
    */
+   /*
+      box-shadow FIJO (no animado): en las ~150 estrellas de esta sección
+      (y las ~300 de StarField.astro repartidas por el resto del Home),
+      animar el radio del box-shadow fuerza un repintado por elemento en
+      cada frame -- confirmado con un diagnóstico en el propio sitio como
+      causa real de que la barra inferior (MobileBottomNav) pareciera
+      "flotar" en móvil (la carga agregada de repintado disparaba una
+      desincronización de innerHeight). Solo opacity/transform animan acá
+      (el compositor los mueve sin tocar el hilo principal); el halo queda
+      del tamaño de su punto más brillante todo el tiempo, y su intensidad
+      sube/baja igual gracias a que "opacity" afecta el elemento completo,
+      box-shadow incluido.
+   */
    :global(.home-hero-star) {
       position: absolute;
       border-radius: 9999px;
       background-color: currentColor;
+      box-shadow: 0 0 var(--star-glow, 2px) currentColor;
       animation-name: homeHeroTwinkle;
       animation-timing-function: ease-in-out;
       animation-iteration-count: infinite;
+      will-change: opacity, transform;
    }
 
-   /* Titileo + un pequeño "destello" (halo) tenue en el punto más brillante */
    @keyframes homeHeroTwinkle {
       0%,
       100% {
          opacity: var(--star-min, 0.15);
          transform: scale(0.8);
-         box-shadow: 0 0 0 currentColor;
       }
       50% {
          opacity: var(--star-max, 0.9);
          transform: scale(1.3);
-         box-shadow: 0 0 var(--star-glow, 2px) currentColor;
       }
    }
 
@@ -387,13 +399,72 @@ import ButtonContact from '@components/ui/ButtonContact.astro';
    }
 
    /*
+      Órbita de escudos: antes un loop requestAnimationFrame en JS que
+      reescribía "transform" en outer/inner/cada escudo en TODOS los
+      frames -- incluidas las dos instancias móvil/escritorio aunque una
+      estuviera oculta por CSS (md:hidden / hidden md:flex). Ese trabajo
+      constante por frame resultó ser la causa confirmada de que la barra
+      inferior (MobileBottomNav) pareciera "flotar" en móvil (aislado con
+      un diagnóstico: desactivar solo esta órbita eliminaba el síntoma).
+      Como es una simple rotación continua a velocidad constante, se
+      reproduce igual de exacto con @keyframes puro -- el navegador la
+      corre en el compositor sin tocar el hilo principal en cada frame, y
+      de paso ya no importa que la instancia oculta siga "animándose"
+      (no cuesta nada si no se pinta).
+
+      Mismo cálculo que tenía el JS (25°/s = 360° cada 14.4s):
+      - outer: rotate() normal, 14.4s.
+      - inner: -1.3x la velocidad de outer -> 14.4/1.3 ≈ 11.077s, en reversa.
+      - cada escudo (.hero-orbit-item): -1x outer -> misma duración, en
+        reversa, para contra-rotar y quedar siempre derecho.
+   */
+   @keyframes heroOrbitSpin {
+      from {
+         transform: rotate(0deg);
+      }
+      to {
+         transform: rotate(360deg);
+      }
+   }
+   .hero-orbit-outer {
+      animation: heroOrbitSpin 14.4s linear infinite;
+   }
+   .hero-orbit-inner {
+      animation: heroOrbitSpin 11.077s linear infinite reverse;
+   }
+   .hero-orbit-item {
+      animation: heroOrbitSpin 14.4s linear infinite reverse;
+   }
+   /*
+      La rotación se apaga SOLO en móvil (<768px, el mismo breakpoint que
+      "md:hidden" en el markup de arriba) -- confirmado con un diagnóstico
+      en el propio sitio (conteo de saltos en 45s: 25 con la órbita
+      rotando, 0 apagándola) que es la causa real del "flote" de
+      MobileBottomNav en móvil. Convertirla de JS a CSS (más arriba) no
+      alcanzó: el costo no era solo del hilo principal, sino de mantener
+      la rotación corriendo en absoluto.
+      En escritorio (>=768px) la órbita sigue exactamente igual que
+      siempre, sin tocar -- ahí nunca hubo el problema.
+   */
+   @media (max-width: 767.98px) {
+      .hero-orbit-outer,
+      .hero-orbit-inner,
+      .hero-orbit-item {
+         animation: none !important;
+      }
+   }
+
+   /*
       El sitio tiene una regla global (src/styles/global.css) que, para
       accesibilidad, fuerza animation-duration a ~0 cuando el sistema pide
       "reducir movimiento" — eso apaga el flotado del hero por completo en
       cualquier navegador/SO con esa preferencia activada. Este flotado es
       un efecto ambiental muy leve (pocos px, lento), así que lo restauramos
       explícitamente aquí: es una excepción puntual a esa regla, no un
-      cambio a la política de accesibilidad del resto del sitio.
+      cambio a la política de accesibilidad del resto del sitio. La órbita
+      ya se comportaba así de antes (el JS que reemplaza no respetaba
+      prefers-reduced-motion), así que se mantiene la misma excepción acá
+      para no cambiar el comportamiento existente.
    */
    @media (prefers-reduced-motion: reduce) {
       :global(.hero-float-combo) {
@@ -405,54 +476,34 @@ import ButtonContact from '@components/ui/ButtonContact.astro';
          animation-iteration-count: infinite !important;
       }
    }
+
+   /*
+      La restauración de la órbita bajo prefers-reduced-motion (excepción
+      documentada arriba) solo aplica en escritorio -- en móvil la órbita
+      ya está apagada siempre (ver @media max-width:767.98px más arriba),
+      con o sin reduced-motion, y no queremos que esta excepción la
+      reactive ahí (ambas reglas usan !important; sin este min-width
+      quedarían compitiendo por orden de aparición).
+   */
+   @media (prefers-reduced-motion: reduce) and (min-width: 768px) {
+      .hero-orbit-outer,
+      .hero-orbit-item {
+         animation-duration: 14.4s !important;
+         animation-iteration-count: infinite !important;
+      }
+      .hero-orbit-inner {
+         animation-duration: 11.077s !important;
+         animation-iteration-count: infinite !important;
+      }
+   }
 </style>
 
 <script>
-   const initOrbit = () => {
-      // Dos instancias en el DOM (móvil anclada al título, escritorio
-      // centrada en toda la sección; cada una visible solo en su breakpoint
-      // vía CSS), así que se anima cada grupo por separado en vez de usar
-      // un solo id.
-      const groups = document.querySelectorAll('.hero-orbit-group');
-
-      if (!groups.length) return;
-
-      let angle = 0;
-      let lastTime = performance.now();
-
-      const animate = (time) => {
-         // Calcular delta time para un giro fluido en cualquier pantalla (60hz, 120hz, etc)
-         const dt = time - lastTime;
-         lastTime = time;
-
-         // 25 grados por segundo -> vuelta completa en ~14 segundos
-         angle += (25 * dt) / 1000;
-         if (angle >= 360) angle -= 360;
-
-         groups.forEach((group) => {
-            const inner = group.querySelector('.hero-orbit-inner');
-            const outer = group.querySelector('.hero-orbit-outer');
-
-            // Aplicar rotaciones
-            if (outer instanceof HTMLElement) outer.style.transform = `rotate(${angle}deg)`;
-            if (inner instanceof HTMLElement) inner.style.transform = `rotate(-${angle * 1.3}deg)`; // Interior inverso y un poco más rápido
-
-            // Contra-rotar los escudos para que no se pongan de cabeza
-            group.querySelectorAll('.hero-orbit-item').forEach((item) => {
-               if (item instanceof HTMLElement) item.style.transform = `rotate(-${angle}deg)`;
-            });
-         });
-
-         window.heroOrbitFrame = requestAnimationFrame(animate);
-      };
-
-      // Evitar múltiples ciclos si Astro recarga la página con ViewTransitions
-      if (window.heroOrbitFrame) {
-         cancelAnimationFrame(window.heroOrbitFrame);
-      }
-
-      window.heroOrbitFrame = requestAnimationFrame(animate);
-   };
+   // DIAGNÓSTICO TEMPORAL -- borrar junto con el resto del diagnóstico de
+   // "navdebug". ?nostars=1 desactiva las estrellas propias del hero
+   // (mismo flag que usa StarField.astro).
+   const params = new URLSearchParams(location.search);
+   const starsDisabled = params.get('nostars') === '1';
 
    // Cantidad de estrellas y rango de tamaño/opacidad (puntitos pequeños y tenues)
    const STAR_COUNT = 150;
@@ -460,6 +511,7 @@ import ButtonContact from '@components/ui/ButtonContact.astro';
    const STAR_MAX_SIZE = 2.5;
 
    const initStars = () => {
+      if (starsDisabled) return;
       const container = document.getElementById('hero-stars');
       if (!container) return;
 
@@ -525,6 +577,7 @@ import ButtonContact from '@components/ui/ButtonContact.astro';
    };
 
    const initShootingStars = () => {
+      if (starsDisabled) return;
       const container = document.getElementById('hero-shooting-stars');
       if (!container) return;
 
@@ -541,11 +594,9 @@ import ButtonContact from '@components/ui/ButtonContact.astro';
    };
 
    // Iniciar inmediatamente
-   initOrbit();
    initStars();
    initShootingStars();
    // Escuchar el evento de Astro para navegaciones internas
-   document.addEventListener('astro:page-load', initOrbit);
    document.addEventListener('astro:page-load', initStars);
    document.addEventListener('astro:page-load', initShootingStars);
 </script>

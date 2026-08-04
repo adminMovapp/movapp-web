@@ -17,6 +17,7 @@ import aosHref from 'aos/dist/aos.css?url';
 const flagIconsHref = 'https://cdn.jsdelivr.net/npm/flag-icons/css/flag-icons.min.css';
 import Header from '@components/layout/Header.astro';
 import MobileBottomNav from '@components/layout/MobileBottomNav.astro';
+import MenuMobilePanel from '@components/layout/MenuMobilePanel.astro';
 import Footer from '@components/layout/Footer.astro';
 import HeaderLayer from '@/components/layout/HeaderLayer.astro';
 import Preloader from '@/components/layout/Preloader.astro';
@@ -32,6 +33,15 @@ import MetaPixelScript from '@components/layout/MetaPixelScript.astro';
 
 const showHeaderLayer = import.meta.env.PUBLIC_SHOW_HEADER_LAYER === 'true';
 const showPreloader = import.meta.env.PUBLIC_SHOW_PRELOADER === 'true';
+// DIAGNÓSTICO TEMPORAL -- borrar junto con el resto del diagnóstico de
+// "navdebug" una vez resuelto el flote de la barra inferior. ?nochat=1 ya
+// descartó al widget de LeadConnector como causa (mismo bug con o sin él).
+// ?minimal=1 apaga TAMBIÉN GTM/GA4/Meta Pixel de una sola vez -- GTM en
+// particular puede estar inyectando tags de terceros (heatmaps, session
+// recording, etc.) que no se ven en este código porque viven en la
+// configuración del contenedor de GTM, no en el repo.
+const disableChatWidget = Astro.url.searchParams.get('nochat') === '1' || Astro.url.searchParams.get('minimal') === '1';
+const disableThirdPartyScripts = Astro.url.searchParams.get('minimal') === '1';
 
 interface Props {
    title?: string;
@@ -166,8 +176,8 @@ const organizationSchema = generateOrganizationSchema(Astro.request);
       <!-- Header meta-pixel  -->
       <meta name="facebook-domain-verification" content="uffghfhff1th1z040abwzgjgjto9mi" />
 
-      <GoogleTagManager />
-      <GoogleAnalytics />
+      {!disableThirdPartyScripts && <GoogleTagManager />}
+      {!disableThirdPartyScripts && <GoogleAnalytics />}
       <noscript>
          <style>
             [data-aos] {
@@ -182,28 +192,22 @@ const organizationSchema = generateOrganizationSchema(Astro.request);
    </head>
 
    <!--
-      min-h-[100svh], NO min-h-screen (100vh) ni min-h-[100dvh]:
-      - "100vh" mide el viewport con la barra de direcciones del navegador
-        oculta (su tamaño máximo). Cuando esa barra aparece/desaparece al
-        hacer scroll, el body "crece y encoge" y la barra inferior fija
-        (MobileBottomNav, bottom:0) se ve como si flotara seguiendo ese cambio.
-      - "100dvh" (dynamic) en teoría es "la medida correcta en cada momento",
-        pero por eso mismo se RECALCULA en cada frame mientras la barra del
-        navegador está animando (mostrándose/ocultándose) -- eso genera el
-        reflow que se ve como que la barra inferior "se traba"/tartamudea
-        durante el scroll, en vez de flotar suave.
-      - "100svh" (small) asume que la barra del navegador SIEMPRE está
-        visible: es un valor fijo que no cambia nunca con el scroll, así que
-        el layout no se recalcula y la barra inferior queda perfectamente
-        quieta. El costo es un pequeño margen sin usar cuando el navegador
-        oculta su barra, aceptable frente al jank.
+      min-h-[100svh], NO min-h-screen (100vh) ni min-h-[100dvh]: evita que el
+      body cambie de tamaño cada vez que el navegador anima su barra de
+      direcciones/gestos al hacer scroll -- "100vh" es un valor fijo (el
+      tamaño máximo, barra oculta) que no se recalcula con el scroll;
+      "100dvh" sí se recalcularía en cada frame de esa animación, generando
+      reflow. Nótese que MobileBottomNav ya NO es "fixed" (ver ese
+      componente) así que no necesita padding-bottom en el body para
+      reservarle espacio -- al ser "sticky" reserva su propio espacio en el
+      flujo normal.
    -->
    <body
-      class="bg-gray-50 text-gray-900 dark:bg-[#050505] dark:text-white min-h-[100svh] flex flex-col overflow-x-hidden pb-16 lg:pb-0 transition-colors duration-300"
+      class="bg-gray-50 text-gray-900 dark:bg-[#050505] dark:text-white min-h-[100svh] flex flex-col overflow-x-hidden transition-colors duration-300"
    >
       {showPreloader && <Preloader />}
       <InitAOS client:only="react" />
-      <MetaPixelScript pixelId={import.meta.env.PUBLIC_META_PIXEL_ID} />
+      {!disableThirdPartyScripts && <MetaPixelScript pixelId={import.meta.env.PUBLIC_META_PIXEL_ID} />}
 
       {showHeaderLayer ? <HeaderLayer /> : null}
 
@@ -218,13 +222,125 @@ const organizationSchema = generateOrganizationSchema(Astro.request);
       </main>
 
       <MobileBottomNav />
+      <MenuMobilePanel />
+
+      <!--
+         DIAGNÓSTICO TEMPORAL (v2) -- borrar una vez resuelto. Solo se activa
+         con ?navdebug=1 en la URL. A diferencia de la v1, esta vez también
+         registra el "transform" que el script de compensación de
+         MobileBottomNav.astro le está aplicando en cada momento, para
+         confirmar si esa corrección realmente se está aplicando y aun así
+         no alcanza, o si nunca llega a aplicarse.
+      -->
+      <script is:inline>
+         (function () {
+            if (!/[?&]navdebug=1(&|$)/.test(location.search)) return;
+
+            var nav = document.getElementById('mobileBottomNav');
+            if (!nav) return;
+
+            // Duración fija de la prueba -- al terminar, muestra un resumen
+            // con números (no "a simple vista") para poder comparar
+            // condiciones distintas de forma objetiva. Se puede ajustar con
+            // ?navdebugsec=60 en la URL.
+            var TEST_SECONDS = parseInt(new URLSearchParams(location.search).get('navdebugsec') || '45', 10);
+
+            var log = document.createElement('div');
+            log.style.cssText =
+               'position:fixed;top:0;left:0;right:0;z-index:2147483647;max-height:55vh;overflow:auto;' +
+               'background:rgba(0,0,0,0.88);color:#0f0;font:10px/1.4 monospace;padding:6px;white-space:pre-wrap;';
+            document.body.appendChild(log);
+
+            var startTime = performance.now();
+            function line(msg, color) {
+               var t = ((performance.now() - startTime) / 1000).toFixed(2);
+               var p = document.createElement('div');
+               if (color) p.style.color = color;
+               p.textContent = '[' + t + 's] ' + msg;
+               log.insertBefore(p, log.firstChild);
+               while (log.childNodes.length > 80) log.removeChild(log.lastChild);
+            }
+
+            var jumpCount = 0;
+            var longtaskCount = 0;
+            var longtaskTotalMs = 0;
+            var maxJumpPx = 0;
+
+            line('nav debug v3 activo. prueba de ' + TEST_SECONDS + 's. rect inicial top=' + nav.getBoundingClientRect().top.toFixed(2));
+
+            if (window.PerformanceObserver) {
+               try {
+                  new PerformanceObserver(function (list) {
+                     list.getEntries().forEach(function (entry) {
+                        longtaskCount++;
+                        longtaskTotalMs += entry.duration;
+                        line('LONGTASK duración=' + entry.duration.toFixed(0) + 'ms (total: ' + longtaskCount + ')');
+                     });
+                  }).observe({ type: 'longtask', buffered: true });
+               } catch (e) {
+                  line('PerformanceObserver longtask no soportado: ' + e.message);
+               }
+            }
+
+            var lastTop = nav.getBoundingClientRect().top;
+            var finished = false;
+            function tick() {
+               if (finished) return;
+               var rect = nav.getBoundingClientRect();
+               var delta = Math.abs(rect.top - lastTop);
+               if (delta > 0.5) {
+                  jumpCount++;
+                  if (delta > maxJumpPx) maxJumpPx = delta;
+                  line(
+                     'POSICION #' +
+                        jumpCount +
+                        ' top ' +
+                        lastTop.toFixed(1) +
+                        ' -> ' +
+                        rect.top.toFixed(1) +
+                        ' (Δ' +
+                        delta.toFixed(1) +
+                        'px) | innerH=' +
+                        window.innerHeight +
+                        ' | vvH=' +
+                        (window.visualViewport ? window.visualViewport.height.toFixed(1) : 'n/a'),
+                  );
+                  lastTop = rect.top;
+               }
+
+               var elapsedSec = (performance.now() - startTime) / 1000;
+               if (elapsedSec >= TEST_SECONDS) {
+                  finished = true;
+                  line(
+                     '===== RESULTADO (' +
+                        TEST_SECONDS +
+                        's): ' +
+                        jumpCount +
+                        ' saltos de posición (máx ' +
+                        maxJumpPx.toFixed(0) +
+                        'px), ' +
+                        longtaskCount +
+                        ' longtasks (' +
+                        longtaskTotalMs.toFixed(0) +
+                        'ms totales) =====',
+                     '#ff0',
+                  );
+                  return;
+               }
+               requestAnimationFrame(tick);
+            }
+            requestAnimationFrame(tick);
+         })();
+      </script>
 
       <!-- Widget de chat LeadConnector -->
-      <script
-         is:inline
-         src="https://widgets.leadconnectorhq.com/loader.js"
-         data-resources-url="https://widgets.leadconnectorhq.com/chat-widget/loader.js"
-         data-widget-id="6a629fdd6f3b01a586db9391"></script>
+      {!disableChatWidget && (
+         <script
+            is:inline
+            src="https://widgets.leadconnectorhq.com/loader.js"
+            data-resources-url="https://widgets.leadconnectorhq.com/chat-widget/loader.js"
+            data-widget-id="6a629fdd6f3b01a586db9391"></script>
+      )}
 
       <!--
          El widget de LeadConnector se posiciona a sí mismo dentro de su
@@ -250,6 +366,20 @@ const organizationSchema = generateOrganizationSchema(Astro.request);
                var bottomOffset = isMobile ? 'calc(4.5rem + env(safe-area-inset-bottom))' : '20px';
                var leftOffset = 'calc(20px + env(safe-area-inset-left))';
                [box, btn].forEach(function (el) {
+                  // El widget trae su propia transición CSS (para su
+                  // animación de apertura/cierre) que no controlamos desde
+                  // afuera (vive en su shadow DOM). Si la dejamos activa
+                  // mientras reescribimos bottom/left/right en cada resize,
+                  // cualquier cambio -aunque sea mínimo, por redondeo de
+                  // env(safe-area-inset-*) al mostrarse/ocultarse la barra
+                  // del navegador- se anima como un salto visible justo al
+                  // lado de la barra inferior (el "flote" reportado). La
+                  // apagamos solo para este cambio de posición puntual y la
+                  // restauramos en el siguiente frame para no romper la
+                  // animación propia de apertura/cierre del widget.
+                  var prevTransition = el.style.transitionProperty;
+                  el.style.transitionProperty = 'none';
+
                   el.style.bottom = bottomOffset;
                   if (isMobile) {
                      el.style.right = 'auto';
@@ -263,11 +393,33 @@ const organizationSchema = generateOrganizationSchema(Astro.request);
                      el.style.right = '20px';
                      delete el.dataset.lcForcedLeft;
                   }
+
+                  void el.offsetWidth; // fuerza reflow para que "none" aplique a este cambio puntual
+                  requestAnimationFrame(function () {
+                     el.style.transitionProperty = prevTransition;
+                  });
                });
                return true;
             }
 
-            window.addEventListener('resize', repositionChatWidget);
+            // Los eventos resize en móvil pueden dispararse varias veces
+            // seguidas (barra de direcciones animándose, rotación, etc.) --
+            // los agrupamos en uno por frame en vez de reposicionar en cada
+            // uno, para no reescribir el estilo del widget de más.
+            var repositionScheduled = false;
+            function scheduleReposition() {
+               if (repositionScheduled) return;
+               repositionScheduled = true;
+               requestAnimationFrame(function () {
+                  repositionScheduled = false;
+                  repositionChatWidget();
+               });
+            }
+
+            window.addEventListener('resize', scheduleReposition);
+            if (window.visualViewport) {
+               window.visualViewport.addEventListener('resize', scheduleReposition);
+            }
 
             var attempts = 0;
             var poll = setInterval(function () {

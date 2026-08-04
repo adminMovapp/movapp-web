@@ -11,6 +11,18 @@ body {
 }
 
 /* ============================================================
+   Evita que el rebote elástico (bounce) al llegar al tope/fondo de
+   la página en iOS/WebKit arrastre visualmente los elementos
+   position:fixed (Header en píldora, MobileBottomNav) -- se veía
+   como si "flotaran" al llegar al límite del scroll. No afecta el
+   scroll normal, solo el rebote en los extremos.
+   ============================================================ */
+html,
+body {
+   overscroll-behavior-y: none;
+}
+
+/* ============================================================
    TEMA LIGHT — overrides globales
    Todo el sitio usa text-white / bg-white/x hardcodeado sobre fondo
    oscuro. En light reinterpretamos esas utilidades para mantener

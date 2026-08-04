@@ -181,6 +181,14 @@ import ArrowIcon from '@assets/ArrowIcon.astro';
       transition:
          background-color 0.3s ease,
          color 0.3s ease;
+      /* Ver mismo comentario que #mobileBottomNav en MobileBottomNav.astro:
+         fuerza su propia capa de composición para que WebKit repinte este
+         fixed en cada frame de scroll en vez de rezagarlo/snap al parar. */
+      transform: translateZ(0);
+      -webkit-transform: translateZ(0);
+      will-change: transform;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
    }
 
    :global(html.dark) #siteHeader {

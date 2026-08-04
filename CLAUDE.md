@@ -33,6 +33,18 @@ Both `astro.config.mjs` (Vite `resolve.alias`) and `tsconfig.json` define the sa
 
 `src/pages/*.astro` are route entry points; most delegate their body content to `src/sections/<page-name>/*.astro` (e.g. `sections/home/`, `sections/nosotros/`, `sections/tienda/`). `src/components/layout` holds chrome shared across every page (Header, Footer, MenuMobile, preloader, analytics/pixel scripts); `src/components/ui` holds smaller reusable pieces plus the two React islands.
 
+### Progressive enhancement: full design with JS, lightweight HTML without it
+
+Non-negotiable product requirement, implemented in `src/layouts/Layout.astro`: if the browser/bot can run JavaScript, the page looks exactly as designed (Tailwind, AOS animations, colors). If it can't, it serves lean semantic HTML with **100% of the real text/content still present** — only the visual design is gated behind JS, never actual content. `astro.config.mjs` has `tailwind({ applyBaseStyles: false })` to prevent the integration from auto-injecting its own Tailwind `<link>` and bypassing the gating; design stylesheets are imported with the `?url` suffix and manually attached from an inline script in `Layout.astro`, while `src/styles/no-js.css` (scoped under `html.no-js`) is the always-inlined fallback. Full mechanism, verification steps, and pitfalls (already-hit regressions) are documented in the `.claude/skills/Diseño/SKILL.md` skill — read it before touching this or adding new design-only CSS/libraries.
+
+### Mobile-first design standard
+
+Every new section/component is designed and verified on mobile (~375-428px viewport) first, desktop second — unprefixed Tailwind classes describe the mobile layout; `sm:`/`md:`/`lg:` only add desktop refinements, never the reverse. Also covered by the `Diseño` skill.
+
+### SEO content import
+
+New pages/sections are typically implemented from a master SEO/content document (attached to the conversation, not stored in the repo); SEO copy (H1, heading hierarchy, meta title/description/keywords, verbatim body copy) is the top priority of the project, ahead of any urge to paraphrase. The `.claude/skills/seo-content-import/SKILL.md` skill encodes the exact extraction/mapping/verification process to follow.
+
 ### Data flow: mobile-app backend as source of truth
 
 There is no local database or CMS. `src/api/api.jsx` calls an external API (`PUBLIC_API_LINK`) that is shared with Movapp's mobile app:

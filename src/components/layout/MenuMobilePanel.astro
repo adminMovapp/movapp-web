@@ -1,0 +1,131 @@
+---
+---
+
+<!--
+   Vive FUERA de <MobileBottomNav> a propósito (se renderiza como hermano
+   suyo desde Layout.astro): ese nav tiene un "transform" inline permanente
+   (ver su propio script -- compensación de viewport en iOS) y en CSS,
+   cualquier transform en un ancestro convierte a ese ancestro en el
+   contenedor de referencia para sus descendientes "position: fixed", en
+   vez del viewport. Si este panel viviera anidado ahí adentro, dejaría de
+   cubrir toda la pantalla y quedaría encerrado en los ~60px de la barra
+   inferior (bug real, encontrado con un test de Playwright: el panel
+   medía 390x60 en vez de 390x844).
+
+   "dark-section" hace que el texto blanco/fondos translúcidos se
+   mantengan aunque el sitio esté en tema claro -- ver la convención en
+   src/styles/global.css ("Secciones que SIEMPRE son oscuras").
+-->
+<nav
+   id="menuNav"
+   class="dark-section fixed inset-0 z-[999999999] hidden flex-col bg-background_bottom p-6 pt-[calc(1.5rem_+_env(safe-area-inset-top))] pb-[calc(1.5rem_+_env(safe-area-inset-bottom))]"
+>
+   <div class="flex items-center justify-end">
+      <button
+         id="menuCloseButton"
+         aria-label="Cerrar menú"
+         class="flex h-11 w-11 items-center justify-center rounded-full text-white/70 hover:bg-white/5 hover:text-white"
+      >
+         <svg class="h-7 w-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+         </svg>
+      </button>
+   </div>
+
+   <div class="flex min-h-0 flex-1 flex-col items-center justify-center gap-6 overflow-y-auto py-8">
+      <a href="/nosotros" class="text-2xl font-semibold text-white hover:text-text_banner">Movapp</a>
+      <a href="/el-hack" class="text-2xl font-semibold text-white hover:text-text_banner">Hack</a>
+      <a href="/collaborations" class="text-2xl font-semibold text-white hover:text-text_banner">Colaboraciones</a>
+      <a href="/faqs" class="text-2xl font-semibold text-white hover:text-text_banner">Preguntas frecuentes</a>
+      <a href="/testimonials" class="text-2xl font-semibold text-white hover:text-text_banner">Testimonios</a>
+      <a href="/mind" class="text-2xl font-semibold text-white hover:text-text_banner">Mente digital</a>
+      <a href="/red" class="text-2xl font-semibold text-white hover:text-text_banner">Nuestras redes</a>
+   </div>
+
+   <!-- Carrito y tema -->
+   <div class="flex flex-col items-center gap-5 border-t border-white/10 pt-6">
+      <a href="/tienda" id="cartButtonMobile" class="relative flex items-center gap-2 text-base text-white hover:text-text_banner">
+         <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path
+               stroke-linecap="round"
+               stroke-linejoin="round"
+               d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+            ></path>
+         </svg>
+         <span>Carrito</span>
+         <span
+            data-cart-count
+            class="hidden h-5 w-5 items-center justify-center rounded-full bg-text_banner text-[11px] font-bold text-white"
+         >0</span>
+      </a>
+
+      <button id="themeToggleMobile" type="button" class="flex items-center gap-2 text-base text-white hover:text-text_banner">
+         <svg
+            class="block h-5 w-5 dark:hidden"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+         >
+            <circle cx="12" cy="12" r="4"></circle>
+            <path
+               d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"
+            ></path>
+         </svg>
+         <svg
+            class="hidden h-5 w-5 dark:block"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+         >
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+         </svg>
+         <span>Cambiar tema</span>
+      </button>
+   </div>
+</nav>
+
+<script>
+   const menuButton = document.getElementById('menuButton');
+   const hamburgerIcon = document.getElementById('hamburgerIcon');
+   const menuButtonCloseIcon = document.getElementById('menuButtonCloseIcon');
+   const menuNav = document.getElementById('menuNav');
+
+   function openMenu() {
+      menuNav.classList.remove('hidden');
+      menuNav.classList.add('flex');
+      hamburgerIcon.classList.add('hidden');
+      menuButtonCloseIcon.classList.remove('hidden');
+      menuButton.setAttribute('aria-expanded', 'true');
+      document.body.classList.add('overflow-hidden');
+   }
+
+   function closeMenu() {
+      menuNav.classList.add('hidden');
+      menuNav.classList.remove('flex');
+      hamburgerIcon.classList.remove('hidden');
+      menuButtonCloseIcon.classList.add('hidden');
+      menuButton.setAttribute('aria-expanded', 'false');
+      document.body.classList.remove('overflow-hidden');
+   }
+
+   menuButton.addEventListener('click', () => {
+      if (menuNav.classList.contains('hidden')) openMenu();
+      else closeMenu();
+   });
+
+   // Cerrar automáticamente al elegir cualquier opción del menú (enlaces,
+   // el botón de cerrar, carrito o cambio de tema) -- delegado en vez de
+   // un listener por item porque la lista puede crecer sin tener que
+   // acordarse de engancharla acá.
+   menuNav.addEventListener('click', (e) => {
+      if (e.target instanceof Element && e.target.closest('a, button')) closeMenu();
+   });
+</script>
