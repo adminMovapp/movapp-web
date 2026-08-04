@@ -203,26 +203,46 @@ html:not(.dark) .glass-card {
 }
 
 /* ============================================================
-   Red de seguridad para [data-aos] en móvil: AOS ya está desactivado
-   en móvil por configuración (ver InitAOS.jsx, disable: innerWidth <
-   768) -- esa desactivación remueve el atributo data-aos por JS, pero
-   depende de que la isla de React (InitAOS, client:only="react")
-   cargue e hidrate. Si esa isla no llega a ejecutarse a tiempo (o
-   nunca) -algo que solo se ha visto en producción/redes reales, no en
-   localhost- el atributo data-aos se queda puesto y aos.css lo deja en
-   opacity:0 para siempre, mostrando la página con secciones completas
-   "desaparecidas". Esta regla fuerza la visibilidad por CSS puro en
-   viewports móviles, sin depender de que ese JS llegue a correr --
-   mismo resultado final (sin animación en móvil) que ya era el
-   comportamiento buscado, solo que ahora garantizado. No toca nada en
-   escritorio (min-width: 768px en adelante sigue dependiendo de AOS
-   normalmente).
+   [data-aos] -- reveal on scroll, en TODO tamaño de pantalla (móvil y
+   escritorio). Antes esto lo manejaba la librería AOS, inicializada
+   desde una isla de React (InitAOS, client:only="react"): esa isla
+   tenía que cargar e hidratar en el cliente para remover el atributo
+   data-aos (en móvil, donde AOS estaba desactivado) o para agregar la
+   clase que revela cada sección (en escritorio). Si esa hidratación
+   no llegaba a ocurrir -confirmado en producción, tanto en móvil como
+   en escritorio, nunca en localhost- las secciones se quedaban en
+   opacity:0 PARA SIEMPRE, porque esta misma hoja de estilos ya las
+   ocultaba desde antes de que hubiera oportunidad de correr JS. Se
+   reemplazó por CSS puro + un IntersectionObserver plano (ver
+   Layout.astro) que no depende de ningún framework para ejecutarse --
+   mismo lenguaje visual que tenía AOS (mismos valores de traslado),
+   pero sin ese punto de falla, y ahora activo también en móvil.
    ============================================================ */
-@media (max-width: 767.98px) {
-   [data-aos] {
-      opacity: 1 !important;
-      transform: none !important;
-   }
+[data-aos] {
+   opacity: 0;
+   transition:
+      opacity 0.8s ease,
+      transform 0.8s ease;
+   will-change: opacity, transform;
+}
+[data-aos='fade-up'] {
+   transform: translate3d(0, 100px, 0);
+}
+[data-aos='fade-down'] {
+   transform: translate3d(0, -100px, 0);
+}
+[data-aos='fade-right'] {
+   transform: translate3d(-100px, 0, 0);
+}
+[data-aos='fade-left'] {
+   transform: translate3d(100px, 0, 0);
+}
+[data-aos='zoom-in'] {
+   transform: scale(0.6);
+}
+[data-aos].aos-animate {
+   opacity: 1;
+   transform: none;
 }
 
 /* ============================================================

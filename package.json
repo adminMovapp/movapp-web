@@ -21,7 +21,6 @@
       "@stripe/stripe-js": "^9.9.0",
       "@types/react": "^19.1.8",
       "@types/react-dom": "^19.1.6",
-      "aos": "^2.3.4",
       "astro": "^5.10.1",
       "crypto-js": "^4.2.0",
       "react": "^19.1.0",

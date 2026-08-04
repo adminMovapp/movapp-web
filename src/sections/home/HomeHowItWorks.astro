@@ -14,17 +14,14 @@ const steps = [
    },
 ];
 
-const cardHover =
-   'border border-purple_mv/25 bg-gradient-to-b from-purple_mv/[0.06] to-transparent shadow-card transition-colors duration-300 hover:border-purple_mv/50 hover:shadow-card-hover dark:border-white/10 dark:from-purple_mv/[0.1] dark:to-black/30';
-
 import ButtonContact from '@components/ui/ButtonContact.astro';
 import StarField from '@components/decorative/StarField.astro';
 ---
 
-<section class="relative mx-auto my-16 w-full max-w-6xl px-4" data-aos="fade-up">
+<section class="relative mx-auto my-16 w-full max-w-3xl px-4" data-aos="fade-up">
    <StarField id="how-it-works" ambientCount={40} />
 
-   <div class="mb-10 text-center">
+   <div class="mb-12 text-center">
       <span class="text-xs font-semibold uppercase tracking-widest text-text_banner">La solución</span>
       <h2 class="mt-1 text-2xl md:text-4xl font-bold text-gray-900 dark:text-white">¿Cómo funciona El Hack?</h2>
       <p class="mx-auto mt-3 max-w-xl text-gray-600 dark:text-white/70">
@@ -32,28 +29,56 @@ import StarField from '@components/decorative/StarField.astro';
       </p>
    </div>
 
-   <!-- Stepper: línea de tiempo con conectores -->
-   <div id="howItWorksGrid" class="reveal-stagger relative grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-6">
-      <!-- Línea conectora horizontal (desktop) -->
+   <!--
+      Línea de tiempo vertical (misma estructura que NosotrosTimeline.astro):
+      línea conectora centrada, con un punto por paso que alterna de lado en
+      escritorio (izquierda/derecha) y queda en una sola columna en móvil.
+
+      A diferencia de NosotrosTimeline (que revela TODO el bloque de golpe
+      con reveal-stagger la primera vez que entra en vista), aquí cada punto
+      lleva su propio data-aos: como la sección es más alta que una pantalla,
+      cada paso se revela por su cuenta conforme el usuario llega a él con el
+      scroll, en vez de aparecer todos juntos apenas se ve el primero.
+
+      transition-delay creciente por punto (además del data-aos individual):
+      en pantallas donde los 3 puntos ya caben dentro del viewport apenas
+      entra la sección (pantallas altas, o si el usuario recarga ya con la
+      sección a medio scroll), los 3 podrían disparar su intersección casi
+      al mismo tiempo -- el delay obliga a que se sigan viendo uno-por-uno en
+      cascada aunque eso pase, en vez de aparecer los 3 de golpe.
+   -->
+   <div class="relative">
       <div
-         class="pointer-events-none absolute left-0 right-0 top-7 hidden h-px bg-gradient-to-r from-transparent via-purple_mv/50 to-transparent md:block"
+         class="absolute bottom-2 left-[15px] top-2 w-px bg-gradient-to-b from-purple_mv via-purple_mv/40 to-transparent md:left-1/2"
          aria-hidden="true"
       >
       </div>
 
       {
          steps.map((s, i) => (
-            <div class="group relative flex flex-col items-center text-center">
-               {/* El número queda fijo (alineado con la línea conectora); solo la
-                   tarjeta de abajo flota, para no desalinear el conector. */}
-               <div class="relative z-10 mb-5 flex h-14 w-14 items-center justify-center rounded-full border-2 border-purple_mv bg-gray-50 text-xl font-bold text-text_banner shadow-[0_0_25px_rgba(129,73,226,0.35)] transition-all duration-300 group-hover:scale-110 group-hover:bg-text_banner group-hover:text-white dark:bg-[#050505]">
-                  {i + 1}
-               </div>
-               <div
-                  class={`float-anim w-full flex-1 rounded-2xl p-6 ${cardHover}`}
-                  style={`--float-dur: ${5.6 + i * 0.3}s; --float-delay: ${i * 0.2}s;`}
+            <div
+               class:list={[
+                  'relative mb-10 flex items-start gap-6 last:mb-0 md:mb-12 md:w-1/2',
+                  i % 2 === 0
+                     ? 'md:ml-0 md:flex-row-reverse md:pr-12 md:text-right'
+                     : 'md:ml-auto md:pl-12 md:flex-row',
+               ]}
+               data-aos="fade-up"
+               style={`transition-delay: ${i * 0.2}s`}
+            >
+               {/* Punto en la línea */}
+               <span
+                  class:list={[
+                     'absolute left-0 top-1 z-10 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border-2 border-purple_mv bg-gray-50 dark:bg-[#050505]',
+                     i % 2 === 0 ? 'md:-right-4 md:left-auto' : 'md:-left-4',
+                  ]}
                >
-                  <h3 class="mb-2 text-lg font-bold text-gray-900 dark:text-white">{s.title}</h3>
+                  <span class="h-2.5 w-2.5 rounded-full bg-text_banner" />
+               </span>
+
+               {/* Contenido */}
+               <div class="ml-12 flex-1 md:ml-0">
+                  <h3 class="mb-2 text-lg font-bold text-text_banner">{s.title}</h3>
                   <p class="text-sm text-gray-700 dark:text-white/90">{s.text}</p>
                </div>
             </div>
@@ -70,27 +95,3 @@ import StarField from '@components/decorative/StarField.astro';
       </a>
    </div>
 </section>
-
-<script>
-   // Reveal escalonado de los pasos (también en móvil, AOS está off <768px)
-   const grid = document.getElementById('howItWorksGrid');
-   if (grid) {
-      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (reduce || !('IntersectionObserver' in window)) {
-         grid.classList.add('in-view');
-      } else {
-         const io = new IntersectionObserver(
-            (entries) => {
-               entries.forEach((entry) => {
-                  if (entry.isIntersecting) {
-                     entry.target.classList.add('in-view');
-                     io.unobserve(entry.target);
-                  }
-               });
-            },
-            { threshold: 0.15 },
-         );
-         io.observe(grid);
-      }
-   }
-</script>

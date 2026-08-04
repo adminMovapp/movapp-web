@@ -13,14 +13,14 @@ const hub = [
       title: 'Directorio de apps',
       desc: 'Consulta si una app de préstamo es legal o tiene reportes antes de usarla.',
       href: '/directorio-de-apps/',
-      photo: '/img/migracion/threat_phone.png',
+      photo: '/img/Directorio-de-Apps.webp',
       alt: 'Persona revisando en su teléfono si una app de préstamo es confiable',
    },
    {
       title: 'Recursos y guías',
       desc: 'Aprende a defenderte de las apps montadeudas y a cuidar tu salud financiera.',
       href: '/recursos/',
-      photo: '/img/migracion/guia.webp',
+      photo: '/img/Foto-Erik.webp',
       alt: 'Persona aprendiendo a cuidar su bienestar frente al acoso digital',
    },
 ];
@@ -65,6 +65,10 @@ const hub = [
                            alt={item.alt || item.title}
                            class="relative z-10 w-1/2 drop-shadow-[0_0_18px_rgba(129,73,226,0.55)]"
                         />
+                     </div>
+                  ) : i === 2 ? (
+                     <div class="flex h-full w-full items-center justify-center bg-[#0b0614]">
+                        <img src={item.photo} alt={item.alt || item.title} class="h-full w-full object-contain" loading="lazy" />
                      </div>
                   ) : (
                      <img src={item.photo} alt={item.alt || item.title} class="h-full w-full object-cover" loading="lazy" />

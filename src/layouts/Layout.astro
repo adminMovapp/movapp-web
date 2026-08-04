@@ -8,10 +8,6 @@ import stylesheetHref from '@styles/global.css?url';
 // estilos mínima y liviana que le da estructura al HTML cuando Tailwind no
 // está disponible. Ver src/styles/no-js.css.
 import '@styles/no-js.css';
-// CSS de la librería AOS (animaciones on-scroll): solo tiene efecto si AOS.init()
-// corre (dentro de InitAOS, un componente client:only), así que se carga igual
-// que Tailwind, vía el script condicionado a JavaScript de más abajo.
-import aosHref from 'aos/dist/aos.css?url';
 // Solo lo usa la isla de React de la tienda (bandera de país); sin JS esa
 // isla ni siquiera se hidrata, así que también se difiere a este script.
 const flagIconsHref = 'https://cdn.jsdelivr.net/npm/flag-icons/css/flag-icons.min.css';
@@ -22,7 +18,6 @@ import Footer from '@components/layout/Footer.astro';
 import HeaderLayer from '@/components/layout/HeaderLayer.astro';
 import Preloader from '@/components/layout/Preloader.astro';
 import BackgroundGrid from '@components/layout/BackgroundGrid.astro';
-import InitAOS from '@/utils/InitAOS.jsx';
 
 import { getSiteConfig, generateSEOTags, generateOrganizationSchema } from '@/utils/config.jsx';
 
@@ -78,12 +73,12 @@ const organizationSchema = generateOrganizationSchema(Astro.request);
          JavaScript, se agrega el <link> y la página luce con el diseño
          completo (colores, animaciones, etc.).
       -->
-      <script is:inline define:vars={{ stylesheetHref, aosHref, flagIconsHref }}>
+      <script is:inline define:vars={{ stylesheetHref, flagIconsHref }}>
          (function () {
             document.documentElement.classList.remove('no-js');
             document.documentElement.classList.add('js');
 
-            [stylesheetHref, aosHref, flagIconsHref].forEach(function (href) {
+            [stylesheetHref, flagIconsHref].forEach(function (href) {
                var link = document.createElement('link');
                link.rel = 'stylesheet';
                link.href = href;
@@ -206,7 +201,6 @@ const organizationSchema = generateOrganizationSchema(Astro.request);
       class="bg-gray-50 text-gray-900 dark:bg-[#050505] dark:text-white min-h-[100svh] flex flex-col overflow-x-hidden transition-colors duration-300"
    >
       {showPreloader && <Preloader />}
-      <InitAOS client:only="react" />
       {!disableThirdPartyScripts && <MetaPixelScript pixelId={import.meta.env.PUBLIC_META_PIXEL_ID} />}
 
       {showHeaderLayer ? <HeaderLayer /> : null}
@@ -469,6 +463,73 @@ const organizationSchema = generateOrganizationSchema(Astro.request);
                watchChatWidgetBox();
                if (observedBox || watchAttempts > 30) clearInterval(watchPoll);
             }, 300);
+         })();
+      </script>
+
+      <!--
+         Reveal on scroll para [data-aos] (todas las secciones marcadas con
+         ese atributo, en toda la página): reemplaza a la librería AOS, que
+         antes se inicializaba desde una isla de React (InitAOS,
+         client:only="react"). Ese enfoque tenía un punto de falla real: si
+         la isla no llegaba a hidratar (confirmado en producción, tanto en
+         móvil como en escritorio, nunca en localhost), las secciones se
+         quedaban en opacity:0 para siempre -- la hoja de estilos ya las
+         ocultaba desde antes de que hubiera oportunidad de correr ese JS.
+         Este script es plano (is:inline, sin framework ni build de por
+         medio) y corre siempre que el navegador ejecute JavaScript en
+         absoluto, igual que el resto de los scripts de este layout. Mismos
+         valores de traslado que tenía AOS (ver [data-aos] en global.css),
+         ahora también activo en móvil (antes AOS venía desactivado ahí).
+      -->
+      <script is:inline>
+         (function () {
+            function initAosReveal() {
+               var items = Array.prototype.filter.call(document.querySelectorAll('[data-aos]'), function (el) {
+                  return !el.hasAttribute('data-aos-observed');
+               });
+               if (!items.length) return;
+               items.forEach(function (el) {
+                  el.setAttribute('data-aos-observed', '');
+               });
+
+               var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+               if (reduce || !('IntersectionObserver' in window)) {
+                  items.forEach(function (el) {
+                     el.classList.add('aos-animate');
+                  });
+                  return;
+               }
+
+               // threshold:0 + rootMargin negativo abajo (en vez de threshold:0.15 +
+               // -40px): con threshold:0.15 el punto de disparo dependía del ALTO
+               // de cada elemento (15% de su propio alto), así que dos elementos
+               // vecinos de distinta altura disparaban en momentos muy distintos
+               // entre sí -- a veces casi juntos, a veces muy separados, sin
+               // relación con cuánto se había scrolleado realmente. Con
+               // threshold:0 el disparo es "tocar el borde", así que la
+               // separación entre disparos de elementos vecinos queda ligada
+               // directamente a la distancia real entre ellos en la página. El
+               // -30% de rootMargin (en vez de -40px, que era casi nada) obliga a
+               // scrollear un tramo perceptible antes de revelar cada uno, en vez
+               // de que se revele con solo un asomo de 40px desde abajo.
+               var io = new IntersectionObserver(
+                  function (entries) {
+                     entries.forEach(function (entry) {
+                        if (entry.isIntersecting) {
+                           entry.target.classList.add('aos-animate');
+                           io.unobserve(entry.target);
+                        }
+                     });
+                  },
+                  { threshold: 0, rootMargin: '0px 0px -30% 0px' },
+               );
+               items.forEach(function (el) {
+                  io.observe(el);
+               });
+            }
+
+            initAosReveal();
+            document.addEventListener('astro:page-load', initAosReveal);
          })();
       </script>
    </body>
