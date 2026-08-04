@@ -426,6 +426,49 @@ const organizationSchema = generateOrganizationSchema(Astro.request);
                attempts++;
                if (repositionChatWidget() || attempts > 30) clearInterval(poll);
             }, 300);
+
+            /*
+               Al ABRIR el chat (tocar la burbuja), el panel expandido usa su
+               propio "bottom" (fijado por la hoja de estilos del widget, no
+               por nuestro estilo inline) para calcular su alto -- y ese
+               "bottom" propio no deja espacio para MobileBottomNav, así que
+               el panel se extiende por debajo de la barra y el cuadro de
+               texto para escribir queda tapado. Además, abrir/cerrar el
+               widget reescribe el atributo "style" del panel desde su propio
+               código, lo que BORRA el bottomOffset que le habíamos puesto --
+               por eso no basta con fijarlo una sola vez al cargar la página.
+               Un MutationObserver sobre ese atributo permite reaplicar el
+               offset cada vez que el widget lo pisa (incluida la apertura),
+               sin depender de ningún evento propio del widget (no expone
+               ninguno). Se relee "isMobile" en cada corrección para no
+               tocar nada en escritorio.
+            */
+            var observedBox = null;
+            function watchChatWidgetBox() {
+               var host = document.querySelector('chat-widget');
+               var root = host && host.shadowRoot;
+               var box = root && root.getElementById('lc_text-widget');
+               if (!box || box === observedBox) return;
+               observedBox = box;
+
+               var enforcing = false;
+               new MutationObserver(function () {
+                  if (enforcing) return;
+                  var isMobile = window.matchMedia('(max-width: 1023px)').matches;
+                  if (!isMobile) return;
+                  var desired = 'calc(4.5rem + env(safe-area-inset-bottom))';
+                  if (box.style.bottom === desired) return;
+                  enforcing = true;
+                  box.style.bottom = desired;
+                  enforcing = false;
+               }).observe(box, { attributes: true, attributeFilter: ['style'] });
+            }
+            var watchAttempts = 0;
+            var watchPoll = setInterval(function () {
+               watchAttempts++;
+               watchChatWidgetBox();
+               if (observedBox || watchAttempts > 30) clearInterval(watchPoll);
+            }, 300);
          })();
       </script>
    </body>

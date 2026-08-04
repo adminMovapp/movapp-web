@@ -203,6 +203,29 @@ html:not(.dark) .glass-card {
 }
 
 /* ============================================================
+   Red de seguridad para [data-aos] en móvil: AOS ya está desactivado
+   en móvil por configuración (ver InitAOS.jsx, disable: innerWidth <
+   768) -- esa desactivación remueve el atributo data-aos por JS, pero
+   depende de que la isla de React (InitAOS, client:only="react")
+   cargue e hidrate. Si esa isla no llega a ejecutarse a tiempo (o
+   nunca) -algo que solo se ha visto en producción/redes reales, no en
+   localhost- el atributo data-aos se queda puesto y aos.css lo deja en
+   opacity:0 para siempre, mostrando la página con secciones completas
+   "desaparecidas". Esta regla fuerza la visibilidad por CSS puro en
+   viewports móviles, sin depender de que ese JS llegue a correr --
+   mismo resultado final (sin animación en móvil) que ya era el
+   comportamiento buscado, solo que ahora garantizado. No toca nada en
+   escritorio (min-width: 768px en adelante sigue dependiendo de AOS
+   normalmente).
+   ============================================================ */
+@media (max-width: 767.98px) {
+   [data-aos] {
+      opacity: 1 !important;
+      transform: none !important;
+   }
+}
+
+/* ============================================================
    Scrollbar de escritorio: el thumb se difumina de morado
    (purple_mv) al color de fondo del sitio, y el track lleva el
    mismo patrón de estrellitas tenues que StarField/el hero. Solo
