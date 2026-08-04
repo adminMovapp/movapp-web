@@ -92,15 +92,22 @@ const hub = [
       }
    </div>
 
-   <!-- Pista de swipe: solo en móvil, siempre visible en el HTML (no depende de JS) -->
+   <!-- Pista de swipe: solo en móvil, siempre visible en el HTML (no depende de JS).
+        Las flechas son botones reales (ver script) que llevan a la tarjeta
+        anterior/siguiente -- el swipe manual sigue funcionando igual, esto
+        solo agrega una forma alterna de navegar con un tap. -->
    <div class="swipe-hint mx-auto mt-5 flex w-fit items-center gap-2 rounded-full border border-purple_mv/25 bg-purple_mv/5 px-4 py-1.5 text-[11px] font-medium text-gray-500 dark:border-white/10 dark:bg-white/5 dark:text-white/50 md:hidden">
-      <svg class="swipe-hint-arrow h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-         <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-      </svg>
+      <button id="featuredSwipePrev" type="button" aria-label="Ver tarjeta anterior" class="-m-1 flex items-center justify-center p-1">
+         <svg class="swipe-hint-arrow h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+         </svg>
+      </button>
       Desliza para ver más
-      <svg class="swipe-hint-arrow h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-         <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-      </svg>
+      <button id="featuredSwipeNext" type="button" aria-label="Ver siguiente tarjeta" class="-m-1 flex items-center justify-center p-1">
+         <svg class="swipe-hint-arrow h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+         </svg>
+      </button>
    </div>
 </section>
 
@@ -184,6 +191,68 @@ const hub = [
          );
          cards.forEach((c) => io.observe(c));
       }
+
+      // Flechas de la pista de swipe: llevan a la tarjeta anterior/siguiente
+      // sin reemplazar el swipe manual (scroll-snap nativo sigue intacto).
+      // El índice activo se recalcula por posición de scroll en cada click
+      // en vez de depender del IntersectionObserver de arriba, así funciona
+      // incluso si ese observer no está disponible.
+      const getActiveIndex = () => {
+         const center = track.scrollLeft + track.clientWidth / 2;
+         let closest = 0;
+         let minDist = Infinity;
+         cards.forEach((c, i) => {
+            const cardEl = c as HTMLElement;
+            const dist = Math.abs(cardEl.offsetLeft + cardEl.offsetWidth / 2 - center);
+            if (dist < minDist) {
+               minDist = dist;
+               closest = i;
+            }
+         });
+         return closest;
+      };
+
+      const scrollToIndex = (i: number) => {
+         const clamped = Math.max(0, Math.min(cards.length - 1, i));
+         cards[clamped].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      };
+
+      const prevBtn = document.getElementById('featuredSwipePrev');
+      const nextBtn = document.getElementById('featuredSwipeNext');
+
+      // El widget de chat (LeadConnector) puede mostrar un globo de saludo
+      // que es un overlay real: position:fixed y z-index gigantesco (~1e8),
+      // por encima de TODO el contenido de <main> -- <main> tiene "isolate"
+      // en Layout.astro, así que nada adentro puede ganarle por z-index sin
+      // importar qué tan alto se ponga. Cuando ese globo cae encima de estas
+      // flechas, el navegador entrega el click al widget, no al botón, aun
+      // viéndose éste "por encima". Se intercepta en fase de captura en
+      // window (que siempre se dispara, sin importar cuál haya sido el
+      // target real) y se decide por coordenadas del click en vez de
+      // depender de a quién el navegador se lo haya asignado.
+      const isInside = (el: Element, x: number, y: number) => {
+         const r = el.getBoundingClientRect();
+         return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
+      };
+      window.addEventListener(
+         'click',
+         (e) => {
+            if (prevBtn && isInside(prevBtn, e.clientX, e.clientY)) {
+               e.stopPropagation();
+               scrollToIndex(getActiveIndex() - 1);
+            } else if (nextBtn && isInside(nextBtn, e.clientX, e.clientY)) {
+               e.stopPropagation();
+               scrollToIndex(getActiveIndex() + 1);
+            }
+         },
+         { capture: true },
+      );
+
+      // Fallback para activación por teclado (Enter/Espacio con foco en el
+      // botón): ahí no hay coordenadas de puntero reales, así que el chequeo
+      // de arriba no aplica y hace falta este listener normal.
+      prevBtn?.addEventListener('click', () => scrollToIndex(getActiveIndex() - 1));
+      nextBtn?.addEventListener('click', () => scrollToIndex(getActiveIndex() + 1));
    };
 
    initFeaturedCarousel();
