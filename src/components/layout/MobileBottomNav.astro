@@ -29,18 +29,13 @@ import MenuMobile from '@components/layout/MenuMobile.astro';
       aria-label="Movapp - Inicio"
       data-home-link
    >
-      <img src="/img/logo_resp.webp" alt="Home" class="block h-7 w-auto dark:hidden" />
-      <img src="/img/logo_resp_blanco.webp" alt="Home" class="hidden h-7 w-auto dark:block" />
+      <span class="sr-only">Home</span>
+      <span class="home-logo-icon block h-7 w-9 bg-purple_mv dark:bg-white" aria-hidden="true"></span>
    </a>
 
    <!-- Tienda -->
-   <a
-      href="/tienda"
-      class="flex flex-1 flex-col items-center justify-center gap-1 py-2 text-gray-500 hover:text-text_banner dark:text-white/60 dark:hover:text-white"
-      aria-label="Tienda"
-   >
-      <img src="/img/tienda.webp" alt="" class="h-6 w-6 dark:invert" />
-      <span class="text-[11px] font-medium">Tienda</span>
+   <a href="/tienda" class="flex flex-1 flex-col items-center justify-center py-2" aria-label="Tienda">
+      <span class="tienda-icon block h-7 w-7 bg-purple_mv dark:bg-white" aria-hidden="true"></span>
    </a>
 
    <!-- Menú (hamburguesa con el resto de opciones) -->
@@ -52,5 +47,34 @@ import MenuMobile from '@components/layout/MenuMobile.astro';
       will-change: transform;
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
+   }
+
+   /*
+      /img/tienda.webp es una silueta negra sobre transparente (por eso antes
+      llevaba "dark:invert" para volverse blanca en dark). Con mask-image en
+      vez de <img> podemos pintarla de CUALQUIER color (morado en claro,
+      blanco en dark) usando bg-purple_mv/dark:bg-white -- currentColor +
+      dark:invert no alcanzaba para llegar a un morado exacto en modo claro.
+   */
+   .tienda-icon {
+      -webkit-mask-image: url('/img/tienda.webp');
+      mask-image: url('/img/tienda.webp');
+      -webkit-mask-repeat: no-repeat;
+      mask-repeat: no-repeat;
+      -webkit-mask-position: center;
+      mask-position: center;
+      -webkit-mask-size: contain;
+      mask-size: contain;
+   }
+
+   .home-logo-icon {
+      -webkit-mask-image: url('/img/logo_resp.webp');
+      mask-image: url('/img/logo_resp.webp');
+      -webkit-mask-repeat: no-repeat;
+      mask-repeat: no-repeat;
+      -webkit-mask-position: center;
+      mask-position: center;
+      -webkit-mask-size: contain;
+      mask-size: contain;
    }
 </style>

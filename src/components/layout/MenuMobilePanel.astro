@@ -1,4 +1,5 @@
 ---
+import StarField from '@components/decorative/StarField.astro';
 ---
 
 <!--
@@ -12,19 +13,24 @@
    inferior (bug real, encontrado con un test de Playwright: el panel
    medía 390x60 en vez de 390x844).
 
-   "dark-section" hace que el texto blanco/fondos translúcidos se
-   mantengan aunque el sitio esté en tema claro -- ver la convención en
-   src/styles/global.css ("Secciones que SIEMPRE son oscuras").
+   El panel YA NO usa "dark-section": debe verse claro en tema claro y
+   oscuro en tema oscuro (fondo bg-white/dark:bg-background_bottom más
+   abajo), así que se apoya en las variantes "dark:" normales de Tailwind
+   en vez del remapeo global de "Secciones que SIEMPRE son oscuras" (ver
+   src/styles/global.css) -- ese remapeo es para secciones que deben
+   IGNORAR el tema, que ya no es el caso acá.
 -->
 <nav
    id="menuNav"
-   class="dark-section fixed inset-0 z-[999999999] hidden flex-col bg-background_bottom p-6 pt-[calc(1.5rem_+_env(safe-area-inset-top))] pb-[calc(1.5rem_+_env(safe-area-inset-bottom))]"
+   class="fixed inset-0 z-[999999999] hidden flex-col bg-white p-6 pt-[calc(1.5rem_+_env(safe-area-inset-top))] pb-[calc(1.5rem_+_env(safe-area-inset-bottom))] dark:bg-background_bottom"
 >
-   <div class="flex items-center justify-end">
+   <StarField id="mobile-menu" ambientCount={35} fullBleed={false} />
+
+   <div class="relative flex items-center justify-end">
       <button
          id="menuCloseButton"
          aria-label="Cerrar menú"
-         class="flex h-11 w-11 items-center justify-center rounded-full text-white/70 hover:bg-white/5 hover:text-white"
+         class="flex h-11 w-11 items-center justify-center rounded-full text-gray-500 hover:bg-black/5 hover:text-text_banner dark:text-white/70 dark:hover:bg-white/5 dark:hover:text-white"
       >
          <svg class="h-7 w-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
@@ -32,20 +38,44 @@
       </button>
    </div>
 
-   <div class="flex min-h-0 flex-1 flex-col items-center justify-center gap-6 overflow-y-auto py-8">
-      <a href="/nosotros" class="text-2xl font-semibold text-white hover:text-text_banner">Movapp</a>
-      <a href="/el-hack" class="text-2xl font-semibold text-white hover:text-text_banner">Hack</a>
-      <a href="/collaborations" class="text-2xl font-semibold text-white hover:text-text_banner">Colaboraciones</a>
-      <a href="/faqs" class="text-2xl font-semibold text-white hover:text-text_banner">Preguntas frecuentes</a>
-      <a href="/testimonials" class="text-2xl font-semibold text-white hover:text-text_banner">Testimonios</a>
-      <a href="/mind" class="text-2xl font-semibold text-white hover:text-text_banner">Mente digital</a>
-      <a href="/red" class="text-2xl font-semibold text-white hover:text-text_banner">Nuestras redes</a>
+   <!--
+      "justify-start" (NO "justify-center") a propósito: con las filas más
+      altas de los botones, el contenido suele desbordar el alto disponible,
+      y centrar un contenedor flex que desborda dispara un bug real de
+      layout -- varios navegadores no implementan "safe center" para
+      flexbox, así que el sobrante de ARRIBA queda fuera de rango de scroll
+      (scrollTop no puede bajar de 0 para revelarlo). Con "justify-start" el
+      primer botón ("Movapp") siempre queda alcanzable, desborde o no.
+   -->
+   <div class="relative flex min-h-0 flex-1 flex-col justify-start gap-2 overflow-y-auto py-6">
+      {
+         [
+            { href: '/nosotros', label: 'Movapp' },
+            { href: '/el-hack', label: 'Hack' },
+            { href: '/collaborations', label: 'Colaboraciones' },
+            { href: '/faqs', label: 'Preguntas frecuentes' },
+            { href: '/testimonials', label: 'Testimonios' },
+            { href: '/mind', label: 'Mente digital' },
+            { href: '/red', label: 'Nuestras redes' },
+         ].map((item) => (
+            <a
+               href={item.href}
+               class="rounded-xl border border-black/10 bg-black/5 px-4 py-3 text-center text-base font-semibold text-gray-800 transition hover:border-text_banner/40 hover:bg-black/10 hover:text-text_banner active:scale-[0.98] dark:border-white/10 dark:bg-white/5 dark:text-white dark:hover:bg-white/10"
+            >
+               {item.label}
+            </a>
+         ))
+      }
    </div>
 
    <!-- Carrito y tema -->
-   <div class="flex flex-col items-center gap-5 border-t border-white/10 pt-6">
-      <a href="/tienda" id="cartButtonMobile" class="relative flex items-center gap-2 text-base text-white hover:text-text_banner">
-         <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+   <div class="relative flex flex-col gap-2 border-t border-black/10 pt-4 dark:border-white/10">
+      <a
+         href="/tienda"
+         id="cartButtonMobile"
+         class="relative flex items-center justify-center gap-3 rounded-xl border border-black/10 bg-black/5 px-4 py-3 text-sm font-semibold text-gray-800 transition hover:border-text_banner/40 hover:bg-black/10 hover:text-text_banner active:scale-[0.98] dark:border-white/10 dark:bg-white/5 dark:text-white dark:hover:bg-white/10"
+      >
+         <svg class="h-5 w-5 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path
                stroke-linecap="round"
                stroke-linejoin="round"
@@ -59,9 +89,13 @@
          >0</span>
       </a>
 
-      <button id="themeToggleMobile" type="button" class="flex items-center gap-2 text-base text-white hover:text-text_banner">
+      <button
+         id="themeToggleMobile"
+         type="button"
+         class="flex items-center justify-center gap-3 rounded-xl border border-black/10 bg-black/5 px-4 py-3 text-sm font-semibold text-gray-800 transition hover:border-text_banner/40 hover:bg-black/10 hover:text-text_banner active:scale-[0.98] dark:border-white/10 dark:bg-white/5 dark:text-white dark:hover:bg-white/10"
+      >
          <svg
-            class="block h-5 w-5 dark:hidden"
+            class="block h-5 w-5 flex-shrink-0 dark:hidden"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="none"
@@ -76,7 +110,7 @@
             ></path>
          </svg>
          <svg
-            class="hidden h-5 w-5 dark:block"
+            class="hidden h-5 w-5 flex-shrink-0 dark:block"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="none"
