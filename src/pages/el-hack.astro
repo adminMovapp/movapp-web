@@ -1,29 +1,11 @@
 ---
-import { Picture } from 'astro:assets';
-
-import ButtonContact from '@/components/ui/ButtonContact.astro';
 import Layout from '@layouts/Layout.astro';
-import ImgElHackBlanco from '@assets/elhack-blanco.png';
-import ImgElHackNegro from '@assets/elhack-negro.png';
-
-// Card glassfrost (mismo lenguaje visual que el index, ver .glass-card en global.css)
-const cardHover =
-   'glass-card border border-purple_mv/20 dark:border-white/10 transition duration-300 ease-in-out hover:-translate-y-1 hover:shadow-[0_0_25px_rgba(129,73,226,0.25)] hover:border-purple_mv/50';
-
-const steps = [
-   {
-      title: 'Contacta a nuestro equipo',
-      text: 'Escríbenos por WhatsApp. Nuestro equipo está capacitado para atenderte con empatía y de manera profesional.',
-   },
-   {
-      title: 'Te canalizamos con un asesor',
-      text: 'Recibirás soluciones y recomendaciones específicas para resolver tu problema.',
-   },
-   {
-      title: 'Te damos la solución',
-      text: 'Forma parte de las más de un millón de personas que hemos ayudado y vive El Hack hacia un nuevo inicio.',
-   },
-];
+import ElHackHero from '@sections/el-hack/ElHackHero.astro';
+import ElHackWhatIs from '@sections/el-hack/ElHackWhatIs.astro';
+import ElHackHowItWorks from '@sections/el-hack/ElHackHowItWorks.astro';
+import ElHackFeatures from '@sections/el-hack/ElHackFeatures.astro';
+import ElHackFAQ from '@sections/el-hack/ElHackFAQ.astro';
+import ElHackCTA from '@sections/el-hack/ElHackCTA.astro';
 
 import { generateServiceSchema } from '@/utils/config.jsx';
 const serviceSchema = generateServiceSchema({
@@ -32,196 +14,17 @@ const serviceSchema = generateServiceSchema({
 });
 ---
 
-<Layout title="El Hack" schema={serviceSchema} showGrid={false}>
-   <!-- Orbes morados de fondo (sin rejilla) para que el glassfrost luzca -->
-   <div class="pointer-events-none absolute inset-0 -z-0 overflow-hidden" aria-hidden="true">
-      <div class="absolute -left-32 top-20 h-[420px] w-[420px] rounded-full bg-purple_mv/15 blur-3xl dark:bg-purple_mv/25 animate-floatSlow"></div>
-      <div
-         class="absolute -right-40 top-1/3 h-[460px] w-[460px] rounded-full bg-purple_mv/10 blur-3xl dark:bg-purple_mv/20 animate-floatSlow"
-         style="animation-delay: -4s;"
-      >
-      </div>
-      <div class="absolute bottom-20 left-1/3 h-[360px] w-[360px] rounded-full bg-purple_mv/10 blur-3xl dark:bg-purple_mv/15"></div>
-   </div>
-
-   <!-- ───────────────────── HERO ───────────────────── -->
-   <section class="relative mx-auto flex max-w-5xl flex-col items-center justify-center px-4 pt-32 pb-12 text-center">
-      <div
-         class="mb-6 inline-flex items-center gap-2 rounded-full border border-purple_mv/30 bg-purple_mv/10 px-4 py-1.5 text-xs md:text-sm font-medium text-text_banner animate-fadeIn"
-      >
-         <span class="relative flex h-2 w-2">
-            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-purple_mv opacity-75"></span>
-            <span class="relative inline-flex h-2 w-2 rounded-full bg-purple_mv"></span>
-         </span>
-         La herramienta que te protege
-      </div>
-
-      <p class="text-lg md:text-xl font-medium text-gray-700 dark:text-white/80 animate-fadeIn">Te presentamos</p>
-
-      <!-- Logo El Hack (negro en light, blanco en dark) -->
-      <div class="my-4 animate-fadeIn">
-         <Picture src={ImgElHackNegro} alt="El Hack" class="mx-auto block w-44 md:w-56 h-auto dark:hidden" />
-         <Picture src={ImgElHackBlanco} alt="El Hack" class="mx-auto hidden w-44 md:w-56 h-auto dark:block" />
-      </div>
-
-      <p class="mx-auto mt-4 max-w-2xl text-base md:text-lg text-gray-700 dark:text-white/80">
-         La herramienta tecnológica diseñada por <span class="font-bold text-text_banner">Movapp</span> para proteger tu
-         información personal cuando estás siendo afectado por aplicaciones no reguladas, también llamadas montadeudas.
-      </p>
-
-      <div class="mt-8">
-         <ButtonContact />
-      </div>
-   </section>
-
-   <!-- ───────────────── LA SOLUCIÓN (estilo Filosofía softree) ───────────────── -->
-   <section
-      class="relative my-16 w-full overflow-hidden bg-gradient-to-br from-purple_mv/15 via-purple_mv/5 to-transparent py-20 md:py-28"
-      data-aos="fade-up"
-   >
-      <!-- Bordes superior/inferior tenues para fundir con la página -->
-      <div
-         class="pointer-events-none absolute inset-0 bg-gradient-to-b from-gray-50 via-transparent to-gray-50 dark:from-[#050505] dark:via-transparent dark:to-[#050505]"
-         aria-hidden="true"
-      >
-      </div>
-
-      <!-- Patrón de puntos (tema-aware) -->
-      <div
-         class="pointer-events-none absolute inset-0 text-gray-900 opacity-[0.05] dark:text-white dark:opacity-[0.07]"
-         aria-hidden="true"
-      >
-         <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-               <pattern id="solDots" width="30" height="30" patternUnits="userSpaceOnUse">
-                  <circle cx="2" cy="2" r="1.5" fill="currentColor"></circle>
-               </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#solDots)"></rect>
-         </svg>
-      </div>
-
-      <!-- Glows morados suaves (dan profundidad sutil) -->
-      <div
-         class="pointer-events-none absolute left-1/2 top-1/2 h-[450px] w-[650px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-purple_mv/15 blur-[130px] dark:bg-purple_mv/25"
-         aria-hidden="true"
-      >
-      </div>
-      <div
-         class="pointer-events-none absolute -left-20 top-0 h-[280px] w-[280px] rounded-full bg-purple-500/15 blur-[100px] dark:bg-purple-500/25"
-         aria-hidden="true"
-      >
-      </div>
-      <div
-         class="pointer-events-none absolute -right-20 bottom-0 h-[280px] w-[280px] rounded-full bg-fuchsia-600/10 blur-[100px] dark:bg-fuchsia-600/20"
-         aria-hidden="true"
-      >
-      </div>
-
-      <div class="relative z-10 mx-auto max-w-3xl px-4 text-center">
-         <span
-            class="inline-flex items-center gap-2 rounded-full border border-purple_mv/30 bg-purple_mv/10 px-3 py-1 text-xs font-medium text-text_banner"
-         >
-            <span class="h-1.5 w-1.5 rounded-full bg-purple_mv"></span>
-            La solución
-         </span>
-         <h2 class="mt-6 text-3xl md:text-5xl font-bold leading-tight tracking-tight text-gray-900 dark:text-white">
-            El Hack es la solución
-            <span class="block bg-gradient-to-r from-purple-400 to-purple_mv bg-clip-text text-transparent">
-               que buscabas
-            </span>
-         </h2>
-         <p class="mt-6 text-base md:text-lg leading-relaxed text-gray-700 dark:text-white/70">
-            Si estás siendo víctima de amenazas digitales o te han hecho pagar deudas ficticias, El Hack es la solución
-            confiable y efectiva que estabas buscando.
-         </p>
-      </div>
-   </section>
-
-   <!-- ───────────────── PROCESO (3 pasos) ───────────────── -->
-   <section class="relative mx-auto my-16 w-full max-w-6xl px-4" data-aos="fade-up">
-      <div class="mb-10 text-center">
-         <span class="text-xs font-semibold uppercase tracking-widest text-text_banner">Sencillo y rápido</span>
-         <h2 class="mt-1 text-2xl md:text-4xl font-bold text-gray-900 dark:text-white">
-            ¿Cómo adquirir <span class="text-text_banner">El Hack</span>?
-         </h2>
-      </div>
-
-      <!-- Stepper: línea de tiempo con conectores -->
-      <div id="stepsGrid" class="reveal-stagger relative grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-6">
-         <!-- Línea conectora horizontal (desktop) -->
-         <div
-            class="pointer-events-none absolute left-0 right-0 top-7 hidden h-px bg-gradient-to-r from-transparent via-purple_mv/50 to-transparent md:block"
-            aria-hidden="true"
-         >
-         </div>
-
-         {
-            steps.map((s, i) => (
-               <div class="group relative flex flex-col items-center text-center">
-                  {/* Número en círculo sobre la línea */}
-                  <div class="relative z-10 mb-5 flex h-14 w-14 items-center justify-center rounded-full border-2 border-purple_mv bg-gray-50 text-xl font-bold text-text_banner shadow-[0_0_25px_rgba(129,73,226,0.35)] transition-all duration-300 group-hover:scale-110 group-hover:bg-text_banner group-hover:text-white dark:bg-[#050505]">
-                     {i + 1}
-                  </div>
-
-                  {/* Tarjeta de contenido */}
-                  <div class={`w-full flex-1 rounded-2xl p-6 shadow-lg ${cardHover}`}>
-                     <h3 class="mb-2 text-lg font-bold text-gray-900 dark:text-white">{s.title}</h3>
-                     <p class="text-sm text-gray-700 dark:text-white/90">{s.text}</p>
-                  </div>
-               </div>
-            ))
-         }
-      </div>
-   </section>
-
-   <!-- ───────────────── CTA FINAL ───────────────── -->
-   <section class="relative mx-auto my-16 w-full max-w-3xl px-4" data-aos="fade-up">
-      <div
-         class={`relative overflow-hidden rounded-3xl p-10 text-center shadow-[0_0_40px_rgba(129,73,226,0.15)] md:p-14 ${cardHover}`}
-      >
-         <div class="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-purple_mv/30 blur-3xl"></div>
-         <div class="pointer-events-none absolute -bottom-20 -left-16 h-56 w-56 rounded-full bg-purple_mv/20 blur-3xl">
-         </div>
-         <div class="relative z-10 flex flex-col items-center gap-5">
-            <h3 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">Quiero aplicar El Hack</h3>
-            <p class="max-w-md text-sm md:text-base text-gray-600 dark:text-white/80">
-               Da el primer paso hacia tu tranquilidad. La asesoría es gratuita y sin compromiso.
-            </p>
-            <div class="flex flex-col items-center gap-3 sm:flex-row">
-               <ButtonContact />
-               <a
-                  href="/tienda"
-                  class="inline-flex items-center justify-center rounded-full bg-text_banner px-6 py-3 font-bold text-white shadow-lg shadow-text_banner/30 transition hover:bg-text_banner/80"
-               >
-                  Ir a la tienda
-               </a>
-            </div>
-         </div>
-      </div>
-   </section>
-
-   <script>
-      // Reveal escalonado de los pasos (también en móvil, AOS está off <768px)
-      const grid = document.getElementById('stepsGrid');
-      if (grid) {
-         const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-         if (reduce || !('IntersectionObserver' in window)) {
-            grid.classList.add('in-view');
-         } else {
-            const io = new IntersectionObserver(
-               (entries) => {
-                  entries.forEach((entry) => {
-                     if (entry.isIntersecting) {
-                        entry.target.classList.add('in-view');
-                        io.unobserve(entry.target);
-                     }
-                  });
-               },
-               { threshold: 0.15 }
-            );
-            io.observe(grid);
-         }
-      }
-   </script>
+<Layout
+   title="El Hack | Recupera tu tranquilidad, adiós al acoso de las apps de préstamos"
+   description="La herramienta de Movapp que detiene las llamadas y los mensajes de acoso, protege a tus contactos y te acompaña con un asesor real."
+   type="website"
+   schema={serviceSchema}
+   showGrid={false}
+>
+   <ElHackHero />
+   <ElHackWhatIs />
+   <ElHackHowItWorks />
+   <ElHackFeatures />
+   <ElHackFAQ />
+   <ElHackCTA />
 </Layout>

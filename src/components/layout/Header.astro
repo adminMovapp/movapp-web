@@ -6,9 +6,16 @@ import ArrowIcon from '@assets/ArrowIcon.astro';
    id="siteHeader"
    class="fixed top-0 inset-x-0 z-50 bg-gradient-to-b from-purple_mv/[0.06] to-white/90 dark:from-purple_mv/[0.08] dark:to-zinc-950/85 backdrop-blur-md px-6 md:px-10 lg:px-16 py-4 hidden lg:flex justify-between items-center transition-colors duration-300"
 >
-   <!-- Logo (morado en light, blanco en dark) -->
+   <!-- Logo (morado en light, blanco en dark). En light se pinta con la
+        técnica mask-image (ver <style> abajo): el PNG original es negro
+        sobre transparente, así que se usa como máscara y se rellena con
+        background-color: currentColor -- así el color sale de la clase de
+        texto (text-text_banner) en vez de depender de un PNG ya coloreado. -->
    <a href="/" class="flex items-center" aria-label="Movapp - Inicio" data-home-link>
-      <img src="/img/Logo.png" alt="Movapp" class="block h-9 w-auto dark:hidden md:h-10" />
+      <span
+         aria-hidden="true"
+         class="brand-logo-mask block aspect-[3140/550] h-9 w-auto text-text_banner dark:hidden md:h-10"
+      ></span>
       <img src="/img/Logo-Blanco.png" alt="Movapp" class="hidden h-9 w-auto dark:block md:h-10" />
    </a>
 
@@ -36,7 +43,7 @@ import ArrowIcon from '@assets/ArrowIcon.astro';
             class="flex items-center gap-1.5 font-medium text-gray-700/80 hover:text-gray-900 dark:text-white/70 dark:hover:text-white transition-colors"
          >
             <span>Contenido</span>
-            <div class="arrow-icon transition-transform duration-200">
+            <div class="arrow-icon icon-tone transition-transform duration-200">
                <ArrowIcon size={4} />
             </div>
          </button>
@@ -86,16 +93,16 @@ import ArrowIcon from '@assets/ArrowIcon.astro';
          id="storeButton"
          data-cart-empty-icon
          aria-label="Tienda"
-         class="ml-1 flex h-9 w-9 items-center justify-center rounded-full text-gray-700 hover:bg-black/5 hover:text-text_banner dark:text-white/70 dark:hover:bg-white/10 transition"
+         class="ml-1 flex h-9 w-9 items-center justify-center rounded-full icon-tone hover:bg-black/5 dark:hover:bg-white/10 transition"
       >
-         <img src="/img/tienda.webp" alt="" class="h-5 w-5 dark:invert" />
+         <span aria-hidden="true" class="icon-mask-store h-5 w-5"></span>
       </a>
       <a
          href="/tienda"
          id="cartButton"
          data-cart-filled-icon
          aria-label="Carrito"
-         class="relative ml-1 hidden h-9 w-9 items-center justify-center rounded-full text-gray-700 hover:bg-black/5 hover:text-text_banner dark:text-white/70 dark:hover:bg-white/10 transition"
+         class="relative ml-1 hidden h-9 w-9 items-center justify-center rounded-full icon-tone hover:bg-black/5 dark:hover:bg-white/10 transition"
       >
          <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -111,7 +118,7 @@ import ArrowIcon from '@assets/ArrowIcon.astro';
          id="themeToggle"
          type="button"
          aria-label="Cambiar tema"
-         class="ml-1 flex h-9 w-9 items-center justify-center rounded-full text-gray-700 hover:bg-black/5 hover:text-text_banner dark:text-white/70 dark:hover:bg-white/10 transition"
+         class="ml-1 flex h-9 w-9 items-center justify-center rounded-full icon-tone hover:bg-black/5 dark:hover:bg-white/10 transition"
       >
          <!-- Sol (visible en light) -->
          <svg
@@ -206,6 +213,53 @@ import ArrowIcon from '@assets/ArrowIcon.astro';
       --pill-border-alpha: 0.1;
       --pill-shadow-alpha: 0.45;
       border-color: rgb(255 255 255 / calc(var(--pill) * var(--pill-border-alpha)));
+   }
+
+   /*
+      Logo e ícono de tienda son PNG negro-sobre-transparente (no SVG), así
+      que no aceptan "currentColor" como un <svg stroke="currentColor">.
+      Se usan como máscara (mask-image) en vez de imagen: el PNG solo define
+      qué parte es visible, y el color real sale de background-color, que
+      se deja en "currentColor" para heredar la clase de texto del elemento
+      (text-text_banner en light, dark:text-white/70 en dark) -- mismo
+      mecanismo con el que ya funcionan los <svg> de al lado.
+   */
+   .brand-logo-mask,
+   .icon-mask-store {
+      background-color: currentColor;
+      -webkit-mask-repeat: no-repeat;
+      mask-repeat: no-repeat;
+      -webkit-mask-size: contain;
+      mask-size: contain;
+      -webkit-mask-position: center;
+      mask-position: center;
+   }
+   .brand-logo-mask {
+      -webkit-mask-image: url('/img/Logo.png');
+      mask-image: url('/img/Logo.png');
+      -webkit-mask-position: left center;
+      mask-position: left center;
+   }
+   .icon-mask-store {
+      -webkit-mask-image: url('/img/tienda.webp');
+      mask-image: url('/img/tienda.webp');
+   }
+
+   /*
+      NO se usa la utilidad Tailwind "dark:text-white/70" acá a propósito.
+      global.css tiene un override para todo el sitio que reescribe en modo
+      claro cualquier elemento cuyo atributo class contenga el substring
+      "text-white/" (pensado para las utilidades "text-white/x" usadas como
+      color fijo en el diseño oscuro) -- pero ese selector hace matching por
+      substring, no entiende el prefijo "dark:", así que también atrapaba
+      "dark:text-white/70" y lo forzaba a gris oscuro incluso en light. Una
+      clase propia (sin ese substring) evita el conflicto.
+   */
+   .icon-tone {
+      color: #8149e2;
+   }
+   :global(html.dark) .icon-tone {
+      color: rgba(255, 255, 255, 0.7);
    }
 </style>
 

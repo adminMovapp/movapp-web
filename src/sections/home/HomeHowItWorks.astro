@@ -32,22 +32,22 @@ import StarField from '@components/decorative/StarField.astro';
    <!--
       Línea de tiempo vertical (misma estructura que NosotrosTimeline.astro):
       línea conectora centrada, con un punto por paso que alterna de lado en
-      escritorio (izquierda/derecha) y queda en una sola columna en móvil.
+      escritorio y queda en una sola columna en móvil. La página SIEMPRE
+      se mueve con normalidad al hacer scroll -- nada queda "pineado"/fijo
+      congelando el scroll (se probó esa versión y se sentía mal, la
+      pantalla parecía trabada).
 
-      A diferencia de NosotrosTimeline (que revela TODO el bloque de golpe
-      con reveal-stagger la primera vez que entra en vista), aquí cada punto
-      lleva su propio data-aos: como la sección es más alta que una pantalla,
-      cada paso se revela por su cuenta conforme el usuario llega a él con el
-      scroll, en vez de aparecer todos juntos apenas se ve el primero.
-
-      transition-delay creciente por punto (además del data-aos individual):
-      en pantallas donde los 3 puntos ya caben dentro del viewport apenas
-      entra la sección (pantallas altas, o si el usuario recarga ya con la
-      sección a medio scroll), los 3 podrían disparar su intersección casi
-      al mismo tiempo -- el delay obliga a que se sigan viendo uno-por-uno en
-      cascada aunque eso pase, en vez de aparecer los 3 de golpe.
+      En vez de eso, cada paso tiene su propio fundido de entrada Y SALIDA:
+      a diferencia del sistema [data-aos] global (que revela una vez y se
+      queda visible para siempre), acá un IntersectionObserver local marca
+      "hiw-active" solo mientras el paso cruza la franja central de la
+      pantalla (rootMargin negativo arriba/abajo) y se la quita en cuanto
+      sale de esa franja, EN CUALQUIER DIRECCIÓN. El resultado: mientras
+      scrolleas a ritmo normal, el paso anterior se desvanece justo cuando
+      el siguiente empieza a aparecer, sin detener el scroll en ningún
+      momento.
    -->
-   <div class="relative">
+   <div class="relative" data-hiw-section>
       <div
          class="absolute bottom-2 left-[15px] top-2 w-px bg-gradient-to-b from-purple_mv via-purple_mv/40 to-transparent md:left-1/2"
          aria-hidden="true"
@@ -58,13 +58,12 @@ import StarField from '@components/decorative/StarField.astro';
          steps.map((s, i) => (
             <div
                class:list={[
-                  'relative mb-10 flex items-start gap-6 last:mb-0 md:mb-12 md:w-1/2',
+                  'hiw-step relative mb-10 flex items-start gap-6 last:mb-0 md:mb-12 md:w-1/2',
                   i % 2 === 0
                      ? 'md:ml-0 md:flex-row-reverse md:pr-12 md:text-right'
                      : 'md:ml-auto md:pl-12 md:flex-row',
                ]}
-               data-aos="fade-up"
-               style={`transition-delay: ${i * 0.2}s`}
+               data-hiw-step
             >
                {/* Punto en la línea */}
                <span
@@ -95,3 +94,61 @@ import StarField from '@components/decorative/StarField.astro';
       </a>
    </div>
 </section>
+
+<style>
+   .hiw-step {
+      opacity: 0;
+      transform: translateY(28px);
+      transition:
+         opacity 0.6s ease,
+         transform 0.6s ease;
+   }
+   .hiw-step.hiw-active {
+      opacity: 1;
+      transform: translateY(0);
+   }
+</style>
+
+<script>
+   function initHowItWorks() {
+      const section = document.querySelector('[data-hiw-section]');
+      if (!section || section.getAttribute('data-hiw-init') === 'true') return;
+      section.setAttribute('data-hiw-init', 'true');
+
+      const stepEls = Array.from(section.querySelectorAll('[data-hiw-step]'));
+      if (!stepEls.length) return;
+
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduce || !('IntersectionObserver' in window)) {
+         stepEls.forEach((el) => el.classList.add('hiw-active'));
+         return;
+      }
+
+      // Franja angosta centrada en la pantalla (10% del alto del viewport,
+      // -45% arriba y abajo) en vez de una franja ancha o de una línea
+      // exacta:
+      // - Una franja ancha (ej. -35%/-35% = 30% del viewport) es más ancha
+      //   que la separación entre pasos consecutivos, así que 2 o 3 pasos
+      //   caben adentro al mismo tiempo y se ven activos todos juntos, en
+      //   vez de ir mostrando uno por uno.
+      // - Una franja de 0px exacta (-50%/-50%, viewport colapsado a una
+      //   sola línea) tiene área de intersección SIEMPRE igual a 0 con
+      //   cualquier elemento -- por definición un rectángulo de alto 0 no
+      //   tiene área -- así que el navegador nunca la reporta como
+      //   intersección real; confirmado con una prueba: con -50%/-50%
+      //   "isIntersecting" prácticamente nunca se activaba.
+      // Una franja angosta pero con alto real evita ambos problemas.
+      const io = new IntersectionObserver(
+         (entries) => {
+            entries.forEach((entry) => {
+               entry.target.classList.toggle('hiw-active', entry.isIntersecting);
+            });
+         },
+         { threshold: 0, rootMargin: '-45% 0px -45% 0px' },
+      );
+      stepEls.forEach((el) => io.observe(el));
+   }
+
+   initHowItWorks();
+   document.addEventListener('astro:page-load', initHowItWorks);
+</script>

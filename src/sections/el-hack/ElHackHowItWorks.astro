@@ -1,0 +1,52 @@
+---
+import StarField from '@components/decorative/StarField.astro';
+import ImagePlaceholder from '@components/ui/ImagePlaceholder.astro';
+
+const steps = [
+   {
+      title: 'Habla con un asesor real',
+      text: 'Nos escribes por WhatsApp y te escuchamos. Te explicamos, paso a paso, cómo usar El Hack en tu caso.',
+   },
+   {
+      title: 'Instala y activa El Hack',
+      text: 'Al activarlo, bloqueamos de inmediato las llamadas y los mensajes de acoso, y proteges tus contactos y tu galería.',
+   },
+   {
+      title: 'Recupera tu tranquilidad',
+      text: 'Vuelves a tener paz. Y si lo necesitas, cuentas con apoyo emocional durante el proceso.',
+   },
+];
+---
+
+<section class="relative mx-auto my-16 w-full max-w-4xl px-4" data-aos="fade-up">
+   <StarField id="el-hack-how-it-works" ambientCount={40} />
+
+   <div class="mb-10 text-center">
+      <span class="text-xs font-semibold uppercase tracking-widest text-text_banner">Tres pasos para volver a tener el control</span>
+      <h2 class="mt-1 text-2xl md:text-4xl font-bold uppercase text-gray-900 dark:text-white">¿Cómo funciona El Hack?</h2>
+   </div>
+
+   <!--
+      Grilla de tarjetas (no timeline): los 2 primeros pasos van lado a lado
+      desde sm+, el tercero queda centrado debajo, con el mismo ancho que una
+      columna -- mismo layout que el documento maestro (2 arriba + 1 abajo
+      centrado), no la línea de tiempo con puntos que usa HomeHowItWorks.
+   -->
+   <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 sm:gap-x-6 sm:gap-y-10">
+      {
+         steps.map((s, i) => (
+            <div
+               class:list={[
+                  'float-anim flex flex-col items-center rounded-2xl border border-purple_mv/25 bg-gradient-to-b from-purple_mv/[0.06] to-transparent p-6 text-center shadow-card transition-colors duration-300 hover:border-purple_mv/50 hover:shadow-card-hover dark:border-white/10 dark:from-purple_mv/[0.1] dark:to-black/30',
+                  i === 2 && 'sm:col-span-2 sm:mx-auto sm:w-full sm:max-w-[calc(50%-0.75rem)]',
+               ]}
+               style={`--float-dur: ${5.6 + i * 0.3}s; --float-delay: ${i * 0.2}s;`}
+            >
+               <ImagePlaceholder class="mb-4 aspect-[4/3] w-full" />
+               <h2 class="mb-2 text-lg font-bold text-gray-900 dark:text-white">{s.title}</h2>
+               <p class="text-sm text-gray-700 dark:text-white/80">{s.text}</p>
+            </div>
+         ))
+      }
+   </div>
+</section>

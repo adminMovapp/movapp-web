@@ -1,0 +1,62 @@
+---
+import StarField from '@components/decorative/StarField.astro';
+import ImagePlaceholder from '@components/ui/ImagePlaceholder.astro';
+
+const features = [
+   {
+      title: 'Bloquea las llamadas de acoso',
+      text: 'Deja de recibir llamadas a toda hora.',
+   },
+   {
+      title: 'Silencia los mensajes amenazantes',
+      text: 'Los textos con insultos o amenazas dejan de llegarte.',
+   },
+];
+---
+
+<section class="relative mx-auto my-16 w-full max-w-5xl px-4" data-aos="fade-up">
+   <StarField id="el-hack-features" ambientCount={40} />
+
+   <div class="mx-auto max-w-2xl text-center">
+      <h2 class="text-2xl md:text-4xl font-bold uppercase text-gray-900 dark:text-white">¿Qué hace El Hack por ti?</h2>
+   </div>
+
+   <ul class="mt-10 grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-6">
+      {
+         features.map((f, i) => (
+            <li
+               class="float-anim relative flex flex-col items-center overflow-hidden rounded-2xl border border-purple_mv/25 bg-gradient-to-b from-purple_mv/[0.06] to-transparent p-5 text-center shadow-card transition-colors duration-300 hover:border-purple_mv/50 hover:shadow-card-hover dark:border-white/10 dark:from-purple_mv/[0.1] dark:to-black/30 md:p-6"
+               style={`--float-dur: ${5.6 + i * 0.3}s; --float-delay: ${i * 0.2}s;`}
+            >
+               <ImagePlaceholder class="relative mb-3 aspect-[4/3] w-full max-w-[140px]" />
+               <h2 class="relative font-bold text-gray-900 dark:text-white">{f.title}</h2>
+               <p class="relative mt-1 text-sm text-gray-600 dark:text-white/70">{f.text}</p>
+            </li>
+         ))
+      }
+   </ul>
+
+   <!-- Disponibilidad -->
+   <div class="mx-auto mt-12 flex max-w-xl flex-col items-center gap-4 text-center">
+      <ImagePlaceholder class="aspect-[4/3] w-full max-w-[160px]" />
+      <p class="text-sm font-semibold uppercase tracking-widest text-text_banner">El Hack está disponible para:</p>
+      <div class="flex flex-col items-center gap-3 sm:flex-row">
+         <a href="#" aria-label="Descargar en Google Play" class="transition hover:scale-105">
+            <img src="/img/migracion/play-store-v2.webp" alt="Google Play" class="h-12 w-auto" />
+         </a>
+         <a href="#" aria-label="Descargar en App Store" class="transition hover:scale-105">
+            <img src="/img/migracion/app-store-v2.webp" alt="App Store" class="h-12 w-auto" />
+         </a>
+      </div>
+   </div>
+
+   <!-- Seguridad -->
+   <div class="mx-auto mt-14 max-w-2xl rounded-3xl border border-purple_mv/25 bg-gradient-to-b from-purple_mv/[0.06] to-transparent p-8 text-center shadow-card dark:border-white/10 dark:from-purple_mv/[0.1] dark:to-black/30 md:p-10">
+      <h2 class="text-xl font-bold uppercase text-gray-900 dark:text-white md:text-2xl">
+         ¿Es seguro? Tu información está protegida?
+      </h2>
+      <p class="mt-3 text-sm text-gray-700 dark:text-white/80 md:text-base">
+         El Hack pide únicamente los permisos necesarios para bloquear el acoso y proteger tus contactos.
+      </p>
+   </div>
+</section>

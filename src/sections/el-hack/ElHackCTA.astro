@@ -1,0 +1,31 @@
+---
+import ButtonContact from '@components/ui/ButtonContact.astro';
+import StarField from '@components/decorative/StarField.astro';
+---
+
+<section class="relative mx-auto my-16 w-full max-w-3xl px-4" data-aos="fade-up">
+   <!-- StarField a nivel de sección (fullBleed), igual que el resto de las secciones de El Hack --
+        no adentro de la card, que se veía como una caja de estrellas aparte en vez de fondo de página. -->
+   <StarField id="el-hack-cta" ambientCount={25} />
+
+   <!--
+      Misma tarjeta "panel" que el bloque de seguridad en ElHackFeatures.astro
+      (rounded-3xl, border-purple_mv/25, mismo degradado, shadow-card, mismo
+      padding) -- antes tenía 2 glows morados extra + más padding, y por eso
+      se veía mucho más saturada/grande que el resto de las cards de la página.
+   -->
+   <div
+      class="float-anim relative rounded-3xl border border-purple_mv/25 bg-gradient-to-b from-purple_mv/[0.06] to-transparent p-8 text-center shadow-card dark:border-white/10 dark:from-purple_mv/[0.1] dark:to-black/30 md:p-10"
+      style="--float-dur: 6.2s; --float-delay: 0s;"
+   >
+      <div class="relative z-10 flex flex-col items-center gap-5">
+         <h2 class="text-2xl md:text-3xl font-bold uppercase text-gray-900 dark:text-white">Empieza hoy</h2>
+         <p class="max-w-md text-sm md:text-base text-gray-600 dark:text-white/80">
+            Da el primer paso para recuperar tu tranquilidad.
+         </p>
+         <div class="float-anim mt-2" style="--float-dur: 5.8s; --float-delay: 0.3s;">
+            <ButtonContact label="Hablar con un asesor por WhatsApp" fullWidth />
+         </div>
+      </div>
+   </div>
+</section>

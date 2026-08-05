@@ -1,0 +1,49 @@
+---
+import StarField from '@components/decorative/StarField.astro';
+
+const faqs = [
+   {
+      q: '¿El Hack elimina mi deuda?',
+      a: 'El Hack detiene el acoso y protege tu información, pero no borra por sí sola una deuda. Un asesor te ayuda a entender tu situación y tus opciones. Desconfía de quien prometa "borrar" deudas de forma automática.',
+   },
+   {
+      q: '¿Cuánto cuesta?',
+      a: 'La asesoría es 100% gratuita, el costo del hack va desde los $500 MXN, aunque dependerá de la cantidad de préstamos que tengas activos.',
+   },
+   {
+      q: '¿Qué pasa después de escribirles por WhatsApp?',
+      a: 'Un asesor real te responde, escucha tu caso y te guía paso a paso para activar El Hack y frenar el acoso.',
+   },
+   {
+      q: '¿Cuánto tarda El Hack?',
+      a: 'El tiempo depende del caso y de cuántas apps están involucradas. Hay personas que notan reducción de presión antes y otras que siguen recibiendo mensajes algunos días. Lo importante es dar seguimiento para verificar si el acoso baja, si cambia la amenaza o si aparece una app nueva.',
+   },
+];
+---
+
+<section class="relative mx-auto my-16 w-full max-w-3xl px-4" data-aos="fade-up">
+   <StarField id="el-hack-faq" ambientCount={35} />
+
+   <h2 class="text-center text-2xl md:text-4xl font-bold uppercase text-gray-900 dark:text-white">
+      Preguntas frecuentes sobre El Hack
+   </h2>
+
+   <div class="mt-10 flex flex-col gap-4">
+      {
+         faqs.map((item, i) => (
+            <details
+               class="float-anim group glass-card rounded-2xl border border-purple_mv/20 p-5 dark:border-white/10"
+               style={`--float-dur: ${5.6 + i * 0.3}s; --float-delay: ${i * 0.2}s;`}
+            >
+               <summary class="flex cursor-pointer list-none items-center justify-between gap-4 font-semibold text-gray-900 dark:text-white">
+                  <h3 class="font-semibold">{item.q}</h3>
+                  <span class="flex-shrink-0 text-text_banner transition-transform duration-200 group-open:rotate-45">
+                     +
+                  </span>
+               </summary>
+               <p class="mt-3 text-sm text-gray-600 dark:text-white/70">{item.a}</p>
+            </details>
+         ))
+      }
+   </div>
+</section>

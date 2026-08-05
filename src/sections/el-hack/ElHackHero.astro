@@ -1,0 +1,261 @@
+---
+import { Image } from 'astro:assets';
+import ButtonContact from '@components/ui/ButtonContact.astro';
+import ImgElHackBlanco from '@assets/elhack-blanco.png';
+import ImgElHackNegro from '@assets/elhack-negro.png';
+
+// Truenos en parejas: un lado izquierdo (left 3%-38%) y un lado derecho
+// (left 62%-97%) por cada pareja, con el MISMO retraso y duración -- así
+// destellan sincronizados, uno de cada lado a la vez, en vez de parpadeos
+// independientes al azar. Pocas parejas a propósito (4 = 8 truenos en
+// total) para que no se sienta saturado de rayos en pantalla.
+const PAIR_COUNT = 4;
+const bolts = Array.from({ length: PAIR_COUNT }, () => {
+   const delay = Math.random() * 6;
+   const duration = 2 + Math.random() * 1.8;
+   return [
+      {
+         top: 4 + Math.random() * 88,
+         left: 3 + Math.random() * 35,
+         rotate: -35 + Math.random() * 70,
+         scale: 0.6 + Math.random() * 0.9,
+         delay,
+         duration,
+      },
+      {
+         top: 4 + Math.random() * 88,
+         left: 62 + Math.random() * 35,
+         rotate: -35 + Math.random() * 70,
+         scale: 0.6 + Math.random() * 0.9,
+         delay,
+         duration,
+      },
+   ];
+}).flat();
+---
+
+<section class="relative mx-auto flex max-w-4xl flex-col items-center justify-center px-4 pt-16 pb-16 text-center">
+   <!--
+      Fondo full-bleed de la sección completa (mismo truco que StarField.astro:
+      left-1/2 + w-screen + -translate-x-1/2 para llenar todo el ancho de la
+      pantalla, sin verse como un recuadro aparte). El logo de El Hack + los
+      truenos van AQUÍ ADENTRO, como una capa más de este mismo fondo -- no
+      como una tarjeta en el flujo del contenido.
+   -->
+   <div
+      class="pointer-events-none absolute -top-24 -bottom-24 left-1/2 -z-20 flex w-screen items-center justify-center -translate-x-1/2"
+      aria-hidden="true"
+   >
+      <div class="absolute inset-0 dark:bg-[#050505]"></div>
+      <div
+         class="absolute left-1/2 top-[-160px] h-[460px] w-[70%] max-w-[900px] -translate-x-1/2 rounded-full bg-purple_mv/[0.06] blur-[150px] dark:bg-purple_mv/[0.18]"
+      >
+      </div>
+
+      <!--
+         Logo de El Hack de fondo: nítido (sin filter:blur -- eso lo dejaba
+         viéndose como niebla) y a baja opacidad para que se note como
+         fondo, no como contenido en primer plano. El wrapper flota (bob
+         vertical lento) y cada variante tiene su propio glitch (transform +
+         clip-path a saltos) -- por eso van en dos elementos: uno controla
+         la posición general, el otro solo el jitter, así no compiten por la
+         misma propiedad "transform".
+      -->
+      <div class="hero-logo-float relative z-0 w-[55%] max-w-[380px] aspect-[510/144]">
+         <Image
+            src={ImgElHackNegro}
+            alt=""
+            class="hero-logo-glitch absolute inset-0 h-full w-full object-contain opacity-30 blur-[2px] dark:hidden"
+         />
+         <Image
+            src={ImgElHackBlanco}
+            alt=""
+            class="hero-logo-glitch absolute inset-0 hidden h-full w-full object-contain opacity-30 blur-[2px] dark:block"
+         />
+      </div>
+
+      <!--
+         Truenos: forma real de rayo (path zigzag, no una barra), repartidos
+         en posiciones al azar por todo el fondo -- cada uno destella
+         (parpadeo tipo relámpago) en un ciclo propio, no todos juntos.
+      -->
+      {
+         bolts.map((b) => (
+            <span
+               class="hero-bolt"
+               style={`top: ${b.top}%; left: ${b.left}%; --rotate: ${b.rotate}deg; --scale: ${b.scale}; --delay: ${b.delay}s; --dur: ${b.duration}s;`}
+            >
+               <svg viewBox="0 0 40 100" fill="currentColor" width="100%" height="100%">
+                  <path d="M22 0 9 42h9L4 100 31 46h-10L36 6z" />
+                  <path d="M19 44 33 55l-8 2 4 14-9-13z" />
+               </svg>
+            </span>
+         ))
+      }
+   </div>
+
+   <div
+      class="mb-6 inline-flex items-center gap-2 rounded-full border border-purple_mv/30 bg-purple_mv/10 px-4 py-1.5 text-xs md:text-sm font-medium text-text_banner"
+   >
+      <span class="relative flex h-2 w-2">
+         <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-purple_mv opacity-75"></span>
+         <span class="relative inline-flex h-2 w-2 rounded-full bg-purple_mv"></span>
+      </span>
+      La herramienta que te protege
+   </div>
+
+   <!-- H1 (único H1 de la página) -->
+   <h1 class="max-w-3xl text-3xl font-bold uppercase leading-tight text-gray-900 dark:text-white md:text-5xl">
+      Recupera tu tranquilidad <span class="text-text_banner drop-shadow-[0_0_25px_rgba(129,73,226,0.35)]">hoy</span>,
+      adiós al acoso de las <span class="text-text_banner drop-shadow-[0_0_25px_rgba(129,73,226,0.35)]">apps de préstamos</span>
+   </h1>
+
+   <p class="relative z-10 mx-auto mt-8 max-w-2xl text-base md:text-lg text-gray-700 dark:text-white/80">
+      La herramienta de Movapp que detiene las llamadas y los mensajes de acoso, protege a tus contactos y te
+      acompaña con un asesor real.
+   </p>
+
+   <div class="relative z-10 mt-8">
+      <ButtonContact label="Hablar con un asesor por WhatsApp" />
+   </div>
+</section>
+
+<style>
+   /*
+      Flotado del logo: un bob vertical lento y continuo. Va en el wrapper
+      (no en cada <Image>) para no competir con el "transform" del glitch de
+      abajo -- cada uno anima una propiedad en un elemento distinto.
+   */
+   .hero-logo-float {
+      animation: heroLogoFloat 6.5s ease-in-out infinite;
+   }
+
+   @keyframes heroLogoFloat {
+      0%,
+      100% {
+         transform: translateY(0);
+      }
+      50% {
+         transform: translateY(-14px);
+      }
+   }
+
+   /*
+      Glitch del logo: casi todo el ciclo queda en reposo (sin offset, en la
+      opacidad base de 30%) y solo en una ventana corta salta con cortes de
+      clip-path + desplazamientos + un pico de opacidad (sube y baja de
+      golpe), como una señal que se corta un instante. Acá SÍ se anima
+      "opacity" (a diferencia de otros efectos del archivo) porque a 30% de
+      opacidad + blur, un offset de unos px es casi imperceptible -- el pico
+      de brillo es lo que realmente hace notar el glitch. 0%/100% quedan en
+      0.3 para no pisar el opacity-30 de Tailwind fuera de esa ventana.
+   */
+   .hero-logo-glitch {
+      animation: heroLogoGlitch 5.5s steps(1) infinite;
+   }
+
+   @keyframes heroLogoGlitch {
+      0%,
+      85%,
+      100% {
+         transform: translate(0, 0);
+         clip-path: inset(0 0 0 0);
+         opacity: 0.3;
+      }
+      86% {
+         transform: translate(-6px, 2px);
+         clip-path: inset(15% 0 55% 0);
+         opacity: 0.75;
+      }
+      87.5% {
+         transform: translate(5px, -2px);
+         clip-path: inset(58% 0 8% 0);
+         opacity: 0.12;
+      }
+      89% {
+         transform: translate(-4px, 0);
+         clip-path: inset(30% 0 42% 0);
+         opacity: 0.85;
+      }
+      90.5%,
+      94% {
+         transform: translate(0, 0);
+         clip-path: inset(0 0 0 0);
+         opacity: 0.3;
+      }
+      95.5% {
+         transform: translate(6px, -1px);
+         clip-path: inset(62% 0 4% 0);
+         opacity: 0.7;
+      }
+      97% {
+         transform: translate(0, 0);
+         clip-path: inset(0 0 0 0);
+         opacity: 0.3;
+      }
+   }
+
+   /*
+      Trueno: un ícono de rayo (SVG con path en zigzag, no una barra recta)
+      en morado, con glow vía drop-shadow (funciona sobre la forma real del
+      SVG, no sobre un rectángulo -- por eso drop-shadow y no box-shadow
+      acá). Solo opacity anima en el keyframe -- posición/rotación/tamaño
+      quedan fijos por trueno (via variables --rotate/--scale en el propio
+      elemento), así el compositor solo mueve opacidad sin recalcular layout
+      ni el filtro en cada frame.
+   */
+   .hero-bolt {
+      position: absolute;
+      width: 22px;
+      height: 55px;
+      color: rgb(196, 156, 255);
+      filter: blur(1px) drop-shadow(0 0 5px rgba(168, 85, 247, 0.9)) drop-shadow(0 0 12px rgba(129, 73, 226, 0.55));
+      transform: translate(-50%, -50%) rotate(var(--rotate, 0deg)) scale(var(--scale, 1));
+      opacity: 0;
+      animation-name: heroBoltFlash;
+      animation-duration: var(--dur, 3s);
+      animation-timing-function: ease-in-out;
+      animation-iteration-count: infinite;
+      animation-delay: var(--delay, 0s);
+   }
+
+   /* Fade lento en ambos sentidos: aparece gradual, se sostiene un momento cerca del pico, y se apaga igual de gradual (nada de flash instantáneo). */
+   @keyframes heroBoltFlash {
+      0% {
+         opacity: 0;
+      }
+      40% {
+         opacity: 1;
+      }
+      55% {
+         opacity: 0.85;
+      }
+      100% {
+         opacity: 0;
+      }
+   }
+
+   /*
+      El sitio tiene una regla global (src/styles/global.css) que fuerza
+      animation-duration a ~0 bajo prefers-reduced-motion -- eso dejaría a
+      los truenos, el flotado y el glitch siempre en su estado final
+      (invisibles/quietos). Igual que la excepción ya documentada para la
+      órbita de HomeHero.astro, restauramos las tres animaciones acá a
+      propósito: son puramente decorativas de fondo, no bloquean ni compiten
+      con contenido real.
+   */
+   @media (prefers-reduced-motion: reduce) {
+      .hero-bolt {
+         animation-duration: var(--dur, 3s) !important;
+         animation-iteration-count: infinite !important;
+      }
+      .hero-logo-float {
+         animation-duration: 6.5s !important;
+         animation-iteration-count: infinite !important;
+      }
+      .hero-logo-glitch {
+         animation-duration: 5.5s !important;
+         animation-iteration-count: infinite !important;
+      }
+   }
+</style>
