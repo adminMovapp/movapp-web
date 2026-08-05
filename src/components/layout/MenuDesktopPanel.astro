@@ -1,5 +1,6 @@
 ---
 import ArrowIcon from '@assets/ArrowIcon.astro';
+import MenuDesktopVisual from '@components/layout/MenuDesktopVisual.astro';
 
 const topLinks = [
    { href: '/', label: 'Inicio' },
@@ -27,9 +28,8 @@ const contentLinks = [
    respecto de MobileBottomNav): un overlay "fixed inset-0" no debería anidarse
    dentro de un ancestro con su propia lógica de posicionamiento/transform.
 
-   Panel izquierdo: vacío a propósito, a pedido ("de momento no pongas nada
-   del lado izquierdo, sólo el fondo dark/light") -- pensado para contenido
-   visual futuro (igual que el panel izquierdo de la referencia de diseño).
+   Panel izquierdo: pieza visual (MenuDesktopVisual.astro) -- ciclo de
+   escenas vectoriales con transición glitch, ver ese archivo.
    Panel derecho: la navegación que antes vivía inline en el header
    (Inicio/Movapp/Hack/Contenido) -- el logo y el ícono de tienda/carrito y
    el toggle de tema se quedan afuera, visibles en el header, a pedido.
@@ -55,13 +55,18 @@ const contentLinks = [
 -->
 <div id="menuDesktopNav" class="fixed inset-0 z-[999999999] hidden" aria-hidden="true">
    <!-- border-r visible aunque el panel esté vacío, a pedido: sin esto, los
-        dos paneles (mismo color de fondo) se ven como una sola superficie
-        continua en vez de dos mitades separadas. -->
+        dos paneles se ven como una sola superficie continua en vez de dos
+        mitades separadas. Contenido del panel: MenuDesktopVisual.astro --
+        pieza 100% vectorial (SVG + CSS + TypeScript, sin video/imágenes) con
+        el ciclo de escenas y transición glitch pedido. Ese componente ya
+        trae su propio fondo morado, así que este contenedor no necesita
+        bg-white/dark:bg-background_bottom propio. -->
    <div
       id="menuDesktopLeft"
-      class="menu-desktop-panel h-full w-1/2 border-r border-black/10 bg-white dark:border-white/10 dark:bg-background_bottom"
+      class="menu-desktop-panel relative h-full w-1/2 overflow-hidden border-r border-black/10 dark:border-white/10"
       style="transform: translateX(-100%);"
    >
+      <MenuDesktopVisual />
    </div>
 
    <div
@@ -128,9 +133,24 @@ const contentLinks = [
       "transition-colors" (usado en el resto del sitio para el cambio de
       tema) se mezclara con esta transición de transform, el cambio de tema
       mientras el menú está abierto se vería "deslizarse" de forma rara.
+
+      1.5s a pedido (referencia: rockstargames.com/VI).
+
+      "linear" a propósito, NO una curva ease-in-out: cualquier curva
+      ease-in-out (incluida la usada antes, cubic-bezier(0.65,0,0.35,1)) tiene
+      pendiente CERO en ambos extremos por construcción (es la definición
+      matemática de "ease-in-out" -- ver P1.y=0 y P2.y=1 de cualquier curva
+      así). Medido con Playwright (polling de getComputedStyle().transform
+      cada 300ms): con esa curva, a los 300ms el panel prácticamente no se
+      había movido, entre 300-900ms recorría casi TODO el desplazamiento, y
+      de 900 a 1500ms quedaba inmóvil -- 1.5s "de papel" pero solo ~600ms de
+      movimiento perceptible, exactamente el efecto de "salto" que se reportó
+      pese a que la duración configurada sí era 1.5s. "linear" reparte el
+      desplazamiento de forma pareja en todo el rango, así los 1.5s completos
+      se perciben como movimiento continuo.
    */
    .menu-desktop-panel {
-      transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+      transition: transform 1.5s linear;
    }
 </style>
 
@@ -146,11 +166,11 @@ const contentLinks = [
    const contentSubmenu = document.getElementById('menuDesktopContentSubmenu');
    const contentChevron = document.getElementById('menuDesktopContentChevron');
 
-   // Debe coincidir con la duration de .menu-desktop-panel (0.6s) -- se usa
+   // Debe coincidir con la duration de .menu-desktop-panel (1.5s) -- se usa
    // para esperar a que termine la animación de salida antes de volver a
    // "display:none" (si no, el cierre se vería como un corte seco en vez
    // del deslizamiento hacia los lados).
-   const CLOSE_ANIM_MS = 600;
+   const CLOSE_ANIM_MS = 1500;
    let closeTimeoutId = null;
 
    function collapseContentAccordion() {

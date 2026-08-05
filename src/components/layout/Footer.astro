@@ -64,8 +64,8 @@ const year = new Date().getFullYear();
             </div>
          </div>
 
-         <!-- Navegación + Contenido: en móvil van uno junto al otro para aprovechar el ancho -->
-         <div class="grid grid-cols-2 gap-4 md:contents">
+         <!-- Navegación + Contenido: solo en escritorio (a pedido, quitadas del footer de móviles) -->
+         <div class="hidden md:contents">
             <div>
                <h3 class="mb-2 text-sm font-bold uppercase tracking-wide text-text_banner md:mb-4">Navegación</h3>
                <ul class="space-y-1.5 text-sm md:space-y-2">
@@ -98,9 +98,19 @@ const year = new Date().getFullYear();
          </div>
       </div>
 
-      <!-- Barra inferior -->
+      <!-- Barra inferior: MÓVIL (a pedido, solo aviso de privacidad + términos
+           en la misma línea, y el crédito debajo) -->
+      <div class="mt-6 flex flex-col items-center gap-2 border-t border-black/10 pt-4 text-sm text-gray-500 dark:border-white/10 dark:text-white/60 md:hidden">
+         <div class="flex items-center gap-4">
+            <a href="/privacypolicy" class="transition-colors hover:text-text_banner">Aviso de privacidad</a>
+            <a href="/terminos-y-condiciones" class="transition-colors hover:text-text_banner">Términos y condiciones</a>
+         </div>
+         <p>Movappbyerikmann © - Todos Los Derechos Reservados - {year}</p>
+      </div>
+
+      <!-- Barra inferior: ESCRITORIO (sin cambios) -->
       <div
-         class="mt-6 flex flex-col items-center justify-between gap-4 border-t border-black/10 pt-4 text-sm text-gray-500 dark:border-white/10 dark:text-white/60 md:mt-10 md:pt-6 md:flex-row"
+         class="mt-6 hidden items-center justify-between gap-4 border-t border-black/10 pt-4 text-sm text-gray-500 dark:border-white/10 dark:text-white/60 md:mt-10 md:flex md:pt-6"
       >
          <p>Movappbyerikmann © - Todos Los Derechos Reservados - {year}</p>
          <a href="/privacypolicy" class="transition-colors hover:text-text_banner">Política de privacidad</a>

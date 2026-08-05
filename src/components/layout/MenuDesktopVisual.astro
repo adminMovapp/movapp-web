@@ -1,0 +1,481 @@
+---
+// Pieza vectorial del panel izquierdo del menú de escritorio (ver
+// MenuDesktopPanel.astro). 100% TypeScript + HTML + CSS, sin video ni
+// imágenes SVG externas (salvo el propio logo de Movapp, el mismo asset de
+// marca que usa Header.astro).
+//
+// Concepto: la "M" de Movapp protegida por las mismas ondas expansivas que
+// flotan en el centro de la órbita del Hero de Home (ver HomeHero.astro,
+// ".hero-logo-wave"/"heroLogoWave") -- ya NO hay domo (removido a pedido).
+// Sobre el mismo fondo morado con resplandor que ya usan las demás
+// secciones del sitio (ver StarField.astro), y que responde al tema
+// claro/oscuro igual que el resto del sitio. De fondo, palabras clave
+// reales del propio copy del sitio sobre el acoso de las apps montadeudas
+// ("ACOSO", "AMENAZAS", "MONTADEUDAS"...) cruzan la pantalla de izquierda a
+// derecha, cada una en un color distinto; si su trayectoria toca el círculo
+// de las ondas, se destruyen ahí mismo en vez de atravesarlo.
+//
+// Se reutiliza el mismo lenguaje visual del resto del sitio:
+//   - Resplandor morado + estrellas titilantes: mismo mecanismo que
+//     StarField.astro (opacity animada, box-shadow fijo, currentColor).
+//   - "M" + ondas: los mismos assets (logo_resp.webp/logo_resp_blanco.webp)
+//     y la misma animación (heroLogoWave, 5.5s, mismo easing) que
+//     HomeHero.astro, solo escalados al tamaño de este panel.
+
+const STARS = Array.from({ length: 12 }).map(() => ({
+   top: Math.random() * 100,
+   left: Math.random() * 100,
+   size: 1 + Math.random() * 1.6,
+   duration: 2 + Math.random() * 3,
+   delay: Math.random() * 4,
+   minOpacity: (0.1 + Math.random() * 0.15).toFixed(2),
+   maxOpacity: (0.5 + Math.random() * 0.35).toFixed(2),
+}));
+---
+
+<div
+   id="menuVisualStage"
+   class="menu-visual-stage relative flex h-full w-full items-center justify-center overflow-hidden bg-white dark:bg-background_bottom"
+   aria-hidden="true"
+>
+   <!-- Resplandor morado ambiente (mismo tono que el de StarField.astro) -->
+   <div class="menu-visual-glow pointer-events-none absolute inset-0"></div>
+
+   <!-- Estrellas ambiente (currentColor, igual que StarField.astro, para que cambien con el tema) -->
+   <div class="pointer-events-none absolute inset-0 text-purple_mv/50 dark:text-white/70">
+      {
+         STARS.map((s) => (
+            <span
+               class="menu-star"
+               style={`top:${s.top}%; left:${s.left}%; width:${s.size}px; height:${s.size}px; animation-duration:${s.duration}s; animation-delay:${s.delay}s; --star-min:${s.minOpacity}; --star-max:${s.maxOpacity};`}
+            />
+         ))
+      }
+   </div>
+
+   <!-- Capa donde el script inyecta las palabras clave que cruzan la pantalla -->
+   <div id="menuThreatLayer" class="pointer-events-none absolute inset-0 overflow-hidden"></div>
+
+   <!-- "M" + ondas (mismo motivo que el centro de la órbita del Hero) -->
+   <div id="menuShieldHitbox" class="shield-hitbox relative flex aspect-square h-56 w-56 items-center justify-center xl:h-64 xl:w-64">
+      <span class="shield-wave absolute inset-0 rounded-full border-2 border-purple_mv/60 dark:border-white/50" style="animation-delay: 0s;"></span>
+      <span class="shield-wave absolute inset-0 rounded-full border-2 border-purple_mv/60 dark:border-white/50" style="animation-delay: 1.83s;"></span>
+      <span class="shield-wave absolute inset-0 rounded-full border-2 border-purple_mv/60 dark:border-white/50" style="animation-delay: 3.67s;"></span>
+
+      <img src="/img/logo_resp.webp" alt="Movapp" class="shield-logo relative block h-14 w-14 object-contain dark:hidden xl:h-16 xl:w-16" />
+      <img src="/img/logo_resp_blanco.webp" alt="Movapp" class="shield-logo relative hidden h-14 w-14 object-contain dark:block xl:h-16 xl:w-16" />
+   </div>
+</div>
+
+<script>
+   // Máquina de partículas en TypeScript puro (sin librerías): palabras
+   // clave del propio copy del sitio sobre el acoso de las apps montadeudas
+   // cruzan la pantalla de izquierda a derecha; si su círculo de colisión
+   // toca el de las ondas, se destruyen ahí mismo.
+   const KEYWORDS: string[] = ['ACOSO', 'AMENAZAS', 'MONTADEUDAS', 'HOSTIGAMIENTO', 'INSULTOS', 'COBRANZA'];
+
+   // Cada color trae su variante clara/oscura (ver reglas ":global(html.dark)"
+   // más abajo) -- así las palabras se siguen leyendo bien sin importar el
+   // tema activo, igual que el resto del sitio.
+   const COLOR_CLASSES: string[] = ['tw-red', 'tw-orange', 'tw-amber', 'tw-rose', 'tw-fuchsia', 'tw-crimson'];
+   const SHARD_COLORS: Record<string, string> = {
+      'tw-red': '#ff3b57',
+      'tw-orange': '#ff9a3d',
+      'tw-amber': '#ffd166',
+      'tw-rose': '#ff6fa5',
+      'tw-fuchsia': '#e879f9',
+      'tw-crimson': '#ff7452',
+   };
+
+   const MAX_PARTICLES = 5;
+   const MIN_SPAWN_MS = 900;
+   const MAX_SPAWN_MS = 1700;
+
+   interface Particle {
+      el: HTMLElement;
+      x: number;
+      y: number;
+      speed: number;
+      radius: number;
+      alive: boolean;
+   }
+
+   function initMenuVisual(stage: HTMLElement, layer: HTMLElement, hitbox: HTMLElement) {
+      let particles: Particle[] = [];
+      let shieldCenter = { x: 0, y: 0 };
+      let shieldRadius = 0;
+      let running = false;
+      let rafId: number | null = null;
+      let spawnTimeoutId: number | null = null;
+      let lastFrame = 0;
+
+      function measureShield() {
+         const stageRect = stage.getBoundingClientRect();
+         const shieldRect = hitbox.getBoundingClientRect();
+         shieldCenter = {
+            x: shieldRect.left - stageRect.left + shieldRect.width / 2,
+            y: shieldRect.top - stageRect.top + shieldRect.height / 2,
+         };
+         shieldRadius = shieldRect.width / 2;
+      }
+
+      function spawnShards(point: { x: number; y: number }, color: string) {
+         for (let i = 0; i < 6; i++) {
+            const shard = document.createElement('span');
+            shard.className = 'impact-shard';
+            const angle = (i / 6) * Math.PI * 2 + Math.random() * 0.5;
+            const distance = 18 + Math.random() * 16;
+            shard.style.left = `${point.x}px`;
+            shard.style.top = `${point.y}px`;
+            shard.style.backgroundColor = color;
+            shard.style.setProperty('--shard-x', `${Math.cos(angle) * distance}px`);
+            shard.style.setProperty('--shard-y', `${Math.sin(angle) * distance}px`);
+            layer.appendChild(shard);
+            shard.addEventListener('animationend', () => shard.remove());
+         }
+      }
+
+      function spawnShieldFlash(point: { x: number; y: number }) {
+         const flash = document.createElement('span');
+         flash.className = 'shield-flash';
+         flash.style.left = `${point.x}px`;
+         flash.style.top = `${point.y}px`;
+         layer.appendChild(flash);
+         flash.addEventListener('animationend', () => flash.remove());
+      }
+
+      function destroyParticle(p: Particle, point: { x: number; y: number }, color: string) {
+         p.alive = false;
+         p.el.classList.add('is-destroying');
+         spawnShards(point, color);
+         spawnShieldFlash(point);
+         window.setTimeout(() => p.el.remove(), 380);
+      }
+
+      function spawnParticle() {
+         if (particles.length >= MAX_PARTICLES) return;
+         const word = KEYWORDS[Math.floor(Math.random() * KEYWORDS.length)];
+         const colorClass = COLOR_CLASSES[Math.floor(Math.random() * COLOR_CLASSES.length)];
+
+         const el = document.createElement('span');
+         el.className = `threat-word ${colorClass}`;
+         el.textContent = word;
+         el.dataset.shardColor = SHARD_COLORS[colorClass] ?? '#ffffff';
+         layer.appendChild(el);
+
+         // El ancho depende del texto -- se mide después de montarlo para
+         // que el radio de colisión sea el real, no un tamaño fijo inventado.
+         const rect = el.getBoundingClientRect();
+         const radius = Math.max(rect.width, rect.height) / 2;
+
+         const stageHeight = stage.getBoundingClientRect().height;
+         const y = Math.random() * Math.max(stageHeight - rect.height, 1);
+         const particle: Particle = {
+            el,
+            x: -rect.width,
+            y,
+            speed: 55 + Math.random() * 70,
+            radius,
+            alive: true,
+         };
+         particles.push(particle);
+      }
+
+      function scheduleSpawn() {
+         const delay = MIN_SPAWN_MS + Math.random() * (MAX_SPAWN_MS - MIN_SPAWN_MS);
+         spawnTimeoutId = window.setTimeout(() => {
+            if (!running) return;
+            spawnParticle();
+            scheduleSpawn();
+         }, delay);
+      }
+
+      function tick(now: number) {
+         const dt = lastFrame ? (now - lastFrame) / 1000 : 0;
+         lastFrame = now;
+         const stageWidth = stage.getBoundingClientRect().width;
+
+         particles.forEach((p) => {
+            if (!p.alive) return;
+            p.x += p.speed * dt;
+            p.el.style.transform = `translate(${p.x}px, ${p.y}px)`;
+
+            const cx = p.x + p.radius;
+            const cy = p.y + p.radius;
+
+            // Círculo completo (ya no hay domo/hemisferio): cualquier
+            // palabra que toque el radio de las ondas se destruye, venga
+            // de la altura que venga.
+            const dx = cx - shieldCenter.x;
+            const dy = cy - shieldCenter.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist <= shieldRadius + p.radius) {
+               destroyParticle(p, { x: cx, y: cy }, p.el.dataset.shardColor || '#ffffff');
+               return;
+            }
+
+            if (p.x > stageWidth + 60) {
+               p.alive = false;
+               p.el.remove();
+            }
+         });
+
+         particles = particles.filter((p) => p.alive);
+
+         if (running) rafId = requestAnimationFrame(tick);
+      }
+
+      function start() {
+         if (running) return;
+         running = true;
+         measureShield();
+         lastFrame = 0;
+         rafId = requestAnimationFrame(tick);
+         scheduleSpawn();
+      }
+
+      function stop() {
+         running = false;
+         if (rafId !== null) cancelAnimationFrame(rafId);
+         if (spawnTimeoutId !== null) window.clearTimeout(spawnTimeoutId);
+         rafId = null;
+         spawnTimeoutId = null;
+         particles.forEach((p) => p.el.remove());
+         particles = [];
+         layer.querySelectorAll('.impact-shard, .shield-flash').forEach((el) => el.remove());
+      }
+
+      window.addEventListener('resize', () => {
+         if (running) measureShield();
+      });
+
+      return { start, stop };
+   }
+
+   function boot() {
+      const stage = document.getElementById('menuVisualStage');
+      const layer = document.getElementById('menuThreatLayer');
+      const hitbox = document.getElementById('menuShieldHitbox');
+      const nav = document.getElementById('menuDesktopNav');
+      if (!stage || !layer || !hitbox || !nav) return;
+
+      const visual = initMenuVisual(stage, layer, hitbox);
+
+      // El loop solo corre mientras el menú está realmente abierto.
+      // MenuDesktopPanel.astro alterna "hidden"/"flex" en #menuDesktopNav al
+      // abrir/cerrar -- un MutationObserver sobre esa clase mantiene a este
+      // componente desacoplado del script de ese archivo.
+      const sync = () => {
+         if (nav.classList.contains('hidden')) visual.stop();
+         else visual.start();
+      };
+
+      new MutationObserver(sync).observe(nav, { attributes: true, attributeFilter: ['class'] });
+      sync();
+   }
+
+   boot();
+</script>
+
+<style>
+   .menu-visual-glow {
+      background:
+         radial-gradient(circle at 50% 38%, rgba(129, 73, 226, 0.16), transparent 60%),
+         radial-gradient(circle at 50% 100%, rgba(129, 73, 226, 0.08), transparent 55%);
+   }
+   :global(html.dark) .menu-visual-glow {
+      background:
+         radial-gradient(circle at 50% 38%, rgba(129, 73, 226, 0.5), transparent 60%),
+         radial-gradient(circle at 50% 100%, rgba(0, 0, 0, 0.6), transparent 55%);
+   }
+
+   .menu-star {
+      position: absolute;
+      border-radius: 9999px;
+      background-color: currentColor;
+      box-shadow: 0 0 3px currentColor;
+      animation-name: menuStarTwinkle;
+      animation-timing-function: ease-in-out;
+      animation-iteration-count: infinite;
+   }
+   @keyframes menuStarTwinkle {
+      0%,
+      100% {
+         opacity: var(--star-min, 0.15);
+      }
+      50% {
+         opacity: var(--star-max, 0.8);
+      }
+   }
+
+   /* --- "M" + ondas (mismo motivo/timing que ".hero-logo-wave" en
+      HomeHero.astro) --- */
+   .shield-wave {
+      opacity: 0;
+      animation-name: menuShieldWave;
+      animation-duration: 5.5s;
+      animation-timing-function: cubic-bezier(0.15, 0.5, 0.3, 1);
+      animation-iteration-count: infinite;
+   }
+
+   @keyframes menuShieldWave {
+      0% {
+         transform: scale(0.3);
+         opacity: 0.6;
+      }
+      60% {
+         opacity: 0.15;
+      }
+      100% {
+         transform: scale(1);
+         opacity: 0;
+      }
+   }
+
+   .shield-logo {
+      animation: menuShieldLogoFloat 5.5s ease-in-out 0.45s infinite;
+      filter: drop-shadow(0 0 10px rgba(129, 73, 226, 0.35));
+   }
+   :global(html.dark) .shield-logo {
+      filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.35));
+   }
+
+   @keyframes menuShieldLogoFloat {
+      0%,
+      100% {
+         transform: translateY(0);
+      }
+      50% {
+         transform: translateY(-6px);
+      }
+   }
+
+   /* --- Palabras clave que cruzan la pantalla --- */
+   :global(.threat-word) {
+      position: absolute;
+      left: 0;
+      top: 0;
+      white-space: nowrap;
+      font-family:
+         'Cascadia Code',
+         'Source Code Pro',
+         ui-monospace,
+         Menlo,
+         Consolas,
+         monospace;
+      font-weight: 700;
+      font-size: 0.6rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      will-change: transform;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+   }
+   :global(.threat-word::before) {
+      content: '> ';
+      opacity: 0.6;
+   }
+   :global(.threat-word.is-destroying) {
+      animation: menuShatterPop 0.38s ease-out forwards;
+   }
+
+   /* Paleta -- cada color trae una variante más oscura/saturada para modo
+      claro (buen contraste sobre blanco) y una más viva para modo oscuro. */
+   :global(.tw-red) {
+      color: #dc2626;
+   }
+   :global(html.dark .tw-red) {
+      color: #ff5470;
+   }
+   :global(.tw-orange) {
+      color: #c2410c;
+   }
+   :global(html.dark .tw-orange) {
+      color: #ff9a3d;
+   }
+   :global(.tw-amber) {
+      color: #a16207;
+   }
+   :global(html.dark .tw-amber) {
+      color: #ffd166;
+   }
+   :global(.tw-rose) {
+      color: #be123c;
+   }
+   :global(html.dark .tw-rose) {
+      color: #ff6fa5;
+   }
+   :global(.tw-fuchsia) {
+      color: #a21caf;
+   }
+   :global(html.dark .tw-fuchsia) {
+      color: #e879f9;
+   }
+   :global(.tw-crimson) {
+      color: #b91c1c;
+   }
+   :global(html.dark .tw-crimson) {
+      color: #ff7452;
+   }
+
+   @keyframes menuShatterPop {
+      0% {
+         transform: scale(1) rotate(0deg);
+         opacity: 1;
+      }
+      100% {
+         transform: scale(1.7) rotate(25deg);
+         opacity: 0;
+      }
+   }
+
+   :global(.impact-shard) {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      border-radius: 1px;
+      transform: translate(-50%, -50%);
+      animation: menuShardFly 0.42s ease-out forwards;
+   }
+   @keyframes menuShardFly {
+      0% {
+         transform: translate(-50%, -50%) translate(0, 0) scale(1);
+         opacity: 1;
+      }
+      100% {
+         transform: translate(-50%, -50%) translate(var(--shard-x), var(--shard-y)) scale(0.3);
+         opacity: 0;
+      }
+   }
+
+   :global(.shield-flash) {
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      border-radius: 9999px;
+      border: 2px solid #8149e2;
+      transform: translate(-50%, -50%) scale(0.3);
+      opacity: 0.9;
+      animation: menuShieldFlash 0.45s ease-out forwards;
+   }
+   :global(html.dark .shield-flash) {
+      border-color: #e4d9ff;
+   }
+   @keyframes menuShieldFlash {
+      0% {
+         transform: translate(-50%, -50%) scale(0.3);
+         opacity: 0.9;
+      }
+      100% {
+         transform: translate(-50%, -50%) scale(2.4);
+         opacity: 0;
+      }
+   }
+
+   @media (prefers-reduced-motion: reduce) {
+      .menu-star,
+      .shield-wave,
+      .shield-logo {
+         animation: none !important;
+      }
+   }
+</style>

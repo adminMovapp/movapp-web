@@ -78,13 +78,16 @@ const socials = [
       flexbox, así que el sobrante de ARRIBA queda fuera de rango de scroll
       (scrollTop no puede bajar de 0 para revelarlo). Con "justify-start" el
       primer botón ("Inicio") siempre queda alcanzable, desborde o no.
+
+      "items-start" (a pedido, vuelve a la izquierda -- ya no centrado) +
+      "pt-10" (en vez de "py-6") para bajar un poco el bloque completo.
    -->
-   <div class="relative flex min-h-0 flex-1 flex-col justify-start gap-5 overflow-y-auto py-6">
+   <div class="relative flex min-h-0 flex-1 flex-col items-start justify-start gap-5 overflow-y-auto pb-6 pt-10">
       {
          topLinks.map((item) => (
             <a
                href={item.href}
-               class="text-3xl font-bold uppercase text-gray-800 transition hover:text-text_banner dark:text-white"
+               class="text-lg font-bold uppercase text-gray-800 transition hover:text-text_banner dark:text-white"
             >
                {item.label}
             </a>
@@ -98,14 +101,14 @@ const socials = [
          type="button"
          aria-expanded="false"
          aria-controls="menuContentSubmenu"
-         class="flex items-center gap-3 text-left text-3xl font-bold uppercase text-gray-800 transition hover:text-text_banner dark:text-white"
+         class="flex items-center gap-3 text-left text-lg font-bold uppercase text-gray-800 transition hover:text-text_banner dark:text-white"
       >
          <span>Contenido</span>
-         <span id="menuContentChevron" class="text-lg transition-transform duration-200">
+         <span id="menuContentChevron" class="text-base transition-transform duration-200">
             <ArrowIcon size={4} />
          </span>
       </button>
-      <div id="menuContentSubmenu" class="hidden flex-col gap-3 pl-1">
+      <div id="menuContentSubmenu" class="hidden flex-col items-start gap-3 pl-1">
          {
             contentLinks.map((item) => (
                <a
@@ -120,7 +123,7 @@ const socials = [
    </div>
 
    <!-- Carrito y tema -->
-   <div class="relative flex flex-col gap-4 border-t border-black/10 pt-4 dark:border-white/10">
+   <div class="relative flex flex-col items-start gap-4 border-t border-black/10 pt-4 dark:border-white/10">
       <a
          href="/tienda"
          id="cartButtonMobile"

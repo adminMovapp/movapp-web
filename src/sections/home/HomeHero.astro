@@ -2,7 +2,7 @@
 import ButtonContact from '@components/ui/ButtonContact.astro';
 ---
 
-<section class="relative mx-auto flex min-h-[85vh] max-w-5xl flex-col items-center justify-center px-4 pt-16 pb-12 text-center">
+<section class="relative mx-auto flex min-h-[85vh] max-w-5xl flex-col items-center justify-center px-4 pt-16 pb-12 text-center md:min-h-[70vh] md:pt-8 md:pb-8">
    <!--
       Fondo espacial: full-bleed (ignora el max-w del section con el truco
       left-1/2 + w-screen + -translate-x-1/2) para que llene todo el ancho
@@ -39,33 +39,25 @@ import ButtonContact from '@components/ui/ButtonContact.astro';
    -->
    <div class="relative w-full md:grid md:grid-cols-2 md:items-center md:gap-10 lg:gap-16">
       <div class="relative">
-         <!-- Eyebrow: solo en móvil. En escritorio este mismo texto vive
-              DENTRO del H1 (ver más abajo, a pedido) -- no puede haber dos
-              H1 ni duplicar la etiqueta de encabezado, así que en escritorio
-              este párrafo suelto se oculta y su texto pasa a un <span>
-              dentro del único H1 de la página. -->
-         <p
-            class="hero-float-combo text-sm font-semibold uppercase tracking-widest text-text_banner md:hidden"
-            style="--float-dur: 6s; --float-delay: 0s; animation: heroFadeIn 0.7s ease-out both, heroFloat 6s ease-in-out 0s infinite;"
-         >
-            Recupera tu tranquilidad hoy
-         </p>
-
          <!--
-            H1 (único H1 de la página). En escritorio, a pedido: todo el
-            texto (el "eyebrow" + el título) fluye como una sola oración
-            dentro de este mismo H1 -- ya no una línea chica separada, sino
-            parte del mismo texto/tamaño -- y todo en mayúsculas
-            ("md:uppercase": text-transform se hereda, así que alcanza con
-            ponerlo una vez acá). En móvil no cambia nada: el <span> de abajo
-            queda oculto (hidden md:inline) y el H1 solo trae el título, en
-            el mismo case de siempre.
+            H1 (único H1 de la página). Todo el texto (el "eyebrow" +
+            el título) vive dentro de este mismo H1, en escritorio Y en
+            móvil (a pedido) -- ya no hay un <p> suelto aparte, así no hay
+            texto duplicado ni riesgo de dos encabezados. En escritorio,
+            además, todo va en mayúsculas ("md:uppercase": text-transform se
+            hereda, alcanza con ponerlo una vez acá) -- en móvil se queda en
+            el case normal, como siempre.
+
+            "tranquilidad" y "apps de préstamos" en morado (text_banner):
+            son las frases marcadas en negritas en el documento fuente -- a
+            pedido, todo texto en negritas del documento se respeta en color
+            morado (ver la skill seo-content-import).
          -->
          <h1
             class="hero-float-combo mx-auto mt-4 max-w-4xl text-4xl font-bold leading-tight text-gray-900 dark:text-white md:mx-0 md:text-left md:text-6xl md:uppercase"
             style="--float-dur: 6.5s; --float-delay: 0.3s; animation: heroFadeIn 0.7s ease-out both, heroFloat 6.5s ease-in-out 0.3s infinite;"
          >
-            <span class="hidden md:inline">Recupera tu tranquilidad hoy, </span>Adiós al acoso de las <span class="text-text_banner drop-shadow-[0_0_25px_rgba(129,73,226,0.35)]">apps de préstamos</span>
+            Recupera tu <span class="text-text_banner">tranquilidad</span> hoy, Adiós al acoso de las <span class="text-text_banner drop-shadow-[0_0_25px_rgba(129,73,226,0.35)]">apps de préstamos</span>
          </h1>
       </div>
 
@@ -210,8 +202,8 @@ import ButtonContact from '@components/ui/ButtonContact.astro';
       <div>
          <h2 class="text-2xl font-bold uppercase text-gray-900 dark:text-white md:text-3xl">Asesoría gratuita</h2>
          <p class="mt-3 text-gray-700 dark:text-white/80">
-            Detén las llamadas, los mensajes de acoso a ti, así como a tus contactos. Un asesor real te acompaña
-            paso a paso, sin costo.
+            Detén las llamadas, los mensajes de acoso a ti, así como a tus contactos.
+            <strong class="font-bold text-text_banner">Un asesor real te acompaña paso a paso, sin costo.</strong>
          </p>
          <div class="mt-6">
             <ButtonContact label="Hablar con un asesor" fullWidth />
@@ -231,7 +223,7 @@ import ButtonContact from '@components/ui/ButtonContact.astro';
                   <img src="/img/migracion/play-store-v2.webp" alt="Google Play" class="h-10 w-auto" />
                </a>
             </div>
-            <p class="text-sm font-semibold text-gray-700 dark:text-white/80">5000+ Descargas</p>
+            <p class="text-sm font-bold text-text_banner">5000+ Descargas</p>
          </div>
       </div>
 

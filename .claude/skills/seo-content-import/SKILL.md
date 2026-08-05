@@ -53,6 +53,25 @@ termina en la web debe ser **una copia exacta**, sin excepciones:
   cita, un título de paso duplicado que parece error de mockup), decláralo explícitamente
   al usuario en el reporte final — no lo dejes como un cambio silencioso, aunque sigas
   adelante con él bajo esta regla de fidelidad.
+- **Toda palabra o frase que la fuente marque en negritas se implementa en negritas Y en
+  morado** (`text-text_banner`/`purple_mv`), siempre — no solo negritas, no solo color, las
+  dos cosas juntas (regla explícita del usuario, tras encontrar negritas del mockup que se
+  habían implementado sin color, o sin negrita, al pasar el copy al código). Ejemplos ya
+  aplicados en Home: la palabra "tranquilidad" y la frase "apps de préstamos" dentro del H1
+  del Hero, la frase completa "Un asesor real te acompaña paso a paso, sin costo." en el
+  párrafo de la card de asesoría, "5000+ Descargas", y "1,000,000"/"Movapp" en la sección de
+  confianza (`<strong class="font-bold text-text_banner">...</strong>`, o un `<span>` con
+  esas mismas clases si el elemento no debe ser semánticamente `<strong>`). Esta regla es
+  específicamente para **negritas dentro de copy de cuerpo/párrafo** (énfasis puntual sobre
+  una frase) — no aplica a encabezados completos (H2/H3), que ya tienen su propio tratamiento
+  tipográfico establecido en todo el sitio (negrita + `text-gray-900 dark:text-white`, sin
+  color de marca) y no deben volverse morados solo por ser, como todo encabezado, "bold" por
+  definición.
+- Antes de dar por terminada una sección, **revisa cada captura/página de la fuente palabra
+  por palabra buscando negritas** — es fácil pasarlas por alto al copiar el texto de corrido.
+  Si ya existe una implementación previa de la sección (no es la primera vez que se importa),
+  compara explícitamente el peso/color de cada frase marcada contra el código actual — no
+  asumas que una importación anterior ya las respetó correctamente.
 
 ## Procedimiento
 
