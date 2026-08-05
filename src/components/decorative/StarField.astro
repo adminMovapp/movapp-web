@@ -16,8 +16,30 @@ interface Props {
 
 const { id, ambientCount = 45, fullBleed = true } = Astro.props;
 
+// fullBleed: SIN overflow-hidden (ni siquiera "overflow-x-hidden") a
+// propósito. El resplandor de abajo está centrado en el borde superior de
+// la sección (top-0 -translate-y-1/2) y su blur necesita poder desbordarse
+// verticalmente para mezclarse con el resplandor de la sección de arriba y
+// de abajo -- si no, la costura entre secciones se ve como un corte duro.
+//
+// Probamos primero "overflow-x-hidden" solo (para seguir recortando en X
+// pero no en Y) y NO funcionó -- confirmado muestreando los píxeles reales
+// renderizados. Es una regla real de CSS: si overflow-x no es "visible" y
+// overflow-y no se especifica (o incluso si se especifica "visible" a
+// mano), el navegador FUERZA el valor computado de overflow-y a "auto" en
+// vez de "visible" -- y "auto" sigue recortando igual que "hidden". No hay
+// forma de tener "recorta en X, no recorta en Y" en un solo elemento.
+//
+// Por eso aquí no se recorta en NINGÚN eje. No hace falta: el ancho de este
+// div ya es exactamente 100vw (w-screen, centrado con left-1/2 más
+// -translate-x-1/2), así que no hay nada adentro que vaya a desbordarse
+// horizontalmente en la práctica (ni las estrellas ambiente, acotadas 0-100%,
+// ni el resplandor, que mide menos del 100% de ancho) -- y el <body> ya
+// trae su propio overflow-x-hidden como red de seguridad general del sitio.
+// Las estrellas fugaces tienen su propio overflow-hidden más abajo, así que
+// tampoco se escapan por este cambio.
 const wrapperClass = fullBleed
-   ? 'field-root pointer-events-none absolute inset-y-0 left-1/2 -z-10 w-screen -translate-x-1/2 overflow-hidden'
+   ? 'field-root pointer-events-none absolute inset-y-0 left-1/2 -z-10 w-screen -translate-x-1/2'
    : 'field-root pointer-events-none absolute inset-0 -z-10 overflow-hidden';
 ---
 
