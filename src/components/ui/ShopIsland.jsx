@@ -45,7 +45,7 @@ const ProductCard = ({ product, onAdd }) => (
 
          <button
             onClick={() => onAdd(product)}
-            className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-text_banner py-3 font-bold text-white shadow-lg shadow-text_banner/25 transition hover:bg-text_banner/80"
+            className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-text_banner py-3 font-bold text-white shadow-lg shadow-text_banner/25 transition hover:bg-text_banner/80"
          >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -316,7 +316,7 @@ const CheckoutPanel = ({ open, onClose, pais }) => {
                      ))}
                      <button
                         type="submit"
-                        className="mt-1 w-full rounded-lg bg-text_banner py-3 font-bold text-white shadow-lg shadow-text_banner/20 transition hover:bg-text_banner/80"
+                        className="mt-1 w-full rounded-full bg-text_banner py-3 font-bold text-white shadow-lg shadow-text_banner/20 transition hover:bg-text_banner/80"
                      >
                         Continuar al pago
                      </button>
@@ -351,7 +351,7 @@ const CheckoutPanel = ({ open, onClose, pais }) => {
                   </div>
                   <button
                      onClick={goToForm}
-                     className="w-full rounded-lg bg-text_banner py-3 font-bold text-white shadow-lg shadow-text_banner/20 transition hover:bg-text_banner/80"
+                     className="w-full rounded-full bg-text_banner py-3 font-bold text-white shadow-lg shadow-text_banner/20 transition hover:bg-text_banner/80"
                   >
                      Continuar
                   </button>

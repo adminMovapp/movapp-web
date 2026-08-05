@@ -68,7 +68,7 @@ const CheckoutForm = ({ onCancel }) => {
          <button
             type="submit"
             disabled={!stripe || !ready || submitting}
-            className="mt-1 w-full rounded-lg bg-text_banner py-3 font-bold text-white shadow-lg shadow-text_banner/20 transition hover:bg-text_banner/80 disabled:cursor-not-allowed disabled:opacity-60"
+            className="mt-1 w-full rounded-full bg-text_banner py-3 font-bold text-white shadow-lg shadow-text_banner/20 transition hover:bg-text_banner/80 disabled:cursor-not-allowed disabled:opacity-60"
          >
             {submitting ? 'Procesando…' : !ready ? 'Cargando…' : 'Pagar ahora'}
          </button>
