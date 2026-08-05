@@ -30,7 +30,8 @@ import MenuMobile from '@components/layout/MenuMobile.astro';
       data-home-link
    >
       <span class="sr-only">Home</span>
-      <span class="home-logo-icon block h-7 w-9 bg-purple_mv dark:bg-white" aria-hidden="true"></span>
+      <img src="/img/logo_resp.webp" alt="" class="block h-7 w-auto dark:hidden" aria-hidden="true" />
+      <img src="/img/logo_resp_blanco.webp" alt="" class="hidden h-7 w-auto dark:block" aria-hidden="true" />
    </a>
 
    <!-- Tienda -->
@@ -67,14 +68,4 @@ import MenuMobile from '@components/layout/MenuMobile.astro';
       mask-size: contain;
    }
 
-   .home-logo-icon {
-      -webkit-mask-image: url('/img/logo_resp.webp');
-      mask-image: url('/img/logo_resp.webp');
-      -webkit-mask-repeat: no-repeat;
-      mask-repeat: no-repeat;
-      -webkit-mask-position: center;
-      mask-position: center;
-      -webkit-mask-size: contain;
-      mask-size: contain;
-   }
 </style>

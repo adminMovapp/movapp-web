@@ -6,16 +6,11 @@ import ArrowIcon from '@assets/ArrowIcon.astro';
    id="siteHeader"
    class="fixed top-0 inset-x-0 z-50 bg-gradient-to-b from-purple_mv/[0.06] to-white/90 dark:from-purple_mv/[0.08] dark:to-zinc-950/85 backdrop-blur-md px-6 md:px-10 lg:px-16 py-4 hidden lg:flex justify-between items-center transition-colors duration-300"
 >
-   <!-- Logo (morado en light, blanco en dark). En light se pinta con la
-        técnica mask-image (ver <style> abajo): el PNG original es negro
-        sobre transparente, así que se usa como máscara y se rellena con
-        background-color: currentColor -- así el color sale de la clase de
-        texto (text-text_banner) en vez de depender de un PNG ya coloreado. -->
+   <!-- Logo con su diseño/color original (sin recolorear vía mask-image) --
+        mismo criterio que Footer.astro y MenuMobilePanel.astro: en light se
+        usa el PNG tal cual, en dark el PNG blanco. -->
    <a href="/" class="flex items-center" aria-label="Movapp - Inicio" data-home-link>
-      <span
-         aria-hidden="true"
-         class="brand-logo-mask block aspect-[3140/550] h-9 w-auto text-text_banner dark:hidden md:h-10"
-      ></span>
+      <img src="/img/Logo.png" alt="Movapp" class="block h-9 w-auto dark:hidden md:h-10" />
       <img src="/img/Logo-Blanco.png" alt="Movapp" class="hidden h-9 w-auto dark:block md:h-10" />
    </a>
 
@@ -216,15 +211,15 @@ import ArrowIcon from '@assets/ArrowIcon.astro';
    }
 
    /*
-      Logo e ícono de tienda son PNG negro-sobre-transparente (no SVG), así
-      que no aceptan "currentColor" como un <svg stroke="currentColor">.
-      Se usan como máscara (mask-image) en vez de imagen: el PNG solo define
-      qué parte es visible, y el color real sale de background-color, que
-      se deja en "currentColor" para heredar la clase de texto del elemento
-      (text-text_banner en light, dark:text-white/70 en dark) -- mismo
-      mecanismo con el que ya funcionan los <svg> de al lado.
+      Ícono de tienda: PNG negro-sobre-transparente (no SVG), así que no
+      acepta "currentColor" como un <svg stroke="currentColor">. Se usa como
+      máscara (mask-image) en vez de imagen: el PNG solo define qué parte es
+      visible, y el color real sale de background-color, que se deja en
+      "currentColor" para heredar la clase de texto del elemento
+      (icon-tone) -- mismo mecanismo con el que ya funcionan los <svg> de al
+      lado. El logo YA NO usa esta técnica (ver el <img> del markup arriba):
+      debe verse con su diseño/color original, no recoloreado.
    */
-   .brand-logo-mask,
    .icon-mask-store {
       background-color: currentColor;
       -webkit-mask-repeat: no-repeat;
@@ -233,14 +228,6 @@ import ArrowIcon from '@assets/ArrowIcon.astro';
       mask-size: contain;
       -webkit-mask-position: center;
       mask-position: center;
-   }
-   .brand-logo-mask {
-      -webkit-mask-image: url('/img/Logo.png');
-      mask-image: url('/img/Logo.png');
-      -webkit-mask-position: left center;
-      mask-position: left center;
-   }
-   .icon-mask-store {
       -webkit-mask-image: url('/img/tienda.webp');
       mask-image: url('/img/tienda.webp');
    }
