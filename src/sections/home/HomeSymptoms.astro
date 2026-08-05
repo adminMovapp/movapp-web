@@ -3,22 +3,22 @@ import StarField from '@components/decorative/StarField.astro';
 
 const symptoms = [
    {
-      title: 'Llamadas de acoso sin parar.',
+      title: 'Llamadas de acoso',
       text: 'Te llaman a toda hora, incluso desde números distintos.',
       icon: '/img/migracion/telefono.webp',
    },
    {
-      title: 'Mensajes que amenazan.',
+      title: 'Mensajes amenazantes',
       text: 'Recibes textos con insultos o amenazas para presionarte a pagar.',
       icon: '/img/migracion/mensajes.webp',
    },
    {
-      title: 'Contactan a tu familia y amigos.',
+      title: 'Contactos en riesgo',
       text: 'Usan tu lista de contactos para avergonzarte y presionarte.',
       icon: '/img/migracion/contacto.webp',
    },
    {
-      title: 'Angustia que no te deja vivir.',
+      title: 'Angustia',
       text: 'El miedo y la ansiedad se apoderan de tu día a día.',
       icon: '/img/migracion/angustia.webp',
    },
@@ -31,7 +31,7 @@ const symptoms = [
    <div class="mx-auto max-w-2xl text-center">
       <h2 class="text-2xl md:text-4xl font-bold uppercase text-gray-900 dark:text-white">¿Te está pasando esto?</h2>
       <p class="mt-3 text-gray-600 dark:text-white/70">
-         Si reconoces alguna de estas situaciones, no estás solo. Tiene solución.
+         Si reconoces alguna de estas situaciones, no estás solo. Tenemos una solución.
       </p>
    </div>
 
@@ -47,7 +47,7 @@ const symptoms = [
                      <img src={s.icon} alt="" class="h-full w-full object-contain" />
                   </div>
                </div>
-               <p class="relative font-bold text-gray-900 dark:text-white">{s.title}</p>
+               <h3 class="relative font-bold text-gray-900 dark:text-white">{s.title}</h3>
                <p class="relative mt-1 text-sm text-gray-600 dark:text-white/70">{s.text}</p>
             </li>
          ))

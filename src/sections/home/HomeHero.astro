@@ -31,65 +31,20 @@ import ButtonContact from '@components/ui/ButtonContact.astro';
    </div>
 
    <!--
-      Bloque del título + animación: en móvil, una sola columna centrada con
-      la órbita de escudos anclada detrás del título (como antes). En
+      Bloque del título + animación: en móvil, el título va solo, sin la
+      órbita de escudos de fondo (removida a pedido -- ver más abajo). En
       escritorio (md+) se abre a 2 columnas: el texto queda a la izquierda y
-      la órbita, que antes era un fondo difuso detrás de todo el bloque, pasa
-      a ser el elemento visual de la columna derecha (así se aprovecha el
-      espacio que deja el texto al dejar de estar centrado).
+      la órbita (intacta, sin cambios) es el elemento visual de la columna
+      derecha.
    -->
    <div class="relative w-full md:grid md:grid-cols-2 md:items-center md:gap-10 lg:gap-16">
       <div class="relative">
-         <!-- Animación de Órbita de Protección (Fondo) -- versión móvil: anclada al título -->
-         <div
-            class="hero-orbit-group pointer-events-none absolute left-1/2 top-1/2 z-[-10] flex -translate-x-1/2 -translate-y-1/2 items-center justify-center opacity-30 dark:opacity-40 md:hidden"
-            aria-hidden="true"
-         >
-            <!-- Círculo interior (decorativo) -->
-            <div class="hero-orbit-inner absolute w-[150px] h-[150px] rounded-full border-[1.5px] border-purple_mv/20 border-dashed"></div>
-
-            <!-- Círculo Exterior (Órbita de Escudos) -->
-            <div class="hero-orbit-outer absolute w-[260px] h-[260px] rounded-full border border-purple_mv/30">
-
-               <!-- Escudo 1 (Arriba: 0 grados) -->
-               <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 text-purple_mv">
-                  <div class="w-full h-full hero-orbit-item">
-                     <svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full drop-shadow-[0_0_8px_rgba(129,73,226,0.6)]">
-                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill-opacity="0.15" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path>
-                        <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
-                     </svg>
-                  </div>
-               </div>
-
-               <!-- Escudo 2 (Abajo Izquierda: 120 grados) -->
-               <div class="absolute top-[75%] left-[6.7%] -translate-x-1/2 -translate-y-1/2 w-10 h-10 text-purple_mv">
-                  <div class="w-full h-full hero-orbit-item">
-                     <svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full drop-shadow-[0_0_8px_rgba(129,73,226,0.6)]">
-                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill-opacity="0.15" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path>
-                        <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
-                     </svg>
-                  </div>
-               </div>
-
-               <!-- Escudo 3 (Abajo Derecha: 240 grados) -->
-               <div class="absolute top-[75%] left-[93.3%] -translate-x-1/2 -translate-y-1/2 w-10 h-10 text-purple_mv">
-                  <div class="w-full h-full hero-orbit-item">
-                     <svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full drop-shadow-[0_0_8px_rgba(129,73,226,0.6)]">
-                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill-opacity="0.15" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path>
-                        <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
-                     </svg>
-                  </div>
-               </div>
-
-            </div>
-         </div>
-
          <!-- Eyebrow -->
          <p
             class="hero-float-combo text-sm font-semibold uppercase tracking-widest text-text_banner md:text-left"
             style="--float-dur: 6s; --float-delay: 0s; animation: heroFadeIn 0.7s ease-out both, heroFloat 6s ease-in-out 0s infinite;"
          >
-            Ayuda real para víctimas de apps montadeudas
+            Recupera tu tranquilidad hoy
          </p>
 
          <!-- H1 (único H1 de la página) -->
@@ -97,8 +52,7 @@ import ButtonContact from '@components/ui/ButtonContact.astro';
             class="hero-float-combo mx-auto mt-4 max-w-4xl text-4xl font-bold leading-tight text-gray-900 dark:text-white md:mx-0 md:text-left md:text-6xl"
             style="--float-dur: 6.5s; --float-delay: 0.3s; animation: heroFadeIn 0.7s ease-out both, heroFloat 6.5s ease-in-out 0.3s infinite;"
          >
-            Recupera tu tranquilidad <span class="text-text_banner drop-shadow-[0_0_25px_rgba(129,73,226,0.35)]">hoy</span>,
-            adiós al acoso de las <span class="text-text_banner drop-shadow-[0_0_25px_rgba(129,73,226,0.35)]">apps de préstamos</span>
+            Adiós al acoso de las <span class="text-text_banner drop-shadow-[0_0_25px_rgba(129,73,226,0.35)]">apps de préstamos</span>
          </h1>
       </div>
 
@@ -223,19 +177,36 @@ import ButtonContact from '@components/ui/ButtonContact.astro';
       style="--float-dur: 6.2s; --float-delay: 0.6s; animation: heroFloat 6.2s ease-in-out 0.6s infinite;"
    >
       <div>
-         <h2 class="text-2xl font-bold uppercase text-gray-900 dark:text-white md:text-3xl">Asesoría gratuita</h2>
          <p class="mt-3 text-gray-700 dark:text-white/80">
             Detén las llamadas, los mensajes de acoso a ti, así como a tus contactos. Un asesor real te acompaña
             paso a paso, sin costo.
          </p>
          <div class="mt-6">
-            <ButtonContact label="Hablar con un asesor por WhatsApp" fullWidth />
+            <ButtonContact label="Hablar con un asesor" fullWidth />
+         </div>
+
+         <!-- Íconos de tienda + contador de descargas: solo en móvil (ver
+              wireframe de estructura móvil), debajo del botón de WhatsApp.
+              En escritorio no se agrega -- ahí se mantiene el diseño actual
+              (imagen de asesoría, más abajo). Enlaces placeholder href="#"
+              igual que los badges de HomeCTA.astro, pendientes de URL real. -->
+         <div class="mt-6 flex flex-col items-center gap-3 md:hidden">
+            <div class="flex items-center gap-3">
+               <a href="#" aria-label="Descargar en App Store" class="transition hover:scale-105">
+                  <img src="/img/migracion/app-store-v2.webp" alt="App Store" class="h-10 w-auto" />
+               </a>
+               <a href="#" aria-label="Descargar en Google Play" class="transition hover:scale-105">
+                  <img src="/img/migracion/play-store-v2.webp" alt="Google Play" class="h-10 w-auto" />
+               </a>
+            </div>
+            <p class="text-sm font-semibold text-gray-700 dark:text-white/80">5000+ Descargas</p>
          </div>
       </div>
 
       <!-- Con tope de ancho + mx-auto para que no ocupe toda la columna: se veía
-           demasiado grande frente al texto. -->
-      <div class="mx-auto flex aspect-[4/3] w-full max-w-[220px] items-center justify-center overflow-hidden rounded-2xl border border-purple_mv/20 bg-purple_mv/5 dark:border-white/10 dark:bg-white/5 md:aspect-square md:max-w-[240px]">
+           demasiado grande frente al texto. Oculta en móvil: ese espacio lo
+           ocupa ahora el bloque de íconos de tienda + descargas de arriba. -->
+      <div class="mx-auto hidden aspect-[4/3] w-full max-w-[220px] items-center justify-center overflow-hidden rounded-2xl border border-purple_mv/20 bg-purple_mv/5 dark:border-white/10 dark:bg-white/5 md:flex md:aspect-square md:max-w-[240px]">
          <img
             src="/img/Asesoria-gratuita.webp"
             alt="Guía de asesoría Movapp"
@@ -436,23 +407,12 @@ import ButtonContact from '@components/ui/ButtonContact.astro';
       animation: heroOrbitSpin 14.4s linear infinite reverse;
    }
    /*
-      La rotación se apaga SOLO en móvil (<768px, el mismo breakpoint que
-      "md:hidden" en el markup de arriba) -- confirmado con un diagnóstico
-      en el propio sitio (conteo de saltos en 45s: 25 con la órbita
-      rotando, 0 apagándola) que es la causa real del "flote" de
-      MobileBottomNav en móvil. Convertirla de JS a CSS (más arriba) no
-      alcanzó: el costo no era solo del hilo principal, sino de mantener
-      la rotación corriendo en absoluto.
-      En escritorio (>=768px) la órbita sigue exactamente igual que
-      siempre, sin tocar -- ahí nunca hubo el problema.
+      La órbita ya no existe en el DOM en móvil (bloque removido a pedido --
+      solo la versión de escritorio, "hidden md:flex", usa estas clases). Por
+      debajo de 768px ese bloque queda en display:none y el navegador no le
+      calcula estilo ni pintado, así que su animación no tiene costo alguno
+      ahí -- no hace falta apagarla explícitamente.
    */
-   @media (max-width: 767.98px) {
-      .hero-orbit-outer,
-      .hero-orbit-inner,
-      .hero-orbit-item {
-         animation: none !important;
-      }
-   }
 
    /*
       El sitio tiene una regla global (src/styles/global.css) que, para
@@ -479,11 +439,9 @@ import ButtonContact from '@components/ui/ButtonContact.astro';
 
    /*
       La restauración de la órbita bajo prefers-reduced-motion (excepción
-      documentada arriba) solo aplica en escritorio -- en móvil la órbita
-      ya está apagada siempre (ver @media max-width:767.98px más arriba),
-      con o sin reduced-motion, y no queremos que esta excepción la
-      reactive ahí (ambas reglas usan !important; sin este min-width
-      quedarían compitiendo por orden de aparición).
+      documentada arriba) solo aplica en escritorio -- es la única
+      instancia que existe (la de móvil fue removida del DOM), así que el
+      min-width es solo para dejar la intención explícita.
    */
    @media (prefers-reduced-motion: reduce) and (min-width: 768px) {
       .hero-orbit-outer,

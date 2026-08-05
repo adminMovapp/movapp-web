@@ -14,9 +14,25 @@ import StarField from '@components/decorative/StarField.astro';
       <div class="pointer-events-none absolute -right-16 -top-8 h-56 w-56 rounded-full bg-purple_mv/30 blur-3xl"></div>
       <div class="pointer-events-none absolute -bottom-20 -left-16 h-56 w-56 rounded-full bg-purple_mv/20 blur-3xl"></div>
 
-      <div class="relative z-10 grid grid-cols-1 items-center gap-8 md:grid-cols-2 md:gap-12">
+      <!--
+         Orden móvil (ver wireframe de estructura móvil): título -> imagen ->
+         texto -> resto (botón + badges). En escritorio vuelve al orden
+         original (imagen a la izquierda, todo el texto apilado a la
+         derecha) -- se logra con grid-template-areas (ver <style> más abajo)
+         en vez de un simple "order" de Tailwind, porque el título ya no
+         puede estar anidado dentro del mismo div que el párrafo/botón/badges
+         (si no, no hay forma de intercalar la imagen entre título y párrafo
+         en móvil) y grid-template-areas es lo que permite que, aun con el
+         título como celda de grid independiente, en escritorio se siga
+         viendo apilado junto al párrafo/resto en la misma columna.
+      -->
+      <div class="cta-grid relative z-10 gap-8 md:gap-12">
+         <h2 class="cta-title text-center text-2xl font-bold uppercase leading-tight text-gray-900 dark:text-white md:text-left md:text-3xl">
+            Da el primer paso hoy
+         </h2>
+
          <!-- Mockup de la app en la App Store -->
-         <div class="flex aspect-[4/3] items-center justify-center rounded-2xl border border-purple_mv/20 bg-purple_mv/5 dark:border-white/10 dark:bg-white/5 md:aspect-square">
+         <div class="cta-image flex aspect-[4/3] items-center justify-center rounded-2xl border border-purple_mv/20 bg-purple_mv/5 dark:border-white/10 dark:bg-white/5 md:aspect-square">
             <img
                src="/img/migracion/Mockup-celular-movapp-1.webp"
                alt="Vista previa de Movapp en la App Store"
@@ -25,29 +41,26 @@ import StarField from '@components/decorative/StarField.astro';
             />
          </div>
 
-         <div class="text-center md:text-left">
-            <span class="text-xs font-semibold uppercase tracking-widest text-text_banner">Movapp</span>
-            <h2 class="mt-1 text-2xl font-bold uppercase leading-tight text-gray-900 dark:text-white md:text-3xl">Da el primer paso hoy</h2>
-            <p class="mx-auto mt-3 max-w-xl text-sm text-gray-600 dark:text-white/80 md:mx-0 md:text-base">
-               No tienes que enfrentar esto solo. Escríbenos por WhatsApp y recupera tu tranquilidad.
-            </p>
+         <p class="cta-text mx-auto max-w-xl text-center text-sm text-gray-600 dark:text-white/80 md:mx-0 md:text-left md:text-base">
+            No tienes que enfrentar esto solo. Escríbenos por WhatsApp y recupera tu tranquilidad.
+         </p>
 
+         <div class="cta-rest text-center md:text-left">
             <!--
                -mx-6 en móvil: el botón es w-full (fullWidth), así que su
                ancho real depende de cuánto le sobre a esta columna -- y el
-               p-10 de la card (40px por lado) le deja muy poco margen al
-               texto largo ("Hablar con un asesor por WhatsApp"), partiéndolo
-               en 3 líneas apretadas. Este margen negativo solo ensancha la
-               FILA del botón (no toca el padding del resto de la card:
-               título, párrafo, mockup), dándole ~24px más de ancho por lado
-               sin afectar el resto del diseño. En md+ se anula (mx-0) porque
+               p-10 de la card (40px por lado) le deja poco margen al texto
+               del botón. Este margen negativo solo ensancha la FILA del
+               botón (no toca el padding del resto de la card: título,
+               párrafo, mockup), dándole ~24px más de ancho por lado sin
+               afectar el resto del diseño. En md+ se anula (mx-0) porque
                ahí el botón vuelve a su ancho natural (no es fullWidth).
             -->
             <div
-               class="float-anim -mx-6 mt-6 flex justify-center md:mx-0 md:justify-start"
+               class="float-anim -mx-6 flex justify-center md:mx-0 md:justify-start"
                style="--float-dur: 5.8s; --float-delay: 0.3s;"
             >
-               <ButtonContact label="Hablar con un asesor por WhatsApp" fullWidth />
+               <ButtonContact label="Hablar con un asesor" fullWidth />
             </div>
 
             <div class="mt-6 flex flex-col items-center gap-3 md:items-start">
@@ -62,3 +75,33 @@ import StarField from '@components/decorative/StarField.astro';
       </div>
    </div>
 </section>
+
+<style>
+   .cta-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-areas: 'title' 'image' 'text' 'rest';
+   }
+   .cta-title {
+      grid-area: title;
+   }
+   .cta-image {
+      grid-area: image;
+   }
+   .cta-text {
+      grid-area: text;
+   }
+   .cta-rest {
+      grid-area: rest;
+   }
+
+   /* Escritorio: layout original (imagen a la izquierda, todo el texto
+      apilado a la derecha) -- la imagen ocupa las 3 filas de su columna. */
+   @media (min-width: 768px) {
+      .cta-grid {
+         grid-template-columns: 1fr 1fr;
+         grid-template-areas: 'image title' 'image text' 'image rest';
+         align-items: center;
+      }
+   }
+</style>

@@ -20,6 +20,40 @@ conversación (el usuario lo adjunta como PDF). Si no ha sido adjuntado en esta
 conversación, o no tienes claro qué rango de páginas/sección corresponde, pregunta antes
 de inventar contenido.
 
+La misma fuente de verdad puede venir como **wireframes/mockups (capturas de pantalla)**
+en vez de PDF — por ejemplo, screenshots de un mockup móvil con anotaciones de nivel de
+encabezado (H1/H2/H3/P) junto a cada bloque de texto. Tratarlos exactamente igual que el
+documento maestro: mismo nivel de fidelidad, mismas reglas de extracción de abajo. La
+única diferencia es que las etiquetas "-H1"/"-H2"/"-P" que acompañan el texto en el
+mockup son **anotaciones de estructura, no contenido** — indican qué etiqueta HTML usar,
+pero no se incluyen en el texto final.
+
+### Fidelidad de texto verbatim (regla explícita del usuario)
+
+Cuando el usuario entrega el copy exacto a implementar (documento o mockup), el texto que
+termina en la web debe ser **una copia exacta**, sin excepciones:
+
+- **Respeta el case exacto del texto fuente.** Si el original está en mayúsculas, así
+  queda; si mezcla mayúsculas/minúsculas, así queda. No normalices el case de la fuente —
+  pero si el sitio ya logra ese mismo resultado visual vía CSS (p. ej. una clase
+  `uppercase` de Tailwind que transforma cualquier texto a mayúsculas al renderizar), está
+  bien escribir el texto fuente en el `.astro` en el case que ya usa el resto del código
+  (normalmente sentence case) y dejar que esa clase existente produzca el mayúsculas
+  visual — lo que importa es el resultado final en pantalla, no forzar mayúsculas literales
+  en el código si ya se logran por CSS.
+- **No agregues texto que no esté en la fuente** — sin frases de relleno, sin "mejorar" o
+  parafrasear una oración aunque suene más natural. Si el bloque fuente no trae un eyebrow/
+  kicker o un párrafo introductorio que sí existe hoy en el código, ese texto sobrante se
+  retira (ver regla de abajo sobre no dejar contenido no solicitado).
+- **No quites texto que sí esté en la fuente** — todo el copy que el usuario entregó debe
+  terminar visible en la web, completo.
+- Si al aplicar esta regla vas a **remover contenido existente en el sitio que no aparece
+  en la fuente nueva** (un eyebrow, un párrafo, un testimonio, un logo), o vas a **resolver
+  una inconsistencia real de la fuente** (un nombre de testimonio que no corresponde a la
+  cita, un título de paso duplicado que parece error de mockup), decláralo explícitamente
+  al usuario en el reporte final — no lo dejes como un cambio silencioso, aunque sigas
+  adelante con él bajo esta regla de fidelidad.
+
 ## Procedimiento
 
 1. **Identifica el alcance.** Si el usuario da un rango de páginas ("de la 33 a la 40") o

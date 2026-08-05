@@ -4,7 +4,8 @@ import StarField from '@components/decorative/StarField.astro';
 const hub = [
    {
       title: 'El Hack',
-      desc: 'La solución que frena el acoso y protege tu teléfono; la obtienes hablando con un asesor.',
+      desc: 'La herramienta que bloquea el acoso y protege tu teléfono.',
+      linkLabel: 'Conocer El Hack',
       href: '/el-hack/',
       photo: '/img/elhack-blanco.png',
       alt: 'El Hack',
@@ -30,11 +31,7 @@ const hub = [
    <StarField id="featured" ambientCount={40} />
 
    <div class="mb-8 text-center md:mb-10">
-      <span class="text-xs font-semibold uppercase tracking-widest text-text_banner">Explora</span>
-      <h2 class="mt-1 text-2xl md:text-4xl font-bold uppercase text-gray-900 dark:text-white">¿Cómo te ayuda Movapp?</h2>
-      <p class="mx-auto mt-2 max-w-xl text-sm text-gray-600 dark:text-white/60">
-         Estés donde estés en tu situación, aquí encuentras el siguiente paso.
-      </p>
+      <h2 class="text-2xl md:text-4xl font-bold uppercase text-gray-900 dark:text-white">¿Cómo te ayuda Movapp?</h2>
    </div>
 
    <!--
@@ -75,11 +72,17 @@ const hub = [
                   )}
                </div>
 
+               <!-- Cada tarjeta conserva su propio título/descripción/enlace (móvil y
+                    escritorio) -- además, "El Hack" (índice 0) también aparece fijo
+                    debajo de las 3 imágenes, sin importar cuál tarjeta esté centrada
+                    en el carrusel móvil (ver bloque más abajo). -->
                <div class="bg-gradient-to-b from-purple_mv/[0.06] to-transparent p-5 text-center dark:from-purple_mv/[0.1] dark:to-black/30 md:p-7">
-                  <h3 class="text-lg font-bold text-gray-900 dark:text-white md:text-2xl">{item.title}</h3>
+                  <h3 class:list={['text-lg font-bold text-gray-900 dark:text-white md:text-2xl', i === 0 && 'uppercase']}>
+                     {item.title}
+                  </h3>
                   <p class="mt-1 text-xs text-gray-600 dark:text-white/60 md:mt-2 md:text-base">{item.desc}</p>
                   <span class="mt-3 inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wide text-text_banner md:mt-4 md:text-sm">
-                     Ver más
+                     {item.linkLabel || 'Ver más'}
                      <svg
                         class="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1 md:h-4 md:w-4"
                         fill="none"
@@ -99,7 +102,8 @@ const hub = [
    <!-- Pista de swipe: solo en móvil, siempre visible en el HTML (no depende de JS).
         Las flechas son botones reales (ver script) que llevan a la tarjeta
         anterior/siguiente -- el swipe manual sigue funcionando igual, esto
-        solo agrega una forma alterna de navegar con un tap. -->
+        solo agrega una forma alterna de navegar con un tap. Va antes del
+        texto fijo de "El Hack" (ver wireframe de estructura móvil). -->
    <div class="swipe-hint mx-auto mt-5 flex w-fit items-center gap-2 rounded-full border border-purple_mv/25 bg-purple_mv/5 px-4 py-1.5 text-[11px] font-medium text-gray-500 dark:border-white/10 dark:bg-white/5 dark:text-white/50 md:hidden">
       <button id="featuredSwipePrev" type="button" aria-label="Ver tarjeta anterior" class="-m-1 flex items-center justify-center p-1">
          <svg class="swipe-hint-arrow h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
@@ -113,6 +117,21 @@ const hub = [
          </svg>
       </button>
    </div>
+
+   <!-- Texto fijo de "El Hack": solo en móvil, siempre visible debajo de las 3
+        imágenes sin importar cuál tarjeta esté centrada en el carrusel (ver
+        wireframe de estructura móvil). Usa hub[0] directamente en vez de
+        duplicar el copy, para no desalinearse si ese contenido cambia. -->
+   <a href={hub[0].href} class="mt-5 block text-center md:hidden">
+      <h3 class="text-lg font-bold uppercase text-gray-900 dark:text-white">{hub[0].title}</h3>
+      <p class="mt-1 text-xs text-gray-600 dark:text-white/60">{hub[0].desc}</p>
+      <span class="mt-3 inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wide text-text_banner">
+         {hub[0].linkLabel || 'Ver más'}
+         <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+         </svg>
+      </span>
+   </a>
 </section>
 
 <style>

@@ -1,16 +1,16 @@
 ---
 const steps = [
    {
-      title: 'Habla con un asesor real.',
-      text: 'Nos escribes por WhatsApp y te escuchamos. Revisamos tu caso y te explicamos las opciones, sin juzgarte.',
+      title: 'Habla con un asesor',
+      text: 'Nos escribes por WhatsApp y te escuchamos. Te explicamos qué hacer, sin juzgarte.',
    },
    {
-      title: 'El asesor te guía para activar El Hack.',
-      text: 'Configuras las protecciones disponibles en tu teléfono para reducir las llamadas y los mensajes de acoso y resguardar tus contactos y tu galería, según tu dispositivo.',
+      title: 'Activa El Hack',
+      text: 'Instalas la app y bloqueas de inmediato las llamadas y mensajes de acoso, y proteges tus contactos y tu galería.',
    },
    {
-      title: 'Recibe seguimiento.',
-      text: 'Damos seguimiento para verificar si el acoso baja o cambia, y ajustar el proceso. Si lo necesitas, cuentas con apoyo emocional en el camino.',
+      title: 'Habla con un asesor',
+      text: 'Vuelves a tener paz. Y si lo necesitas, cuentas con apoyo emocional en el camino.',
    },
 ];
 
@@ -22,11 +22,7 @@ import StarField from '@components/decorative/StarField.astro';
    <StarField id="how-it-works" ambientCount={40} />
 
    <div class="mb-12 text-center">
-      <span class="text-xs font-semibold uppercase tracking-widest text-text_banner">La solución</span>
-      <h2 class="mt-1 text-2xl md:text-4xl font-bold uppercase text-gray-900 dark:text-white">¿Cómo funciona El Hack?</h2>
-      <p class="mx-auto mt-3 max-w-xl text-gray-600 dark:text-white/70">
-         Un proceso acompañado, en tres pasos y sin trámites complicados.
-      </p>
+      <h2 class="text-2xl md:text-4xl font-bold uppercase text-gray-900 dark:text-white">¿Cómo funciona El Hack?</h2>
    </div>
 
    <!--
@@ -87,11 +83,8 @@ import StarField from '@components/decorative/StarField.astro';
 
    <div class="mt-10 flex flex-col items-center gap-3">
       <div class="float-anim" style="--float-dur: 5.8s; --float-delay: 0s;">
-         <ButtonContact label="Hablar con un asesor por WhatsApp" />
+         <ButtonContact label="Hablar con un asesor" />
       </div>
-      <a href="/el-hack/" class="text-sm text-text_banner underline-offset-4 hover:underline">
-         Conocer El Hack a detalle
-      </a>
    </div>
 </section>
 

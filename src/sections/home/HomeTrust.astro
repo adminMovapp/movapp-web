@@ -1,27 +1,16 @@
 ---
-// Nota: "+1 Millón" ya se publicaba antes en el sitio; el rating de tiendas
-// (★4.9 App Store / ★4.8 Google Play) es nuevo y corresponde a la app de
-// Movapp, no a El Hack — pendiente de verificación con Marketing antes de publicar.
 const testimonials = [
-   {
-      name: 'Diego',
-      text: 'Estoy muy agradecida con el equipo Movapp. Ellos me han ayudado bastante. Les recomiendo mucho contactarse y no tener miedo, son de suma confianza. Cada uno de sus asesores te van a brindar información y aclararán tus dudas. Ya verás que en tu proceso en Movapp sentirás de nuevo la paz y tranquilidad que tenías.',
-   },
-   {
-      name: 'Caro',
-      text: 'Estoy muy agradecido que me ayudaron a salir de ese círculo del que nunca iba a salir. Estoy más que agradecido, mucho, con ustedes y todo su equipo.',
-   },
    {
       name: 'Rubi',
       text: 'Estoy muy agradecida con ustedes y con Dios porque desde que me dieron el apoyo ya no me han mandado mensajes. Les agradezco el apoyo, Dios me los bendiga.',
    },
    {
-      name: 'Sandra',
-      text: 'Ya las llamadas son menos y ya no me mandan mensajes, tenían razón. Ya no molestan a mis contactos. Son lo máximo, gracias por ayudarme, sin duda los recomendaría.',
+      name: 'Diego',
+      text: 'Estoy muy agradecido que me ayudaron a salir de ese círculo del que nunca iba a salir. Estoy más que agradecido, mucho, con ustedes y todo su equipo.',
    },
    {
-      name: 'Alma',
-      text: 'Ha bajado 100% el hostigamiento por whatsapp y correos así que estoy muy feliz con los resultados y el apoyo que se me ha brindado en todo este proceso. Movapp, son lo mejor.',
+      name: 'Sandra',
+      text: 'Ya las llamadas son menos y ya no me mandan mensajes, tenían razón. Ya no molestan a mis contactos. Son lo máximo, gracias por ayudarme, sin duda los recomendaría.',
    },
 ];
 
@@ -41,12 +30,7 @@ const collaborations = [
    <div class="mb-10 text-center">
       <h2 class="text-2xl md:text-4xl font-bold uppercase text-gray-900 dark:text-white">¿Por qué confiar en Movapp?</h2>
       <p class="mt-3 text-sm md:text-base text-gray-600 dark:text-white/70">
-         Más de <strong>1,000,000</strong> de personas han confiado en Movapp
-         <span class="mx-1">·</span>
-         ★ 4.9 App Store
-         <span class="mx-1">·</span>
-         ★ 4.8 Google Play
-         <span class="text-xs text-gray-400 dark:text-white/40">(app de Movapp)</span>
+         Más de <strong>1,000,000</strong> de personas han confiado en Movapp.
       </p>
    </div>
 
@@ -58,9 +42,7 @@ const collaborations = [
       de "icono sobre grid punteado" que usa la primera tarjeta de esa
       sección, con un ícono de persona anónima.
    -->
-   <h3 class="mb-6 text-center text-lg font-bold text-text_banner">Historias reales</h3>
-
-   <!-- Móvil: carrusel deslizable, igual que antes (todos los 5 testimonios, scroll-snap). -->
+   <!-- Móvil: carrusel deslizable, igual que antes (todos los testimonios, scroll-snap). -->
    <div class="md:hidden">
       <div
          id="trustCarousel"
@@ -107,9 +89,9 @@ const collaborations = [
       Escritorio: PÁGINAS de 3 testimonios distintos (no una ventana
       deslizante) -- cada testimonio aparece en una sola página, nunca se
       repite entre un click y el siguiente. Si el total no es múltiplo de 3,
-      la última página simplemente trae menos tarjetas (con 5 testimonios:
-      página 0 = 3, página 1 = 2) en vez de completar con repetidos. Las
-      flechas ciclan entre páginas (de la última vuelve a la primera).
+      la última página simplemente trae menos tarjetas en vez de completar
+      con repetidos. Las flechas ciclan entre páginas (de la última vuelve
+      a la primera).
 
       Cada tarjeta tiene DOS capas de texto superpuestas en la misma celda de
       grid (grid-area 1/1 -- así se apilan sin necesitar position:absolute ni
@@ -190,7 +172,7 @@ const collaborations = [
       </button>
    </div>
 
-   <!-- Datos completos de los 5 testimonios para el script del carrusel de escritorio (las 3 tarjetas de arriba solo pintan los índices 0, 1 y 2 al cargar). -->
+   <!-- Datos completos de los testimonios para el script del carrusel de escritorio (las 3 tarjetas de arriba solo pintan los índices 0, 1 y 2 al cargar). -->
    <script type="application/json" id="trust-data" is:inline set:html={JSON.stringify(testimonials)} />
 
    <div class="mt-8 flex justify-center md:hidden">

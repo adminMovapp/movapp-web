@@ -1,5 +1,29 @@
 ---
-import StarField from '@components/decorative/StarField.astro';
+import { URLS } from '@/constants/socials';
+import ArrowIcon from '@assets/ArrowIcon.astro';
+
+const topLinks = [
+   { href: '/', label: 'Inicio' },
+   { href: '/nosotros', label: 'Movapp' },
+   { href: '/el-hack', label: 'Hack' },
+];
+
+// Mismo agrupamiento que el submenú "Contenido" del header de escritorio
+// (Header.astro) -- ver ese archivo para la fuente de verdad de estos enlaces.
+const contentLinks = [
+   { href: '/collaborations', label: 'Colaboraciones' },
+   { href: '/faqs', label: 'Preguntas frecuentes' },
+   { href: '/testimonials', label: 'Testimonios' },
+   { href: '/mind', label: 'Mente digital' },
+   { href: '/red', label: 'Nuestras redes' },
+];
+
+const socials = [
+   { href: URLS.youtube, label: 'YouTube', icon: '/img/logo-youtube.webp' },
+   { href: URLS.tiktok, label: 'TikTok', icon: '/img/logo-tiktok.webp' },
+   { href: URLS.facebook, label: 'Facebook', icon: '/img/logo-facebook.webp' },
+   { href: URLS.instagram, label: 'Instagram', icon: '/img/logo-instagram.webp' },
+];
 ---
 
 <!--
@@ -19,14 +43,22 @@ import StarField from '@components/decorative/StarField.astro';
    en vez del remapeo global de "Secciones que SIEMPRE son oscuras" (ver
    src/styles/global.css) -- ese remapeo es para secciones que deben
    IGNORAR el tema, que ya no es el caso acá.
+
+   Sin StarField de fondo (a pedido): este panel es de navegación, no una
+   sección visual de contenido -- solo debe quedar el cambio de tema
+   claro/oscuro, sin animación decorativa.
 -->
 <nav
    id="menuNav"
    class="fixed inset-0 z-[999999999] hidden flex-col bg-white p-6 pt-[calc(1.5rem_+_env(safe-area-inset-top))] pb-[calc(1.5rem_+_env(safe-area-inset-bottom))] dark:bg-background_bottom"
 >
-   <StarField id="mobile-menu" ambientCount={35} fullBleed={false} />
+   <!-- Encabezado: marca + cerrar (misma estructura que la referencia de diseño) -->
+   <div class="relative flex items-center justify-between">
+      <a href="/" class="flex items-center" aria-label="Movapp - Inicio" data-home-link>
+         <span aria-hidden="true" class="menu-logo-mask block h-7 w-auto text-text_banner dark:hidden"></span>
+         <img src="/img/Logo-Blanco.png" alt="Movapp" class="hidden h-7 w-auto dark:block" />
+      </a>
 
-   <div class="relative flex items-center justify-end">
       <button
          id="menuCloseButton"
          aria-label="Cerrar menú"
@@ -45,19 +77,11 @@ import StarField from '@components/decorative/StarField.astro';
       layout -- varios navegadores no implementan "safe center" para
       flexbox, así que el sobrante de ARRIBA queda fuera de rango de scroll
       (scrollTop no puede bajar de 0 para revelarlo). Con "justify-start" el
-      primer botón ("Movapp") siempre queda alcanzable, desborde o no.
+      primer botón ("Inicio") siempre queda alcanzable, desborde o no.
    -->
    <div class="relative flex min-h-0 flex-1 flex-col justify-start gap-2 overflow-y-auto py-6">
       {
-         [
-            { href: '/nosotros', label: 'Movapp' },
-            { href: '/el-hack', label: 'Hack' },
-            { href: '/collaborations', label: 'Colaboraciones' },
-            { href: '/faqs', label: 'Preguntas frecuentes' },
-            { href: '/testimonials', label: 'Testimonios' },
-            { href: '/mind', label: 'Mente digital' },
-            { href: '/red', label: 'Nuestras redes' },
-         ].map((item) => (
+         topLinks.map((item) => (
             <a
                href={item.href}
                class="rounded-full border border-black/10 bg-black/5 px-4 py-3 text-center text-base font-semibold text-gray-800 transition hover:border-text_banner/40 hover:bg-black/10 hover:text-text_banner active:scale-[0.98] dark:border-white/10 dark:bg-white/5 dark:text-white dark:hover:bg-white/10"
@@ -66,6 +90,33 @@ import StarField from '@components/decorative/StarField.astro';
             </a>
          ))
       }
+
+      <!-- "Contenido": acordeón (mismo agrupamiento que el submenú de escritorio),
+           igual que la sección expandible de la referencia de diseño. -->
+      <button
+         id="menuContentToggle"
+         type="button"
+         aria-expanded="false"
+         aria-controls="menuContentSubmenu"
+         class="flex items-center justify-between rounded-full border border-black/10 bg-black/5 px-4 py-3 text-base font-semibold text-gray-800 transition hover:border-text_banner/40 hover:bg-black/10 hover:text-text_banner dark:border-white/10 dark:bg-white/5 dark:text-white dark:hover:bg-white/10"
+      >
+         <span>Contenido</span>
+         <span id="menuContentChevron" class="transition-transform duration-200">
+            <ArrowIcon size={4} />
+         </span>
+      </button>
+      <div id="menuContentSubmenu" class="hidden flex-col gap-2 py-1 pl-4">
+         {
+            contentLinks.map((item) => (
+               <a
+                  href={item.href}
+                  class="rounded-full border border-black/10 bg-black/5 px-4 py-2.5 text-center text-sm font-semibold text-gray-700 transition hover:border-text_banner/40 hover:bg-black/10 hover:text-text_banner active:scale-[0.98] dark:border-white/10 dark:bg-white/5 dark:text-white/90 dark:hover:bg-white/10"
+               >
+                  {item.label}
+               </a>
+            ))
+         }
+      </div>
    </div>
 
    <!-- Carrito y tema -->
@@ -124,13 +175,49 @@ import StarField from '@components/decorative/StarField.astro';
          <span>Cambiar tema</span>
       </button>
    </div>
+
+   <!-- Redes sociales (misma fila inferior que la referencia de diseño) -->
+   <div class="relative flex items-center justify-center gap-4 border-t border-black/10 pt-4 mt-4 dark:border-white/10">
+      {
+         socials.map((s) => (
+            <a
+               href={s.href}
+               target="_blank"
+               rel="noopener noreferrer"
+               aria-label={s.label}
+               class="flex h-10 w-10 items-center justify-center transition hover:-translate-y-0.5"
+            >
+               <img src={s.icon} alt={s.label} class="h-10 w-10 rounded-full object-cover" />
+            </a>
+         ))
+      }
+   </div>
 </nav>
+
+<style>
+   .menu-logo-mask {
+      -webkit-mask-image: url('/img/Logo.png');
+      mask-image: url('/img/Logo.png');
+      -webkit-mask-repeat: no-repeat;
+      mask-repeat: no-repeat;
+      -webkit-mask-position: left center;
+      mask-position: left center;
+      -webkit-mask-size: contain;
+      mask-size: contain;
+      background-color: currentColor;
+      aspect-ratio: 3140 / 550;
+      width: auto;
+   }
+</style>
 
 <script>
    const menuButton = document.getElementById('menuButton');
    const hamburgerIcon = document.getElementById('hamburgerIcon');
    const menuButtonCloseIcon = document.getElementById('menuButtonCloseIcon');
    const menuNav = document.getElementById('menuNav');
+   const contentToggle = document.getElementById('menuContentToggle');
+   const contentSubmenu = document.getElementById('menuContentSubmenu');
+   const contentChevron = document.getElementById('menuContentChevron');
 
    function openMenu() {
       menuNav.classList.remove('hidden');
@@ -148,6 +235,12 @@ import StarField from '@components/decorative/StarField.astro';
       menuButtonCloseIcon.classList.add('hidden');
       menuButton.setAttribute('aria-expanded', 'false');
       document.body.classList.remove('overflow-hidden');
+      // Colapsar "Contenido" al cerrar, así el menú siempre abre desde el
+      // mismo estado la próxima vez.
+      contentSubmenu.classList.add('hidden');
+      contentSubmenu.classList.remove('flex');
+      contentToggle.setAttribute('aria-expanded', 'false');
+      contentChevron.classList.remove('rotate-180');
    }
 
    menuButton.addEventListener('click', () => {
@@ -155,11 +248,23 @@ import StarField from '@components/decorative/StarField.astro';
       else closeMenu();
    });
 
+   // Acordeón "Contenido": solo abre/cierra su submenú, no debe cerrar todo
+   // el panel (por eso se excluye explícitamente del cierre delegado de abajo).
+   contentToggle.addEventListener('click', () => {
+      const isOpen = contentSubmenu.classList.toggle('flex');
+      contentSubmenu.classList.toggle('hidden', !isOpen);
+      contentToggle.setAttribute('aria-expanded', String(isOpen));
+      contentChevron.classList.toggle('rotate-180', isOpen);
+   });
+
    // Cerrar automáticamente al elegir cualquier opción del menú (enlaces,
    // el botón de cerrar, carrito o cambio de tema) -- delegado en vez de
    // un listener por item porque la lista puede crecer sin tener que
-   // acordarse de engancharla acá.
+   // acordarse de engancharla acá. El toggle de "Contenido" se excluye a
+   // propósito (ver arriba: abre/cierra su submenú, no debe cerrar el panel).
    menuNav.addEventListener('click', (e) => {
-      if (e.target instanceof Element && e.target.closest('a, button')) closeMenu();
+      if (!(e.target instanceof Element)) return;
+      if (e.target.closest('#menuContentToggle')) return;
+      if (e.target.closest('a, button')) closeMenu();
    });
 </script>
