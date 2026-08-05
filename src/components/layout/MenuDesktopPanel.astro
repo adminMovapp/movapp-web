@@ -54,9 +54,12 @@ const contentLinks = [
    secas alterna "hidden"/"flex" sin depender de ningún breakpoint.
 -->
 <div id="menuDesktopNav" class="fixed inset-0 z-[999999999] hidden" aria-hidden="true">
+   <!-- border-r visible aunque el panel esté vacío, a pedido: sin esto, los
+        dos paneles (mismo color de fondo) se ven como una sola superficie
+        continua en vez de dos mitades separadas. -->
    <div
       id="menuDesktopLeft"
-      class="menu-desktop-panel h-full w-1/2 bg-white dark:bg-background_bottom"
+      class="menu-desktop-panel h-full w-1/2 border-r border-black/10 bg-white dark:border-white/10 dark:bg-background_bottom"
       style="transform: translateX(-100%);"
    >
    </div>
@@ -164,12 +167,23 @@ const contentLinks = [
       }
       menuDesktopNav.classList.remove('hidden');
       menuDesktopNav.classList.add('flex');
-      // Forzar reflow: sin esto, el navegador puede fusionar el cambio de
-      // "display" de arriba con el cambio de transform de abajo en el mismo
-      // frame y saltarse la transición (el efecto "cortina" no se vería).
-      void menuDesktopNav.offsetHeight;
-      menuDesktopLeft.style.transform = 'translateX(0)';
-      menuDesktopRight.style.transform = 'translateX(0)';
+      // Doble requestAnimationFrame (NO un solo "void offsetHeight"): forzar
+      // reflow garantiza que el navegador RECALCULE el layout, pero no que
+      // llegue a PINTARLO antes del siguiente cambio -- si el cambio de
+      // transform de abajo ocurre en la misma tarea síncrona, el navegador
+      // puede fusionar "display:none -> flex -> transform:0" en un solo
+      // frame sin pintar nunca el estado "fuera de pantalla" intermedio, y
+      // la transición no se ve (confirmado: así se comportaba antes). El
+      // primer rAF espera a que el navegador procese el cambio de display;
+      // el segundo (encadenado desde el primero) espera a que ya lo haya
+      // pintado, así el cambio de transform que sigue sí parte de un estado
+      // realmente renderizado y la transición se anima.
+      requestAnimationFrame(() => {
+         requestAnimationFrame(() => {
+            menuDesktopLeft.style.transform = 'translateX(0)';
+            menuDesktopRight.style.transform = 'translateX(0)';
+         });
+      });
 
       hamburgerIconDesktop.classList.add('hidden');
       menuDesktopCloseIcon.classList.remove('hidden');
