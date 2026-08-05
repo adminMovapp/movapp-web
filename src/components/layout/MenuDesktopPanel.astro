@@ -1,0 +1,221 @@
+---
+import ArrowIcon from '@assets/ArrowIcon.astro';
+
+const topLinks = [
+   { href: '/', label: 'Inicio' },
+   { href: '/nosotros', label: 'Movapp' },
+   { href: '/el-hack', label: 'Hack' },
+];
+
+// Mismo agrupamiento que el submenú "Contenido" que antes vivía inline en el
+// header de escritorio (ver Header.astro) -- ver también MenuMobilePanel.astro,
+// que usa el mismo agrupamiento para su propio acordeón "Contenido".
+const contentLinks = [
+   { href: '/collaborations', label: 'Colaboraciones' },
+   { href: '/faqs', label: 'Preguntas frecuentes' },
+   { href: '/testimonials', label: 'Testimonios' },
+   { href: '/mind', label: 'Mente digital' },
+   { href: '/red', label: 'Nuestras redes' },
+];
+---
+
+<!--
+   Menú de escritorio: overlay de pantalla completa dividido en dos paneles
+   (izquierda/derecha), solo visible en lg+ (Header.astro ya solo muestra su
+   contenido -- logo, tienda/carrito, tema -- en ese mismo breakpoint). Vive
+   FUERA de <Header> como hermano suyo (mismo criterio que MenuMobilePanel
+   respecto de MobileBottomNav): un overlay "fixed inset-0" no debería anidarse
+   dentro de un ancestro con su propia lógica de posicionamiento/transform.
+
+   Panel izquierdo: vacío a propósito, a pedido ("de momento no pongas nada
+   del lado izquierdo, sólo el fondo dark/light") -- pensado para contenido
+   visual futuro (igual que el panel izquierdo de la referencia de diseño).
+   Panel derecho: la navegación que antes vivía inline en el header
+   (Inicio/Movapp/Hack/Contenido) -- el logo y el ícono de tienda/carrito y
+   el toggle de tema se quedan afuera, visibles en el header, a pedido.
+
+   Animación "cortina": ambos paneles arrancan fuera de pantalla (izquierdo
+   trasladado a la izquierda, derecho a la derecha) y se deslizan al centro
+   al abrir -- como si se "cerraran" las cortinas sobre la pantalla -- y
+   vuelven a deslizarse hacia sus lados de origen al cerrar ("se abren" las
+   cortinas, revelando la página de nuevo). Ver el <script> más abajo.
+-->
+<!--
+   "hidden" sin variante "lg:flex" a propósito -- aunque el botón que lo abre
+   solo es alcanzable en escritorio (vive dentro del "hidden lg:flex" de
+   Header.astro), agregar "lg:flex" acá haría que este overlay "fixed
+   inset-0" tuviera display:flex TODO EL TIEMPO en escritorio (la variante
+   responsive gana por orden de aparición en el CSS generado, sin importar
+   la clase "hidden" sin prefijo) -- un div transparente cubriendo toda la
+   pantalla en flex SIGUE intersectando clicks aunque sus paneles hijos estén
+   fuera de vista por transform, bloqueando toda la página incluso "cerrado"
+   (bug real, confirmado con Playwright: el propio botón de hamburguesa
+   quedaba inalcanzable). Mismo patrón que MenuMobilePanel.astro: JS a
+   secas alterna "hidden"/"flex" sin depender de ningún breakpoint.
+-->
+<div id="menuDesktopNav" class="fixed inset-0 z-[999999999] hidden" aria-hidden="true">
+   <div
+      id="menuDesktopLeft"
+      class="menu-desktop-panel h-full w-1/2 bg-white dark:bg-background_bottom"
+      style="transform: translateX(-100%);"
+   >
+   </div>
+
+   <div
+      id="menuDesktopRight"
+      class="menu-desktop-panel relative flex h-full w-1/2 flex-col bg-white p-12 dark:bg-background_bottom lg:p-16"
+      style="transform: translateX(100%);"
+   >
+      <div class="flex items-center justify-end">
+         <button
+            id="menuDesktopCloseButton"
+            aria-label="Cerrar menú"
+            class="flex h-12 w-12 items-center justify-center rounded-full text-gray-500 hover:bg-black/5 hover:text-text_banner dark:text-white/70 dark:hover:bg-white/5 dark:hover:text-white"
+         >
+            <svg class="h-8 w-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+               <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+         </button>
+      </div>
+
+      <nav class="flex flex-1 flex-col justify-center gap-6 overflow-y-auto">
+         {
+            topLinks.map((item) => (
+               <a
+                  href={item.href}
+                  class="text-4xl font-bold uppercase text-gray-800 transition hover:text-text_banner dark:text-white xl:text-5xl"
+               >
+                  {item.label}
+               </a>
+            ))
+         }
+
+         <button
+            id="menuDesktopContentToggle"
+            type="button"
+            aria-expanded="false"
+            aria-controls="menuDesktopContentSubmenu"
+            class="flex items-center gap-4 text-left text-4xl font-bold uppercase text-gray-800 transition hover:text-text_banner dark:text-white xl:text-5xl"
+         >
+            <span>Contenido</span>
+            <span id="menuDesktopContentChevron" class="text-2xl transition-transform duration-200">
+               <ArrowIcon size={6} />
+            </span>
+         </button>
+         <div id="menuDesktopContentSubmenu" class="hidden flex-col gap-3 pl-2">
+            {
+               contentLinks.map((item) => (
+                  <a
+                     href={item.href}
+                     class="text-xl font-semibold text-gray-600 transition hover:text-text_banner dark:text-white/80"
+                  >
+                     {item.label}
+                  </a>
+               ))
+            }
+         </div>
+      </nav>
+   </div>
+</div>
+
+<style>
+   /*
+      transition acá (no en las clases de Tailwind del markup) para poder
+      excluir "background-color"/"color" de la transición general -- si
+      "transition-colors" (usado en el resto del sitio para el cambio de
+      tema) se mezclara con esta transición de transform, el cambio de tema
+      mientras el menú está abierto se vería "deslizarse" de forma rara.
+   */
+   .menu-desktop-panel {
+      transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+   }
+</style>
+
+<script>
+   const menuDesktopButton = document.getElementById('menuDesktopButton');
+   const hamburgerIconDesktop = document.getElementById('hamburgerIconDesktop');
+   const menuDesktopCloseIcon = document.getElementById('menuDesktopCloseIcon');
+   const menuDesktopNav = document.getElementById('menuDesktopNav');
+   const menuDesktopLeft = document.getElementById('menuDesktopLeft');
+   const menuDesktopRight = document.getElementById('menuDesktopRight');
+   const menuDesktopCloseButton = document.getElementById('menuDesktopCloseButton');
+   const contentToggle = document.getElementById('menuDesktopContentToggle');
+   const contentSubmenu = document.getElementById('menuDesktopContentSubmenu');
+   const contentChevron = document.getElementById('menuDesktopContentChevron');
+
+   // Debe coincidir con la duration de .menu-desktop-panel (0.6s) -- se usa
+   // para esperar a que termine la animación de salida antes de volver a
+   // "display:none" (si no, el cierre se vería como un corte seco en vez
+   // del deslizamiento hacia los lados).
+   const CLOSE_ANIM_MS = 600;
+   let closeTimeoutId = null;
+
+   function collapseContentAccordion() {
+      contentSubmenu.classList.add('hidden');
+      contentSubmenu.classList.remove('flex');
+      contentToggle.setAttribute('aria-expanded', 'false');
+      contentChevron.classList.remove('rotate-180');
+   }
+
+   function openMenu() {
+      if (closeTimeoutId) {
+         clearTimeout(closeTimeoutId);
+         closeTimeoutId = null;
+      }
+      menuDesktopNav.classList.remove('hidden');
+      menuDesktopNav.classList.add('flex');
+      // Forzar reflow: sin esto, el navegador puede fusionar el cambio de
+      // "display" de arriba con el cambio de transform de abajo en el mismo
+      // frame y saltarse la transición (el efecto "cortina" no se vería).
+      void menuDesktopNav.offsetHeight;
+      menuDesktopLeft.style.transform = 'translateX(0)';
+      menuDesktopRight.style.transform = 'translateX(0)';
+
+      hamburgerIconDesktop.classList.add('hidden');
+      menuDesktopCloseIcon.classList.remove('hidden');
+      menuDesktopButton.setAttribute('aria-expanded', 'true');
+      document.body.classList.add('overflow-hidden');
+   }
+
+   function closeMenu() {
+      menuDesktopLeft.style.transform = 'translateX(-100%)';
+      menuDesktopRight.style.transform = 'translateX(100%)';
+
+      hamburgerIconDesktop.classList.remove('hidden');
+      menuDesktopCloseIcon.classList.add('hidden');
+      menuDesktopButton.setAttribute('aria-expanded', 'false');
+      document.body.classList.remove('overflow-hidden');
+
+      closeTimeoutId = setTimeout(() => {
+         menuDesktopNav.classList.add('hidden');
+         menuDesktopNav.classList.remove('flex');
+         collapseContentAccordion();
+         closeTimeoutId = null;
+      }, CLOSE_ANIM_MS);
+   }
+
+   menuDesktopButton?.addEventListener('click', () => {
+      if (menuDesktopNav.classList.contains('hidden')) openMenu();
+      else closeMenu();
+   });
+   menuDesktopCloseButton.addEventListener('click', closeMenu);
+
+   // Acordeón "Contenido": solo abre/cierra su submenú, no debe cerrar todo
+   // el panel (por eso se excluye explícitamente del cierre delegado de abajo).
+   contentToggle.addEventListener('click', () => {
+      const isOpen = contentSubmenu.classList.toggle('flex');
+      contentSubmenu.classList.toggle('hidden', !isOpen);
+      contentToggle.setAttribute('aria-expanded', String(isOpen));
+      contentChevron.classList.toggle('rotate-180', isOpen);
+   });
+
+   // Cerrar automáticamente al elegir cualquier enlace del menú -- delegado
+   // en vez de un listener por item. El toggle de "Contenido" y el propio
+   // botón de cerrar se excluyen (cada uno maneja su propio click arriba).
+   menuDesktopNav.addEventListener('click', (e) => {
+      if (!(e.target instanceof Element)) return;
+      if (e.target.closest('#menuDesktopContentToggle')) return;
+      if (e.target.closest('#menuDesktopCloseButton')) return;
+      if (e.target.closest('a')) closeMenu();
+   });
+</script>

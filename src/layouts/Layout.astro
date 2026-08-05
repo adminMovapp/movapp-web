@@ -14,6 +14,7 @@ const flagIconsHref = 'https://cdn.jsdelivr.net/npm/flag-icons/css/flag-icons.mi
 import Header from '@components/layout/Header.astro';
 import MobileBottomNav from '@components/layout/MobileBottomNav.astro';
 import MenuMobilePanel from '@components/layout/MenuMobilePanel.astro';
+import MenuDesktopPanel from '@components/layout/MenuDesktopPanel.astro';
 import Footer from '@components/layout/Footer.astro';
 import HeaderLayer from '@/components/layout/HeaderLayer.astro';
 import Preloader from '@/components/layout/Preloader.astro';
@@ -217,6 +218,7 @@ const organizationSchema = generateOrganizationSchema(Astro.request);
 
       <MobileBottomNav />
       <MenuMobilePanel />
+      <MenuDesktopPanel />
 
       <!--
          DIAGNÓSTICO TEMPORAL (v2) -- borrar una vez resuelto. Solo se activa

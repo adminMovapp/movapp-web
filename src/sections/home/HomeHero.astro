@@ -39,20 +39,33 @@ import ButtonContact from '@components/ui/ButtonContact.astro';
    -->
    <div class="relative w-full md:grid md:grid-cols-2 md:items-center md:gap-10 lg:gap-16">
       <div class="relative">
-         <!-- Eyebrow -->
+         <!-- Eyebrow: solo en móvil. En escritorio este mismo texto vive
+              DENTRO del H1 (ver más abajo, a pedido) -- no puede haber dos
+              H1 ni duplicar la etiqueta de encabezado, así que en escritorio
+              este párrafo suelto se oculta y su texto pasa a un <span>
+              dentro del único H1 de la página. -->
          <p
-            class="hero-float-combo text-sm font-semibold uppercase tracking-widest text-text_banner md:text-left"
+            class="hero-float-combo text-sm font-semibold uppercase tracking-widest text-text_banner md:hidden"
             style="--float-dur: 6s; --float-delay: 0s; animation: heroFadeIn 0.7s ease-out both, heroFloat 6s ease-in-out 0s infinite;"
          >
             Recupera tu tranquilidad hoy
          </p>
 
-         <!-- H1 (único H1 de la página) -->
+         <!--
+            H1 (único H1 de la página). En escritorio, a pedido: todo el
+            texto (el "eyebrow" + el título) fluye como una sola oración
+            dentro de este mismo H1 -- ya no una línea chica separada, sino
+            parte del mismo texto/tamaño -- y todo en mayúsculas
+            ("md:uppercase": text-transform se hereda, así que alcanza con
+            ponerlo una vez acá). En móvil no cambia nada: el <span> de abajo
+            queda oculto (hidden md:inline) y el H1 solo trae el título, en
+            el mismo case de siempre.
+         -->
          <h1
-            class="hero-float-combo mx-auto mt-4 max-w-4xl text-4xl font-bold leading-tight text-gray-900 dark:text-white md:mx-0 md:text-left md:text-6xl"
+            class="hero-float-combo mx-auto mt-4 max-w-4xl text-4xl font-bold leading-tight text-gray-900 dark:text-white md:mx-0 md:text-left md:text-6xl md:uppercase"
             style="--float-dur: 6.5s; --float-delay: 0.3s; animation: heroFadeIn 0.7s ease-out both, heroFloat 6.5s ease-in-out 0.3s infinite;"
          >
-            Adiós al acoso de las <span class="text-text_banner drop-shadow-[0_0_25px_rgba(129,73,226,0.35)]">apps de préstamos</span>
+            <span class="hidden md:inline">Recupera tu tranquilidad hoy, </span>Adiós al acoso de las <span class="text-text_banner drop-shadow-[0_0_25px_rgba(129,73,226,0.35)]">apps de préstamos</span>
          </h1>
       </div>
 
@@ -60,15 +73,33 @@ import ButtonContact from '@components/ui/ButtonContact.astro';
       <div class="relative hidden md:flex md:items-center md:justify-center" aria-hidden="true">
          <!--
             Mismo patrón que la versión móvil de arriba: el grupo es un
-            contenedor flex centrado sin tamaño propio, y los círculos son
-            hijos "absolute" con solo ancho/alto (sin translate) -- el
-            navegador los centra en el punto medio del grupo por las reglas
-            de alineación de flex para hijos posicionados. No se puede
-            centrar con translate-x/y aquí porque el script de más abajo
-            reemplaza por completo el transform de .hero-orbit-inner/outer
-            en cada frame (solo para rotar), y lo pisaría.
+            contenedor flex centrado, y los círculos son hijos "absolute" con
+            solo ancho/alto (sin translate) -- el navegador los centra en el
+            punto medio del grupo por las reglas de alineación de flex para
+            hijos posicionados. No se puede centrar con translate-x/y aquí
+            porque el script de más abajo reemplaza por completo el transform
+            de .hero-orbit-inner/outer en cada frame (solo para rotar), y lo
+            pisaría.
+
+            A diferencia de sus hijos (todos "absolute", sin tamaño propio),
+            ESTE contenedor sí lleva ancho/alto explícitos (círculo exterior +
+            el sobresaliente de los escudos en cada punto): así aporta una
+            altura real a esta columna del grid, en vez de colapsar a 0 y
+            dejar que la fila se dimensione solo por el título de la
+            izquierda. Eso causaba dos síntomas opuestos según cuántas líneas
+            ocupara el H1: con el título corto (pantallas anchas), la fila
+            quedaba más baja que el diámetro real del círculo y este se salía
+            por debajo, superponiéndose con la card de "Asesoría gratuita"
+            de más abajo; con el título largo (3 líneas), un min-height fijo
+            que se probó para lo anterior sumaba espacio de más siempre, sin
+            importar si hacía falta, y el bloque completo quedaba con mucho
+            aire arriba (toda la sección se centra con justify-center en el
+            <section> exterior). Con tamaño real aquí, la fila mide
+            max(alto del título, alto del círculo) -- ni más ni menos -- y
+            "items-center" en el grid centra ambas columnas dentro de esa
+            altura correcta en todos los casos.
          -->
-         <div class="hero-orbit-group pointer-events-none relative z-[-10] flex items-center justify-center opacity-30 dark:opacity-40">
+         <div class="hero-orbit-group pointer-events-none relative z-[-10] flex h-[304px] w-[304px] items-center justify-center opacity-30 dark:opacity-40 lg:h-[396px] lg:w-[396px] xl:h-[484px] xl:w-[484px]">
             <!-- Círculo interior (decorativo) -->
             <div class="hero-orbit-inner absolute h-[170px] w-[170px] rounded-full border-[1.5px] border-purple_mv/20 border-dashed lg:h-[230px] lg:w-[230px] xl:h-[280px] xl:w-[280px]"></div>
 
@@ -177,6 +208,7 @@ import ButtonContact from '@components/ui/ButtonContact.astro';
       style="--float-dur: 6.2s; --float-delay: 0.6s; animation: heroFloat 6.2s ease-in-out 0.6s infinite;"
    >
       <div>
+         <h2 class="text-2xl font-bold uppercase text-gray-900 dark:text-white md:text-3xl">Asesoría gratuita</h2>
          <p class="mt-3 text-gray-700 dark:text-white/80">
             Detén las llamadas, los mensajes de acoso a ti, así como a tus contactos. Un asesor real te acompaña
             paso a paso, sin costo.
