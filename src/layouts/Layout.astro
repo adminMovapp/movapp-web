@@ -95,6 +95,15 @@ const schemaJson = JSON.stringify(Array.isArray(pageSchema) ? pageSchema : [page
 <html lang={siteConfig.site.language} class="no-js dark">
    <head>
       <!--
+         Preconnect a jsDelivr: flag-icons.min.css (usado por la isla de
+         tienda) solo se pide con JS, vía el script de más abajo -- pero la
+         conexión (DNS/TLS) puede empezar antes, en paralelo al resto del
+         <head>, sin esperar a que ese script corra. No renderiza nada ni
+         depende de JS, así que no compromete el modo no-js.
+      -->
+      <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+
+      <!--
          Carga del CSS condicionada a JavaScript: si el navegador (o el bot)
          no ejecuta este script, la hoja de estilos de Tailwind nunca se pide
          y la página se sirve como HTML plano, mucho más ligero. Con

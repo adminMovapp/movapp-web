@@ -33,8 +33,11 @@ import MenuMobile from '@components/layout/MenuMobile.astro';
       data-home-link
    >
       <span class="sr-only">Home</span>
-      <Image src={ImgLogoResp} alt="" height={260} class="block h-7 w-auto dark:hidden" aria-hidden="true" />
-      <Image src={ImgLogoRespBlanco} alt="" height={260} class="hidden h-7 w-auto dark:block" aria-hidden="true" />
+      <!-- height=84 (no 260): se muestra a h-7 (28px) -- 84 da 3x retina de
+           margen sin servir un archivo ~5x más grande de lo necesario
+           (Lighthouse lo marcaba: 335x260 real para 63x49 de visualización). -->
+      <Image src={ImgLogoResp} alt="" height={84} class="block h-7 w-auto dark:hidden" aria-hidden="true" />
+      <Image src={ImgLogoRespBlanco} alt="" height={84} class="hidden h-7 w-auto dark:block" aria-hidden="true" />
    </a>
 
    <!-- Tienda -->

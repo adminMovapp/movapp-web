@@ -32,8 +32,15 @@ export default defineConfig({
    },
    output: 'server',
    adapter: netlify(),
+   // 'always' (no 'auto'): evita que Astro extraiga los <style> con scope de
+   // componente a archivos _astro/*.css enlazados aparte -- Lighthouse los
+   // marcaba como "solicitudes de bloqueo de renderización" (ida y vuelta de
+   // red extra antes de poder pintar). Inlinearlos en el <head> de la
+   // respuesta SSR quita esa espera sin tocar el mecanismo no-js/js (ese
+   // sigue siendo aparte: global.css se importa como ?url y se enlaza a mano
+   // por JS en Layout.astro, nunca pasa por este pipeline de Vite).
    build: {
-      inlineStylesheets: 'auto',
+      inlineStylesheets: 'always',
    },
    server: {
       // host: '192.168.3.143', //'192.168.3.143', // host: true,

@@ -85,8 +85,11 @@ const STARS = Array.from({ length: 12 }).map(() => ({
       <span class="shield-wave absolute inset-0 rounded-full border-2 border-purple_mv/60 dark:border-white/50" style="animation-delay: 1.83s;"></span>
       <span class="shield-wave absolute inset-0 rounded-full border-2 border-purple_mv/60 dark:border-white/50" style="animation-delay: 3.67s;"></span>
 
-      <Image src={ImgLogoResp} alt="Movapp" height={260} class="shield-logo relative z-10 block h-14 w-14 object-contain dark:hidden xl:h-16 xl:w-16" />
-      <Image src={ImgLogoRespBlanco} alt="Movapp" height={260} class="shield-logo relative z-10 hidden h-14 w-14 object-contain dark:block xl:h-16 xl:w-16" />
+      <!-- height=160 (no 260): el tamaño real en pantalla va de h-14 (56px) a
+           xl:h-16 (64px) -- 160 cubre 2.5x retina del caso más grande sin
+           servir el archivo a tamaño completo. -->
+      <Image src={ImgLogoResp} alt="Movapp" height={160} class="shield-logo relative z-10 block h-14 w-14 object-contain dark:hidden xl:h-16 xl:w-16" />
+      <Image src={ImgLogoRespBlanco} alt="Movapp" height={160} class="shield-logo relative z-10 hidden h-14 w-14 object-contain dark:block xl:h-16 xl:w-16" />
    </div>
 </div>
 

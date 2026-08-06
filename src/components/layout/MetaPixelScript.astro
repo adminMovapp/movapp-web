@@ -6,7 +6,7 @@ export interface Props {
 const { pixelId } = Astro.props;
 ---
 
-<script src="/js/metaPixel.js" is:inline></script>
+<script src="/js/metaPixel.js" defer is:inline></script>
 <script define:vars={{ pixelId }}>
    document.addEventListener('DOMContentLoaded', () => {
       if (window.metaPixelUtils) {

@@ -20,7 +20,12 @@ const hub = [
       desc: 'Consulta si una app de préstamo es legal o tiene reportes antes de usarla.',
       href: '/directorio-de-apps/',
       photo: ImgDirectorioDeApps,
-      photoWidth: 1000,
+      // 340 (no 1000): la tarjeta nunca se muestra a más de ~310px de ancho
+      // (grid de 3 columnas dentro de max-w-5xl en desktop, ~78vw en el
+      // carrusel móvil) -- "densities" abajo cubre retina sin pedir el
+      // archivo a tamaño completo como antes (Lighthouse lo marcaba: imagen
+      // de 1000px servida para un hueco de ~560px).
+      photoWidth: 340,
       alt: 'Persona revisando en su teléfono si una app de préstamo es confiable',
    },
    {
@@ -28,7 +33,8 @@ const hub = [
       desc: 'Aprende a defenderte de las apps montadeudas y a cuidar tu salud financiera.',
       href: '/recursos/',
       photo: ImgFotoErik,
-      photoWidth: 560,
+      // Mismo criterio que arriba, escalado a esta tarjeta (~220px reales).
+      photoWidth: 220,
       alt: 'Persona aprendiendo a cuidar su bienestar frente al acoso digital',
    },
 ];
@@ -76,6 +82,7 @@ const hub = [
                         <Image
                            src={item.photo}
                            width={item.photoWidth}
+                           densities={[1, 2]}
                            alt={item.alt || item.title}
                            class="h-full w-full object-contain"
                            loading="lazy"
@@ -85,6 +92,7 @@ const hub = [
                      <Image
                         src={item.photo}
                         width={item.photoWidth}
+                        densities={[1, 2]}
                         alt={item.alt || item.title}
                         class="h-full w-full object-cover"
                         loading="lazy"
@@ -277,15 +285,31 @@ const hub = [
          const r = el.getBoundingClientRect();
          return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
       };
+      // Doble rAF antes de leer offsetLeft/offsetWidth (dentro de
+      // getActiveIndex): Lighthouse marcaba estas lecturas como
+      // reprocesamiento forzado -- si el click llega justo después de un
+      // cambio de estilo (p.ej. el IntersectionObserver de arriba alternando
+      // "is-dimmed"), leer geometría en el mismo tick obliga al navegador a
+      // recalcular layout de forma síncrona. Diferir dos frames deja que
+      // cualquier cambio pendiente se pinte primero; el desplazamiento sigue
+      // siendo "smooth" y el retraso (~30ms) es imperceptible.
+      const goToRelativeCard = (delta: number) => {
+         requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+               scrollToIndex(getActiveIndex() + delta);
+            });
+         });
+      };
+
       window.addEventListener(
          'click',
          (e) => {
             if (prevBtn && isInside(prevBtn, e.clientX, e.clientY)) {
                e.stopPropagation();
-               scrollToIndex(getActiveIndex() - 1);
+               goToRelativeCard(-1);
             } else if (nextBtn && isInside(nextBtn, e.clientX, e.clientY)) {
                e.stopPropagation();
-               scrollToIndex(getActiveIndex() + 1);
+               goToRelativeCard(1);
             }
          },
          { capture: true },
@@ -294,8 +318,8 @@ const hub = [
       // Fallback para activación por teclado (Enter/Espacio con foco en el
       // botón): ahí no hay coordenadas de puntero reales, así que el chequeo
       // de arriba no aplica y hace falta este listener normal.
-      prevBtn?.addEventListener('click', () => scrollToIndex(getActiveIndex() - 1));
-      nextBtn?.addEventListener('click', () => scrollToIndex(getActiveIndex() + 1));
+      prevBtn?.addEventListener('click', () => goToRelativeCard(-1));
+      nextBtn?.addEventListener('click', () => goToRelativeCard(1));
    };
 
    initFeaturedCarousel();
