@@ -356,7 +356,11 @@ const schemaJson = JSON.stringify(Array.isArray(pageSchema) ? pageSchema : [page
          })();
       </script>
 
-      <!-- Widget de chat LeadConnector -->
+      <!--
+         Widget de chat LeadConnector -- DESACTIVADO TEMPORALMENTE a pedido.
+         Para reactivarlo, descomentar este bloque.
+      -->
+      <!--
       {!disableChatWidget && (
          <script
             is:inline
@@ -364,6 +368,7 @@ const schemaJson = JSON.stringify(Array.isArray(pageSchema) ? pageSchema : [page
             data-resources-url="https://widgets.leadconnectorhq.com/chat-widget/loader.js"
             data-widget-id="6a629fdd6f3b01a586db9391"></script>
       )}
+      -->
 
       <!--
          El widget de LeadConnector se posiciona a sí mismo dentro de su

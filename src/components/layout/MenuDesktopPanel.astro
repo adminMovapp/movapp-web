@@ -134,23 +134,25 @@ const contentLinks = [
       tema) se mezclara con esta transición de transform, el cambio de tema
       mientras el menú está abierto se vería "deslizarse" de forma rara.
 
-      1.5s a pedido (referencia: rockstargames.com/VI).
+      Originalmente 1.5s (referencia: rockstargames.com/VI) -- a pedido, se
+      bajó a 1s máximo porque se sentía demasiado lenta al abrir.
 
       "linear" a propósito, NO una curva ease-in-out: cualquier curva
       ease-in-out (incluida la usada antes, cubic-bezier(0.65,0,0.35,1)) tiene
       pendiente CERO en ambos extremos por construcción (es la definición
       matemática de "ease-in-out" -- ver P1.y=0 y P2.y=1 de cualquier curva
       así). Medido con Playwright (polling de getComputedStyle().transform
-      cada 300ms): con esa curva, a los 300ms el panel prácticamente no se
-      había movido, entre 300-900ms recorría casi TODO el desplazamiento, y
-      de 900 a 1500ms quedaba inmóvil -- 1.5s "de papel" pero solo ~600ms de
-      movimiento perceptible, exactamente el efecto de "salto" que se reportó
-      pese a que la duración configurada sí era 1.5s. "linear" reparte el
-      desplazamiento de forma pareja en todo el rango, así los 1.5s completos
-      se perciben como movimiento continuo.
+      cada 300ms) con la duración anterior de 1.5s: con esa curva, a los
+      300ms el panel prácticamente no se había movido, entre 300-900ms
+      recorría casi TODO el desplazamiento, y de 900 a 1500ms quedaba
+      inmóvil -- 1.5s "de papel" pero solo ~600ms de movimiento perceptible,
+      exactamente el efecto de "salto" que se reportó pese a que la duración
+      configurada sí era 1.5s. "linear" reparte el desplazamiento de forma
+      pareja en todo el rango, así toda la duración configurada (ahora 1s)
+      se percibe como movimiento continuo.
    */
    .menu-desktop-panel {
-      transition: transform 1.5s linear;
+      transition: transform 1s linear;
    }
 </style>
 
@@ -166,11 +168,11 @@ const contentLinks = [
    const contentSubmenu = document.getElementById('menuDesktopContentSubmenu');
    const contentChevron = document.getElementById('menuDesktopContentChevron');
 
-   // Debe coincidir con la duration de .menu-desktop-panel (1.5s) -- se usa
+   // Debe coincidir con la duration de .menu-desktop-panel (1s) -- se usa
    // para esperar a que termine la animación de salida antes de volver a
    // "display:none" (si no, el cierre se vería como un corte seco en vez
    // del deslizamiento hacia los lados).
-   const CLOSE_ANIM_MS = 1500;
+   const CLOSE_ANIM_MS = 1000;
    let closeTimeoutId = null;
 
    function collapseContentAccordion() {
