@@ -5,21 +5,9 @@ import NosotrosAbout from '@sections/nosotros/NosotrosAbout.astro';
 import NosotrosTimeline from '@sections/nosotros/NosotrosTimeline.astro';
 import NosotrosVideo from '@sections/nosotros/NosotrosVideo.astro';
 import NosotrosSocials from '@sections/nosotros/NosotrosSocials.astro';
-
-import { generateServiceSchema } from '@/utils/config.jsx';
-const serviceSchema = generateServiceSchema({
-   name: 'Asesoría para víctimas de aplicaciones de préstamo fraudulentas',
-   description: 'Ayudamos a personas víctimas de montadeudas con apoyo psicológico y asesoría legal',
-});
 ---
 
-<Layout
-   title="Movapp"
-   description="Movapp es una organización que ayuda a personas víctimas de las aplicaciones de préstamo no reguladas mediante apoyo psicológico, asesoría personalizada y la aplicación de El Hack."
-   type="website"
-   schema={serviceSchema}
-   showGrid={false}
->
+<Layout title="Movapp" type="website" showGrid={false}>
    <NosotrosHero />
    <NosotrosAbout />
    <NosotrosTimeline />

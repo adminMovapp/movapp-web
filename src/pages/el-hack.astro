@@ -6,19 +6,12 @@ import ElHackHowItWorks from '@sections/el-hack/ElHackHowItWorks.astro';
 import ElHackFeatures from '@sections/el-hack/ElHackFeatures.astro';
 import ElHackFAQ from '@sections/el-hack/ElHackFAQ.astro';
 import ElHackCTA from '@sections/el-hack/ElHackCTA.astro';
-
-import { generateServiceSchema } from '@/utils/config.jsx';
-const serviceSchema = generateServiceSchema({
-   name: 'El Hack - Protección contra montadeudas',
-   description: 'El Hack es la herramienta de Movapp para proteger tu información de las aplicaciones no reguladas.',
-});
 ---
 
 <Layout
    title="El Hack | Recupera tu tranquilidad, adiós al acoso de las apps de préstamos"
    description="La herramienta de Movapp que detiene las llamadas y los mensajes de acoso, protege a tus contactos y te acompaña con un asesor real."
    type="website"
-   schema={serviceSchema}
    showGrid={false}
 >
    <ElHackHero />

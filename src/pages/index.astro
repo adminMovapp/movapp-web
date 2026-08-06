@@ -6,19 +6,12 @@ import HomeHowItWorks from '@sections/home/HomeHowItWorks.astro';
 import HomeFeatured from '@sections/home/HomeFeatured.astro';
 import HomeTrust from '@sections/home/HomeTrust.astro';
 import HomeCTA from '@sections/home/HomeCTA.astro';
-
-import { generateServiceSchema } from '@/utils/config.jsx';
-const serviceSchema = generateServiceSchema({
-   name: 'Asesoría para víctimas de aplicaciones de préstamo fraudulentas',
-   description: 'Ayudamos a personas víctimas de montadeudas con apoyo psicológico y asesoría legal',
-});
 ---
 
 <Layout
    title="Movapp | Frena el acoso de apps de préstamo"
    description="Movapp te ayuda a frenar el acoso de las apps de préstamo. Habla gratis con un asesor por WhatsApp y recupera tu tranquilidad hoy."
    type="website"
-   schema={serviceSchema}
    showGrid={false}
 >
    <HomeHero />

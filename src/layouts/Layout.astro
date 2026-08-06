@@ -20,7 +20,10 @@ import HeaderLayer from '@/components/layout/HeaderLayer.astro';
 import Preloader from '@/components/layout/Preloader.astro';
 import BackgroundGrid from '@components/layout/BackgroundGrid.astro';
 
-import { getSiteConfig, generateSEOTags, generateOrganizationSchema } from '@/utils/config.jsx';
+import { getSiteConfig, generateSEOTags } from '@/utils/config.jsx';
+// Toda la funcionalidad de Schema.org está centralizada en ese archivo:
+// datos de las entidades, generadores y qué schema le toca a cada ruta.
+import { getPageSchema, getPageEntry } from '@/utils/schema.js';
 
 import GoogleTagManager from '@components/layout/GoogleTagManager.astro';
 import GoogleAnalytics from '@components/layout/GoogleAnalytics.astro';
@@ -46,22 +49,46 @@ interface Props {
    image?: string;
    type?: string;
    noIndex?: boolean;
-   schema?: object;
+   /*
+      Escotilla de escape para el JSON-LD: normalmente NO hace falta pasarla.
+      El schema se resuelve solo a partir de la ruta (ver PAGE_SCHEMA en
+      @/utils/schema.js, que es el único archivo que hay que mantener). Esta
+      prop existe para las páginas dinámicas de pSEO que vienen -- fichas de
+      app y artículos, cuyo schema depende del frontmatter de cada entrada y
+      no de una ruta fija.
+   */
+   schema?: object | object[];
    showGrid?: boolean;
 }
-const { title, showGrid = true } = Astro.props;
+const { title, schema, showGrid = true } = Astro.props;
 
 const siteConfig = getSiteConfig(Astro.request);
+
+/*
+   Meta description: la de la prop manda; si la página no pasa ninguna, se usa
+   la declarada para esa ruta en PAGE_SCHEMA (misma que va en el schema, así
+   el texto no se escribe dos veces); y si tampoco hay, la del sitio.
+*/
+const pageEntry = getPageEntry(Astro.url.pathname);
 
 // Generar tags SEO
 const seoTags = generateSEOTags(
    {
       ...Astro.props,
+      description: Astro.props.description ?? pageEntry?.description ?? undefined,
       url: new URL(Astro.url.pathname, siteConfig.canonicalUrl).href,
    },
    Astro.request,
 );
-const organizationSchema = generateOrganizationSchema(Astro.request);
+/*
+   El JSON-LD se serializa aquí, en el frontmatter del layout, para que salga
+   en el HTML inicial de la respuesta SSR: tiene que ser verificable con
+   `curl` / View Source, nunca generado post-hidratación. Ojo también con la
+   mejora progresiva: este bloque no depende de que el navegador ejecute
+   JavaScript, así que el schema sigue presente en la versión sin JS.
+*/
+const pageSchema = schema ?? getPageSchema(Astro.url.pathname, Astro.request);
+const schemaJson = JSON.stringify(Array.isArray(pageSchema) ? pageSchema : [pageSchema]);
 ---
 
 <!doctype html>
@@ -167,7 +194,7 @@ const organizationSchema = generateOrganizationSchema(Astro.request);
       <meta name="generator" content={Astro.generator} />
 
       <!-- Schema.org JSON-LD -->
-      <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
+      <script type="application/ld+json" set:html={schemaJson} />
 
       <!-- Header meta-pixel  -->
       <meta name="facebook-domain-verification" content="uffghfhff1th1z040abwzgjgjto9mi" />
