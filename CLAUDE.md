@@ -67,8 +67,16 @@ There is no local database or CMS. `src/api/api.jsx` calls an external API (`PUB
 `src/utils/config.jsx` is the single source for site config and SEO/meta generation:
 - `siteConfigData` — static site metadata (name, urls per environment, social, SEO defaults).
 - `getSiteConfig(request)` — resolves environment (`development`/`staging`/`production`) from the request hostname first, falling back to `PUBLIC_SITE_ENV` at build time; derives `siteUrl`, `noIndex`, `robotsContent`, etc. from that.
-- `generateSEOTags()`, `generateOrganizationSchema()`, `generateServiceSchema()` — used by `Layout.astro` for meta tags/OG/Twitter cards and JSON-LD.
+- `generateSEOTags()` — used by `Layout.astro` for meta tags/OG/Twitter cards.
 - `src/pages/env-check.txt.ts` is a diagnostic route that dumps the resolved environment/config as plain text — useful for verifying which environment a given deploy resolved to.
+
+### Schema.org / JSON-LD
+
+`src/utils/schema.js` is the **single file** for the whole structured-data feature, implementing the "Movapp · Schema Markup v2.0" typology guide (which schema type each kind of landing page gets). It holds, in order: `SCHEMA_DATA` (Organization + the two product entities), one generator per schema type, `PAGE_SCHEMA` (route → what that page emits), and `getPageSchema(pathname, request)`.
+
+`Layout.astro` resolves the JSON-LD from `Astro.url.pathname` on its own and serializes it into the `<head>` — **pages declare nothing**. Adding or changing a page's schema means editing only the `PAGE_SCHEMA` entry. Routes absent from that map (`/404`, `/success`, `/tienda`…) fall back to Organization alone. The layout's `schema` prop is an escape hatch reserved for the upcoming dynamic pSEO pages, whose schema comes from per-entry frontmatter rather than a fixed route. A `PAGE_SCHEMA` entry's `description` doubles as the page's default meta description, so that copy is never written twice.
+
+Two hard rules from the guide: the JSON-LD must exist in the initial SSR HTML (verify with `curl -s <url> | grep -A 30 'application/ld+json'`, never generate it from a React island), and it may only declare what is **visibly on the page**. That second rule is why FAQ/HowTo copy lives in `src/constants/elhack.ts` and `src/constants/faqs.ts` — those constants render the markup *and* feed the schema, so the two cannot drift. Note one deliberate divergence from the guide, documented in `SCHEMA_DATA.elHack`: El Hack uses `AggregateOffer`/`lowPrice: 500` rather than the guide's `price: 0`, because the visible copy states the hack costs from $500 MXN (only the advice is free).
 
 ### Analytics/tracking
 

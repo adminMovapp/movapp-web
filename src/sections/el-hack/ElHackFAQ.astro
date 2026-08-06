@@ -1,24 +1,6 @@
 ---
 import StarField from '@components/decorative/StarField.astro';
-
-const faqs = [
-   {
-      q: '¿El Hack elimina mi deuda?',
-      a: 'El Hack detiene el acoso y protege tu información, pero no borra por sí sola una deuda. Un asesor te ayuda a entender tu situación y tus opciones. Desconfía de quien prometa "borrar" deudas de forma automática.',
-   },
-   {
-      q: '¿Cuánto cuesta?',
-      a: 'La asesoría es 100% gratuita, el costo del hack va desde los $500 MXN, aunque dependerá de la cantidad de préstamos que tengas activos.',
-   },
-   {
-      q: '¿Qué pasa después de escribirles por WhatsApp?',
-      a: 'Un asesor real te responde, escucha tu caso y te guía paso a paso para activar El Hack y frenar el acoso.',
-   },
-   {
-      q: '¿Cuánto tarda El Hack?',
-      a: 'El tiempo depende del caso y de cuántas apps están involucradas. Hay personas que notan reducción de presión antes y otras que siguen recibiendo mensajes algunos días. Lo importante es dar seguimiento para verificar si el acoso baja, si cambia la amenaza o si aparece una app nueva.',
-   },
-];
+import { EL_HACK_FAQS as faqs } from '@constants/elhack.ts';
 ---
 
 <section class="relative mx-auto my-16 w-full max-w-3xl px-4" data-aos="fade-up">

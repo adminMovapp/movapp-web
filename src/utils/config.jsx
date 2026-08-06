@@ -26,7 +26,10 @@ export const siteConfigData = {
     instagram: "https://instagram.com/movapp_oficial"
   },
   assets: {
-    logo: "/images/logo.png",
+    // Apuntaba a /images/logo.png, que no existe en public/ (404). El schema
+    // de Organization exige un logo real y absoluto (mín. 112×112), así que
+    // se corrige al archivo que sí está publicado: public/img/Logo.png.
+    logo: "/img/Logo.png",
     defaultOgImage: "/images/movapp-og-image.jpg",
     favicon: "/ico-movapp.ico"
   },
@@ -102,7 +105,13 @@ export const siteConfig = buildConfig(resolveEnv(null));
 
 
 // ============================================================
-// 3. SEO: Generación de Meta Tags y Schema.org (antes seo.jsx)
+// 3. SEO: Generación de Meta Tags (antes seo.jsx)
+//
+// El Schema.org / JSON-LD NO vive aquí: toda esa funcionalidad (datos de la
+// entidad, generadores por tipo y qué schema le toca a cada ruta) está
+// centralizada en un único archivo, src/utils/schema.js, que consume este
+// mismo siteConfig. Ver ese archivo para agregar o cambiar el schema de una
+// página.
 // ============================================================
 
 // Generar meta tags SEO
@@ -136,35 +145,9 @@ export function generateSEOTags(props = {}, request = null) {
   };
 }
 
-// Generar Schema.org para la organización
-export function generateOrganizationSchema(request = null) {
-  const cfg = getSiteConfig(request);
-  return {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": cfg.site.name,
-    "description": cfg.site.description,
-    "url": cfg.canonicalUrl,
-    "logo": `${cfg.canonicalUrl}${cfg.assets.logo}`,
-    "contactPoint": {
-      "@type": "ContactPoint",
-      "contactType": cfg.business.contactType,
-      "availableLanguage": cfg.business.availableLanguage
-    },
-    "sameAs": [
-      cfg.social.facebook,
-      cfg.social.twitter.replace('@', 'https://twitter.com/'),
-      cfg.social.instagram
-    ],
-    "areaServed": {
-      "@type": "Country",
-      "name": cfg.business.country
-    },
-    "serviceType": cfg.business.serviceType
-  };
-}
-
 // Generar Schema.org para servicios
+// NOTA: solo lo usa src/pages/index.old.astro (página legacy). El schema
+// vigente del sitio se arma en src/utils/schema.js.
 export function generateServiceSchema(serviceData, request = null) {
   const cfg = getSiteConfig(request);
   const {
