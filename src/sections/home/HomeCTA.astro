@@ -1,6 +1,9 @@
 ---
+import { Image } from 'astro:assets';
 import ButtonContact from '@components/ui/ButtonContact.astro';
 import StarField from '@components/decorative/StarField.astro';
+import ImgPlayStore from '@assets/play-store-v2.webp';
+import ImgAppStore from '@assets/app-store-v2.webp';
 ---
 
 <section class="relative mx-auto my-8 w-full max-w-5xl px-4" data-aos="fade-up">
@@ -65,10 +68,10 @@ import StarField from '@components/decorative/StarField.astro';
 
             <div class="mt-6 flex flex-col items-center gap-3 md:items-start">
                <a href="#" aria-label="Descargar en Google Play" class="transition hover:scale-105">
-                  <img src="/img/migracion/play-store-v2.webp" alt="Google Play" class="h-12 w-auto" />
+                  <Image src={ImgPlayStore} alt="Google Play" height={96} class="store-badge h-12 w-auto" />
                </a>
                <a href="#" aria-label="Descargar en App Store" class="transition hover:scale-105">
-                  <img src="/img/migracion/app-store-v2.webp" alt="App Store" class="h-12 w-auto" />
+                  <Image src={ImgAppStore} alt="App Store" height={96} class="store-badge h-12 w-auto" />
                </a>
             </div>
          </div>
@@ -77,6 +80,20 @@ import StarField from '@components/decorative/StarField.astro';
 </section>
 
 <style>
+   /*
+      Tamaño real del badge fijado acá (no solo con "h-12" de Tailwind) --
+      este <style> con scope de componente se aplica siempre, con o sin JS.
+      Mientras Tailwind no ha cargado, el <img> no tiene ninguna regla de
+      tamaño y se pinta a su dimensión real (height={96}, pensado para
+      retina) -- más grande que los 48px finales de "h-12", lo que puede
+      generar un salto de layout (CLS) al cargar Tailwind. Debe coincidir
+      con "h-12" si cambia.
+   */
+   .store-badge {
+      height: 3rem;
+      width: auto;
+   }
+
    .cta-grid {
       display: grid;
       grid-template-columns: 1fr;

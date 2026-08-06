@@ -36,8 +36,8 @@ import MenuMobile from '@components/layout/MenuMobile.astro';
       <!-- height=84 (no 260): se muestra a h-7 (28px) -- 84 da 3x retina de
            margen sin servir un archivo ~5x más grande de lo necesario
            (Lighthouse lo marcaba: 335x260 real para 63x49 de visualización). -->
-      <Image src={ImgLogoResp} alt="" height={84} class="block h-7 w-auto dark:hidden" aria-hidden="true" />
-      <Image src={ImgLogoRespBlanco} alt="" height={84} class="hidden h-7 w-auto dark:block" aria-hidden="true" />
+      <Image src={ImgLogoResp} alt="" height={84} class="bottomnav-logo block h-7 w-auto dark:hidden" aria-hidden="true" />
+      <Image src={ImgLogoRespBlanco} alt="" height={84} class="bottomnav-logo hidden h-7 w-auto dark:block" aria-hidden="true" />
    </a>
 
    <!-- Tienda -->
@@ -54,6 +54,20 @@ import MenuMobile from '@components/layout/MenuMobile.astro';
       will-change: transform;
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
+   }
+
+   /*
+      Tamaño real del logo fijado acá (no solo con "h-7" de Tailwind) --
+      este <style> con scope de componente se aplica siempre, con o sin JS.
+      Mientras Tailwind no ha cargado (ver mecanismo no-js/js en
+      Layout.astro), el <img> no tiene ninguna regla de tamaño y se pinta a
+      su dimensión real (height={84}, pensado para retina) -- más grande
+      que los 28px finales de "h-7", generando un salto de layout (CLS) al
+      cargar Tailwind. Debe coincidir con "h-7" si cambia.
+   */
+   .bottomnav-logo {
+      height: 1.75rem;
+      width: auto;
    }
 
    /*

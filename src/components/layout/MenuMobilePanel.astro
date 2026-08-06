@@ -58,8 +58,8 @@ const socials = [
    <!-- Encabezado: marca + cerrar (misma estructura que la referencia de diseño) -->
    <div class="relative flex items-center justify-between">
       <a href="/" class="flex items-center" aria-label="Movapp - Inicio" data-home-link>
-         <Image src={ImgLogo} alt="Movapp" height={100} class="block h-7 w-auto dark:hidden" />
-         <Image src={ImgLogoBlanco} alt="Movapp" height={100} class="hidden h-7 w-auto dark:block" />
+         <Image src={ImgLogo} alt="Movapp" height={100} class="menu-logo block h-7 w-auto dark:hidden" />
+         <Image src={ImgLogoBlanco} alt="Movapp" height={100} class="menu-logo hidden h-7 w-auto dark:block" />
       </a>
 
       <button
@@ -199,6 +199,22 @@ const socials = [
       }
    </div>
 </nav>
+
+<style>
+   /*
+      Tamaño real del logo fijado acá (no solo con "h-7" de Tailwind) --
+      este <style> con scope de componente se aplica siempre, con o sin JS.
+      Mientras Tailwind no ha cargado (ver mecanismo no-js/js en
+      Layout.astro), el <img> no tiene ninguna regla de tamaño y se pinta a
+      su dimensión real (height={100}, pensado para retina) -- más grande
+      que los 28px finales de "h-7", generando un salto de layout (CLS) al
+      cargar Tailwind. Debe coincidir con "h-7" si cambia.
+   */
+   .menu-logo {
+      height: 1.75rem;
+      width: auto;
+   }
+</style>
 
 <script>
    const menuButton = document.getElementById('menuButton');

@@ -25,8 +25,8 @@ const year = new Date().getFullYear();
            va centrada (en móvil se mantiene alineada a la izquierda). -->
       <div class="flex flex-col items-start md:mx-auto md:max-w-md md:items-center md:text-center">
          <a href="/" class="inline-block" aria-label="Movapp - Inicio" data-home-link>
-            <Image src={ImgLogo} alt="Movapp" height={100} class="block h-10 w-auto dark:hidden" />
-            <Image src={ImgLogoBlanco} alt="Movapp" height={100} class="hidden h-10 w-auto dark:block" />
+            <Image src={ImgLogo} alt="Movapp" height={100} class="footer-logo block h-10 w-auto dark:hidden" />
+            <Image src={ImgLogoBlanco} alt="Movapp" height={100} class="footer-logo hidden h-10 w-auto dark:block" />
          </a>
          <p class="mt-3 text-sm leading-relaxed text-gray-600 dark:text-white/70 md:mt-4">
             Movapp es una organización que ayuda a personas víctimas de las aplicaciones de préstamo no reguladas
@@ -88,6 +88,22 @@ const year = new Date().getFullYear();
       </div>
    </div>
 </footer>
+
+<style>
+   /*
+      Tamaño real del logo fijado acá (no solo con "h-10" de Tailwind) --
+      este <style> con scope de componente se aplica siempre, con o sin JS.
+      Mientras Tailwind no ha cargado (ver mecanismo no-js/js en
+      Layout.astro), el <img> no tiene ninguna regla de tamaño y se pinta a
+      su dimensión real (height={100}, pensado para retina) -- mucho más
+      grande que los 40px finales de "h-10". Eso generaba el mayor causante
+      de CLS reportado por Lighthouse. Debe coincidir con "h-10" si cambia.
+   */
+   .footer-logo {
+      height: 2.5rem;
+      width: auto;
+   }
+</style>
 
 <script>
    const backToTopButton = document.getElementById('backToTopButton');

@@ -378,9 +378,26 @@ const STARS = Array.from({ length: 12 }).map(() => ({
       animation: menuOrbitSpin 11.077s linear infinite reverse;
    }
 
+   /*
+      height/width acá (no solo "h-14 w-14"/"xl:h-16 xl:w-16" de Tailwind):
+      este <style> con scope de componente se aplica siempre, con o sin JS.
+      Mientras Tailwind no ha cargado (ver mecanismo no-js/js en
+      Layout.astro), el <img> no tiene ninguna regla de tamaño y se pinta a
+      su dimensión real (height={160}, pensado para retina) -- más grande
+      que los 56-64px finales, generando un salto de layout (CLS) al cargar
+      Tailwind. Debe coincidir con esas clases si cambian.
+   */
    .shield-logo {
+      height: 3.5rem; /* h-14 */
+      width: 3.5rem; /* w-14 */
       animation: menuShieldLogoFloat 5.5s ease-in-out 0.45s infinite;
       filter: drop-shadow(0 0 10px rgba(129, 73, 226, 0.35));
+   }
+   @media (min-width: 1280px) {
+      .shield-logo {
+         height: 4rem; /* xl:h-16 */
+         width: 4rem; /* xl:w-16 */
+      }
    }
    :global(html.dark) .shield-logo {
       filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.35));
