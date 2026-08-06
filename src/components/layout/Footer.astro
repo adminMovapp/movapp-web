@@ -4,23 +4,6 @@ import ImgLogo from '@assets/Logo.png';
 import ImgLogoBlanco from '@assets/Logo-Blanco.png';
 import { URLS } from '@/constants/socials';
 
-const navLinks = [
-   { label: 'Movapp', href: '/nosotros' },
-   { label: 'El Hack', href: '/el-hack' },
-   { label: 'Tienda', href: '/tienda' },
-   { label: 'Colaboraciones', href: '/collaborations' },
-   { label: 'Testimonios', href: '/testimonials' },
-];
-
-const contentLinks = [
-   { label: 'Mente digital', href: '/mind' },
-   { label: 'Nuestras redes', href: '/red' },
-   { label: 'Preguntas frecuentes', href: '/faqs' },
-   { label: 'Contacto', href: '/contacto' },
-   { label: 'Política de privacidad', href: '/privacypolicy' },
-   { label: 'Términos y condiciones', href: '/terminos-y-condiciones' },
-];
-
 const socials = [
    { href: URLS.youtube, label: 'YouTube', icon: '/img/logo-youtube.webp' },
    { href: URLS.tiktok, label: 'TikTok', icon: '/img/logo-tiktok.webp' },
@@ -36,68 +19,35 @@ const year = new Date().getFullYear();
    class="mt-10 w-full border-t border-black/10 bg-gray-100 text-gray-700 transition-colors duration-300 dark:border-white/10 dark:bg-zinc-950 dark:text-white/80 md:mt-16"
 >
    <div class="mx-auto max-w-7xl px-6 py-8 md:px-10 md:py-12">
-      <!-- Fila superior: marca + enlaces -->
-      <div class="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-10 lg:grid-cols-4">
-         <!-- Marca + descripción -->
-         <div class="lg:col-span-2 max-w-md">
-            <a href="/" class="inline-block" aria-label="Movapp - Inicio" data-home-link>
-               <Image src={ImgLogo} alt="Movapp" height={100} class="block h-10 w-auto dark:hidden" />
-               <Image src={ImgLogoBlanco} alt="Movapp" height={100} class="hidden h-10 w-auto dark:block" />
-            </a>
-            <p class="mt-3 text-sm leading-relaxed text-gray-600 dark:text-white/70 md:mt-4">
-               Movapp es una organización que ayuda a personas víctimas de las aplicaciones de préstamo no reguladas
-               mediante apoyo psicológico, asesoría personalizada y la aplicación de El Hack.
-            </p>
+      <!-- Marca + descripción -- a pedido, el footer de escritorio ya no
+           lleva columnas de Navegación/Contenido (esas solo vivían ahí; en
+           móvil ya se habían quitado antes), y en escritorio esta sección
+           va centrada (en móvil se mantiene alineada a la izquierda). -->
+      <div class="flex flex-col items-start md:mx-auto md:max-w-md md:items-center md:text-center">
+         <a href="/" class="inline-block" aria-label="Movapp - Inicio" data-home-link>
+            <Image src={ImgLogo} alt="Movapp" height={100} class="block h-10 w-auto dark:hidden" />
+            <Image src={ImgLogoBlanco} alt="Movapp" height={100} class="hidden h-10 w-auto dark:block" />
+         </a>
+         <p class="mt-3 text-sm leading-relaxed text-gray-600 dark:text-white/70 md:mt-4">
+            Movapp es una organización que ayuda a personas víctimas de las aplicaciones de préstamo no reguladas
+            mediante apoyo psicológico, asesoría personalizada y la aplicación de El Hack.
+         </p>
 
-            <!-- Redes sociales -->
-            <div class="mt-4 flex gap-3 md:mt-6">
-               {
-                  socials.map((s) => (
-                     <a
-                        href={s.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label={s.label}
-                        class="flex h-10 w-10 items-center justify-center transition hover:-translate-y-0.5"
-                     >
-                        <img src={s.icon} alt={s.label} class="h-10 w-10 rounded-full object-cover" />
-                     </a>
-                  ))
-               }
-            </div>
-         </div>
-
-         <!-- Navegación + Contenido: solo en escritorio (a pedido, quitadas del footer de móviles) -->
-         <div class="hidden md:contents">
-            <div>
-               <h3 class="mb-2 text-sm font-bold uppercase tracking-wide text-text_banner md:mb-4">Navegación</h3>
-               <ul class="space-y-1.5 text-sm md:space-y-2">
-                  {
-                     navLinks.map((l) => (
-                        <li>
-                           <a href={l.href} class="transition-colors hover:text-text_banner">
-                              {l.label}
-                           </a>
-                        </li>
-                     ))
-                  }
-               </ul>
-            </div>
-
-            <div>
-               <h3 class="mb-2 text-sm font-bold uppercase tracking-wide text-text_banner md:mb-4">Contenido</h3>
-               <ul class="space-y-1.5 text-sm md:space-y-2">
-                  {
-                     contentLinks.map((l) => (
-                        <li>
-                           <a href={l.href} class="transition-colors hover:text-text_banner">
-                              {l.label}
-                           </a>
-                        </li>
-                     ))
-                  }
-               </ul>
-            </div>
+         <!-- Redes sociales -->
+         <div class="mt-4 flex gap-3 md:mt-6">
+            {
+               socials.map((s) => (
+                  <a
+                     href={s.href}
+                     target="_blank"
+                     rel="noopener noreferrer"
+                     aria-label={s.label}
+                     class="flex h-10 w-10 items-center justify-center transition hover:-translate-y-0.5"
+                  >
+                     <img src={s.icon} alt={s.label} class="h-10 w-10 rounded-full object-cover" />
+                  </a>
+               ))
+            }
          </div>
       </div>
 
@@ -111,12 +61,16 @@ const year = new Date().getFullYear();
          <p>Movappbyerikmann © - Todos Los Derechos Reservados - {year}</p>
       </div>
 
-      <!-- Barra inferior: ESCRITORIO (sin cambios) -->
+      <!-- Barra inferior: ESCRITORIO -- mismas opciones que la barra de
+           móviles (aviso de privacidad + términos), a pedido. -->
       <div
          class="mt-6 hidden items-center justify-between gap-4 border-t border-black/10 pt-4 text-sm text-gray-500 dark:border-white/10 dark:text-white/60 md:mt-10 md:flex md:pt-6"
       >
          <p>Movappbyerikmann © - Todos Los Derechos Reservados - {year}</p>
-         <a href="/privacypolicy" class="transition-colors hover:text-text_banner">Política de privacidad</a>
+         <div class="flex items-center gap-4">
+            <a href="/privacypolicy" class="transition-colors hover:text-text_banner">Política de privacidad</a>
+            <a href="/terminos-y-condiciones" class="transition-colors hover:text-text_banner">Términos y condiciones</a>
+         </div>
       </div>
 
       <!-- Volver arriba -->

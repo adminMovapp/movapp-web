@@ -128,14 +128,18 @@ const contentLinks = [
 
 <style>
    /*
-      transition acá (no en las clases de Tailwind del markup) para poder
-      excluir "background-color"/"color" de la transición general -- si
-      "transition-colors" (usado en el resto del sitio para el cambio de
-      tema) se mezclara con esta transición de transform, el cambio de tema
-      mientras el menú está abierto se vería "deslizarse" de forma rara.
+      Esta regla ya solo gobierna el CIERRE -- abrir es instantáneo a pedido
+      (ver openMenu(), que anula "transition-property" solo para ese cambio
+      puntual de transform). Sigue viviendo acá (no en las clases de
+      Tailwind del markup) para poder excluir "background-color"/"color" de
+      la transición general -- si "transition-colors" (usado en el resto del
+      sitio para el cambio de tema) se mezclara con esta transición de
+      transform, el cambio de tema mientras el menú está abierto se vería
+      "deslizarse" de forma rara.
 
       Originalmente 1.5s (referencia: rockstargames.com/VI) -- a pedido, se
-      bajó a 1s máximo porque se sentía demasiado lenta al abrir.
+      bajó a 1s máximo porque se sentía demasiado lenta al abrir (y ahora,
+      con el abrir ya instantáneo, esta duración solo se percibe al cerrar).
 
       "linear" a propósito, NO una curva ease-in-out: cualquier curva
       ease-in-out (incluida la usada antes, cubic-bezier(0.65,0,0.35,1)) tiene
@@ -189,21 +193,25 @@ const contentLinks = [
       }
       menuDesktopNav.classList.remove('hidden');
       menuDesktopNav.classList.add('flex');
-      // Doble requestAnimationFrame (NO un solo "void offsetHeight"): forzar
-      // reflow garantiza que el navegador RECALCULE el layout, pero no que
-      // llegue a PINTARLO antes del siguiente cambio -- si el cambio de
-      // transform de abajo ocurre en la misma tarea síncrona, el navegador
-      // puede fusionar "display:none -> flex -> transform:0" en un solo
-      // frame sin pintar nunca el estado "fuera de pantalla" intermedio, y
-      // la transición no se ve (confirmado: así se comportaba antes). El
-      // primer rAF espera a que el navegador procese el cambio de display;
-      // el segundo (encadenado desde el primero) espera a que ya lo haya
-      // pintado, así el cambio de transform que sigue sí parte de un estado
-      // realmente renderizado y la transición se anima.
+
+      // Abrir es INMEDIATO a pedido -- ya no comparte la transición de 1s
+      // del cierre. Se anula la transición solo para este cambio puntual de
+      // transform ("transition-property: none", mismo truco que usa el
+      // reposicionamiento del widget de chat en Layout.astro) y se restaura
+      // dos frames después: si se restaurara en la misma tarea síncrona, el
+      // navegador podría no haber pintado aún el estado "sin transición" y
+      // el próximo cierre heredaría ese cambio a medias. Con el doble rAF,
+      // el estado abierto ya quedó pintado sin animar antes de reactivar la
+      // transición, así que el CIERRE (que sí debe seguir animándose) parte
+      // de un estado limpio.
+      menuDesktopLeft.style.transitionProperty = 'none';
+      menuDesktopRight.style.transitionProperty = 'none';
+      menuDesktopLeft.style.transform = 'translateX(0)';
+      menuDesktopRight.style.transform = 'translateX(0)';
       requestAnimationFrame(() => {
          requestAnimationFrame(() => {
-            menuDesktopLeft.style.transform = 'translateX(0)';
-            menuDesktopRight.style.transform = 'translateX(0)';
+            menuDesktopLeft.style.transitionProperty = '';
+            menuDesktopRight.style.transitionProperty = '';
          });
       });
 
