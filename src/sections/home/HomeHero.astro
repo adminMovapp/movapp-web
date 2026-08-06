@@ -1,4 +1,7 @@
 ---
+import { Image } from 'astro:assets';
+import ImgLogoResp from '@assets/logo_resp.webp';
+import ImgLogoRespBlanco from '@assets/logo_resp_blanco.webp';
 import ButtonContact from '@components/ui/ButtonContact.astro';
 ---
 
@@ -178,15 +181,17 @@ import ButtonContact from '@components/ui/ButtonContact.astro';
                style="animation-delay: 3.67s;"
             ></span>
 
-            <img
-               src="/img/logo_resp.webp"
+            <Image
+               src={ImgLogoResp}
                alt="Movapp"
+               height={260}
                class="absolute inset-0 m-auto h-auto w-full opacity-45 dark:hidden dark:opacity-60"
                style="animation: heroFloat 5.5s ease-in-out 0.45s infinite;"
             />
-            <img
-               src="/img/logo_resp_blanco.webp"
+            <Image
+               src={ImgLogoRespBlanco}
                alt="Movapp"
+               height={260}
                class="absolute inset-0 m-auto hidden h-auto w-full opacity-45 dark:block dark:opacity-60"
                style="animation: heroFloat 5.5s ease-in-out 0.45s infinite;"
             />

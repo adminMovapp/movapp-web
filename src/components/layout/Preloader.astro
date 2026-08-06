@@ -1,5 +1,7 @@
 ---
 // Preloader.astro
+import { Image } from 'astro:assets';
+import ImgLogoBlanco from '@assets/Logo-Blanco.png';
 ---
 
 <div
@@ -59,10 +61,11 @@
          </svg>
 
          <!-- Logo de Movapp -->
-         <img
+         <Image
             id="movapp-logo-center"
-            src="/img/Logo-Blanco.png"
+            src={ImgLogoBlanco}
             alt="Movapp"
+            height={100}
             style="position: absolute; width: 170px; height: auto; opacity: 0; transform: scale(0.5); display: none; transition: opacity 0.3s ease-in, transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);"
          />
       </div>
@@ -232,8 +235,17 @@
       const triggerPulse = () => {
          if (circle) {
             circle.classList.remove('gl-animate-pulse');
-            void circle.offsetWidth;
-            circle.classList.add('gl-animate-pulse');
+            // Doble requestAnimationFrame en vez de "void circle.offsetWidth"
+            // (forzaba un reflow síncrono): el primer rAF espera a que el
+            // navegador ya haya pintado la clase removida antes de
+            // reagregarla en el segundo, así el navegador la reconoce como
+            // una animación nueva (reinicia el pulso) sin necesitar ninguna
+            // lectura de layout forzada.
+            requestAnimationFrame(() => {
+               requestAnimationFrame(() => {
+                  circle.classList.add('gl-animate-pulse');
+               });
+            });
          }
       };
 

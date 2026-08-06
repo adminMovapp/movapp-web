@@ -1,4 +1,7 @@
 ---
+import { Image } from 'astro:assets';
+import ImgLogo from '@assets/Logo.png';
+import ImgLogoBlanco from '@assets/Logo-Blanco.png';
 import { URLS } from '@/constants/socials';
 
 const navLinks = [
@@ -38,8 +41,8 @@ const year = new Date().getFullYear();
          <!-- Marca + descripción -->
          <div class="lg:col-span-2 max-w-md">
             <a href="/" class="inline-block" aria-label="Movapp - Inicio" data-home-link>
-               <img src="/img/Logo.png" alt="Movapp" class="block h-10 w-auto dark:hidden" />
-               <img src="/img/Logo-Blanco.png" alt="Movapp" class="hidden h-10 w-auto dark:block" />
+               <Image src={ImgLogo} alt="Movapp" height={100} class="block h-10 w-auto dark:hidden" />
+               <Image src={ImgLogoBlanco} alt="Movapp" height={100} class="hidden h-10 w-auto dark:block" />
             </a>
             <p class="mt-3 text-sm leading-relaxed text-gray-600 dark:text-white/70 md:mt-4">
                Movapp es una organización que ayuda a personas víctimas de las aplicaciones de préstamo no reguladas

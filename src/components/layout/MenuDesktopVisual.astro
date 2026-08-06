@@ -22,6 +22,10 @@
 //     y la misma animación (heroLogoWave, 5.5s, mismo easing) que
 //     HomeHero.astro, solo escalados al tamaño de este panel.
 
+import { Image } from 'astro:assets';
+import ImgLogoResp from '@assets/logo_resp.webp';
+import ImgLogoRespBlanco from '@assets/logo_resp_blanco.webp';
+
 const STARS = Array.from({ length: 12 }).map(() => ({
    top: Math.random() * 100,
    left: Math.random() * 100,
@@ -81,8 +85,8 @@ const STARS = Array.from({ length: 12 }).map(() => ({
       <span class="shield-wave absolute inset-0 rounded-full border-2 border-purple_mv/60 dark:border-white/50" style="animation-delay: 1.83s;"></span>
       <span class="shield-wave absolute inset-0 rounded-full border-2 border-purple_mv/60 dark:border-white/50" style="animation-delay: 3.67s;"></span>
 
-      <img src="/img/logo_resp.webp" alt="Movapp" class="shield-logo relative z-10 block h-14 w-14 object-contain dark:hidden xl:h-16 xl:w-16" />
-      <img src="/img/logo_resp_blanco.webp" alt="Movapp" class="shield-logo relative z-10 hidden h-14 w-14 object-contain dark:block xl:h-16 xl:w-16" />
+      <Image src={ImgLogoResp} alt="Movapp" height={260} class="shield-logo relative z-10 block h-14 w-14 object-contain dark:hidden xl:h-16 xl:w-16" />
+      <Image src={ImgLogoRespBlanco} alt="Movapp" height={260} class="shield-logo relative z-10 hidden h-14 w-14 object-contain dark:block xl:h-16 xl:w-16" />
    </div>
 </div>
 

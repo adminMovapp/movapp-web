@@ -14,13 +14,18 @@ const testimonials = [
    },
 ];
 
+import { Image } from 'astro:assets';
+import ImgCenepred from '@assets/cenepred.webp';
+import ImgMvsNoticias from '@assets/mvs-noticias.webp';
+import ImgWerevertumorro from '@assets/werevertumorro.webp';
+import ImgOye from '@assets/oye.webp';
 import StarField from '@components/decorative/StarField.astro';
 
 const collaborations = [
-   { src: '/img/migracion/cenepred.webp', alt: 'Cenepred' },
-   { src: '/img/migracion/mvs-noticias.webp', alt: 'MVS Noticias' },
-   { src: '/img/migracion/werevertumorro.webp', alt: 'Werevertumorro' },
-   { src: '/img/migracion/oye.webp', alt: 'Oye' },
+   { src: ImgCenepred, alt: 'Cenepred' },
+   { src: ImgMvsNoticias, alt: 'MVS Noticias' },
+   { src: ImgWerevertumorro, alt: 'Werevertumorro' },
+   { src: ImgOye, alt: 'Oye' },
 ];
 ---
 
@@ -216,8 +221,9 @@ const collaborations = [
                   {
                      collaborations.map((logo) => (
                         <div class="flex h-20 flex-shrink-0 items-center justify-center rounded-xl bg-white/90 px-8 py-4 shadow-md">
-                           <img
+                           <Image
                               src={logo.src}
+                              height={160}
                               alt={logo.alt}
                               class="h-12 w-auto object-contain grayscale opacity-60 transition duration-300 hover:grayscale-0 hover:opacity-100 md:h-16"
                            />
@@ -474,6 +480,15 @@ const collaborations = [
          // Forzar reflow antes de cruzar las opacidades: si no, el navegador
          // puede fusionar el cambio de contenido de arriba con el toggle de
          // clases de abajo en un mismo frame y saltarse la transición.
+         //
+         // Nota: a diferencia del reflow forzado que sí se reemplazó por
+         // doble rAF en Layout.astro (repositionChatWidget) y en
+         // Preloader.astro (triggerPulse), este se deja como está a
+         // propósito -- el setTimeout(FADE_MS) de más abajo asume que la
+         // transición arranca en este mismo tick; diferir el cambio de
+         // clases 2 frames desincronizaría esa cuenta (~32ms de un fade de
+         // 400ms) por una ganancia de rendimiento nula (es un reflow de una
+         // sola vez, disparado por click del usuario, no un loop/resize).
          void slotsContainer.offsetHeight;
 
          plans.forEach(({ slot, kind }) => {

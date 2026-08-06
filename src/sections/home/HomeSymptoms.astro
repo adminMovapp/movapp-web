@@ -1,26 +1,31 @@
 ---
+import { Image } from 'astro:assets';
+import ImgTelefono from '@assets/telefono.webp';
+import ImgMensajes from '@assets/mensajes.webp';
+import ImgContacto from '@assets/contacto.webp';
+import ImgAngustia from '@assets/angustia.webp';
 import StarField from '@components/decorative/StarField.astro';
 
 const symptoms = [
    {
       title: 'Llamadas de acoso',
       text: 'Te llaman a toda hora, incluso desde números distintos.',
-      icon: '/img/migracion/telefono.webp',
+      icon: ImgTelefono,
    },
    {
       title: 'Mensajes amenazantes',
       text: 'Recibes textos con insultos o amenazas para presionarte a pagar.',
-      icon: '/img/migracion/mensajes.webp',
+      icon: ImgMensajes,
    },
    {
       title: 'Contactos en riesgo',
       text: 'Usan tu lista de contactos para avergonzarte y presionarte.',
-      icon: '/img/migracion/contacto.webp',
+      icon: ImgContacto,
    },
    {
       title: 'Angustia',
       text: 'El miedo y la ansiedad se apoderan de tu día a día.',
-      icon: '/img/migracion/angustia.webp',
+      icon: ImgAngustia,
    },
 ];
 ---
@@ -44,7 +49,7 @@ const symptoms = [
             >
                <div class="relative mb-4 h-14 w-14">
                   <div class="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-purple_mv to-purple_mv/60 p-2.5 shadow-[0_0_16px_rgba(129,73,226,0.3)]">
-                     <img src={s.icon} alt="" class="h-full w-full object-contain" />
+                     <Image src={s.icon} width={150} alt="" class="h-full w-full object-contain" />
                   </div>
                </div>
                <h3 class="relative font-bold text-gray-900 dark:text-white">{s.title}</h3>

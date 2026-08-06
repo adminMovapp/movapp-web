@@ -1,4 +1,7 @@
 ---
+import { Image } from 'astro:assets';
+import ImgLogoResp from '@assets/logo_resp.webp';
+import ImgLogoRespBlanco from '@assets/logo_resp_blanco.webp';
 import MenuMobile from '@components/layout/MenuMobile.astro';
 ---
 
@@ -30,8 +33,8 @@ import MenuMobile from '@components/layout/MenuMobile.astro';
       data-home-link
    >
       <span class="sr-only">Home</span>
-      <img src="/img/logo_resp.webp" alt="" class="block h-7 w-auto dark:hidden" aria-hidden="true" />
-      <img src="/img/logo_resp_blanco.webp" alt="" class="hidden h-7 w-auto dark:block" aria-hidden="true" />
+      <Image src={ImgLogoResp} alt="" height={260} class="block h-7 w-auto dark:hidden" aria-hidden="true" />
+      <Image src={ImgLogoRespBlanco} alt="" height={260} class="hidden h-7 w-auto dark:block" aria-hidden="true" />
    </a>
 
    <!-- Tienda -->

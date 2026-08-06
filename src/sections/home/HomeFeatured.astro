@@ -1,4 +1,8 @@
 ---
+import { Image } from 'astro:assets';
+import ImgElHackBlanco from '@assets/elhack-blanco.png';
+import ImgDirectorioDeApps from '@assets/Directorio-de-Apps.webp';
+import ImgFotoErik from '@assets/Foto-Erik.webp';
 import StarField from '@components/decorative/StarField.astro';
 
 const hub = [
@@ -7,21 +11,24 @@ const hub = [
       desc: 'La herramienta que bloquea el acoso y protege tu teléfono.',
       linkLabel: 'Conocer El Hack',
       href: '/el-hack/',
-      photo: '/img/elhack-blanco.png',
+      photo: ImgElHackBlanco,
+      photoWidth: 560,
       alt: 'El Hack',
    },
    {
       title: 'Directorio de apps',
       desc: 'Consulta si una app de préstamo es legal o tiene reportes antes de usarla.',
       href: '/directorio-de-apps/',
-      photo: '/img/Directorio-de-Apps.webp',
+      photo: ImgDirectorioDeApps,
+      photoWidth: 1000,
       alt: 'Persona revisando en su teléfono si una app de préstamo es confiable',
    },
    {
       title: 'Recursos y guías',
       desc: 'Aprende a defenderte de las apps montadeudas y a cuidar tu salud financiera.',
       href: '/recursos/',
-      photo: '/img/Foto-Erik.webp',
+      photo: ImgFotoErik,
+      photoWidth: 560,
       alt: 'Persona aprendiendo a cuidar su bienestar frente al acoso digital',
    },
 ];
@@ -57,18 +64,31 @@ const hub = [
                <div class="relative aspect-[4/3] w-full overflow-hidden md:aspect-square md:grayscale md:transition-[filter] md:duration-500 md:group-hover:grayscale-0">
                   {i === 0 ? (
                      <div class="featured-grid flex h-full w-full items-center justify-center bg-[#0b0614]">
-                        <img
+                        <Image
                            src={item.photo}
+                           width={item.photoWidth}
                            alt={item.alt || item.title}
                            class="relative z-10 w-1/2 drop-shadow-[0_0_18px_rgba(129,73,226,0.55)]"
                         />
                      </div>
                   ) : i === 2 ? (
                      <div class="flex h-full w-full items-center justify-center bg-[#0b0614]">
-                        <img src={item.photo} alt={item.alt || item.title} class="h-full w-full object-contain" loading="lazy" />
+                        <Image
+                           src={item.photo}
+                           width={item.photoWidth}
+                           alt={item.alt || item.title}
+                           class="h-full w-full object-contain"
+                           loading="lazy"
+                        />
                      </div>
                   ) : (
-                     <img src={item.photo} alt={item.alt || item.title} class="h-full w-full object-cover" loading="lazy" />
+                     <Image
+                        src={item.photo}
+                        width={item.photoWidth}
+                        alt={item.alt || item.title}
+                        class="h-full w-full object-cover"
+                        loading="lazy"
+                     />
                   )}
                </div>
 
