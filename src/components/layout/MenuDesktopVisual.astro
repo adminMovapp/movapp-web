@@ -56,14 +56,33 @@ const STARS = Array.from({ length: 12 }).map(() => ({
    <!-- Capa donde el script inyecta las palabras clave que cruzan la pantalla -->
    <div id="menuThreatLayer" class="pointer-events-none absolute inset-0 overflow-hidden"></div>
 
-   <!-- "M" + ondas (mismo motivo que el centro de la órbita del Hero) -->
+   <!--
+      "M" + ondas + órbita (mismo motivo que el centro de la órbita del Hero
+      de Home -- ver HomeHero.astro, ".hero-orbit-inner/outer" +
+      "heroOrbitSpin") -- a pedido, SIN los escudos que orbitan ahí (los 3
+      SVG "Escudo 1/2/3" de ese archivo no se replican acá, solo los dos
+      anillos y su rotación).
+   -->
    <div id="menuShieldHitbox" class="shield-hitbox relative flex aspect-square h-56 w-56 items-center justify-center xl:h-64 xl:w-64">
+      <!--
+         Anillos atenuados (mismo opacity-30/dark:opacity-40 que
+         ".hero-orbit-group" en HomeHero.astro) -- sin esto, las ondas de
+         abajo (mismo color, sin atenuar) quedaban camufladas contra estos
+         anillos en vez de leerse como un pulso que crece por encima de ellos.
+      -->
+      <div class="pointer-events-none absolute inset-0 flex items-center justify-center opacity-30 dark:opacity-40">
+         <!-- Círculo interior (decorativo) -->
+         <div class="menu-orbit-inner absolute h-[65%] w-[65%] rounded-full border-[1.5px] border-dashed border-purple_mv/20 dark:border-white/20"></div>
+         <!-- Círculo exterior (mismo tamaño que las ondas de abajo) -->
+         <div class="menu-orbit-outer absolute inset-0 rounded-full border border-purple_mv/30 dark:border-white/20"></div>
+      </div>
+
       <span class="shield-wave absolute inset-0 rounded-full border-2 border-purple_mv/60 dark:border-white/50" style="animation-delay: 0s;"></span>
       <span class="shield-wave absolute inset-0 rounded-full border-2 border-purple_mv/60 dark:border-white/50" style="animation-delay: 1.83s;"></span>
       <span class="shield-wave absolute inset-0 rounded-full border-2 border-purple_mv/60 dark:border-white/50" style="animation-delay: 3.67s;"></span>
 
-      <img src="/img/logo_resp.webp" alt="Movapp" class="shield-logo relative block h-14 w-14 object-contain dark:hidden xl:h-16 xl:w-16" />
-      <img src="/img/logo_resp_blanco.webp" alt="Movapp" class="shield-logo relative hidden h-14 w-14 object-contain dark:block xl:h-16 xl:w-16" />
+      <img src="/img/logo_resp.webp" alt="Movapp" class="shield-logo relative z-10 block h-14 w-14 object-contain dark:hidden xl:h-16 xl:w-16" />
+      <img src="/img/logo_resp_blanco.webp" alt="Movapp" class="shield-logo relative z-10 hidden h-14 w-14 object-contain dark:block xl:h-16 xl:w-16" />
    </div>
 </div>
 
@@ -332,6 +351,26 @@ const STARS = Array.from({ length: 12 }).map(() => ({
       }
    }
 
+   /*
+      Rotación del anillo interior (mismo cálculo/timing que
+      "heroOrbitSpin"/".hero-orbit-inner" en HomeHero.astro: 11.077s, en
+      reversa). El anillo exterior de ese archivo solo se nota girar porque
+      los escudos van montados encima -- acá, sin escudos, un borde sólido
+      rotando es indistinguible de uno quieto, así que se deja estático (no
+      se le agrega la misma animación por no tener ningún efecto visible).
+   */
+   @keyframes menuOrbitSpin {
+      from {
+         transform: rotate(0deg);
+      }
+      to {
+         transform: rotate(360deg);
+      }
+   }
+   .menu-orbit-inner {
+      animation: menuOrbitSpin 11.077s linear infinite reverse;
+   }
+
    .shield-logo {
       animation: menuShieldLogoFloat 5.5s ease-in-out 0.45s infinite;
       filter: drop-shadow(0 0 10px rgba(129, 73, 226, 0.35));
@@ -474,7 +513,8 @@ const STARS = Array.from({ length: 12 }).map(() => ({
    @media (prefers-reduced-motion: reduce) {
       .menu-star,
       .shield-wave,
-      .shield-logo {
+      .shield-logo,
+      .menu-orbit-inner {
          animation: none !important;
       }
    }

@@ -9,7 +9,7 @@ const steps = [
    },
    {
       title: 'Instala y activa El Hack',
-      text: 'Al activarlo, bloqueamos de inmediato las llamadas y los mensajes de acoso, y proteges tus contactos y tu galería.',
+      text: 'Al activarlo, bloqueas de inmediato las llamadas y los mensajes de acoso, y proteges tus contactos y tu galería.',
    },
    {
       title: 'Recupera tu tranquilidad',
@@ -22,8 +22,7 @@ const steps = [
    <StarField id="el-hack-how-it-works" ambientCount={40} />
 
    <div class="mb-10 text-center">
-      <span class="text-xs font-semibold uppercase tracking-widest text-text_banner">Tres pasos para volver a tener el control</span>
-      <h2 class="mt-1 text-2xl md:text-4xl font-bold uppercase text-gray-900 dark:text-white">¿Cómo funciona El Hack?</h2>
+      <h2 class="text-2xl md:text-4xl font-bold uppercase text-gray-900 dark:text-white">¿Cómo funciona El Hack?</h2>
    </div>
 
    <!--
@@ -43,7 +42,7 @@ const steps = [
                style={`--float-dur: ${5.6 + i * 0.3}s; --float-delay: ${i * 0.2}s;`}
             >
                <ImagePlaceholder class="mb-4 aspect-[4/3] w-full" />
-               <h2 class="mb-2 text-lg font-bold text-gray-900 dark:text-white">{s.title}</h2>
+               <h3 class="mb-2 text-lg font-bold text-gray-900 dark:text-white">{s.title}</h3>
                <p class="text-sm text-gray-700 dark:text-white/80">{s.text}</p>
             </div>
          ))

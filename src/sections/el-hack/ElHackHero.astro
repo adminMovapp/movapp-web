@@ -53,28 +53,6 @@ const bolts = Array.from({ length: PAIR_COUNT }, () => {
       </div>
 
       <!--
-         Logo de El Hack de fondo: nítido (sin filter:blur -- eso lo dejaba
-         viéndose como niebla) y a baja opacidad para que se note como
-         fondo, no como contenido en primer plano. El wrapper flota (bob
-         vertical lento) y cada variante tiene su propio glitch (transform +
-         clip-path a saltos) -- por eso van en dos elementos: uno controla
-         la posición general, el otro solo el jitter, así no compiten por la
-         misma propiedad "transform".
-      -->
-      <div class="hero-logo-float relative z-0 w-[55%] max-w-[380px] aspect-[510/144]">
-         <Image
-            src={ImgElHackNegro}
-            alt=""
-            class="hero-logo-glitch absolute inset-0 h-full w-full object-contain opacity-30 blur-[2px] dark:hidden"
-         />
-         <Image
-            src={ImgElHackBlanco}
-            alt=""
-            class="hero-logo-glitch absolute inset-0 hidden h-full w-full object-contain opacity-30 blur-[2px] dark:block"
-         />
-      </div>
-
-      <!--
          Truenos: forma real de rayo (path zigzag, no una barra), repartidos
          en posiciones al azar por todo el fondo -- cada uno destella
          (parpadeo tipo relámpago) en un ciclo propio, no todos juntos.
@@ -94,21 +72,30 @@ const bolts = Array.from({ length: PAIR_COUNT }, () => {
       }
    </div>
 
-   <div
-      class="mb-6 inline-flex items-center gap-2 rounded-full border border-purple_mv/30 bg-purple_mv/10 px-4 py-1.5 text-xs md:text-sm font-medium text-text_banner"
-   >
-      <span class="relative flex h-2 w-2">
-         <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-purple_mv opacity-75"></span>
-         <span class="relative inline-flex h-2 w-2 rounded-full bg-purple_mv"></span>
-      </span>
-      La herramienta que te protege
-   </div>
-
    <!-- H1 (único H1 de la página) -->
    <h1 class="max-w-3xl text-3xl font-bold uppercase leading-tight text-gray-900 dark:text-white md:text-5xl">
-      Recupera tu tranquilidad <span class="text-text_banner drop-shadow-[0_0_25px_rgba(129,73,226,0.35)]">hoy</span>,
-      adiós al acoso de las <span class="text-text_banner drop-shadow-[0_0_25px_rgba(129,73,226,0.35)]">apps de préstamos</span>
+      El Hack: bloquea el acoso de las
+      <span class="text-text_banner drop-shadow-[0_0_25px_rgba(129,73,226,0.35)]">apps de préstamo</span>
+      y recupera <span class="text-text_banner drop-shadow-[0_0_25px_rgba(129,73,226,0.35)]">tu paz</span>
    </h1>
+
+   <!--
+      Logo de El Hack en el flujo del contenido (entre el título y el
+      párrafo que le sigue) -- ya no es capa de fondo, pero conserva las
+      mismas animaciones que tenía ahí (float + glitch).
+   -->
+   <div class="hero-logo-float relative z-10 my-6 w-[55%] max-w-[380px] aspect-[510/144]" aria-hidden="true">
+      <Image
+         src={ImgElHackNegro}
+         alt=""
+         class="hero-logo-glitch absolute inset-0 h-full w-full object-contain opacity-30 blur-[2px] dark:hidden"
+      />
+      <Image
+         src={ImgElHackBlanco}
+         alt=""
+         class="hero-logo-glitch absolute inset-0 hidden h-full w-full object-contain opacity-30 blur-[2px] dark:block"
+      />
+   </div>
 
    <p class="relative z-10 mx-auto mt-8 max-w-2xl text-base md:text-lg text-gray-700 dark:text-white/80">
       La herramienta de Movapp que detiene las llamadas y los mensajes de acoso, protege a tus contactos y te
@@ -118,6 +105,11 @@ const bolts = Array.from({ length: PAIR_COUNT }, () => {
    <div class="relative z-10 mt-8">
       <ButtonContact label="Hablar con un asesor" />
    </div>
+
+   <!-- Estructura solo para móvil (ver mockup) -- en escritorio no aplica. -->
+   <a href="#" class="relative z-10 mt-4 block text-sm font-medium text-text_banner underline sm:hidden">
+      Ver página enlazada
+   </a>
 </section>
 
 <style>
