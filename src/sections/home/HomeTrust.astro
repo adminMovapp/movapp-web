@@ -5,6 +5,11 @@
 // siquiera se renderizan en ese caso (no solo se deshabilitan).
 const TRUST_PAGE_SIZE = 3;
 
+// Orden (a pedido): Rubi - Diego - Sandra, de izquierda a derecha en el
+// carrusel móvil (mismo orden que ya se ve en escritorio). Diego es el que
+// debe verse primero al cargar en móvil, aunque quede en medio -- se
+// identifica por índice, igual que EL_HACK_INDEX en HomeFeatured.astro (ver
+// data-initial-card más abajo y el script inline que lo aplica).
 const testimonials = [
    {
       name: 'Rubi',
@@ -19,6 +24,7 @@ const testimonials = [
       text: 'Ya las llamadas son menos y ya no me mandan mensajes, tenían razón. Ya no molestan a mis contactos. Son lo máximo, gracias por ayudarme, sin duda los recomendaría.',
    },
 ];
+const DIEGO_INDEX = 1;
 
 import { Image } from 'astro:assets';
 import ImgCenepred from '@assets/cenepred.webp';
@@ -65,20 +71,52 @@ const collaborations = [
          {
             testimonials.map((t, i) => (
                <div
+                  data-initial-card={i === DIEGO_INDEX ? 'true' : undefined}
                   class="testimonial-card float-anim w-[78vw] flex-shrink-0 snap-center overflow-hidden rounded-3xl border border-purple_mv/25 shadow-card transition-colors duration-300 hover:border-purple_mv/50 hover:shadow-card-hover dark:border-white/10"
                   style={`--float-dur: ${5.6 + i * 0.3}s; --float-delay: ${i * 0.2}s;`}
                >
-                  <div class="relative bg-gradient-to-b from-purple_mv/[0.06] to-transparent p-5 text-left dark:from-purple_mv/[0.1] dark:to-black/30">
+                  <!-- flex column + h-full (a pedido): el nombre siempre queda
+                       pegado abajo, sin importar cuánto más corto sea un
+                       testimonio que otro -- .testimonial-card ya recibe una
+                       altura real e igual entre las 3 tarjetas (stretch por
+                       defecto del flex del carrusel), este div solo la llena. -->
+                  <div class="relative flex h-full flex-col bg-gradient-to-b from-purple_mv/[0.06] to-transparent p-5 text-left dark:from-purple_mv/[0.1] dark:to-black/30">
                      <span class="pointer-events-none absolute -top-2 left-4 select-none text-6xl font-serif text-purple_mv/30">
                         “
                      </span>
-                     <p class="relative z-10 mt-5 text-sm text-gray-700 dark:text-white/90">{t.text}</p>
-                     <p class="relative z-10 mt-4 text-right font-bold text-text_banner">— {t.name}</p>
+                     <p class="relative z-10 mt-5 flex-1 text-sm text-gray-700 dark:text-white/90">{t.text}</p>
+                     <p class="relative z-10 mt-4 text-right font-bold uppercase text-text_banner">— {t.name}</p>
                   </div>
                </div>
             ))
          }
       </div>
+
+      <!--
+         Posiciona el carrusel móvil sobre el testimonio de Diego (a pedido:
+         debe ser lo primero que se ve, aunque quedó en medio del orden) --
+         mismo mecanismo que "El Hack" en HomeFeatured.astro, ver los
+         comentarios de ese archivo para el detalle completo de por qué es
+         "is:inline" y por qué reintenta por rAF (el CSS de Tailwind, que da
+         el "flex" del carrusel, carga por JS de forma asíncrona).
+      -->
+      <script is:inline>
+         (function () {
+            var track = document.getElementById('trustCarousel');
+            var initial = track && track.querySelector('[data-initial-card]');
+            if (!track || !initial) return;
+
+            function positionIfReady() {
+               var display = getComputedStyle(track).display;
+               if (display !== 'flex') {
+                  requestAnimationFrame(positionIfReady);
+                  return;
+               }
+               track.scrollLeft = initial.offsetLeft - (track.clientWidth - initial.offsetWidth) / 2;
+            }
+            positionIfReady();
+         })();
+      </script>
 
       <!-- Pista de swipe: siempre visible en el HTML (no depende de JS).
            Las flechas son botones reales (ver script) que llevan a la
@@ -125,11 +163,14 @@ const collaborations = [
       El ícono (igual para todos) queda fuera de las capas: no hace falta
       cruzarlo.
 
-      El "min-h" en .trust-stack (más abajo) es a propósito: el testimonio de
-      Diego es mucho más largo que el resto, y sin un mínimo fijo la fila
-      entera (grid) crecía/encogía de golpe cada vez que ese testimonio
-      entraba o salía de pantalla. El valor se midió para que el testimonio
-      más largo quepa completo en el ancho de tarjeta de cada breakpoint.
+      El "min-h" en .trust-stack (más abajo) es a propósito: sin un mínimo
+      fijo, la fila entera (grid) crecería/encogería de golpe si un
+      testimonio más largo entra o sale de pantalla al cambiar de página
+      (hoy son solo 3 testimonios -- sin paginación real -- pero el mínimo
+      se deja para cuando se agreguen más). El valor se midió con Playwright
+      (altura real del contenido, sin el mínimo, en cada breakpoint) y se
+      ajustó apenas por encima de eso -- a pedido, más chico que antes
+      porque con el texto actual las tarjetas se veían con demasiado aire.
    -->
    <div class="hidden md:flex md:items-center md:justify-center md:gap-4 lg:gap-6">
       {
@@ -157,20 +198,20 @@ const collaborations = [
                   ]}
                   style={`--float-dur: ${5.6 + slot * 0.3}s; --float-delay: ${slot * 0.2}s;`}
                >
-                  <div class="trust-stack relative min-h-[440px] bg-gradient-to-b from-purple_mv/[0.06] to-transparent p-4 text-left dark:from-purple_mv/[0.1] dark:to-black/30 lg:min-h-[340px] lg:p-5">
+                  <div class="trust-stack relative min-h-[260px] bg-gradient-to-b from-purple_mv/[0.06] to-transparent p-4 text-left dark:from-purple_mv/[0.1] dark:to-black/30 lg:min-h-[250px] lg:p-5">
                      <div class="trust-layer trust-layer-a" data-role="a">
                         <span class="pointer-events-none select-none text-5xl font-serif text-purple_mv/30">“</span>
                         <p class="trust-slot-text relative z-10 mt-3 text-sm text-gray-700 dark:text-white/90">
                            {testimonials[slot]?.text}
                         </p>
-                        <p class="trust-slot-name relative z-10 mt-3 text-right font-bold text-text_banner">
+                        <p class="trust-slot-name relative z-10 mt-3 text-right font-bold uppercase text-text_banner">
                            {testimonials[slot] && `— ${testimonials[slot].name}`}
                         </p>
                      </div>
                      <div class="trust-layer trust-layer-b" data-role="b">
                         <span class="pointer-events-none select-none text-5xl font-serif text-purple_mv/30">“</span>
                         <p class="trust-slot-text relative z-10 mt-3 text-sm text-gray-700 dark:text-white/90" />
-                        <p class="trust-slot-name relative z-10 mt-3 text-right font-bold text-text_banner" />
+                        <p class="trust-slot-name relative z-10 mt-3 text-right font-bold uppercase text-text_banner" />
                      </div>
                   </div>
                </div>
@@ -284,17 +325,30 @@ const collaborations = [
       (una baja a 0 mientras la otra sube a 1) con la misma duración/curva,
       así el efecto es un verdadero cruce, no un fundido a negro seguido de
       una aparición.
+
+      Cada capa además es flex-column + height:100% (a pedido: el nombre
+      siempre pegado abajo, sin importar cuán corto sea un testimonio frente
+      a otro) -- por el "stretch" default de CSS Grid, la capa ya recibe la
+      altura real de .trust-stack (el "min-h" de más arriba); ".trust-slot-
+      text" con flex:1 crece para ocupar el espacio libre y empuja el
+      nombre al final.
    */
    .trust-stack {
       display: grid;
    }
    .trust-layer {
       grid-area: 1 / 1;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
       opacity: 0;
       transition: opacity 0.4s ease;
    }
    .trust-layer-a {
       opacity: 1;
+   }
+   .trust-slot-text {
+      flex: 1 1 auto;
    }
 
    /* Tarjeta sin testimonio en la página actual (última página incompleta):

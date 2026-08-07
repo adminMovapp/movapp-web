@@ -57,12 +57,21 @@ import ButtonContact from '@components/ui/ButtonContact.astro';
             son las frases marcadas en negritas en el documento fuente -- a
             pedido, todo texto en negritas del documento se respeta en color
             morado (ver la skill seo-content-import).
+
+            <br class="md:hidden"> justo después de "HOY" -- a pedido, el
+            salto de línea entre "...HOY" y "Adiós..." solo aplica en
+            móvil; en escritorio el texto sigue fluyendo en una sola frase
+            (se envuelve solo, según el ancho disponible). La "," después de
+            "HOY" también quedó solo para escritorio (envuelta en su propio
+            span "hidden md:inline"): en móvil, con el salto de línea, se ve
+            mejor sin ella -- en escritorio, sin salto, sigue haciendo falta
+            para separar las dos frases.
          -->
          <h1
             class="hero-float-combo mx-auto mt-4 max-w-4xl text-4xl font-bold leading-tight text-gray-900 dark:text-white md:mx-0 md:text-left md:text-6xl md:uppercase"
             style="--float-dur: 6.5s; --float-delay: 0.3s; animation: heroFadeIn 0.7s ease-out both, heroFloat 6.5s ease-in-out 0.3s infinite;"
          >
-            RECUPERA TU <span class="text-text_banner">TRANQUILIDAD</span> HOY, Adiós al acoso de las <span class="text-text_banner drop-shadow-[0_0_25px_rgba(129,73,226,0.35)]">apps de préstamos</span>
+            RECUPERA TU <span class="text-text_banner">TRANQUILIDAD</span> HOY<span class="hidden md:inline">,</span><br class="md:hidden" /> Adiós al acoso de las <span class="text-text_banner drop-shadow-[0_0_25px_rgba(129,73,226,0.35)]">apps de préstamos</span>
          </h1>
       </div>
 

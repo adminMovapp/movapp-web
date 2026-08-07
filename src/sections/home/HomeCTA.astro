@@ -34,16 +34,22 @@ import ImgLogoBlanco from '@assets/Logo-Blanco.png';
          viendo apilado junto al párrafo/resto en la misma columna.
       -->
       <div class="cta-grid relative z-10 gap-8 md:gap-12">
-         <h2 class="cta-title text-center text-2xl font-bold uppercase leading-tight text-gray-900 dark:text-white md:text-left md:text-3xl">
-            Da el primer paso hoy
-         </h2>
-
          <!-- Logo de Movapp (mismo que la navbar de escritorio) -- solo en
-              escritorio, a pedido; en móvil no se agrega. -->
+              escritorio, a pedido; en móvil no se agrega. Va antes que el
+              título (a pedido: logo primero, luego "Da el primer paso"). -->
          <div class="cta-logo hidden md:block">
             <Image src={ImgLogo} alt="Movapp" height={100} class="cta-logo-img block h-10 w-auto dark:hidden" />
             <Image src={ImgLogoBlanco} alt="Movapp" height={100} class="cta-logo-img hidden h-10 w-auto dark:block" />
          </div>
+
+         <!-- md:-mt-6 (a pedido): el "gap-12" del grid de escritorio dejaba
+              demasiado aire entre el logo y el título -- este margen
+              negativo achica solo esa separación puntual, sin tocar el
+              "gap" general (que sigue rigiendo la columna de la imagen y el
+              espacio hacia el botón/badges de más abajo). -->
+         <h2 class="cta-title text-center text-2xl font-bold uppercase leading-tight text-gray-900 dark:text-white md:-mt-6 md:text-left md:text-3xl">
+            Da el primer paso hoy
+         </h2>
 
          <!-- Mockup de la app en la App Store -->
          <div class="cta-image flex aspect-[4/3] items-center justify-center rounded-2xl border border-purple_mv/20 bg-purple_mv/5 dark:border-white/10 dark:bg-white/5 md:aspect-square">
@@ -55,7 +61,9 @@ import ImgLogoBlanco from '@assets/Logo-Blanco.png';
             />
          </div>
 
-         <p class="cta-text mx-auto max-w-xl text-center text-sm text-gray-600 dark:text-white/80 md:mx-0 md:text-left md:text-base">
+         <!-- md:-mt-6: mismo criterio que el título de arriba, para achicar
+              el aire entre el título y este párrafo. -->
+         <p class="cta-text mx-auto max-w-xl text-center text-sm text-gray-600 dark:text-white/80 md:mx-0 md:-mt-6 md:text-left md:text-base">
             No tienes que enfrentar esto solo. Escríbenos por WhatsApp y recupera tu tranquilidad.
          </p>
 
@@ -139,12 +147,12 @@ import ImgLogoBlanco from '@assets/Logo-Blanco.png';
 
    /* Escritorio: layout original (imagen a la izquierda, todo el texto
       apilado a la derecha) -- la imagen ocupa las 4 filas de su columna
-      ahora que se sumó "logo" entre el título y el texto (solo visible en
+      ahora que se sumó "logo" arriba del título (a pedido, solo visible en
       escritorio, ver "cta-logo" en el markup). */
    @media (min-width: 768px) {
       .cta-grid {
          grid-template-columns: 1fr 1fr;
-         grid-template-areas: 'image title' 'image logo' 'image text' 'image rest';
+         grid-template-areas: 'image logo' 'image title' 'image text' 'image rest';
          align-items: center;
       }
       .cta-logo {

@@ -61,7 +61,14 @@ const symptoms = [
                      <Image src={s.icon} width={150} alt="" class="h-full w-full object-contain" />
                   </div>
                </div>
-               <h3 class="relative text-lg font-bold text-gray-900 dark:text-white md:text-base">
+               <!-- Morado en escritorio (a pedido): todo texto en negritas va
+                    en color morado (text_banner) -- mismo criterio que el H1
+                    de HomeHero.astro. "md:dark:text-text_banner" además de
+                    "md:text-text_banner": el tema por defecto es oscuro
+                    (<html class="dark">), y sin la variante compuesta
+                    "dark:text-white" le seguía ganando al morado en
+                    escritorio (confirmado con Playwright). -->
+               <h3 class="relative text-lg font-bold text-gray-900 dark:text-white md:text-base md:text-text_banner md:dark:text-text_banner">
                   <span class="md:hidden">{s.title}</span>
                   <span class="hidden md:inline">{s.titleDesktop || s.title}</span>
                </h3>
