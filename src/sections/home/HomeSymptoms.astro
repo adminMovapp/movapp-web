@@ -58,7 +58,17 @@ const symptoms = [
                     que ahí solo se muestra desde escritorio. -->
                <div class="relative mb-4 h-16 w-16 md:h-14 md:w-14">
                   <div class="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-purple_mv to-purple_mv/60 p-2.5 shadow-[0_0_16px_rgba(129,73,226,0.3)] md:h-14 md:w-14">
-                     <Image src={s.icon} width={150} alt="" class="h-full w-full object-contain" />
+                     {i === 0 ? (
+                        // Elemento LCP de esta página (primera card, "arriba del
+                        // pliegue"): sin "loading=lazy" (default de <Image>) y con
+                        // fetchpriority alto, para que el navegador lo descubra y
+                        // priorice desde el HTML inicial en vez de demorar su
+                        // descarga -- Lighthouse lo marcaba como el mayor tramo del
+                        // LCP ("retraso en la carga de recursos", 250ms).
+                        <Image src={s.icon} width={150} alt="" loading="eager" fetchpriority="high" class="h-full w-full object-contain" />
+                     ) : (
+                        <Image src={s.icon} width={150} alt="" class="h-full w-full object-contain" />
+                     )}
                   </div>
                </div>
                <!-- Morado en escritorio (a pedido): todo texto en negritas va
