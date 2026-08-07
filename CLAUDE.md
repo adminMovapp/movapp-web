@@ -45,6 +45,10 @@ Every new section/component is designed and verified on mobile (~375-428px viewp
 
 New pages/sections are typically implemented from a master SEO/content document (attached to the conversation, not stored in the repo); SEO copy (H1, heading hierarchy, meta title/description/keywords, verbatim body copy) is the top priority of the project, ahead of any urge to paraphrase. The `.claude/skills/seo-content-import/SKILL.md` skill encodes the exact extraction/mapping/verification process to follow.
 
+### Performance (Lighthouse / PSI)
+
+Ongoing work driven by user-supplied Lighthouse/PageSpeed Insights screenshots. The `.claude/skills/Rendimiento/SKILL.md` skill documents everything already fixed (`inlineStylesheets: 'always'`, image sizing, `defer`/preconnect, the double-rAF forced-reflow pattern) and — most importantly — a real CLS bug specific to this codebase's no-js/js progressive-enhancement mechanism: an `<Image>` with a `height` prop sized for retina but a much smaller final Tailwind class causes a visible layout jump before Tailwind loads, fixed by pinning the true final size in the component's scoped `<style>` (always inlined, unlike Tailwind). Read it before touching image sizing, third-party scripts, or any Lighthouse-flagged issue — it also covers how to tell whether a new report is against a stale deploy instead of a failed fix.
+
 ### Data flow: mobile-app backend as source of truth
 
 There is no local database or CMS. `src/api/api.jsx` calls an external API (`PUBLIC_API_LINK`) that is shared with Movapp's mobile app:

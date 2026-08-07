@@ -8,9 +8,12 @@ interface Props {
    // parte en 2 líneas apretadas contra un ícono chico). En md+ vuelve a su
    // ancho natural (ajustado al contenido).
    fullWidth?: boolean;
+   // ID de tracking para GA4 (medir clic + ubicación del CTA en la página).
+   // Opcional: los usos existentes del componente no lo necesitan.
+   id?: string;
 }
 
-const { label = 'Contáctanos', fullWidth = false } = Astro.props;
+const { label = 'Contáctanos', fullWidth = false, id } = Astro.props;
 
 const mensaje = '¡Hola! Quiero más información sobre El Hack.';
 
@@ -22,6 +25,7 @@ const widthClasses = fullWidth ? 'w-full md:w-auto' : '';
 ---
 
 <a
+   id={id}
    href={`https://api.whatsapp.com/send/?phone=${URLS.whatsapp.principal.replace('+', '')}&text=${encodeURIComponent(mensaje)}&type=phone_number&app_absent=0`}
    class={`wa__stt keep-white inline-flex items-center justify-center gap-3 rounded-full bg-green-500 px-6 py-4 text-base font-bold text-white transition hover:bg-green-600 md:text-lg ${widthClasses}`}
    target="_blank"
