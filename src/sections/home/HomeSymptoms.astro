@@ -6,24 +6,30 @@ import ImgContacto from '@assets/contacto.webp';
 import ImgAngustia from '@assets/angustia.webp';
 import StarField from '@components/decorative/StarField.astro';
 
+// "titleDesktop" es solo para escritorio (a pedido) -- en móvil se deja
+// "title" tal cual, sin cambios.
 const symptoms = [
    {
       title: 'Llamadas de acoso',
+      titleDesktop: 'Llamadas de acoso sin parar',
       text: 'Te llaman a toda hora, incluso desde números distintos.',
       icon: ImgTelefono,
    },
    {
       title: 'Mensajes amenazantes',
+      titleDesktop: 'Mensajes que amenazan',
       text: 'Recibes textos con insultos o amenazas para presionarte a pagar.',
       icon: ImgMensajes,
    },
    {
       title: 'Contactos en riesgo',
+      titleDesktop: 'Contactan a tu familia y amigos',
       text: 'Usan tu lista de contactos para avergonzarte y presionarte.',
       icon: ImgContacto,
    },
    {
       title: 'Angustia',
+      titleDesktop: 'Angustia que no te deja vivir',
       text: 'El miedo y la ansiedad se apoderan de tu día a día.',
       icon: ImgAngustia,
    },
@@ -47,13 +53,19 @@ const symptoms = [
                class="float-anim relative flex flex-col items-center overflow-hidden rounded-2xl border border-purple_mv/25 bg-gradient-to-b from-purple_mv/[0.06] to-transparent p-5 text-center shadow-card transition-colors duration-300 hover:border-purple_mv/50 hover:shadow-card-hover dark:border-white/10 dark:from-purple_mv/[0.1] dark:to-black/30 md:p-6"
                style={`--float-dur: ${5.6 + i * 0.3}s; --float-delay: ${i * 0.2}s;`}
             >
-               <div class="relative mb-4 h-14 w-14">
-                  <div class="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-purple_mv to-purple_mv/60 p-2.5 shadow-[0_0_16px_rgba(129,73,226,0.3)]">
+               <!-- Ícono y título ligeramente más grandes en móvil (a pedido):
+                    compensan el espacio que deja libre quitar la descripción,
+                    que ahí solo se muestra desde escritorio. -->
+               <div class="relative mb-4 h-16 w-16 md:h-14 md:w-14">
+                  <div class="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-purple_mv to-purple_mv/60 p-2.5 shadow-[0_0_16px_rgba(129,73,226,0.3)] md:h-14 md:w-14">
                      <Image src={s.icon} width={150} alt="" class="h-full w-full object-contain" />
                   </div>
                </div>
-               <h3 class="relative font-bold text-gray-900 dark:text-white">{s.title}</h3>
-               <p class="relative mt-1 text-sm text-gray-600 dark:text-white/70">{s.text}</p>
+               <h3 class="relative text-lg font-bold text-gray-900 dark:text-white md:text-base">
+                  <span class="md:hidden">{s.title}</span>
+                  <span class="hidden md:inline">{s.titleDesktop || s.title}</span>
+               </h3>
+               <p class="relative mt-1 hidden text-sm text-gray-600 dark:text-white/70 md:block">{s.text}</p>
             </li>
          ))
       }
