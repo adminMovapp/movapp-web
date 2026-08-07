@@ -109,18 +109,44 @@ const schemaJson = JSON.stringify(Array.isArray(pageSchema) ? pageSchema : [page
          y la página se sirve como HTML plano, mucho más ligero. Con
          JavaScript, se agrega el <link> y la página luce con el diseño
          completo (colores, animaciones, etc.).
+
+         El flip de clase "no-js" -> "js" espera al "load" de ese <link> (no
+         es inmediato) -- a propósito, y solo confirmado con Playwright bajo
+         throttling real: si se quita "no-js" de una (como antes), el
+         navegador pierde el fallback de no-js.css en el mismo instante en
+         que se pide global.css, pero ese archivo puede tardar varios
+         segundos en conexiones lentas. Durante toda esa ventana no hay
+         NINGUNA regla de tamaño/layout activa (ni no-js.css, que ya dejó de
+         aplicar, ni Tailwind, que aún no llegó), así que clases como
+         "hidden"/"flex" no hacen nada y se ven a la vez las variantes mobile
+         Y desktop de header/nav -- confirmado un header de 566px (contra
+         ~64px final) que después se derrumba de golpe al llegar el CSS, un
+         salto medido como CLS de ~0.8 con la Layout Instability API. Al
+         esperar el "load", esa ventana de carga lenta se ve con el fallback
+         de no-js.css (que sí está pensado para verse presentable) en vez de
+         HTML totalmente crudo y duplicado. onerror también flipea la clase:
+         si la hoja nunca carga (bloqueada, sin red), preferible quedar en el
+         estado actual del sitio (sin este fix) a quedar trabado en no-js
+         para siempre.
       -->
       <script is:inline define:vars={{ stylesheetHref, flagIconsHref }}>
          (function () {
-            document.documentElement.classList.remove('no-js');
-            document.documentElement.classList.add('js');
+            var flip = function () {
+               document.documentElement.classList.remove('no-js');
+               document.documentElement.classList.add('js');
+            };
 
-            [stylesheetHref, flagIconsHref].forEach(function (href) {
-               var link = document.createElement('link');
-               link.rel = 'stylesheet';
-               link.href = href;
-               document.head.appendChild(link);
-            });
+            var globalLink = document.createElement('link');
+            globalLink.rel = 'stylesheet';
+            globalLink.href = stylesheetHref;
+            globalLink.onload = flip;
+            globalLink.onerror = flip;
+            document.head.appendChild(globalLink);
+
+            var flagLink = document.createElement('link');
+            flagLink.rel = 'stylesheet';
+            flagLink.href = flagIconsHref;
+            document.head.appendChild(flagLink);
          })();
       </script>
 
@@ -219,8 +245,38 @@ const schemaJson = JSON.stringify(Array.isArray(pageSchema) ? pageSchema : [page
             #global-preloader {
                display: none !important;
             }
+            /*
+               HomeHowItWorks.astro (timeline de "¿Cómo funciona El Hack?"):
+               cada paso (.hiw-step, con el título+texto real) arranca en
+               opacity:0 y solo se revela cuando un IntersectionObserver le
+               agrega "hiw-active" al hacer scroll -- sin JS ese observer
+               nunca corre, así que el contenido real quedaba invisible para
+               siempre (no solo sin animar, sino permanentemente oculto).
+               Mismo criterio que [data-aos] arriba.
+            */
+            .hiw-step {
+               opacity: 1 !important;
+               transform: none !important;
+            }
          </style>
       </noscript>
+
+      <!--
+         Margen 0 en <body> siempre activo (con o sin JS, cargue o no
+         Tailwind): mientras el preflight de Tailwind no llega (carga async,
+         ver mecanismo no-js/js), el navegador aplica su margen por defecto
+         de 8px -- un salto de 8px en los 4 lados de TODO el viewport apenas
+         Tailwind carga se medía como un CLS de ~0.79 (confirmado con la
+         Layout Instability API: única fuente del shift era <body>, de
+         x:7,y:8 a x:0,y:0). No es una regla de diseño (no revela color ni
+         tipografía), es normalización de caja -- coincide con el valor
+         final de Tailwind, así que no cambia nada visualmente.
+      -->
+      <style>
+         body {
+            margin: 0;
+         }
+      </style>
    </head>
 
    <!--

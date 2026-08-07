@@ -117,6 +117,72 @@ html.no-js footer {
 }
 html.no-js header {
    border-top: none;
+   /*
+      Header más ajustado que el resto de los bloques (no el margin-block/
+      padding-block genérico de 2rem/1.25rem de arriba) -- a diferencia de
+      section/footer, este SÍ se compara directo contra la altura real del
+      header de Tailwind (74px, fixed) cuando Tailwind tarda en cargar bajo
+      conexión lenta: cuanto más chico el salto entre este valor y esos
+      74px, menor el CLS al llegar el CSS real. Ver skill Rendimiento.
+   */
+   margin-block: 0;
+   padding-block: 0.5rem;
+}
+
+/*
+   Header.astro trae su propio <style> con scope para el efecto de "píldora"
+   al hacer scroll -- ese <style> NO depende de no-js/js (se inyecta siempre,
+   por diseño, para que la píldora funcione apenas hay JS) y fija su propio
+   padding-top/bottom en 1rem vía "#siteHeader[data-astro-cid-...]", más
+   específico que la regla "html.no-js header" de arriba, así que le gana y
+   el padding-block:0.5rem de ahí nunca llegaba a aplicarse en no-js.
+   Acá se iguala esa especificidad apuntando al mismo "#siteHeader" (id fijo,
+   no depende del hash de data-astro-cid) PERO condicionado a "html.no-js" --
+   en cuanto esa clase desaparece (JS listo, ver Layout.astro) esta regla
+   deja de aplicar sola, así que NUNCA compite con el diseño real: es
+   puramente para achicar el salto durante la carga de Tailwind.
+*/
+html.no-js #siteHeader {
+   padding-block: 0.5rem;
+}
+
+/*
+   Spacer del header fixed (ver Header.astro): sin contenido, solo reserva
+   espacio para que el header no tape lo de abajo -- en no-js el header NO
+   es fixed (es un bloque más en el flujo normal), así que este espacio
+   sobra. Es un id/clase dedicado a un único elemento decorativo conocido
+   (aria-hidden, sin texto) -- NO una regla genérica por atributo/clase
+   reutilizada en otros lados (eso ya rompió elementos reales antes, ver
+   CLAUDE.md), así que es seguro ocultarlo acá.
+*/
+html.no-js .header-spacer {
+   display: none;
+}
+
+/*
+   <header> es SOLO de escritorio (Tailwind lo pinta "hidden lg:flex") y
+   <nav id="mobileBottomNav"> es SOLO de móvil ("lg:hidden") -- son dos
+   barras alternativas para el mismo destino (Inicio/Tienda/Menú), nunca se
+   ven juntas en el diseño final. Sin Tailwind, ninguna de las dos clases
+   hace nada y las DOS se ven a la vez, apiladas -- no se pierde ningún
+   contenido (Header.astro no tiene texto/enlaces que no estén también en
+   MobileBottomNav.astro o en los paneles de menú, que ya se muestran
+   completos sin JS más abajo), pero infla mucho la altura del header en
+   md, empeorando el salto al llegar Tailwind. Un media query replica el
+   mismo corte de "lg" (1024px) sin necesitar JS ni clases de Tailwind, así
+   que en cualquier ancho se ve solo UNA de las dos barras, igual que en el
+   diseño final.
+*/
+@media (max-width: 1023px) {
+   html.no-js header,
+   html.no-js .header-spacer {
+      display: none;
+   }
+}
+@media (min-width: 1024px) {
+   html.no-js #mobileBottomNav {
+      display: none;
+   }
 }
 
 /* --- FAQ (usa <details>/<summary> nativos, ya funcionan sin JS) --- */
