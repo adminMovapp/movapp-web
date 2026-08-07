@@ -8,6 +8,7 @@ import ImgAppStore from '@assets/app-store-v2.webp';
 // acá debajo del título, solo en escritorio (ver ".cta-logo" más abajo).
 import ImgLogo from '@assets/Logo.png';
 import ImgLogoBlanco from '@assets/Logo-Blanco.png';
+import ImgMockupCelular from '@assets/Mockup-celular-movapp-1.webp';
 ---
 
 <section class="relative mx-auto my-8 w-full max-w-5xl px-4" data-aos="fade-up">
@@ -53,8 +54,9 @@ import ImgLogoBlanco from '@assets/Logo-Blanco.png';
 
          <!-- Mockup de la app en la App Store -->
          <div class="cta-image flex aspect-[4/3] items-center justify-center rounded-2xl border border-purple_mv/20 bg-purple_mv/5 dark:border-white/10 dark:bg-white/5 md:aspect-square">
-            <img
-               src="/img/migracion/Mockup-celular-movapp-1.webp"
+            <Image
+               src={ImgMockupCelular}
+               width={760}
                alt="Vista previa de Movapp en la App Store"
                class="h-full w-full object-contain p-4"
                loading="lazy"

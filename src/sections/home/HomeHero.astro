@@ -4,6 +4,7 @@ import ImgLogoResp from '@assets/logo_resp.webp';
 import ImgLogoRespBlanco from '@assets/logo_resp_blanco.webp';
 import ImgPlayStore from '@assets/play-store-v2.webp';
 import ImgAppStore from '@assets/app-store-v2.webp';
+import ImgAsesoriaGratuita from '@assets/Asesoria-gratuita.webp';
 import ButtonContact from '@components/ui/ButtonContact.astro';
 ---
 
@@ -250,12 +251,14 @@ import ButtonContact from '@components/ui/ButtonContact.astro';
       <!-- Con tope de ancho + mx-auto para que no ocupe toda la columna: se veía
            demasiado grande frente al texto. Oculta en móvil: ese espacio lo
            ocupa ahora el bloque de íconos de tienda + descargas de arriba. -->
-      <div class="mx-auto hidden aspect-[4/3] w-full max-w-[220px] items-center justify-center overflow-hidden rounded-2xl border border-purple_mv/20 bg-purple_mv/5 dark:border-white/10 dark:bg-white/5 md:flex md:aspect-square md:max-w-[240px]">
-         <img
-            src="/img/Asesoria-gratuita.webp"
+      <div class="hero-advice-frame mx-auto hidden aspect-[4/3] w-full max-w-[220px] items-center justify-center overflow-hidden rounded-2xl border border-purple_mv/20 bg-purple_mv/5 dark:border-white/10 dark:bg-white/5 md:flex md:aspect-square md:max-w-[240px]">
+         <Image
+            src={ImgAsesoriaGratuita}
+            width={480}
             alt="Guía de asesoría Movapp"
             class="h-full w-full object-cover"
-            loading="lazy"
+            loading="eager"
+            fetchpriority="high"
          />
       </div>
    </div>
@@ -274,6 +277,20 @@ import ButtonContact from '@components/ui/ButtonContact.astro';
    .store-badge {
       height: 2.5rem;
       width: auto;
+   }
+
+   /*
+      Tamaño real fijado acá (no solo "max-w-[240px] md:aspect-square" de
+      Tailwind) -- el width={480} del <Image> es para retina (2x de los
+      240px finales), más grande que el recuadro real, así que sin esto la
+      imagen se pinta grande mientras Tailwind no ha cargado y se encoge de
+      golpe al cargar. Solo importa en md+ (el recuadro es "hidden" antes).
+   */
+   @media (min-width: 768px) {
+      .hero-advice-frame {
+         width: 240px;
+         height: 240px;
+      }
    }
 
    /*
