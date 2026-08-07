@@ -4,7 +4,6 @@ import StarField from '@components/decorative/StarField.astro';
 import ImagePlaceholder from '@components/ui/ImagePlaceholder.astro';
 import ImgPlayStore from '@assets/play-store-v2.webp';
 import ImgAppStore from '@assets/app-store-v2.webp';
-import ImgMockupCelular from '@assets/Mockup-celular-movapp-1.webp';
 
 const features = [
    {
@@ -54,9 +53,8 @@ const features = [
       <div
          class="flex aspect-[4/3] w-full max-w-[220px] items-center justify-center rounded-2xl border border-purple_mv/20 bg-purple_mv/5 dark:border-white/10 dark:bg-white/5"
       >
-         <Image
-            src={ImgMockupCelular}
-            width={440}
+         <img
+            src="/img/migracion/Mockup-celular-movapp-1.webp"
             alt="Vista previa de Movapp en la App Store"
             class="h-full w-full object-contain p-4"
             loading="lazy"

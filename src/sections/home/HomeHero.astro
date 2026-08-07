@@ -4,11 +4,10 @@ import ImgLogoResp from '@assets/logo_resp.webp';
 import ImgLogoRespBlanco from '@assets/logo_resp_blanco.webp';
 import ImgPlayStore from '@assets/play-store-v2.webp';
 import ImgAppStore from '@assets/app-store-v2.webp';
-import ImgAsesoriaGratuita from '@assets/Asesoria-gratuita.webp';
 import ButtonContact from '@components/ui/ButtonContact.astro';
 ---
 
-<section id="homeHero" class="relative mx-auto flex min-h-[85vh] max-w-5xl flex-col items-center justify-center px-4 pt-16 pb-12 text-center md:min-h-[70vh] md:pt-8 md:pb-8">
+<section class="relative mx-auto flex min-h-[85vh] max-w-5xl flex-col items-center justify-center px-4 pt-16 pb-12 text-center md:min-h-[70vh] md:pt-8 md:pb-8">
    <!--
       Fondo espacial: full-bleed (ignora el max-w del section con el truco
       left-1/2 + w-screen + -translate-x-1/2) para que llene todo el ancho
@@ -251,14 +250,12 @@ import ButtonContact from '@components/ui/ButtonContact.astro';
       <!-- Con tope de ancho + mx-auto para que no ocupe toda la columna: se veía
            demasiado grande frente al texto. Oculta en móvil: ese espacio lo
            ocupa ahora el bloque de íconos de tienda + descargas de arriba. -->
-      <div class="hero-advice-frame mx-auto hidden aspect-[4/3] w-full max-w-[220px] items-center justify-center overflow-hidden rounded-2xl border border-purple_mv/20 bg-purple_mv/5 dark:border-white/10 dark:bg-white/5 md:flex md:aspect-square md:max-w-[240px]">
-         <Image
-            src={ImgAsesoriaGratuita}
-            width={480}
+      <div class="mx-auto hidden aspect-[4/3] w-full max-w-[220px] items-center justify-center overflow-hidden rounded-2xl border border-purple_mv/20 bg-purple_mv/5 dark:border-white/10 dark:bg-white/5 md:flex md:aspect-square md:max-w-[240px]">
+         <img
+            src="/img/Asesoria-gratuita.webp"
             alt="Guía de asesoría Movapp"
             class="h-full w-full object-cover"
-            loading="eager"
-            fetchpriority="high"
+            loading="lazy"
          />
       </div>
    </div>
@@ -277,36 +274,6 @@ import ButtonContact from '@components/ui/ButtonContact.astro';
    .store-badge {
       height: 2.5rem;
       width: auto;
-   }
-
-   /*
-      Posición real fijada acá (no solo "absolute inset-0" de Tailwind) --
-      son capas decorativas vacías (aria-hidden, JS les agrega las estrellas
-      después) sin ninguna regla de posición mientras Tailwind no ha
-      cargado, así que se pintan como bloques normales en el flujo del
-      documento -- empujando contenido real y generando CLS -- hasta que
-      Tailwind carga y las vuelve "position: absolute". No es una regla de
-      diseño (no revela color), es normalización de posición -- coincide
-      con el valor final, así que no cambia nada visualmente.
-   */
-   #hero-stars,
-   #hero-shooting-stars {
-      position: absolute;
-      inset: 0;
-   }
-
-   /*
-      Tamaño real fijado acá (no solo "max-w-[240px] md:aspect-square" de
-      Tailwind) -- el width={480} del <Image> es para retina (2x de los
-      240px finales), más grande que el recuadro real, así que sin esto la
-      imagen se pinta grande mientras Tailwind no ha cargado y se encoge de
-      golpe al cargar. Solo importa en md+ (el recuadro es "hidden" antes).
-   */
-   @media (min-width: 768px) {
-      .hero-advice-frame {
-         width: 240px;
-         height: 240px;
-      }
    }
 
    /*
