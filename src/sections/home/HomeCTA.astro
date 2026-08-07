@@ -4,6 +4,10 @@ import ButtonContact from '@components/ui/ButtonContact.astro';
 import StarField from '@components/decorative/StarField.astro';
 import ImgPlayStore from '@assets/play-store-v2.webp';
 import ImgAppStore from '@assets/app-store-v2.webp';
+// Mismo logo que Header.astro (navbar de escritorio) -- a pedido, se repite
+// acá debajo del título, solo en escritorio (ver ".cta-logo" más abajo).
+import ImgLogo from '@assets/Logo.png';
+import ImgLogoBlanco from '@assets/Logo-Blanco.png';
 ---
 
 <section class="relative mx-auto my-8 w-full max-w-5xl px-4" data-aos="fade-up">
@@ -33,6 +37,13 @@ import ImgAppStore from '@assets/app-store-v2.webp';
          <h2 class="cta-title text-center text-2xl font-bold uppercase leading-tight text-gray-900 dark:text-white md:text-left md:text-3xl">
             Da el primer paso hoy
          </h2>
+
+         <!-- Logo de Movapp (mismo que la navbar de escritorio) -- solo en
+              escritorio, a pedido; en móvil no se agrega. -->
+         <div class="cta-logo hidden md:block">
+            <Image src={ImgLogo} alt="Movapp" height={100} class="cta-logo-img block h-10 w-auto dark:hidden" />
+            <Image src={ImgLogoBlanco} alt="Movapp" height={100} class="cta-logo-img hidden h-10 w-auto dark:block" />
+         </div>
 
          <!-- Mockup de la app en la App Store -->
          <div class="cta-image flex aspect-[4/3] items-center justify-center rounded-2xl border border-purple_mv/20 bg-purple_mv/5 dark:border-white/10 dark:bg-white/5 md:aspect-square">
@@ -94,6 +105,20 @@ import ImgAppStore from '@assets/app-store-v2.webp';
       width: auto;
    }
 
+   /*
+      Tamaño real del logo fijado acá (no solo con "h-10" de Tailwind) --
+      este <style> con scope de componente se aplica siempre, con o sin JS.
+      Mientras Tailwind no ha cargado, el <img> no tiene ninguna regla de
+      tamaño y se pinta a su dimensión real (height={100}, pensado para
+      retina) -- más grande que los 40px finales de "h-10", lo que puede
+      generar un salto de layout (CLS) al cargar Tailwind. Debe coincidir
+      con "h-10" si cambia.
+   */
+   .cta-logo-img {
+      height: 2.5rem;
+      width: auto;
+   }
+
    .cta-grid {
       display: grid;
       grid-template-columns: 1fr;
@@ -113,12 +138,17 @@ import ImgAppStore from '@assets/app-store-v2.webp';
    }
 
    /* Escritorio: layout original (imagen a la izquierda, todo el texto
-      apilado a la derecha) -- la imagen ocupa las 3 filas de su columna. */
+      apilado a la derecha) -- la imagen ocupa las 4 filas de su columna
+      ahora que se sumó "logo" entre el título y el texto (solo visible en
+      escritorio, ver "cta-logo" en el markup). */
    @media (min-width: 768px) {
       .cta-grid {
          grid-template-columns: 1fr 1fr;
-         grid-template-areas: 'image title' 'image text' 'image rest';
+         grid-template-areas: 'image title' 'image logo' 'image text' 'image rest';
          align-items: center;
+      }
+      .cta-logo {
+         grid-area: logo;
       }
    }
 </style>
