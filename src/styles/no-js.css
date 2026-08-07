@@ -183,6 +183,47 @@ html.no-js .header-spacer {
    html.no-js #mobileBottomNav {
       display: none;
    }
+
+   /*
+      El header en sí y su grupo de íconos (tienda/carrito, tema, menú)
+      arrancan en "display: block" (default del navegador) hasta que carga
+      Tailwind y les da "flex" -- ese cambio de modo de layout reacomoda
+      los íconos (de apilados a una fila) y era una fuente real de CLS,
+      medida con Playwright. Anidado dentro de este media query (no como
+      regla suelta) para no ganarle por especificidad de ID a la regla de
+      arriba que oculta <header> completo por debajo de 1024px.
+   */
+   html.no-js #siteHeader {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+   }
+   html.no-js .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+   }
+}
+
+/*
+   Hero de Home (HomeHero.astro): en Tailwind mide "min-h-[85vh]"
+   (md:"min-h-[70vh]"), pero sin esa clase el <section> no tiene alto mínimo
+   -- se encoge al alto real del contenido (bastante menos) y salta al
+   85vh/70vh de golpe cuando Tailwind carga. Ese salto de altura es lo que
+   arrastra a las capas decorativas de fondo (#hero-stars/#hero-shooting-
+   stars, ya fijas en "position: absolute" pero con tamaño relativo al
+   contenedor vía "inset: 0") -- confirmado con Playwright: seguían
+   apareciendo como fuente de CLS aun con su posición ya fija, porque el
+   contenedor debajo era el que cambiaba de alto. No es una regla de diseño
+   (no cambia el look, solo el alto mínimo antes de que llegue Tailwind).
+*/
+html.no-js #homeHero {
+   min-height: 85vh;
+}
+@media (min-width: 768px) {
+   html.no-js #homeHero {
+      min-height: 70vh;
+   }
 }
 
 /* --- FAQ (usa <details>/<summary> nativos, ya funcionan sin JS) --- */
