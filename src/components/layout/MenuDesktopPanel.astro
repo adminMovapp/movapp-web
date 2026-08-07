@@ -34,10 +34,10 @@ const contentLinks = [
    (Inicio/Movapp/Hack/Contenido) -- el logo y el ícono de tienda/carrito y
    el toggle de tema se quedan afuera, visibles en el header, a pedido.
 
-   Sin animación (a pedido, antes era una transición tipo "cortina"): ambos
-   paneles arrancan fuera de pantalla (izquierdo trasladado a la izquierda,
-   derecho a la derecha) y pasan al centro/de vuelta a sus lados de origen de
-   forma instantánea, sin transición de por medio. Ver el <script> más abajo.
+   Animación tipo "cortina" al abrir y al cerrar: ambos paneles arrancan
+   fuera de pantalla (izquierdo trasladado a la izquierda, derecho a la
+   derecha) y se deslizan hacia el centro al abrir / de vuelta a sus lados de
+   origen al cerrar. Ver el <style> y el <script> más abajo.
 -->
 <!--
    "hidden" sin variante "lg:flex" a propósito -- aunque el botón que lo abre
@@ -62,7 +62,7 @@ const contentLinks = [
         bg-white/dark:bg-background_bottom propio. -->
    <div
       id="menuDesktopLeft"
-      class="relative h-full w-1/2 overflow-hidden border-r border-black/10 dark:border-white/10"
+      class="menu-desktop-panel relative h-full w-1/2 overflow-hidden border-r border-black/10 dark:border-white/10"
       style="transform: translateX(-100%);"
    >
       <MenuDesktopVisual />
@@ -70,7 +70,7 @@ const contentLinks = [
 
    <div
       id="menuDesktopRight"
-      class="relative flex h-full w-1/2 flex-col bg-white p-12 dark:bg-background_bottom lg:p-16"
+      class="menu-desktop-panel relative flex h-full w-1/2 flex-col bg-white p-12 dark:bg-background_bottom lg:p-16"
       style="transform: translateX(100%);"
    >
       <div class="flex items-center justify-end">
@@ -125,6 +125,40 @@ const contentLinks = [
    </div>
 </div>
 
+<style>
+   /*
+      Transición de la "cortina", tanto al abrir como al cerrar. Vive acá (no
+      en las clases de Tailwind del markup) para poder limitarla a "transform"
+      y excluir "background-color"/"color" -- si "transition-colors" (usado en
+      el resto del sitio para el cambio de tema) se mezclara con esta, el
+      cambio de tema con el menú abierto se vería "deslizarse" de forma rara.
+
+      "linear" a propósito, NO una curva ease-in-out: cualquier ease-in-out
+      (incluida la cubic-bezier(0.65,0,0.35,1) que se usó antes) tiene
+      pendiente CERO en ambos extremos por construcción, así que buena parte
+      de la duración configurada se percibe como inmovilidad y el resto como
+      un salto -- medido con Playwright en su momento: con 1.5s declarados,
+      solo ~600ms eran movimiento perceptible. "linear" reparte el
+      desplazamiento parejo en todo el rango.
+
+      700ms: la versión anterior de 1s se sintió lenta al abrir (por eso se
+      había dejado la apertura instantánea); este valor deja ver la cortina
+      sin hacer esperar. Debe coincidir con ANIM_MS en el <script>.
+   */
+   .menu-desktop-panel {
+      transition: transform 700ms linear;
+      will-change: transform;
+   }
+
+   /* Respeta la preferencia del sistema: sin movimiento, aparece directo.
+      El script también acorta su espera de cierre en ese caso (ver ANIM_MS). */
+   @media (prefers-reduced-motion: reduce) {
+      .menu-desktop-panel {
+         transition: none;
+      }
+   }
+</style>
+
 <script>
    const menuDesktopButton = document.getElementById('menuDesktopButton');
    const hamburgerIconDesktop = document.getElementById('hamburgerIconDesktop');
@@ -137,9 +171,16 @@ const contentLinks = [
    const contentSubmenu = document.getElementById('menuDesktopContentSubmenu');
    const contentChevron = document.getElementById('menuDesktopContentChevron');
 
-   // Sin transición ni animación (a pedido): abrir y cerrar son
-   // instantáneos, así que no hace falta esperar nada entre el cambio de
-   // "hidden"/"flex" y el de transform -- ambos ocurren en el mismo tick.
+   // Debe coincidir con la duration de .menu-desktop-panel (700ms): al abrir
+   // se usa para no re-ocultar el overlay a media animación si se vuelve a
+   // hacer click, y al cerrar para esperar a que termine el deslizamiento
+   // antes de volver a "display:none" (si no, el cierre sería un corte seco).
+   // Con "prefers-reduced-motion" la transición está anulada en CSS, así que
+   // esperar sería solo un retardo muerto antes de ocultar.
+   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+   const ANIM_MS = () => (prefersReducedMotion.matches ? 0 : 700);
+   let closeTimeoutId = null;
+
    function collapseContentAccordion() {
       contentSubmenu.classList.add('hidden');
       contentSubmenu.classList.remove('flex');
@@ -148,8 +189,26 @@ const contentLinks = [
    }
 
    function openMenu() {
+      // Un cierre en curso deja el overlay todavía visible esperando su
+      // timeout para ocultarse; si no se cancela acá, ese timeout pendiente
+      // ocultaría el menú que se acaba de abrir.
+      if (closeTimeoutId) {
+         clearTimeout(closeTimeoutId);
+         closeTimeoutId = null;
+      }
       menuDesktopNav.classList.remove('hidden');
       menuDesktopNav.classList.add('flex');
+
+      // Reflow forzado ANTES de mover los paneles: el overlay viene de
+      // "display: none", y un cambio de transform en el mismo tick en que un
+      // elemento pasa a ser visible no genera transición (el navegador junta
+      // ambos cambios en un solo estilo calculado, sin estado inicial desde
+      // el cual interpolar) -- ese era exactamente el síntoma: el menú
+      // aparecía de golpe. Leer offsetWidth fuerza el recálculo y deja
+      // asentado el estado "visible pero fuera de pantalla" como punto de
+      // partida de la animación.
+      void menuDesktopNav.offsetWidth;
+
       menuDesktopLeft.style.transform = 'translateX(0)';
       menuDesktopRight.style.transform = 'translateX(0)';
 
@@ -160,6 +219,8 @@ const contentLinks = [
    }
 
    function closeMenu() {
+      if (closeTimeoutId) return; // ya se está cerrando
+
       menuDesktopLeft.style.transform = 'translateX(-100%)';
       menuDesktopRight.style.transform = 'translateX(100%)';
 
@@ -168,14 +229,27 @@ const contentLinks = [
       menuDesktopButton.setAttribute('aria-expanded', 'false');
       document.body.classList.remove('overflow-hidden');
 
-      menuDesktopNav.classList.add('hidden');
-      menuDesktopNav.classList.remove('flex');
-      collapseContentAccordion();
+      // El overlay recién vuelve a "display: none" cuando terminó el
+      // deslizamiento hacia los lados; hasta entonces sigue cubriendo la
+      // pantalla, por eso el click delegado y el botón de cerrar consultan
+      // isMenuOpen() en vez de la clase "hidden".
+      closeTimeoutId = window.setTimeout(() => {
+         closeTimeoutId = null;
+         menuDesktopNav.classList.add('hidden');
+         menuDesktopNav.classList.remove('flex');
+         collapseContentAccordion();
+      }, ANIM_MS());
+   }
+
+   // "abierto" = visible y sin cierre en curso. No alcanza con mirar la clase
+   // "hidden": durante los 700ms del cierre el overlay sigue en "flex".
+   function isMenuOpen() {
+      return !menuDesktopNav.classList.contains('hidden') && closeTimeoutId === null;
    }
 
    menuDesktopButton?.addEventListener('click', () => {
-      if (menuDesktopNav.classList.contains('hidden')) openMenu();
-      else closeMenu();
+      if (isMenuOpen()) closeMenu();
+      else openMenu();
    });
    menuDesktopCloseButton.addEventListener('click', closeMenu);
 

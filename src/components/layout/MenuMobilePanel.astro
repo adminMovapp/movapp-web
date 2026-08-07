@@ -50,10 +50,18 @@ const socials = [
    Sin StarField de fondo (a pedido): este panel es de navegación, no una
    sección visual de contenido -- solo debe quedar el cambio de tema
    claro/oscuro, sin animación decorativa.
+
+   El panel entra deslizándose DESDE ABAJO (arranca en translateY(100%)) y
+   sale por el mismo lado: el botón que lo abre vive en la barra inferior
+   (MenuMobile.astro dentro de MobileBottomNav), así que el movimiento nace
+   de donde el dedo tocó. Es el equivalente móvil de la "cortina" lateral
+   del menú de escritorio (MenuDesktopPanel.astro). Ver el <style> y el
+   <script> de más abajo.
 -->
 <nav
    id="menuNav"
-   class="fixed inset-0 z-[999999999] hidden flex-col bg-white p-6 pt-[calc(1.5rem_+_env(safe-area-inset-top))] pb-[calc(1.5rem_+_env(safe-area-inset-bottom))] dark:bg-background_bottom"
+   class="menu-mobile-panel fixed inset-0 z-[999999999] hidden flex-col bg-white p-6 pt-[calc(1.5rem_+_env(safe-area-inset-top))] pb-[calc(1.5rem_+_env(safe-area-inset-bottom))] dark:bg-background_bottom"
+   style="transform: translateY(100%);"
 >
    <!-- Encabezado: marca + cerrar (misma estructura que la referencia de diseño) -->
    <div class="relative flex items-center justify-between">
@@ -214,6 +222,35 @@ const socials = [
       height: 1.75rem;
       width: auto;
    }
+
+   /*
+      Deslizamiento del panel, al abrir y al cerrar. Se limita a "transform"
+      a propósito (no un "transition: all"): el panel cambia de
+      background-color con el tema, y si ese cambio entrara en la misma
+      transición, alternar tema con el menú abierto se vería raro.
+
+      "linear" y no una curva ease-in-out, por el mismo motivo documentado
+      en MenuDesktopPanel.astro: toda curva ease-in-out tiene pendiente cero
+      en ambos extremos, así que buena parte de la duración se percibe como
+      quietud y el resto como un salto. Con "linear" los 450ms se sienten
+      completos como movimiento.
+
+      450ms (menos que los 700ms del escritorio): el recorrido es la altura
+      de la pantalla y el gesto es táctil, donde una respuesta lenta se nota
+      mucho más. Debe coincidir con ANIM_MS en el <script>.
+   */
+   .menu-mobile-panel {
+      transition: transform 450ms linear;
+      will-change: transform;
+   }
+
+   /* Respeta la preferencia del sistema: sin movimiento, aparece directo.
+      El script también acorta su espera de cierre en ese caso (ver ANIM_MS). */
+   @media (prefers-reduced-motion: reduce) {
+      .menu-mobile-panel {
+         transition: none;
+      }
+   }
 </style>
 
 <script>
@@ -225,9 +262,37 @@ const socials = [
    const contentSubmenu = document.getElementById('menuContentSubmenu');
    const contentChevron = document.getElementById('menuContentChevron');
 
+   // Debe coincidir con la duration de .menu-mobile-panel (450ms): al cerrar
+   // se espera a que termine el deslizamiento antes de volver a
+   // "display:none", si no el cierre sería un corte seco. Con
+   // "prefers-reduced-motion" la transición está anulada en CSS, así que
+   // esperar sería solo un retardo muerto antes de ocultar.
+   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+   const ANIM_MS = () => (prefersReducedMotion.matches ? 0 : 450);
+   let closeTimeoutId = null;
+
    function openMenu() {
+      // Un cierre en curso deja el panel todavía visible esperando su
+      // timeout para ocultarse; si no se cancela acá, ese timeout pendiente
+      // ocultaría el menú que se acaba de abrir.
+      if (closeTimeoutId) {
+         clearTimeout(closeTimeoutId);
+         closeTimeoutId = null;
+      }
       menuNav.classList.remove('hidden');
       menuNav.classList.add('flex');
+
+      // Reflow forzado ANTES de mover el panel: viene de "display: none", y
+      // un cambio de transform en el mismo tick en que un elemento pasa a
+      // ser visible no genera transición (el navegador junta ambos cambios
+      // en un solo estilo calculado, sin estado inicial desde el cual
+      // interpolar) -- el menú aparecería de golpe. Leer offsetHeight fuerza
+      // el recálculo y deja asentado el estado "visible pero abajo" como
+      // punto de partida de la animación.
+      void menuNav.offsetHeight;
+
+      menuNav.style.transform = 'translateY(0)';
+
       hamburgerIcon.classList.add('hidden');
       menuButtonCloseIcon.classList.remove('hidden');
       menuButton.setAttribute('aria-expanded', 'true');
@@ -235,23 +300,42 @@ const socials = [
    }
 
    function closeMenu() {
-      menuNav.classList.add('hidden');
-      menuNav.classList.remove('flex');
+      if (closeTimeoutId) return; // ya se está cerrando
+
+      menuNav.style.transform = 'translateY(100%)';
+
       hamburgerIcon.classList.remove('hidden');
       menuButtonCloseIcon.classList.add('hidden');
       menuButton.setAttribute('aria-expanded', 'false');
       document.body.classList.remove('overflow-hidden');
-      // Colapsar "Contenido" al cerrar, así el menú siempre abre desde el
-      // mismo estado la próxima vez.
-      contentSubmenu.classList.add('hidden');
-      contentSubmenu.classList.remove('flex');
-      contentToggle.setAttribute('aria-expanded', 'false');
-      contentChevron.classList.remove('rotate-180');
+
+      // El panel recién vuelve a "display: none" cuando terminó de bajar;
+      // hasta entonces sigue cubriendo la pantalla, por eso el click
+      // delegado y el botón consultan isMenuOpen() en vez de la clase
+      // "hidden".
+      closeTimeoutId = window.setTimeout(() => {
+         closeTimeoutId = null;
+         menuNav.classList.add('hidden');
+         menuNav.classList.remove('flex');
+         // Colapsar "Contenido" al cerrar, así el menú siempre abre desde el
+         // mismo estado la próxima vez. Se hace acá (y no al empezar a
+         // cerrar) para que el submenú no desaparezca a media bajada.
+         contentSubmenu.classList.add('hidden');
+         contentSubmenu.classList.remove('flex');
+         contentToggle.setAttribute('aria-expanded', 'false');
+         contentChevron.classList.remove('rotate-180');
+      }, ANIM_MS());
+   }
+
+   // "abierto" = visible y sin cierre en curso. No alcanza con mirar la clase
+   // "hidden": durante los 450ms del cierre el panel sigue en "flex".
+   function isMenuOpen() {
+      return !menuNav.classList.contains('hidden') && closeTimeoutId === null;
    }
 
    menuButton.addEventListener('click', () => {
-      if (menuNav.classList.contains('hidden')) openMenu();
-      else closeMenu();
+      if (isMenuOpen()) closeMenu();
+      else openMenu();
    });
 
    // Acordeón "Contenido": solo abre/cierra su submenú, no debe cerrar todo
