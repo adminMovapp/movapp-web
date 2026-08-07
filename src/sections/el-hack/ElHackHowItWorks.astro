@@ -29,7 +29,9 @@ import { EL_HACK_STEPS as steps, EL_HACK_HOW_IT_WORKS_TITLE } from '@constants/e
                style={`--float-dur: ${5.6 + i * 0.3}s; --float-delay: ${i * 0.2}s;`}
             >
                <ImagePlaceholder class="mb-4 aspect-[4/3] w-full" />
-               <h3 class="mb-2 text-lg font-bold text-gray-900 dark:text-white">{s.title}</h3>
+               <h3 class="mb-2 text-lg font-bold text-gray-900 dark:text-white sm:text-text_banner sm:dark:text-text_banner">
+                  {s.title}
+               </h3>
                <p class="text-sm text-gray-700 dark:text-white/80">{s.text}</p>
             </div>
          ))
