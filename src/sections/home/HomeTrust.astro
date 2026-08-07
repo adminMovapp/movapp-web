@@ -261,9 +261,9 @@ const collaborations = [
                         <div class="flex h-20 flex-shrink-0 items-center justify-center rounded-xl bg-white/90 px-8 py-4 shadow-md">
                            <Image
                               src={logo.src}
-                              height={160}
+                              height={128}
                               alt={logo.alt}
-                              class="h-12 w-auto object-contain grayscale opacity-60 transition duration-300 hover:grayscale-0 hover:opacity-100 md:h-16"
+                              class="trust-collab-logo h-12 w-auto object-contain grayscale opacity-60 transition duration-300 hover:grayscale-0 hover:opacity-100 md:h-16"
                            />
                         </div>
                      ))
@@ -363,6 +363,23 @@ const collaborations = [
    .trust-arrow:disabled {
       opacity: 0.35;
       pointer-events: none;
+   }
+
+   /*
+      Tamaño real fijado acá (no solo "h-12"/"md:h-16" de Tailwind) -- mismo
+      bug de CLS que el resto de los logos del sitio (ver skill Rendimiento):
+      el height={128} del <Image> es para retina, más grande que el tamaño
+      final en pantalla, así que sin esto el logo se pinta grande mientras
+      Tailwind no ha cargado y se encoge de golpe al cargar.
+   */
+   .trust-collab-logo {
+      height: 3rem; /* = h-12 */
+      width: auto;
+   }
+   @media (min-width: 768px) {
+      .trust-collab-logo {
+         height: 4rem; /* = md:h-16 */
+      }
    }
 </style>
 
