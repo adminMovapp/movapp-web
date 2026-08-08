@@ -173,16 +173,30 @@ const EL_HACK_INDEX = 1;
          // vez al evento "app:styles-ready" que Layout.astro dispara justo
          // cuando esa carga termina (o falla). En desktop es "grid" (sin
          // scroll): ahí no hay nada que posicionar, así que se corta antes.
-         function positionIfReady() {
+         function checkAndPosition() {
             var display = getComputedStyle(track).display;
             if (display === 'grid') return;
             if (display === 'flex') {
                track.scrollLeft = initial.offsetLeft - (track.clientWidth - initial.offsetWidth) / 2;
                return;
             }
-            document.addEventListener('app:styles-ready', positionIfReady, { once: true });
+            // Doble rAF (mismo patrón que el resto del sitio, ver skill
+            // Rendimiento): "app:styles-ready" se dispara sincrónicamente
+            // justo cuando la hoja de Tailwind termina de aplicarse, lo que
+            // invalida el estilo de casi toda la página -- leer geometría en
+            // ese mismo tick fuerza un reprocesamiento síncrono. Diferir dos
+            // frames deja que el navegador recalcule antes de volver a leer.
+            document.addEventListener(
+               'app:styles-ready',
+               function () {
+                  requestAnimationFrame(function () {
+                     requestAnimationFrame(checkAndPosition);
+                  });
+               },
+               { once: true },
+            );
          }
-         positionIfReady();
+         checkAndPosition();
       })();
    </script>
 

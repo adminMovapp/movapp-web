@@ -97,9 +97,12 @@ const collaborations = [
          debe ser lo primero que se ve, aunque quedó en medio del orden) --
          mismo mecanismo que "El Hack" en HomeFeatured.astro, ver los
          comentarios de ese archivo para el detalle completo de por qué es
-         "is:inline" y por qué espera al evento "app:styles-ready" (el CSS de
+         "is:inline", por qué espera al evento "app:styles-ready" (el CSS de
          Tailwind, que da el "flex" del carrusel, carga por JS de forma
-         asíncrona) en vez de sondear con rAF en cada frame.
+         asíncrona) en vez de sondear con rAF en cada frame, y por qué la
+         reacción a ese evento va detrás de un doble rAF (reprocesamiento
+         forzado: leer geometría en el mismo tick en que Tailwind invalida
+         el estilo de la página).
       -->
       <script is:inline>
          (function () {
@@ -107,15 +110,23 @@ const collaborations = [
             var initial = track && track.querySelector('[data-initial-card]');
             if (!track || !initial) return;
 
-            function positionIfReady() {
+            function checkAndPosition() {
                var display = getComputedStyle(track).display;
                if (display !== 'flex') {
-                  document.addEventListener('app:styles-ready', positionIfReady, { once: true });
+                  document.addEventListener(
+                     'app:styles-ready',
+                     function () {
+                        requestAnimationFrame(function () {
+                           requestAnimationFrame(checkAndPosition);
+                        });
+                     },
+                     { once: true },
+                  );
                   return;
                }
                track.scrollLeft = initial.offsetLeft - (track.clientWidth - initial.offsetWidth) / 2;
             }
-            positionIfReady();
+            checkAndPosition();
          })();
       </script>
 
