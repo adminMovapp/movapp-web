@@ -166,17 +166,21 @@ const EL_HACK_INDEX = 1;
          // El CSS de Tailwind (que da el "flex" del carrusel móvil) se carga
          // por JS de forma asíncrona (ver mecanismo no-js/js en Layout.astro)
          // -- hasta que termine de aplicarse, "display" no es "flex" todavía
-         // y offsetLeft/clientWidth no reflejan el layout real. Se reintenta
-         // por rAF hasta que sí lo sea. En desktop es "grid" (sin scroll):
-         // ahí no hay nada que posicionar, así que se corta el reintento.
+         // y offsetLeft/clientWidth no reflejan el layout real. En vez de
+         // sondear con rAF + getComputedStyle en cada frame (Lighthouse lo
+         // marcaba como reprocesamiento forzado: ese sondeo puede correr
+         // decenas de veces mientras Tailwind no llega), se espera una única
+         // vez al evento "app:styles-ready" que Layout.astro dispara justo
+         // cuando esa carga termina (o falla). En desktop es "grid" (sin
+         // scroll): ahí no hay nada que posicionar, así que se corta antes.
          function positionIfReady() {
             var display = getComputedStyle(track).display;
             if (display === 'grid') return;
-            if (display !== 'flex') {
-               requestAnimationFrame(positionIfReady);
+            if (display === 'flex') {
+               track.scrollLeft = initial.offsetLeft - (track.clientWidth - initial.offsetWidth) / 2;
                return;
             }
-            track.scrollLeft = initial.offsetLeft - (track.clientWidth - initial.offsetWidth) / 2;
+            document.addEventListener('app:styles-ready', positionIfReady, { once: true });
          }
          positionIfReady();
       })();

@@ -97,8 +97,9 @@ const collaborations = [
          debe ser lo primero que se ve, aunque quedó en medio del orden) --
          mismo mecanismo que "El Hack" en HomeFeatured.astro, ver los
          comentarios de ese archivo para el detalle completo de por qué es
-         "is:inline" y por qué reintenta por rAF (el CSS de Tailwind, que da
-         el "flex" del carrusel, carga por JS de forma asíncrona).
+         "is:inline" y por qué espera al evento "app:styles-ready" (el CSS de
+         Tailwind, que da el "flex" del carrusel, carga por JS de forma
+         asíncrona) en vez de sondear con rAF en cada frame.
       -->
       <script is:inline>
          (function () {
@@ -109,7 +110,7 @@ const collaborations = [
             function positionIfReady() {
                var display = getComputedStyle(track).display;
                if (display !== 'flex') {
-                  requestAnimationFrame(positionIfReady);
+                  document.addEventListener('app:styles-ready', positionIfReady, { once: true });
                   return;
                }
                track.scrollLeft = initial.offsetLeft - (track.clientWidth - initial.offsetWidth) / 2;

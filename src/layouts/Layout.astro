@@ -134,6 +134,11 @@ const schemaJson = JSON.stringify(Array.isArray(pageSchema) ? pageSchema : [page
             var flip = function () {
                document.documentElement.classList.remove('no-js');
                document.documentElement.classList.add('js');
+               // Señal para scripts que necesitan saber cuándo Tailwind ya
+               // terminó de cargar (o falló) en vez de sondear con rAF +
+               // getComputedStyle en cada frame -- ver HomeFeatured.astro/
+               // HomeTrust.astro (posicionamiento inicial del carrusel móvil).
+               document.dispatchEvent(new Event('app:styles-ready'));
             };
 
             var globalLink = document.createElement('link');
