@@ -1,0 +1,206 @@
+---
+// Fondo decorativo temático de "tormenta" para las secciones de El Hack
+// (todas excepto el hero, que tiene su propio fondo con truenos protagonistas
+// -- ver ElHackHero.astro). Niebla que deriva lento + rayos ocasionales,
+// pensados como ambiente de fondo: mucho más tenues, lentos de aparecer y
+// rápidos de destellar que los del hero, para no competir con el texto real
+// de cada sección.
+
+interface Props {
+   id: string;
+   boltCount?: number;
+   // false para secciones donde el fondo debe quedarse dentro de su propio
+   // contenedor en vez de "sangrar" a todo el ancho de la pantalla (mismo
+   // criterio que StarField.astro).
+   fullBleed?: boolean;
+}
+
+const { id, boltCount = 3, fullBleed = true } = Astro.props;
+
+const wrapperClass = fullBleed
+   ? 'storm-root pointer-events-none absolute inset-y-0 left-1/2 -z-10 w-screen -translate-x-1/2'
+   : 'storm-root pointer-events-none absolute inset-0 -z-10 overflow-hidden';
+
+// Rayos en parejas (uno de cada lado, izquierdo 3%-34% / derecho 66%-97%),
+// igual que en el hero -- pero con un ciclo bastante más largo (5-9s contra
+// los 2-3.8s del hero): en el fondo de una sección de contenido, un
+// relámpago debe sentirse ocasional, no un pulso que respira todo el tiempo.
+const bolts = Array.from({ length: boltCount }, () => {
+   const delay = Math.random() * 8;
+   const duration = 5 + Math.random() * 4;
+   return [
+      {
+         top: 6 + Math.random() * 82,
+         left: 3 + Math.random() * 31,
+         rotate: -30 + Math.random() * 60,
+         scale: 0.75 + Math.random() * 0.7,
+         delay,
+         duration,
+      },
+      {
+         top: 6 + Math.random() * 82,
+         left: 66 + Math.random() * 31,
+         rotate: -30 + Math.random() * 60,
+         scale: 0.75 + Math.random() * 0.7,
+         delay,
+         duration,
+      },
+   ];
+}).flat();
+
+// Offsets propios por instancia (según su id) para que la niebla de distintas
+// secciones no derive sincronizada -- mismo criterio que el "hashId" de
+// StarField.astro, pero calculado acá mismo (no hace falta JS para esto).
+let hash = 0;
+for (let i = 0; i < id.length; i++) hash = (hash * 31 + id.charCodeAt(i)) >>> 0;
+const fogOffset = hash % 8;
+---
+
+<div class={wrapperClass} data-storm-id={id} aria-hidden="true">
+   <!--
+      Niebla: 3 masas grandes y muy tenues (blur pesado, opacidad baja),
+      derivando horizontalmente muy lento -- dos en tono morado (mismo
+      lenguaje visual que el resto del sitio) y una en gris azulado, para que
+      lea como bruma de tormenta y no como el nebuloso "espacio" de
+      StarField.astro.
+   -->
+   <div
+      class={`storm-fog absolute -top-10 left-[8%] h-72 w-[60%] max-w-[600px] rounded-full bg-purple_mv/[0.1] blur-[85px] dark:bg-purple_mv/[0.2]`}
+      style={`animation-delay: ${fogOffset}s;`}
+   >
+   </div>
+   <div
+      class="storm-fog storm-fog-reverse absolute bottom-[-15%] right-[6%] h-80 w-[55%] max-w-[560px] rounded-full bg-slate-400/[0.1] blur-[75px] dark:bg-slate-300/[0.16]"
+      style={`animation-delay: ${fogOffset + 3}s;`}
+   >
+   </div>
+   <div
+      class="storm-fog absolute left-[35%] top-[40%] h-64 w-[44%] max-w-[460px] rounded-full bg-purple_mv/[0.1] blur-[65px] dark:bg-purple_mv/[0.22]"
+      style={`animation-delay: ${fogOffset + 5.5}s;`}
+   >
+   </div>
+
+   <!-- Rayos: forma delgada tipo arco eléctrico (trazo, no un ícono relleno grueso como el del hero) -->
+   {
+      bolts.map((b) => (
+         <span
+            class="storm-bolt"
+            style={`top: ${b.top}%; left: ${b.left}%; --rotate: ${b.rotate}deg; --scale: ${b.scale}; --delay: ${b.delay}s; --dur: ${b.duration}s;`}
+         >
+            <svg viewBox="0 0 28 100" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+               <path d="M15 0 6 40 13 43 4 78" />
+               <path d="M13 43 21 55 15 58 23 100" />
+            </svg>
+         </span>
+      ))
+   }
+</div>
+
+<style>
+   /*
+      Deriva de la niebla: solo translateX + un leve cambio de escala (nunca
+      blur/opacity animados por frame -- ambos son caros de repintar en un
+      elemento tan grande). El compositor mueve transform sin tocar layout.
+   */
+   .storm-fog {
+      animation-name: stormFogDrift;
+      animation-duration: 26s;
+      animation-timing-function: ease-in-out;
+      animation-iteration-count: infinite;
+      will-change: transform;
+   }
+   .storm-fog-reverse {
+      animation-direction: alternate-reverse;
+      animation-duration: 32s;
+   }
+
+   @keyframes stormFogDrift {
+      0%,
+      100% {
+         transform: translateX(-4%) scale(1);
+      }
+      50% {
+         transform: translateX(4%) scale(1.08);
+      }
+   }
+
+   /*
+      Rayo: trazo delgado y pálido (no relleno grueso ni glow saturado como
+      el del hero -- acá es fondo de sección, tiene que leerse como un
+      destello lejano, no como protagonista). Solo opacity anima -- posición/
+      rotación/tamaño quedan fijos por rayo (variables --rotate/--scale en el
+      propio elemento), igual criterio que .hero-bolt: el compositor solo
+      mueve opacidad, sin recalcular layout ni el filtro en cada frame.
+   */
+   .storm-bolt {
+      position: absolute;
+      width: 26px;
+      height: 92px;
+      color: rgb(221, 210, 255);
+      filter: drop-shadow(0 0 7px rgba(168, 133, 247, 0.55)) drop-shadow(0 0 18px rgba(129, 73, 226, 0.28));
+      transform: translate(-50%, -50%) rotate(var(--rotate, 0deg)) scale(var(--scale, 1));
+      opacity: 0;
+      animation-name: stormBoltFlash;
+      animation-duration: var(--dur, 9s);
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+      animation-delay: var(--delay, 0s);
+   }
+
+   /*
+      Ciclo largo (7-13s, ver --dur), casi todo en opacity:0 -- el destello
+      real ocupa menos del 3% del ciclo, con un doble parpadeo rápido en vez
+      de un fundido suave: así se siente como un rayo real (un chispazo breve
+      e irregular) en vez del pulso lento tipo "respiración" del hero, que
+      ahí funciona porque el hero es la pieza protagonista, no fondo de
+      texto. El eco tenue cerca del final (96%-96.6%) imita el brillo residual
+      que deja un rayo real al iluminar la niebla/nubes un instante después.
+   */
+   @keyframes stormBoltFlash {
+      0%,
+      92%,
+      100% {
+         opacity: 0;
+      }
+      92.4% {
+         opacity: 0.95;
+      }
+      92.8% {
+         opacity: 0.15;
+      }
+      93.3% {
+         opacity: 0.75;
+      }
+      93.9% {
+         opacity: 0;
+      }
+      96% {
+         opacity: 0.35;
+      }
+      96.5% {
+         opacity: 0;
+      }
+   }
+
+   /*
+      El sitio tiene una regla global (src/styles/global.css) que fuerza
+      animation-duration a ~0 bajo prefers-reduced-motion -- eso dejaría la
+      niebla y los rayos siempre en su estado final (quietos/invisibles).
+      Igual que la excepción ya documentada en ElHackHero.astro y
+      HomeHero.astro, se restauran acá a propósito: son puramente
+      decorativas de fondo, no bloquean ni compiten con contenido real.
+   */
+   @media (prefers-reduced-motion: reduce) {
+      .storm-fog {
+         animation-duration: 26s !important;
+         animation-iteration-count: infinite !important;
+      }
+      .storm-fog-reverse {
+         animation-duration: 32s !important;
+      }
+      .storm-bolt {
+         animation-duration: var(--dur, 9s) !important;
+         animation-iteration-count: infinite !important;
+      }
+   }
+</style>
