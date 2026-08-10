@@ -1,0 +1,39 @@
+---
+import ImagePlaceholder from '@components/ui/ImagePlaceholder.astro';
+import ButtonContact from '@components/ui/ButtonContact.astro';
+import StarField from '@components/decorative/StarField.astro';
+---
+
+<section class="relative mx-auto flex max-w-4xl flex-col items-center justify-center px-4 pt-16 pb-16 text-center">
+   <!--
+      Fondo de mientras (a pedido): mismo StarField ambiente que usan las
+      secciones de Home -- no es un fondo definitivo pensado para esta
+      página, solo un placeholder consistente con el resto del sitio hasta
+      que se defina un lenguaje visual propio para CrediSeguro.
+   -->
+   <StarField id="crediseguro-hero" />
+
+   <!-- H1 (único H1 de la página) -->
+   <h1 class="max-w-3xl text-3xl font-bold uppercase leading-tight text-gray-900 dark:text-white md:text-5xl">
+      <span class="text-text_banner drop-shadow-[0_0_25px_rgba(129,73,226,0.35)]">CrediSeguro</span>: información
+      <span class="text-text_banner drop-shadow-[0_0_25px_rgba(129,73,226,0.35)]">verificada</span>, registro y datos
+      de contacto
+   </h1>
+
+   <ImagePlaceholder class="relative my-6 aspect-[4/3] w-full max-w-[320px]" />
+
+   <p class="mx-auto max-w-2xl text-base text-gray-700 dark:text-white/80 md:text-lg">
+      Consulta los datos disponibles sobre CrediSeguro, su registro ante la autoridad correspondiente y la información
+      de contacto verificada.
+   </p>
+
+   <div class="mt-8 flex w-full flex-col items-center gap-4 sm:w-auto sm:flex-row">
+      <a
+         href="#informacion-disponible"
+         class="inline-flex w-full items-center justify-center rounded-full border-2 border-purple_mv px-6 py-4 text-base font-bold text-text_banner transition hover:bg-purple_mv hover:text-white dark:border-white/20 sm:w-auto"
+      >
+         Ver información disponible
+      </a>
+      <ButtonContact id="cta_whatsapp_crediseguro_hero_01" label="Solicitar orientación" />
+   </div>
+</section>

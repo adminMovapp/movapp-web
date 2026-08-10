@@ -37,6 +37,7 @@ import { getSiteConfig } from '@utils/config.jsx';
 import { URLS } from '@constants/socials.ts';
 import { EL_HACK_FAQS, EL_HACK_STEPS, EL_HACK_HOW_IT_WORKS_TITLE } from '@constants/elhack.ts';
 import { FAQS_PAGE_ITEMS } from '@constants/faqs.ts';
+import { CREDISEGURO_FAQS } from '@constants/crediseguro.ts';
 
 // ============================================================
 // 1. DATOS DE LAS ENTIDADES
@@ -334,6 +335,30 @@ export const PAGE_SCHEMA = {
       build: (request) => [
          generateFAQSchema(FAQS_PAGE_ITEMS.map((item) => ({ q: item.q, a: item.lines.join(' ') }))),
          breadcrumbFor('/faqs', request),
+      ],
+   },
+
+   // --- Ficha de verificación de una app de préstamo del directorio (guía
+   // §2.5, extendida con FAQPage porque CrediseguroFAQ.astro sí tiene una
+   // sección de preguntas visible). No es una entidad de Movapp -- por eso no
+   // lleva SoftwareApplication/Offer, solo WebPage + Breadcrumb + FAQPage.
+   '/crediseguro': {
+      name: 'CrediSeguro: información verificada, registro y datos de contacto',
+      description:
+         'Consulta los datos disponibles sobre CrediSeguro, su registro ante la autoridad correspondiente y la información de contacto verificada.',
+      breadcrumb: 'CrediSeguro',
+      build: (request) => [
+         generateWebPageSchema(
+            {
+               name: 'CrediSeguro: información verificada, registro y datos de contacto',
+               path: '/crediseguro',
+               description:
+                  'Consulta los datos disponibles sobre CrediSeguro, su registro ante la autoridad correspondiente y la información de contacto verificada.',
+            },
+            request,
+         ),
+         breadcrumbFor('/crediseguro', request),
+         generateFAQSchema(CREDISEGURO_FAQS),
       ],
    },
 
