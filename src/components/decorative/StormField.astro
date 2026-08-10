@@ -136,8 +136,14 @@ const fogOffset = hash % 8;
       position: absolute;
       width: 26px;
       height: 92px;
-      color: rgb(221, 210, 255);
-      filter: drop-shadow(0 0 7px rgba(168, 133, 247, 0.55)) drop-shadow(0 0 18px rgba(129, 73, 226, 0.28));
+      /*
+         Modo claro: el lavanda pálido de abajo (pensado para fondo negro) se
+         perdía casi por completo contra un fondo claro -- acá un morado más
+         oscuro y saturado, con un halo más marcado, para que el destello siga
+         siendo visible sin volverse un protagonista tipo el del hero.
+      */
+      color: #6d28d9;
+      filter: drop-shadow(0 0 6px rgba(109, 40, 217, 0.8)) drop-shadow(0 0 15px rgba(76, 29, 149, 0.5));
       transform: translate(-50%, -50%) rotate(var(--rotate, 0deg)) scale(var(--scale, 1));
       opacity: 0;
       animation-name: stormBoltFlash;
@@ -145,6 +151,11 @@ const fogOffset = hash % 8;
       animation-timing-function: linear;
       animation-iteration-count: infinite;
       animation-delay: var(--delay, 0s);
+   }
+
+   :global(.dark) .storm-bolt {
+      color: rgb(221, 210, 255);
+      filter: drop-shadow(0 0 7px rgba(168, 133, 247, 0.55)) drop-shadow(0 0 18px rgba(129, 73, 226, 0.28));
    }
 
    /*
