@@ -1,0 +1,38 @@
+---
+import ImagePlaceholder from '@components/ui/ImagePlaceholder.astro';
+import StarField from '@components/decorative/StarField.astro';
+import { BLOG_FEATURED } from '@constants/blog.ts';
+---
+
+<section class="relative mx-auto my-section w-full max-w-3xl px-4 text-center" data-aos="fade-up">
+   <!--
+      Fondo de mientras (a pedido): mismo StarField ambiente que usan las
+      secciones de Home -- no es el fondo definitivo, solo un placeholder
+      consistente con el resto del sitio.
+   -->
+   <StarField id="blog-hero" />
+
+   <!-- H1 (único H1 de la página) -->
+   <h1 class="mx-auto max-w-2xl text-3xl font-bold uppercase leading-tight text-gray-900 dark:text-white md:text-5xl">
+      Blog de préstamos, deudas y montadeudas
+   </h1>
+
+   <!-- Artículo destacado: único, sin carrusel (a diferencia de las categorías de abajo). -->
+   <div class="float-anim mx-auto mt-10 max-w-xl rounded-2xl border border-purple_mv/25 bg-gradient-to-b from-purple_mv/[0.06] to-transparent p-5 text-left shadow-card dark:border-white/10 dark:from-purple_mv/[0.1] dark:to-black/30">
+      <ImagePlaceholder class="aspect-[16/9] w-full" />
+      <!--
+         h2 (no h3): sin esto, la jerarquía saltaba de h1 directo a h3 -- este
+         es el primer subtítulo de la página, antes de que exista ningún h2
+         de categoría más abajo. El tamaño visual se queda chico a propósito
+         (no el mismo tratamiento que un h2 de sección), es un título de
+         tarjeta, no un título de sección.
+      -->
+      <h2 class="mt-4 font-bold text-gray-900 dark:text-white">{BLOG_FEATURED.title}</h2>
+      <a
+         href={`/blog/${BLOG_FEATURED.slug}`}
+         class="mt-2 inline-block text-sm font-medium text-text_banner underline"
+      >
+         Ver noticia
+      </a>
+   </div>
+</section>

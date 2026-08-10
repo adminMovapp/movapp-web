@@ -1,0 +1,214 @@
+---
+// Sección reutilizable para cada categoría del blog (Evaluaciones, Modus
+// operandi, Guías, Noticias): mismas 4 usan exactamente la misma estructura
+// (H2 + artículos), así que viven en un solo componente parametrizado en vez
+// de 4 archivos casi idénticos con la misma lógica de carrusel duplicada.
+//
+// Con 2+ artículos se comporta como el carrusel móvil de HomeFeatured.astro/
+// HomeTrust.astro (peek en vw, snap, tarjeta activa resaltada, pista de
+// swipe). Con solo 1 artículo (el caso real hoy en las 4 categorías) se
+// muestra como una tarjeta simple centrada, sin scroll ni pista de swipe --
+// a pedido: "hasta que no haya dos o más [artículos], que no aparezca lo de
+// 'Desliza para ver más'". El carrusel se activa solo, sin tocar este
+// archivo, en cuanto una categoría sume un segundo artículo.
+import ImagePlaceholder from '@components/ui/ImagePlaceholder.astro';
+import StarField from '@components/decorative/StarField.astro';
+
+interface Article {
+   slug: string;
+   title: string;
+}
+interface Props {
+   id: string;
+   title: string;
+   articles: Article[];
+}
+const { id, title, articles } = Astro.props;
+const isCarousel = articles.length >= 2;
+---
+
+<section class="relative mx-auto my-section w-full max-w-5xl px-4" data-aos="fade-up">
+   <StarField id={`blog-${id}`} />
+
+   <h2 class="text-center text-2xl md:text-4xl font-bold uppercase text-gray-900 dark:text-white">{title}</h2>
+
+   {
+      isCarousel ? (
+         <>
+            <ul
+               data-blog-carousel
+               class="no-scrollbar mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-[11vw] pb-2 md:grid md:grid-cols-2 md:gap-6 md:overflow-visible md:px-0 md:pb-0 md:snap-none"
+            >
+               {articles.map((a, i) => (
+                  <li
+                     class="blog-card float-anim w-[78vw] flex-shrink-0 snap-center overflow-hidden rounded-2xl border border-purple_mv/25 bg-gradient-to-b from-purple_mv/[0.06] to-transparent p-5 text-left shadow-card transition-colors duration-300 hover:border-purple_mv/50 hover:shadow-card-hover dark:border-white/10 dark:from-purple_mv/[0.1] dark:to-black/30 md:w-auto"
+                     style={`--float-dur: ${5.6 + i * 0.3}s; --float-delay: ${i * 0.2}s;`}
+                  >
+                     <ImagePlaceholder class="aspect-[16/9] w-full" />
+                     <h3 class="mt-4 font-bold text-gray-900 dark:text-white">{a.title}</h3>
+                     <a href={`/blog/${a.slug}`} class="mt-2 inline-block text-sm font-medium text-text_banner underline">
+                        Ver noticia
+                     </a>
+                  </li>
+               ))}
+            </ul>
+
+            <div class="swipe-hint mx-auto mt-5 flex w-fit items-center gap-2 rounded-full border border-purple_mv/25 bg-purple_mv/5 px-4 py-1.5 text-[11px] font-medium text-gray-500 dark:border-white/10 dark:bg-white/5 dark:text-white/50 md:hidden">
+               <button type="button" data-swipe-prev aria-label="Ver artículo anterior" class="-m-1 flex items-center justify-center p-1">
+                  <svg class="swipe-hint-arrow h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                  </svg>
+               </button>
+               Desliza para ver más
+               <button type="button" data-swipe-next aria-label="Ver siguiente artículo" class="-m-1 flex items-center justify-center p-1">
+                  <svg class="swipe-hint-arrow h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                  </svg>
+               </button>
+            </div>
+         </>
+      ) : (
+         <div class="float-anim mx-auto mt-10 max-w-md rounded-2xl border border-purple_mv/25 bg-gradient-to-b from-purple_mv/[0.06] to-transparent p-5 text-left shadow-card dark:border-white/10 dark:from-purple_mv/[0.1] dark:to-black/30">
+            <ImagePlaceholder class="aspect-[16/9] w-full" />
+            <h3 class="mt-4 font-bold text-gray-900 dark:text-white">{articles[0].title}</h3>
+            <a href={`/blog/${articles[0].slug}`} class="mt-2 inline-block text-sm font-medium text-text_banner underline">
+               Ver noticia
+            </a>
+         </div>
+      )
+   }
+</section>
+
+<style>
+   .no-scrollbar::-webkit-scrollbar {
+      display: none;
+   }
+   .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+   }
+
+   .blog-card {
+      transition:
+         transform 0.4s ease,
+         opacity 0.4s ease,
+         filter 0.4s ease;
+   }
+   .blog-card.is-dimmed {
+      opacity: 0.5;
+      transform: scale(0.94);
+      filter: saturate(0.7);
+   }
+
+   @keyframes swipeNudge {
+      0%,
+      100% {
+         transform: translateX(0);
+      }
+      50% {
+         transform: translateX(3px);
+      }
+   }
+   .swipe-hint-arrow {
+      animation: swipeNudge 1.6s ease-in-out infinite;
+   }
+   .swipe-hint-arrow:first-child {
+      animation-direction: reverse;
+   }
+</style>
+
+<script>
+   // Mismo patrón que initFeaturedCarousel/initTrustCarousel en
+   // HomeFeatured.astro/HomeTrust.astro, generalizado para inicializar TODAS
+   // las instancias de esta sección en la página a la vez (una por
+   // categoría) en vez de depender de IDs únicos por instancia -- ver esos
+   // archivos para el detalle completo de por qué el click de las flechas se
+   // intercepta por coordenadas (widget de chat con overlay fixed de
+   // z-index gigante) y por qué el desplazamiento va detrás de un doble rAF
+   // (reprocesamiento forzado al leer offsetLeft/offsetWidth).
+   const initBlogCarousels = () => {
+      document.querySelectorAll<HTMLElement>('[data-blog-carousel]').forEach((track) => {
+         if (track.getAttribute('data-carousel-ready') === 'true') return;
+         track.setAttribute('data-carousel-ready', 'true');
+
+         const cards = Array.from(track.querySelectorAll('.blog-card'));
+         if (!cards.length || track.scrollWidth <= track.clientWidth + 1) return;
+
+         const setActive = (activeEl: Element) => {
+            cards.forEach((c) => c.classList.toggle('is-dimmed', c !== activeEl));
+         };
+
+         if ('IntersectionObserver' in window) {
+            const io = new IntersectionObserver(
+               (entries) => {
+                  let best: IntersectionObserverEntry | null = null;
+                  entries.forEach((entry) => {
+                     if (entry.isIntersecting && (!best || entry.intersectionRatio > best.intersectionRatio)) {
+                        best = entry;
+                     }
+                  });
+                  if (best) setActive(best.target);
+               },
+               { root: track, threshold: [0.5, 0.6, 0.7, 0.8, 0.9, 1] },
+            );
+            cards.forEach((c) => io.observe(c));
+         }
+
+         const getActiveIndex = () => {
+            const center = track.scrollLeft + track.clientWidth / 2;
+            let closest = 0;
+            let minDist = Infinity;
+            cards.forEach((c, i) => {
+               const cardEl = c as HTMLElement;
+               const dist = Math.abs(cardEl.offsetLeft + cardEl.offsetWidth / 2 - center);
+               if (dist < minDist) {
+                  minDist = dist;
+                  closest = i;
+               }
+            });
+            return closest;
+         };
+
+         const scrollToIndex = (i: number) => {
+            const clamped = Math.max(0, Math.min(cards.length - 1, i));
+            cards[clamped].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+         };
+
+         const hint = track.parentElement?.querySelector('.swipe-hint');
+         const prevBtn = hint?.querySelector('[data-swipe-prev]');
+         const nextBtn = hint?.querySelector('[data-swipe-next]');
+
+         const isInside = (el: Element, x: number, y: number) => {
+            const r = el.getBoundingClientRect();
+            return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
+         };
+         const goToRelativeCard = (delta: number) => {
+            requestAnimationFrame(() => {
+               requestAnimationFrame(() => {
+                  scrollToIndex(getActiveIndex() + delta);
+               });
+            });
+         };
+
+         window.addEventListener(
+            'click',
+            (e) => {
+               if (prevBtn && isInside(prevBtn, e.clientX, e.clientY)) {
+                  e.stopPropagation();
+                  goToRelativeCard(-1);
+               } else if (nextBtn && isInside(nextBtn, e.clientX, e.clientY)) {
+                  e.stopPropagation();
+                  goToRelativeCard(1);
+               }
+            },
+            { capture: true },
+         );
+
+         prevBtn?.addEventListener('click', () => goToRelativeCard(-1));
+         nextBtn?.addEventListener('click', () => goToRelativeCard(1));
+      });
+   };
+
+   initBlogCarousels();
+   document.addEventListener('astro:page-load', initBlogCarousels);
+</script>

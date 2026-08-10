@@ -37,7 +37,6 @@ import { getSiteConfig } from '@utils/config.jsx';
 import { URLS } from '@constants/socials.ts';
 import { EL_HACK_FAQS, EL_HACK_STEPS, EL_HACK_HOW_IT_WORKS_TITLE } from '@constants/elhack.ts';
 import { FAQS_PAGE_ITEMS } from '@constants/faqs.ts';
-import { CREDISEGURO_FAQS } from '@constants/crediseguro.ts';
 
 // ============================================================
 // 1. DATOS DE LAS ENTIDADES
@@ -338,30 +337,6 @@ export const PAGE_SCHEMA = {
       ],
    },
 
-   // --- Ficha de verificación de una app de préstamo del directorio (guía
-   // §2.5, extendida con FAQPage porque CrediseguroFAQ.astro sí tiene una
-   // sección de preguntas visible). No es una entidad de Movapp -- por eso no
-   // lleva SoftwareApplication/Offer, solo WebPage + Breadcrumb + FAQPage.
-   '/crediseguro': {
-      name: 'CrediSeguro: información verificada, registro y datos de contacto',
-      description:
-         'Consulta los datos disponibles sobre CrediSeguro, su registro ante la autoridad correspondiente y la información de contacto verificada.',
-      breadcrumb: 'CrediSeguro',
-      build: (request) => [
-         generateWebPageSchema(
-            {
-               name: 'CrediSeguro: información verificada, registro y datos de contacto',
-               path: '/crediseguro',
-               description:
-                  'Consulta los datos disponibles sobre CrediSeguro, su registro ante la autoridad correspondiente y la información de contacto verificada.',
-            },
-            request,
-         ),
-         breadcrumbFor('/crediseguro', request),
-         generateFAQSchema(CREDISEGURO_FAQS),
-      ],
-   },
-
    // --- AboutPage: subtipo de WebPage para "quiénes somos". Refuerza E-E-A-T
    // asociando la entidad Movapp con su misión. (Guía §2.4)
    '/nosotros': {
@@ -388,6 +363,18 @@ export const PAGE_SCHEMA = {
       description:
          'Más de 2,000 usuarios han confirmado que El Hack es la solución para recuperar el control de su vida digital. Conoce sus historias.',
       breadcrumb: 'Testimonios',
+   },
+
+   // --- CollectionPage: listado de artículos agrupados por categoría, mismo
+   // criterio que /testimonials. Sin BlogPosting/ItemList todavía: no hay
+   // fecha/autor por artículo en el copy visible, y declararlos sería
+   // inventar datos que no están en pantalla.
+   '/blog': {
+      type: 'CollectionPage',
+      name: 'Blog de préstamos, deudas y montadeudas',
+      description:
+         'Guías, evaluaciones de apps y noticias de Movapp sobre préstamos, deudas y aplicaciones montadeudas.',
+      breadcrumb: 'Blog',
    },
 
    '/collaborations': {

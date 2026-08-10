@@ -1,0 +1,15 @@
+---
+import Layout from '@layouts/Layout.astro';
+import BlogHero from '@sections/blog/BlogHero.astro';
+import BlogCategorySection from '@sections/blog/BlogCategorySection.astro';
+import { BLOG_CATEGORIES } from '@constants/blog.ts';
+---
+
+<Layout
+   title="Blog de préstamos, deudas y montadeudas | Movapp"
+   description="Guías, evaluaciones de apps y noticias de Movapp sobre préstamos, deudas y aplicaciones montadeudas."
+   type="website"
+>
+   <BlogHero />
+   {BLOG_CATEGORIES.map((cat) => <BlogCategorySection id={cat.id} title={cat.title} articles={cat.articles} />)}
+</Layout>

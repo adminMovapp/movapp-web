@@ -20,6 +20,16 @@ export default {
             text_banner: '#8149E2',
             line_cards: '#ffffff',
          },
+         // Espacio vertical estándar entre secciones de una página (el
+         // <section> de cada bloque usa "my-section" en vez de un my-N fijo)
+         // -- un solo lugar para ajustar el ritmo vertical de todo el sitio,
+         // igual para escritorio y móvil (ninguna sección lo variaba por
+         // breakpoint antes de este cambio). Antes de estandarizar, la
+         // mayoría ya usaba my-16 (4rem); algunas quedaban en my-8/12/20/24
+         // sin una razón de diseño documentada -- se unificaron todas acá.
+         spacing: {
+            section: '4rem',
+         },
          // Tratamiento estándar de "card" (glow morado), tomado como referencia
          // de HomeFeatured.astro (sección "¿Cómo te ayuda Movapp?"). Reunido
          // acá para poder ajustar el color/intensidad del glow desde un solo
