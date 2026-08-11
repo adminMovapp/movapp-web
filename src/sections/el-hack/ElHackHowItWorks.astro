@@ -1,8 +1,19 @@
 ---
+import { Image } from 'astro:assets';
 import StormField from '@components/decorative/StormField.astro';
-import ImagePlaceholder from '@components/ui/ImagePlaceholder.astro';
+import ImgAsesor from '@assets/habla-con-un-asesor-real.webp';
+import ImgInstala from '@assets/instala-y-activa-el-hack.webp';
+import ImgTranquilidad from '@assets/recupera-tu-tranquilidad.webp';
 
 import { EL_HACK_STEPS as steps, EL_HACK_HOW_IT_WORKS_TITLE } from '@constants/elhack.ts';
+
+// Una foto real por paso (mismo orden que EL_HACK_STEPS) -- reemplaza el
+// ImagePlaceholder que había antes. Ancho pedido (700) bien por encima del
+// hueco real en pantalla (tarjeta de ~300-400px de ancho) para cubrir
+// retina, pero muy por debajo del tamaño original de los archivos fuente
+// (1400-1800px) -- servir el original completo para esta tarjeta chica
+// sería exactamente el desperdicio que señala la skill de Rendimiento.
+const stepImages = [ImgAsesor, ImgInstala, ImgTranquilidad];
 ---
 
 <section class="relative mx-auto my-section w-full max-w-4xl px-4" data-aos="fade-up">
@@ -29,7 +40,9 @@ import { EL_HACK_STEPS as steps, EL_HACK_HOW_IT_WORKS_TITLE } from '@constants/e
                ]}
                style={`--float-dur: ${5.6 + i * 0.3}s; --float-delay: ${i * 0.2}s;`}
             >
-               <ImagePlaceholder class="mb-4 aspect-[4/3] w-full" />
+               <div class="mb-4 aspect-[4/3] w-full overflow-hidden rounded-2xl border border-purple_mv/20 bg-purple_mv/5 dark:border-white/10 dark:bg-white/5">
+                  <Image src={stepImages[i]} alt="" width={700} class="h-full w-full object-cover" loading="lazy" />
+               </div>
                <h3 class="mb-2 text-lg font-bold text-text_banner dark:text-text_banner">
                   {s.title}
                </h3>

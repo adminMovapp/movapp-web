@@ -1,19 +1,26 @@
 ---
 import { Image } from 'astro:assets';
 import StormField from '@components/decorative/StormField.astro';
-import ImagePlaceholder from '@components/ui/ImagePlaceholder.astro';
 import ImgPlayStore from '@assets/play-store-v2.webp';
 import ImgAppStore from '@assets/app-store-v2.webp';
 import ImgMockup from '@assets/Mockup-celular-movapp-1.webp';
+import ImgBloquea from '@assets/bloquea-las-llamadas-de-acoso.webp';
+import ImgSilencia from '@assets/silencia-los-mensajes-amenazantes.webp';
 
+// Ancho pedido (350) muy por debajo del tamaño original de los archivos
+// fuente (~2000-2300px) -- el hueco real en pantalla es una tarjeta de
+// máximo 140px (max-w-[140px]), así que 350 ya cubre retina de sobra sin
+// servir el archivo a tamaño completo (ver skill de Rendimiento).
 const features = [
    {
       title: 'Bloquea las llamadas de acoso',
       text: 'Deja de recibir llamadas a toda hora.',
+      img: ImgBloquea,
    },
    {
       title: 'Silencia los mensajes amenazantes',
       text: 'Los textos con insultos o amenazas dejan de llegarte.',
+      img: ImgSilencia,
    },
 ];
 ---
@@ -43,7 +50,9 @@ const features = [
                class="features-card float-anim relative flex w-[78vw] flex-shrink-0 snap-center flex-col items-center overflow-hidden rounded-2xl border border-purple_mv/25 bg-gradient-to-b from-purple_mv/[0.06] to-transparent p-5 text-center shadow-card transition-colors duration-300 hover:border-purple_mv/50 hover:shadow-card-hover dark:border-white/10 dark:from-purple_mv/[0.1] dark:to-black/30 md:w-auto md:flex-shrink md:p-6"
                style={`--float-dur: ${5.6 + i * 0.3}s; --float-delay: ${i * 0.2}s;`}
             >
-               <ImagePlaceholder class="relative mb-3 aspect-[4/3] w-full max-w-[140px]" />
+               <div class="relative mb-3 aspect-[4/3] w-full max-w-[140px] overflow-hidden rounded-2xl border border-purple_mv/20 bg-purple_mv/5 dark:border-white/10 dark:bg-white/5">
+                  <Image src={f.img} alt="" width={350} class="h-full w-full object-cover" loading="lazy" />
+               </div>
                <h3 class="relative font-bold text-text_banner dark:text-text_banner">
                   {f.title}
                </h3>
