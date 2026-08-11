@@ -45,8 +45,8 @@ const isCarousel = articles.length >= 2;
                      style={`--float-dur: ${5.6 + i * 0.3}s; --float-delay: ${i * 0.2}s;`}
                   >
                      <ImagePlaceholder class="aspect-[16/9] w-full" />
-                     <h3 class="mt-4 font-bold text-gray-900 dark:text-white">{a.title}</h3>
-                     <a href={`/blog/${a.slug}`} class="mt-2 inline-block text-sm font-medium text-text_banner underline">
+                     <h3 class="mt-4 font-bold text-purple_mv">{a.title}</h3>
+                     <a href={`/blog/${a.slug}`} class="mt-2 inline-block text-sm font-medium text-gray-900 dark:text-white underline">
                         Ver noticia
                      </a>
                   </li>
@@ -70,8 +70,8 @@ const isCarousel = articles.length >= 2;
       ) : (
          <div class="float-anim mx-auto mt-10 max-w-md rounded-2xl border border-purple_mv/25 bg-gradient-to-b from-purple_mv/[0.06] to-transparent p-5 text-left shadow-card dark:border-white/10 dark:from-purple_mv/[0.1] dark:to-black/30">
             <ImagePlaceholder class="aspect-[16/9] w-full" />
-            <h3 class="mt-4 font-bold text-gray-900 dark:text-white">{articles[0].title}</h3>
-            <a href={`/blog/${articles[0].slug}`} class="mt-2 inline-block text-sm font-medium text-text_banner underline">
+            <h3 class="mt-4 font-bold text-purple_mv">{articles[0].title}</h3>
+            <a href={`/blog/${articles[0].slug}`} class="mt-2 inline-block text-sm font-medium text-gray-900 dark:text-white underline">
                Ver noticia
             </a>
          </div>
