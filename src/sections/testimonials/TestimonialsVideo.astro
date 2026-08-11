@@ -1,0 +1,29 @@
+---
+// Mismo video que ya vivía en src/pages/testimonials.astro (VIDEOS.testimonios,
+// @constants/socials.ts) -- se conserva tal cual, solo se le da una tarjeta
+// acorde al resto del sitio (antes vivía suelto, sin el tratamiento de
+// card/glow morado que usa cada sección). Sigue siendo un <iframe> real (no
+// una imagen de fondo ni un div con "onclick" simulando video).
+import StarField from '@components/decorative/StarField.astro';
+import { VIDEOS } from '@constants/socials.ts';
+---
+
+<section class="relative mx-auto my-section w-full max-w-3xl px-4" data-aos="fade-up">
+   <StarField id="testimonials-video" ambientCount={25} />
+
+   <div
+      class="float-anim mx-auto overflow-hidden rounded-3xl border border-purple_mv/25 bg-gradient-to-b from-purple_mv/[0.06] to-transparent p-3 shadow-card dark:border-white/10 dark:from-purple_mv/[0.1] dark:to-black/30 md:p-4"
+      style="--float-dur: 6.2s; --float-delay: 0s;"
+   >
+      <div class="aspect-video w-full overflow-hidden rounded-2xl">
+         <iframe
+            src={VIDEOS.testimonios}
+            title="Testimonios de usuarios de Movapp"
+            class="h-full w-full"
+            allow="autoplay; encrypted-media"
+            allowfullscreen
+            loading="lazy"
+         ></iframe>
+      </div>
+   </div>
+</section>

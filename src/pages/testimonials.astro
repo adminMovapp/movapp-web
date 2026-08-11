@@ -1,40 +1,14 @@
 ---
 import Layout from '@layouts/Layout.astro';
-
-import { VIDEOS } from '@constants/socials.ts';
-const cardHover =
-   'border border-white/10 transition duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1 hover:scale-105 cursor-pointer';
+import TestimonialsHero from '@sections/testimonials/TestimonialsHero.astro';
+import TestimonialsVideo from '@sections/testimonials/TestimonialsVideo.astro';
+import TestimonialsGrid from '@sections/testimonials/TestimonialsGrid.astro';
+import TestimonialsCTA from '@sections/testimonials/TestimonialsCTA.astro';
 ---
 
-<Layout title="Testimonios">
-   <div class="mt-32 mx-auto mb-4 max-w-2xl px-4 md:px-0" data-aos="fade-down">
-      <div
-         class={`flex flex-col p-6 rounded-xl shadow-md 
-    
-    
-    ${cardHover}`}
-      >
-         <h2 class="mb-4 text-center text-xl font-bold text-transparent bg-clip-text text-white md:text-4xl">
-            La voz de nuestros usuarios
-         </h2>
-         <p class="text-justify text-sm md:text-lg text-white">
-            No estás solo en esto. Más de 2,000 usuarios han confirmado que El Hack es la solución para recuperar el
-            control de su vida digital. Conoce las historias de quienes ya han experimentado el poder de El Hack y cómo
-            ha transformado su seguridad y bienestar.
-         </p>
-      </div>
-   </div>
-
-   <div class="mx-auto my-8 w-full max-w-full sm:max-w-xl md:max-w-md lg:max-w-2xl px-4 md:px-0" data-aos="fade-up">
-      <div class="w-full aspect-video overflow-hidden rounded-lg">
-         <iframe
-            src={VIDEOS.testimonios}
-            class="w-full h-full sm:w-full lg:w-full max-w-full"
-            frameborder="0"
-            allow="autoplay; encrypted-media"
-            allowfullscreen
-         >
-         </iframe>
-      </div>
-   </div>
+<Layout title="Testimonios reales de Movapp | Recupera tu tranquilidad" type="website" showGrid={false}>
+   <TestimonialsHero />
+   <TestimonialsVideo />
+   <TestimonialsGrid />
+   <TestimonialsCTA />
 </Layout>

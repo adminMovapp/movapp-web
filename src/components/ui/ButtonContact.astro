@@ -11,11 +11,21 @@ interface Props {
    // ID de tracking para GA4 (medir clic + ubicación del CTA en la página).
    // Opcional: los usos existentes del componente no lo necesitan.
    id?: string;
+   // Mensaje precargado del WhatsApp -- opcional, default es el genérico de
+   // "más información sobre El Hack". Un CTA en un contexto distinto (p. ej.
+   // testimonios) puede pasar un mensaje propio sin tocar el diseño/estilo
+   // del botón, que es siempre el mismo en todo el sitio.
+   message?: string;
 }
 
-const { label = 'Contáctanos', fullWidth = false, id } = Astro.props;
+const {
+   label = 'Contáctanos',
+   fullWidth = false,
+   id,
+   message = '¡Hola! Quiero más información sobre El Hack.',
+} = Astro.props;
 
-const mensaje = '¡Hola! Quiero más información sobre El Hack.';
+const mensaje = message;
 
 // Un solo tamaño estandarizado para TODOS los usos del botón en el sitio
 // (antes había una variante "sm"/"lg" que hacía que se viera distinto según
