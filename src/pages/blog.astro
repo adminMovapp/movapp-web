@@ -9,6 +9,7 @@ import { BLOG_CATEGORIES } from '@constants/blog.ts';
    title="Blog de préstamos, deudas y montadeudas | Movapp"
    description="Guías, evaluaciones de apps y noticias de Movapp sobre préstamos, deudas y aplicaciones montadeudas."
    type="website"
+   showGrid={false}
 >
    <BlogHero />
    {BLOG_CATEGORIES.map((cat) => <BlogCategorySection id={cat.id} title={cat.title} articles={cat.articles} />)}
