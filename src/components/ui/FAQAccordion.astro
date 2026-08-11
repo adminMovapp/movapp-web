@@ -49,8 +49,9 @@ const { id, title, items, linkHref, linkLabel, ambientCount = 35 } = Astro.props
          ondule a lo ancho de TODA la pantalla, no solo junto a la lista.
          viewBox ancho (1600x1000) + preserveAspectRatio="none": el trazo se
          estira para llenar el contenedor sin importar cuántas preguntas haya
-         (alto real de la lista). Solo en md+ -- en móvil el ancho angosto
-         aplana la onda hasta verse como una línea recta sin gracia.
+         (alto real de la lista). Solo en md+ -- en móvil el mismo viewBox
+         ancho, estirado sobre un contenedor angosto, aplanaba la onda hasta
+         verse como una línea recta sin gracia (ver versión móvil debajo).
       -->
       <div class="faq-trail pointer-events-none absolute left-1/2 top-0 hidden h-full w-screen -translate-x-1/2 md:block" aria-hidden="true">
          <svg viewBox="0 0 1600 1000" preserveAspectRatio="none" class="h-full w-full">
@@ -71,6 +72,36 @@ const { id, title, items, linkHref, linkLabel, ambientCount = 35 } = Astro.props
                d="M 1150 0 C 1400 110, 1500 230, 1200 320 S 550 470, 850 560 S 1350 690, 1000 780 S 500 900, 800 1000"
             ></path>
             <circle class="faq-trail-dot" r="9" cx="1150" cy="0"></circle>
+         </svg>
+      </div>
+
+      <!--
+         Versión móvil de la estela: mismo trazo (mismas proporciones
+         relativas x/1600 remapeadas a un viewBox de 400 de ancho), pero
+         sobre un viewBox angosto -- así el estiramiento por
+         preserveAspectRatio="none" sobre el contenedor real (~360-430px) es
+         casi 1:1 en X en vez de comprimir ~6x como con el viewBox de 1600,
+         que es lo que aplanaba la onda en pantallas angostas.
+      -->
+      <div class="faq-trail pointer-events-none absolute left-1/2 top-0 block h-full w-screen -translate-x-1/2 md:hidden" aria-hidden="true">
+         <svg viewBox="0 0 400 1000" preserveAspectRatio="none" class="h-full w-full">
+            <defs>
+               <linearGradient id={`faqTrailGradientMobile-${id}`} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#8149e2" stop-opacity="0"></stop>
+                  <stop offset="12%" stop-color="#8149e2" stop-opacity="0.9"></stop>
+                  <stop offset="88%" stop-color="#a885f7" stop-opacity="0.9"></stop>
+                  <stop offset="100%" stop-color="#a885f7" stop-opacity="0"></stop>
+               </linearGradient>
+            </defs>
+            <path
+               class="faq-trail-path"
+               stroke={`url(#faqTrailGradientMobile-${id})`}
+               fill="none"
+               stroke-width="4"
+               stroke-linecap="round"
+               d="M 288 0 C 350 110, 375 230, 300 320 S 138 470, 213 560 S 338 690, 250 780 S 125 900, 200 1000"
+            ></path>
+            <circle class="faq-trail-dot" r="9" cx="288" cy="0"></circle>
          </svg>
       </div>
 
@@ -211,14 +242,19 @@ const { id, title, items, linkHref, linkLabel, ambientCount = 35 } = Astro.props
       items.forEach((el) => observer.observe(el));
    };
 
-   const initFAQTrail = (root: Element) => {
-      if (root.getAttribute('data-trail-ready') === 'true') return;
-      root.setAttribute('data-trail-ready', 'true');
+   // Dos <div class="faq-trail"> conviven en el DOM (versión desktop y
+   // versión móvil, ver markup -- cada una con su propio viewBox/path,
+   // alternadas por CSS "hidden md:block" / "block md:hidden"), así que cada
+   // una necesita su propia instancia (path/dot/listener) en vez de asumir
+   // una sola por sección; ambas comparten el mismo [data-faq-list] para
+   // calcular el progreso de scroll.
+   const initFAQTrailInstance = (trailEl: Element, list: Element) => {
+      if (trailEl.getAttribute('data-trail-ready') === 'true') return;
+      trailEl.setAttribute('data-trail-ready', 'true');
 
-      const list = root.querySelector('[data-faq-list]');
-      const path = root.querySelector('.faq-trail-path') as SVGPathElement | null;
-      const dot = root.querySelector('.faq-trail-dot') as SVGCircleElement | null;
-      if (!list || !path || !dot) return;
+      const path = trailEl.querySelector('.faq-trail-path') as SVGPathElement | null;
+      const dot = trailEl.querySelector('.faq-trail-dot') as SVGCircleElement | null;
+      if (!path || !dot) return;
 
       const length = path.getTotalLength();
       path.style.strokeDasharray = `${length}`;
@@ -267,7 +303,13 @@ const { id, title, items, linkHref, linkLabel, ambientCount = 35 } = Astro.props
          },
          { rootMargin: '20% 0px 20% 0px' },
       );
-      sectionObserver.observe(root);
+      sectionObserver.observe(trailEl);
+   };
+
+   const initFAQTrail = (root: Element) => {
+      const list = root.querySelector('[data-faq-list]');
+      if (!list) return;
+      root.querySelectorAll('.faq-trail').forEach((trailEl) => initFAQTrailInstance(trailEl, list));
    };
 
    const initAllFAQs = () => {
