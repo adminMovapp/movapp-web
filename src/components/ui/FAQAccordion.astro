@@ -1,0 +1,282 @@
+---
+// Sección de FAQs reutilizable: recibe el título + el arreglo de preguntas
+// como props (siempre importado desde un archivo de constantes, p. ej.
+// @constants/homeFaqs.ts o @constants/elhack.ts -- ver HomeFAQ.astro para el
+// caso de uso) en vez de tener el copy escrito adentro, así el mismo
+// componente sirve para cualquier página que necesite un bloque de FAQs sin
+// duplicar el markup del acordeón.
+//
+// Trae dos efectos de scroll, pensados para leerse como algo espacial:
+// - Reveal "spin": cada pregunta (y el título) gira sobre sí misma mientras
+//   aparece al cruzar el viewport, y se queda estática una vez adentro
+//   (IntersectionObserver por ítem, con un pequeño --faq-delay escalonado
+//   por índice para que no entren todas de golpe).
+// - Estela que se "dibuja": un trazo SVG que ondula de lado a lado en todo
+//   el ancho de la pantalla (no una línea recta angosta) y se va revelando
+//   con stroke-dashoffset a medida que se hace scroll -- con un punto
+//   brillante en la punta, mismo lenguaje que las estrellas fugaces de
+//   StarField.astro, pero dibujándose en vez de cruzar una vez y desaparecer.
+import StarField from '@components/decorative/StarField.astro';
+
+interface FAQItem {
+   q: string;
+   a: string;
+}
+
+interface Props {
+   id: string;
+   title: string;
+   items: FAQItem[];
+   linkHref?: string;
+   linkLabel?: string;
+   ambientCount?: number;
+}
+
+const { id, title, items, linkHref, linkLabel, ambientCount = 35 } = Astro.props;
+---
+
+<section class="relative mx-auto my-section w-full max-w-3xl px-4" data-faq-root={id}>
+   <StarField id={id} ambientCount={ambientCount} />
+
+   <h2 class="faq-reveal text-center text-2xl md:text-4xl font-bold uppercase text-gray-900 dark:text-white">
+      {title}
+   </h2>
+
+   <div class="relative mt-10">
+      <!--
+         Estela que se dibuja con el scroll: full-bleed (mismo truco left-1/2 +
+         w-screen + -translate-x-1/2 que StarField/BackgroundGrid) para que
+         ondule a lo ancho de TODA la pantalla, no solo junto a la lista.
+         viewBox ancho (1600x1000) + preserveAspectRatio="none": el trazo se
+         estira para llenar el contenedor sin importar cuántas preguntas haya
+         (alto real de la lista). Solo en md+ -- en móvil el ancho angosto
+         aplana la onda hasta verse como una línea recta sin gracia.
+      -->
+      <div class="faq-trail pointer-events-none absolute left-1/2 top-0 hidden h-full w-screen -translate-x-1/2 md:block" aria-hidden="true">
+         <svg viewBox="0 0 1600 1000" preserveAspectRatio="none" class="h-full w-full">
+            <defs>
+               <linearGradient id={`faqTrailGradient-${id}`} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#8149e2" stop-opacity="0"></stop>
+                  <stop offset="12%" stop-color="#8149e2" stop-opacity="0.9"></stop>
+                  <stop offset="88%" stop-color="#a885f7" stop-opacity="0.9"></stop>
+                  <stop offset="100%" stop-color="#a885f7" stop-opacity="0"></stop>
+               </linearGradient>
+            </defs>
+            <path
+               class="faq-trail-path"
+               stroke={`url(#faqTrailGradient-${id})`}
+               fill="none"
+               stroke-width="4"
+               stroke-linecap="round"
+               d="M 1150 0 C 1400 110, 1500 230, 1200 320 S 550 470, 850 560 S 1350 690, 1000 780 S 500 900, 800 1000"
+            ></path>
+            <circle class="faq-trail-dot" r="9" cx="1150" cy="0"></circle>
+         </svg>
+      </div>
+
+      <div class="flex flex-col gap-4" data-faq-list>
+         {
+            items.map((item, i) => (
+               <div
+                  class="faq-reveal glass-card rounded-2xl border border-purple_mv/20 p-5 dark:border-white/10"
+                  style={`--faq-delay: ${i * 0.1}s; --faq-spin-from: ${i % 2 === 0 ? '-360deg' : '360deg'};`}
+               >
+                  <h3 class="font-semibold text-gray-900 dark:text-white">{item.q}</h3>
+                  <p class="mt-3 text-sm text-gray-600 dark:text-white/70">{item.a}</p>
+               </div>
+            ))
+         }
+      </div>
+   </div>
+
+   {
+      linkHref && linkLabel && (
+         <div class="faq-reveal mt-8 flex justify-center">
+            <a href={linkHref} class="text-sm font-semibold text-text_banner underline-offset-4 hover:underline">
+               {linkLabel}
+            </a>
+         </div>
+      )
+   }
+</section>
+
+<style>
+   /*
+      Reveal "spin": arranca dando una vuelta COMPLETA (--faq-spin-from,
+      ±360°, alterna de dirección según el índice) desde chico/invisible;
+      al entrar en viewport gira hasta pasar un poco de 0° (overshoot en
+      65%, un pequeño rebote) y recién ahí se asienta quieta -- eso es lo
+      que hace que se LEA como un giro real (una vuelta, no solo un tilt) y
+      no un simple fade. Usa "animation" (no "transition") justamente para
+      poder describir ese overshoot con keyframes; @keyframes puro también
+      evita el artefacto de "cara trasera espejada" que un
+      rotate3D/perspective daría en un rectángulo ancho y bajo como estas
+      tarjetas. rootMargin del IntersectionObserver (ver script) + este
+      --faq-delay escalonado por índice son las dos cosas que hacen que se
+      note "pregunta por pregunta" en vez de todas a la vez.
+   */
+   @keyframes faqSpinIn {
+      0% {
+         opacity: 0;
+         transform: rotate(var(--faq-spin-from, -360deg)) scale(0.3);
+      }
+      65% {
+         opacity: 1;
+         transform: rotate(calc(var(--faq-spin-from, -360deg) * 0.04)) scale(1.05);
+      }
+      100% {
+         opacity: 1;
+         transform: rotate(0deg) scale(1);
+      }
+   }
+   .faq-reveal {
+      opacity: 0;
+      transform: rotate(var(--faq-spin-from, -360deg)) scale(0.3);
+   }
+   .faq-reveal.is-in-view {
+      animation: faqSpinIn 0.65s cubic-bezier(0.22, 0.85, 0.32, 1) var(--faq-delay, 0s) both;
+   }
+
+   /*
+      Excepción a la regla global de prefers-reduced-motion (ver
+      global.css): igual que .float-anim/.field-shooting-star/etc, el dueño
+      del sitio pidió ver este giro de entrada explícitamente. Sin esto, la
+      regla global fuerza animation-duration a ~0 y el texto aparece de
+      golpe sin ningún giro visible.
+   */
+   @media (prefers-reduced-motion: reduce) {
+      .faq-reveal.is-in-view {
+         animation-duration: 0.65s !important;
+         animation-delay: var(--faq-delay, 0s) !important;
+      }
+   }
+
+   /*
+      Estela que se dibuja: el trazo arranca completamente oculto
+      (stroke-dashoffset = su propio largo, seteado por JS) y el script de
+      más abajo lo va revelando según el scroll -- técnica estándar de
+      "line drawing" en SVG. El glow imita el mismo lenguaje que
+      .field-shooting-star de StarField.astro.
+   */
+   .faq-trail-path {
+      filter: drop-shadow(0 0 6px rgba(129, 73, 226, 0.55));
+   }
+   .faq-trail-dot {
+      fill: #fff;
+      filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.9)) drop-shadow(0 0 14px rgba(129, 73, 226, 0.7));
+      opacity: 0;
+      transition: opacity 0.3s ease;
+   }
+   .faq-trail-dot.is-active {
+      opacity: 1;
+   }
+
+   @media (prefers-reduced-motion: reduce) {
+      .faq-trail-dot {
+         transition-duration: 0.15s !important;
+      }
+   }
+</style>
+
+<script>
+   const initFAQReveal = (root: Element) => {
+      if (root.getAttribute('data-reveal-ready') === 'true') return;
+      root.setAttribute('data-reveal-ready', 'true');
+
+      const items = root.querySelectorAll('.faq-reveal');
+      if (!('IntersectionObserver' in window) || !items.length) {
+         items.forEach((el) => el.classList.add('is-in-view'));
+         return;
+      }
+
+      // rootMargin negativo chico (-10% abajo): cada tarjeta dispara su giro
+      // apenas asoma bien dentro del viewport, no hasta que sube a la mitad
+      // de la pantalla. Antes (-35%) cada tarjeta tenía que subir mucho más
+      // para disparar su animación (~1s + --faq-delay), y en una sección tan
+      // baja como esta el usuario ya había llegado a la siguiente sección
+      // antes de que la última tarjeta terminara de girar. Con esto + un
+      // --faq-delay/duración más cortos (ver <style>), todo el giro termina
+      // mientras la sección sigue en pantalla.
+      const observer = new IntersectionObserver(
+         (entries, obs) => {
+            entries.forEach((entry) => {
+               if (entry.isIntersecting) {
+                  entry.target.classList.add('is-in-view');
+                  obs.unobserve(entry.target);
+               }
+            });
+         },
+         { threshold: 0, rootMargin: '0px 0px -10% 0px' },
+      );
+      items.forEach((el) => observer.observe(el));
+   };
+
+   const initFAQTrail = (root: Element) => {
+      if (root.getAttribute('data-trail-ready') === 'true') return;
+      root.setAttribute('data-trail-ready', 'true');
+
+      const list = root.querySelector('[data-faq-list]');
+      const path = root.querySelector('.faq-trail-path') as SVGPathElement | null;
+      const dot = root.querySelector('.faq-trail-dot') as SVGCircleElement | null;
+      if (!list || !path || !dot) return;
+
+      const length = path.getTotalLength();
+      path.style.strokeDasharray = `${length}`;
+      path.style.strokeDashoffset = `${length}`;
+
+      let ticking = false;
+
+      const update = () => {
+         ticking = false;
+         const rect = list.getBoundingClientRect();
+         const viewportMid = window.innerHeight * 0.5;
+
+         // Progreso 0-1 de qué tanto de la lista ya pasó el centro del viewport.
+         const progress = (viewportMid - rect.top) / rect.height;
+         const clamped = Math.max(0, Math.min(1, progress));
+         const active = rect.top < window.innerHeight && rect.bottom > 0;
+
+         path.style.strokeDashoffset = `${length * (1 - clamped)}`;
+         const point = path.getPointAtLength(length * clamped);
+         dot.setAttribute('cx', `${point.x}`);
+         dot.setAttribute('cy', `${point.y}`);
+         dot.classList.toggle('is-active', active);
+      };
+
+      const onScroll = () => {
+         if (ticking) return;
+         ticking = true;
+         requestAnimationFrame(update);
+      };
+
+      // Solo escuchar scroll mientras la sección está cerca del viewport --
+      // evita un listener global corriendo todo el tiempo en el resto de la
+      // página (mismo criterio de costo que el resto del sitio, ver
+      // Rendimiento.md).
+      const sectionObserver = new IntersectionObserver(
+         (entries) => {
+            entries.forEach((entry) => {
+               if (entry.isIntersecting) {
+                  window.addEventListener('scroll', onScroll, { passive: true });
+                  update();
+               } else {
+                  window.removeEventListener('scroll', onScroll);
+                  dot.classList.remove('is-active');
+               }
+            });
+         },
+         { rootMargin: '20% 0px 20% 0px' },
+      );
+      sectionObserver.observe(root);
+   };
+
+   const initAllFAQs = () => {
+      document.querySelectorAll('[data-faq-root]').forEach((root) => {
+         initFAQReveal(root);
+         initFAQTrail(root);
+      });
+   };
+
+   initAllFAQs();
+   document.addEventListener('astro:page-load', initAllFAQs);
+</script>
