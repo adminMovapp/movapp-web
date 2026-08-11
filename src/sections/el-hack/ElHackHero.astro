@@ -6,7 +6,15 @@ import ImgElHackBlanco from '@assets/elhack-blanco.png';
 import ImgElHackNegro from '@assets/elhack-negro.png';
 ---
 
-<section class="relative mx-auto flex max-w-4xl flex-col items-center justify-center px-4 pt-16 pb-16 text-center">
+<!--
+   Sin pb-16 a propósito (mismo criterio que HomeHero.astro): este <section>
+   no usa "my-section" (el margen estándar de 4rem, ver tailwind.config.mjs,
+   que colapsa con el margin-top de la siguiente sección), sino padding para
+   el centrado vertical del contenido. Un pb-16 acá no colapsa con el
+   mt-section de ElHackWhatIs -- se suma encima (128px en vez de 64px), casi
+   el doble del espacio de cualquier otro par de secciones de la página.
+-->
+<section class="relative mx-auto flex max-w-4xl flex-col items-center justify-center px-4 pt-16 text-center">
    <!--
       Mismo fondo de tormenta (rayos + niebla) que el resto de las secciones
       de El Hack -- antes el hero tenía sus propios truenos, más gruesos y

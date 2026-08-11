@@ -7,7 +7,19 @@ import ImgAppStore from '@assets/app-store-v2.webp';
 import ButtonContact from '@components/ui/ButtonContact.astro';
 ---
 
-<section class="relative mx-auto flex min-h-[85vh] max-w-5xl flex-col items-center justify-center px-4 pt-16 pb-12 text-center md:min-h-[70vh] md:pt-8 md:pb-8">
+<!--
+   Sin pb-* a propósito (a diferencia de pt-16/md:pt-8, que sí se mantiene
+   para el espacio bajo el header): a diferencia del resto del sitio, este
+   <section> no usa "my-section" (margen, que colapsa con el margin-top de la
+   siguiente sección y da el espaciado estándar de 4rem, ver
+   tailwind.config.mjs) sino padding, por el min-h+flex de centrado vertical.
+   Un pb-* extra AQUÍ no colapsa con el mt-section de HomeSymptoms -- se suma
+   encima, dejando mucho más espacio del que hay entre cualquier otro par de
+   secciones. Quitarlo del todo deja que el margin-top de la siguiente
+   sección sea el único responsable del espacio, igual que en todo el resto
+   del sitio.
+-->
+<section class="relative mx-auto flex min-h-[85vh] max-w-5xl flex-col items-center justify-center px-4 pt-16 text-center md:min-h-[70vh] md:pt-8">
    <!--
       Fondo espacial: full-bleed (ignora el max-w del section con el truco
       left-1/2 + w-screen + -translate-x-1/2) para que llene todo el ancho
