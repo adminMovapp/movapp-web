@@ -81,7 +81,7 @@ const { id, title, items, linkHref, linkLabel, ambientCount = 35 } = Astro.props
                   class="faq-reveal glass-card rounded-2xl border border-purple_mv/20 p-5 dark:border-white/10"
                   style={`--faq-delay: ${i * 0.1}s; --faq-spin-from: ${i % 2 === 0 ? '-360deg' : '360deg'};`}
                >
-                  <h3 class="font-semibold text-gray-900 dark:text-white">{item.q}</h3>
+                  <h3 class="font-semibold text-purple_mv">{item.q}</h3>
                   <p class="mt-3 text-sm text-gray-600 dark:text-white/70">{item.a}</p>
                </div>
             ))
