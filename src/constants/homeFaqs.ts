@@ -2,7 +2,7 @@
 //
 // Preguntas frecuentes del home, separadas del componente (@sections/home/HomeFAQ.astro)
 // para poder importarlas en @components/ui/FAQAccordion.astro sin acoplar el copy a la
-// sección -- mismo criterio que @constants/faqs.ts / @constants/elhack.ts.
+// sección -- mismo criterio que @constants/faqsPageAcoso.ts / @constants/elhack.ts.
 
 export const HOME_FAQS = [
    {

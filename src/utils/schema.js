@@ -24,8 +24,9 @@
      · URLs SIEMPRE absolutas -- de ahí abs().
      · Solo se declara schema que existe visualmente en la página. Por eso el
        texto de FAQPage/HowTo se importa de las mismas constantes que
-       renderizan el markup (@constants/elhack.ts, @constants/faqs.ts) en vez
-       de escribirse acá una segunda vez: si cambia el copy, cambia el schema
+       renderizan el markup (@constants/elhack.ts, @constants/faqsPageAcoso.ts,
+       @constants/faqsPageElHack.ts, @constants/faqsPageMovapp.ts) en vez de
+       escribirse acá una segunda vez: si cambia el copy, cambia el schema
        solo, y no pueden divergir.
 
    QA (§4 de la guía):
@@ -36,7 +37,9 @@
 import { getSiteConfig } from '@utils/config.jsx';
 import { URLS } from '@constants/socials.ts';
 import { EL_HACK_FAQS, EL_HACK_STEPS, EL_HACK_HOW_IT_WORKS_TITLE } from '@constants/elhack.ts';
-import { FAQS_PAGE_ITEMS } from '@constants/faqs.ts';
+import { FAQS_PAGE_ACOSO } from '@constants/faqsPageAcoso.ts';
+import { FAQS_PAGE_EL_HACK } from '@constants/faqsPageElHack.ts';
+import { FAQS_PAGE_MOVAPP } from '@constants/faqsPageMovapp.ts';
 
 // ============================================================
 // 1. DATOS DE LAS ENTIDADES
@@ -327,12 +330,15 @@ export const PAGE_SCHEMA = {
    },
 
    // --- La LP más directa para FAQPage. (Guía §2.3)
+   // Combina las 3 secciones de la página (Acoso, El Hack, Movapp) en un solo
+   // FAQPage: el schema no necesita conservar la agrupación visual, solo que
+   // cada Question/acceptedAnswer coincida con lo que se lee en pantalla.
    '/faqs': {
-      name: 'Preguntas frecuentes sobre El Hack',
-      description: 'Resolvemos las dudas más comunes sobre cómo adquirir El Hack y cómo funciona el proceso.',
+      name: 'Preguntas frecuentes',
+      description: 'Respondemos las dudas más comunes sobre acoso de apps de préstamo, El Hack y Movapp.',
       breadcrumb: 'Preguntas frecuentes',
       build: (request) => [
-         generateFAQSchema(FAQS_PAGE_ITEMS.map((item) => ({ q: item.q, a: item.lines.join(' ') }))),
+         generateFAQSchema([...FAQS_PAGE_ACOSO, ...FAQS_PAGE_EL_HACK, ...FAQS_PAGE_MOVAPP]),
          breadcrumbFor('/faqs', request),
       ],
    },
