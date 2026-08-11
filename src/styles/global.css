@@ -152,6 +152,27 @@ html:not(.dark) .glass-card {
 }
 
 /* ============================================================
+   GRADIENT TEXT MOVE — títulos de sección con degradado
+   blanco/morado (bg-clip-text + text-transparent): el fondo se
+   agranda al doble del ancho del texto (background-size 200%) y se
+   anima su background-position de lado a lado, para que el
+   degradado se sienta en movimiento en vez de quedarse estático.
+   ============================================================ */
+@keyframes gradientTextMove {
+   0%,
+   100% {
+      background-position: 0% 50%;
+   }
+   50% {
+      background-position: 100% 50%;
+   }
+}
+.gradient-text-move {
+   background-size: 200% auto;
+   animation: gradientTextMove 6s ease-in-out infinite;
+}
+
+/* ============================================================
    Accesibilidad: respetar reduced-motion
    ============================================================ */
 @media (prefers-reduced-motion: reduce) {
