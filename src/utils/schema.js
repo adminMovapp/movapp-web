@@ -306,16 +306,17 @@ export const PAGE_SCHEMA = {
    // Google y los LLMs (clave para GEO); el Organization alimenta el
    // Knowledge Panel. Sin BreadcrumbList: es la raíz. Sin FAQPage: no tiene
    // sección de preguntas visible. (Guía §2.1)
+   //
+   // Sin generateElHackSchema acá (hallazgo de auditoría corregido): El Hack
+   // es una LP propia con su propio SoftwareApplication en /el-hack -- Home
+   // solo lo menciona de pasada (card de HomeFeatured.astro, sin detalle),
+   // así que declarar su schema completo acá era redundante/duplicado con
+   // el de su propia página. Ver PAGE_SCHEMA['/el-hack'] para ese schema.
    '/': {
       name: 'Movapp',
       description: null, // usa la del sitio (siteConfigData.site.description)
       breadcrumb: null,
-      build: (request) => [
-         generateWebSiteSchema(request),
-         generateOrganizationSchema(request),
-         generateMovappAppSchema(request),
-         generateElHackSchema({}, request),
-      ],
+      build: (request) => [generateWebSiteSchema(request), generateOrganizationSchema(request), generateMovappAppSchema(request)],
    },
 
    // --- LP de conversión. El SoftwareApplication es más detallado que el de
