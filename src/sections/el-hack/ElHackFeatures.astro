@@ -16,11 +16,13 @@ const features = [
       title: 'Bloquea las llamadas de acoso',
       text: 'Deja de recibir llamadas a toda hora.',
       img: ImgBloquea,
+      imgAlt: 'El Hack bloqueando llamadas de acoso de apps montadeudas',
    },
    {
       title: 'Silencia los mensajes amenazantes',
       text: 'Los textos con insultos o amenazas dejan de llegarte.',
       img: ImgSilencia,
+      imgAlt: 'El Hack silenciando mensajes amenazantes de cobradores de apps de préstamos',
    },
 ];
 ---
@@ -51,7 +53,7 @@ const features = [
                style={`--float-dur: ${5.6 + i * 0.3}s; --float-delay: ${i * 0.2}s;`}
             >
                <div class="relative mb-3 aspect-[4/3] w-full max-w-[140px] overflow-hidden rounded-2xl border border-purple_mv/20 bg-purple_mv/5 dark:border-white/10 dark:bg-white/5">
-                  <Image src={f.img} alt="" width={350} class="h-full w-full object-cover" loading="lazy" />
+                  <Image src={f.img} alt={f.imgAlt} width={350} class="h-full w-full object-cover" loading="lazy" />
                </div>
                <h3 class="relative font-bold text-text_banner dark:text-text_banner">
                   {f.title}
