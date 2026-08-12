@@ -45,7 +45,6 @@ const disableThirdPartyScripts = Astro.url.searchParams.get('minimal') === '1';
 interface Props {
    title?: string;
    description?: string;
-   keywords?: string;
    image?: string;
    type?: string;
    noIndex?: boolean;
@@ -191,7 +190,6 @@ const schemaJson = JSON.stringify(Array.isArray(pageSchema) ? pageSchema : [page
       <!-- SEO básico -->
       <title>{seoTags.title}</title>
       <meta name="description" content={seoTags.description} />
-      <meta name="keywords" content={seoTags.keywords} />
       <meta name="author" content={seoTags.author} />
       {!siteConfig.isProduction && <meta name="robots" content={seoTags.robots} />}
 

@@ -6,7 +6,6 @@ export const siteConfigData = {
     name: "Movapp",
     title: "El Hack hacia un nuevo inicio",
     description: "Movapp es una organización que ayuda a personas víctimas de las aplicaciones de préstamo no reguladas mediante apoyo psicológico, asesoría personalizada y la aplicación de El Hack.",
-    keywords: "movapp, préstamos fraudulentos, montadeudas, hack financiero, asesoría financiera, aplicaciones de préstamo, cobranza abusiva, deudas, México",
     author: "Movapp",
     locale: "es_MX",
     language: "es"
@@ -120,7 +119,6 @@ export function generateSEOTags(props = {}, request = null) {
   const {
     title = `${cfg.site.name} - ${cfg.site.title}`,
     description = cfg.site.description,
-    keywords = cfg.site.keywords,
     image = cfg.defaultImage,
     type = 'website',
     url = cfg.siteUrl,
@@ -133,7 +131,6 @@ export function generateSEOTags(props = {}, request = null) {
   return {
     title,
     description,
-    keywords,
     image,
     type,
     url,
