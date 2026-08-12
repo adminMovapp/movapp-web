@@ -75,7 +75,10 @@ export const SCHEMA_DATA = {
    movappApp: {
       name: 'Movapp',
       operatingSystem: 'Android, iOS',
-      applicationCategory: 'FinanceApplication',
+      // No es una app financiera (no maneja dinero/transacciones): identifica
+      // y reporta apps de préstamo predatorias, así que Google la clasifica
+      // mejor como SecurityApplication.
+      applicationCategory: 'SecurityApplication',
       description: 'App para identificar y reportar apps de préstamo predatorias en México.',
       // TODO: pegar la URL real de la ficha en Google Play. Mientras sea null,
       // downloadUrl no se emite (mejor omitir el campo que inventar una URL).
