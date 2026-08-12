@@ -185,6 +185,22 @@ html.no-js .header-spacer {
    }
 }
 
+/*
+   FAQAccordion.astro (usado en El Hack, /faqs, etc.): cada pregunta y el
+   título de la sección usan la clase ".faq-reveal" con opacity:0 por
+   defecto -- ese estado inicial vive en el <style scope> del propio
+   componente (siempre se inyecta, a diferencia de las hojas "pesadas" con
+   ?url) y solo pasa a opacity:1 cuando un IntersectionObserver le agrega
+   ".is-in-view" al hacer scroll. Sin JS ese observer nunca corre, así que
+   el texto quedaba 100% en el HTML pero invisible. Mismo criterio que el
+   <noscript> de Layout.astro para "[data-aos]", pero acá vía html.no-js
+   porque es CSS propio del componente, no una librería externa.
+*/
+html.no-js .faq-reveal {
+   opacity: 1;
+   transform: none;
+}
+
 /* --- FAQ (usa <details>/<summary> nativos, ya funcionan sin JS) --- */
 html.no-js details {
    margin-bottom: 0.75rem;
