@@ -59,6 +59,11 @@ export const SCHEMA_DATA = {
       // TODO: si se define una página de contacto propia (/contacto), poner
       // aquí su ruta. Mientras sea null, el ContactPoint no emite `url`.
       contactPath: null,
+      // Dimensiones reales de public/img/Logo.png (cfg.assets.logo) -- Google
+      // prefiere `logo` como ImageObject con width/height explícitos en vez
+      // de un string plano. Deben moverse juntos si el archivo cambia.
+      logoWidth: 3140,
+      logoHeight: 550,
    },
 
    /*
@@ -149,7 +154,12 @@ export function generateOrganizationSchema(request = null) {
       name: cfg.site.name,
       description: cfg.site.description,
       url: cfg.canonicalUrl,
-      logo: cfg.logoUrl,
+      logo: {
+         '@type': 'ImageObject',
+         url: cfg.logoUrl,
+         width: org.logoWidth,
+         height: org.logoHeight,
+      },
       foundingDate: org.foundingDate,
       founder: { '@type': 'Person', name: org.founder },
       sameAs: org.sameAs,
