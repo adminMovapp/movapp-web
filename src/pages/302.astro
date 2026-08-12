@@ -1,0 +1,45 @@
+---
+// Landing de error 302 (redirección temporal) -- mismo criterio que
+// 301.astro (ver ese archivo para el detalle completo): diseño de El Hack
+// (StormField + fondo negro con resplandor morado), y A PROPÓSITO todavía
+// sin usar en ningún lado (sin link, sin sitemap, sin PAGE_SCHEMA). Solo se
+// visita entrando la URL a mano: /302
+import Layout from '@layouts/Layout.astro';
+import StormField from '@components/decorative/StormField.astro';
+---
+
+<Layout title="302 · Redirección temporal" noIndex={true}>
+   <section class="relative mx-auto flex min-h-[70vh] max-w-3xl flex-col items-center justify-center px-4 pt-16 text-center md:pt-8">
+      <StormField id="error-302" boltCount={5} />
+
+      <!-- Fondo negro + resplandor central: mismo tratamiento que ElHackHero.astro -->
+      <div
+         class="pointer-events-none absolute -top-24 -bottom-24 left-1/2 -z-20 flex w-screen items-center justify-center -translate-x-1/2"
+         aria-hidden="true"
+      >
+         <div class="absolute inset-0 dark:bg-[#050505]"></div>
+         <div
+            class="absolute left-1/2 top-[-160px] h-[460px] w-[70%] max-w-[900px] -translate-x-1/2 rounded-full bg-purple_mv/[0.06] blur-[150px] dark:bg-purple_mv/[0.18]"
+         >
+         </div>
+      </div>
+
+      <p class="relative z-10 text-sm font-bold uppercase tracking-widest text-text_banner">Redirección temporal</p>
+
+      <!-- H1 (único H1 de la página) -->
+      <h1 class="gradient-text-move relative z-10 mt-3 bg-gradient-to-r from-gray-900 to-purple_mv bg-clip-text text-6xl font-bold uppercase leading-tight text-transparent dark:from-white dark:to-purple_mv md:text-8xl">
+         302
+      </h1>
+
+      <p class="relative z-10 mx-auto mt-6 max-w-xl text-base text-gray-700 dark:text-white/80 md:text-lg">
+         Esta página se movió temporalmente a otra dirección. Vuelve a intentarlo más tarde.
+      </p>
+
+      <a
+         href="/"
+         class="relative z-10 mt-8 inline-flex items-center justify-center rounded-full bg-purple_mv px-6 py-4 text-base font-bold text-white transition hover:bg-purple_mv/90 md:text-lg"
+      >
+         Volver al inicio
+      </a>
+   </section>
+</Layout>
