@@ -5,6 +5,9 @@ export const URLS = {
    facebook: 'https://www.facebook.com/movappbymann',
    instagram: 'https://www.instagram.com/movappbymann',
    tiktok: 'https://www.tiktok.com/@movappbymann',
+   playStore:
+      'https://play.google.com/store/apps/details?id=com.movapp.mobile&hl=es_MX&referrer=utm_source%3Dwebsite%26utm_medium%3Dorganic%26utm_campaign%3Dsite_download',
+   appStore: 'https://apps.apple.com/mx/app/movapp-by-erik-mann/id6755009066?ct=website_download',
    whatsapp: {
       // oficial: 'https://api.whatsapp.com/send/?phone=5215574360621&text&type=phone_number&app_absent=0',
       // principal: 'https://api.whatsapp.com/send/?phone=5215578767442&text&type=phone_number&app_absent=0',

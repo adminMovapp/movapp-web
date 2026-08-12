@@ -1,8 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import StormField from '@components/decorative/StormField.astro';
-import ImgPlayStore from '@assets/play-store-v2.webp';
-import ImgAppStore from '@assets/app-store-v2.webp';
+import StoreBadges from '@components/ui/StoreBadges.astro';
 import ImgMockup from '@assets/Mockup-celular-movapp-1.webp';
 import ImgBloquea from '@assets/bloquea-las-llamadas-de-acoso.webp';
 import ImgSilencia from '@assets/silencia-los-mensajes-amenazantes.webp';
@@ -95,14 +94,7 @@ const features = [
          />
       </div>
       <p class="text-sm font-semibold uppercase tracking-widest text-text_banner">El Hack está disponible para:</p>
-      <div class="flex flex-col items-center gap-3 sm:flex-row">
-         <a href="#" aria-label="Descargar en Google Play" class="transition hover:scale-105">
-            <Image src={ImgPlayStore} alt="Google Play" height={96} class="store-badge h-12 w-auto" />
-         </a>
-         <a href="#" aria-label="Descargar en App Store" class="transition hover:scale-105">
-            <Image src={ImgAppStore} alt="App Store" height={96} class="store-badge h-12 w-auto" />
-         </a>
-      </div>
+      <StoreBadges class="flex flex-col items-center gap-3 sm:flex-row" />
    </div>
 
    <!-- Seguridad -->
@@ -117,20 +109,6 @@ const features = [
 </section>
 
 <style>
-   /*
-      Tamaño real del badge fijado acá (no solo con "h-12" de Tailwind) --
-      este <style> con scope de componente se aplica siempre, con o sin JS.
-      Mientras Tailwind no ha cargado, el <img> no tiene ninguna regla de
-      tamaño y se pinta a su dimensión real (height={96}, pensado para
-      retina) -- más grande que los 48px finales de "h-12", lo que puede
-      generar un salto de layout (CLS) al cargar Tailwind. Debe coincidir
-      con "h-12" si cambia.
-   */
-   .store-badge {
-      height: 3rem;
-      width: auto;
-   }
-
    /* Carrusel móvil: mismas reglas que HomeFeatured.astro/HomeTrust.astro. */
    .no-scrollbar::-webkit-scrollbar {
       display: none;

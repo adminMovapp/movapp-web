@@ -1,0 +1,82 @@
+---
+// Badges de descarga (Google Play + App Store), componente compartido --
+// mismo criterio que FAQAccordion.astro: un solo componente en vez de
+// repetir el mismo par de <a><Image></a> en cada sección que los necesita
+// (antes vivían sueltos y duplicados en HomeHero.astro/HomeCTA.astro/
+// ElHackFeatures.astro, cada uno con su propio href="#" placeholder).
+//
+// Los links reales (Play Store/App Store) viven en @constants/socials.ts
+// (URLS.playStore/URLS.appStore), junto con el resto de los links externos
+// del sitio -- una sola fuente de verdad si alguna vez cambian.
+//
+// Props para que cada sección lo adapte a su propio layout/card SIN romper
+// el diseño que ya tenía (nada de un layout único forzado):
+// - class: clases del contenedor (dirección, alineación, gap, breakpoints).
+//   Cada sección pasa las suyas -- fila, columna, responsive, alineado a la
+//   izquierda o centrado, como ya lo tenía antes de este componente.
+// - size: 'sm' (2.5rem, el tamaño que usa HomeHero en su versión móvil) o
+//   'md' (3rem, el resto de los usos). Tamaño real fijado en el <style> con
+//   scope (no solo con la clase de Tailwind) -- mismo criterio anti-CLS que
+//   el resto de badges/logos del sitio: mientras Tailwind no carga, el
+//   <img> se pintaría a su tamaño real (retina) si no fuera por esto.
+// - order: 'play-first' (default) o 'app-first' -- HomeHero mostraba antes
+//   App Store primero; el resto, Google Play primero. Se respeta el orden
+//   que cada sección ya tenía en vez de forzar uno nuevo.
+import { Image } from 'astro:assets';
+import ImgPlayStore from '@assets/play-store-v2.webp';
+import ImgAppStore from '@assets/app-store-v2.webp';
+import { URLS } from '@constants/socials.ts';
+
+interface Props {
+   class?: string;
+   size?: 'sm' | 'md';
+   order?: 'play-first' | 'app-first';
+}
+
+const {
+   class: wrapperClass = 'flex items-center gap-3',
+   size = 'md',
+   order = 'play-first',
+} = Astro.props;
+
+const STORES = {
+   play: { href: URLS.playStore, alt: 'Google Play', img: ImgPlayStore },
+   app: { href: URLS.appStore, alt: 'App Store', img: ImgAppStore },
+};
+
+const badgeOrder = order === 'app-first' ? (['app', 'play'] as const) : (['play', 'app'] as const);
+---
+
+<div class={wrapperClass}>
+   {
+      badgeOrder.map((key) => {
+         const store = STORES[key];
+         return (
+            <a
+               href={store.href}
+               target="_blank"
+               rel="noopener noreferrer"
+               aria-label={`Descargar en ${store.alt}`}
+               class="transition hover:scale-105"
+            >
+               {size === 'sm' ? (
+                  <Image src={store.img} alt={store.alt} height={80} class="store-badge-sm h-10 w-auto" />
+               ) : (
+                  <Image src={store.img} alt={store.alt} height={96} class="store-badge-md h-12 w-auto" />
+               )}
+            </a>
+         );
+      })
+   }
+</div>
+
+<style>
+   .store-badge-sm {
+      height: 2.5rem;
+      width: auto;
+   }
+   .store-badge-md {
+      height: 3rem;
+      width: auto;
+   }
+</style>

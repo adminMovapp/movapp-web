@@ -1,9 +1,8 @@
 ---
 import { Image } from 'astro:assets';
 import ButtonContact from '@components/ui/ButtonContact.astro';
+import StoreBadges from '@components/ui/StoreBadges.astro';
 import StarField from '@components/decorative/StarField.astro';
-import ImgPlayStore from '@assets/play-store-v2.webp';
-import ImgAppStore from '@assets/app-store-v2.webp';
 // Mismo logo que Header.astro (navbar de escritorio) -- a pedido, se repite
 // acá debajo del título, solo en escritorio (ver ".cta-logo" más abajo).
 import ImgLogo from '@assets/Logo.png';
@@ -87,34 +86,13 @@ import ImgMockup from '@assets/Mockup-celular-movapp-1.webp';
                <ButtonContact id="whatsapp-home-footer" label="Hablar con un asesor" fullWidth />
             </div>
 
-            <div class="mt-6 flex flex-col items-center gap-3 md:items-start">
-               <a href="#" aria-label="Descargar en Google Play" class="transition hover:scale-105">
-                  <Image src={ImgPlayStore} alt="Google Play" height={96} class="store-badge h-12 w-auto" />
-               </a>
-               <a href="#" aria-label="Descargar en App Store" class="transition hover:scale-105">
-                  <Image src={ImgAppStore} alt="App Store" height={96} class="store-badge h-12 w-auto" />
-               </a>
-            </div>
+            <StoreBadges class="mt-6 flex flex-col items-center gap-3 md:items-start" />
          </div>
       </div>
    </div>
 </section>
 
 <style>
-   /*
-      Tamaño real del badge fijado acá (no solo con "h-12" de Tailwind) --
-      este <style> con scope de componente se aplica siempre, con o sin JS.
-      Mientras Tailwind no ha cargado, el <img> no tiene ninguna regla de
-      tamaño y se pinta a su dimensión real (height={96}, pensado para
-      retina) -- más grande que los 48px finales de "h-12", lo que puede
-      generar un salto de layout (CLS) al cargar Tailwind. Debe coincidir
-      con "h-12" si cambia.
-   */
-   .store-badge {
-      height: 3rem;
-      width: auto;
-   }
-
    /*
       Tamaño real del logo fijado acá (no solo con "h-10" de Tailwind) --
       este <style> con scope de componente se aplica siempre, con o sin JS.
