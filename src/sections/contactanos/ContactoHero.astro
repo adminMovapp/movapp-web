@@ -29,16 +29,79 @@
 // secciones, acá el fondo es una foto de color fijo, no reinterpretable por
 // el override de tema en global.css) -- mismo criterio que el botón de
 // WhatsApp de ButtonContact.astro.
+//
+// Viñeta + resplandor morado (a pedido, "que no se vean las líneas de la
+// imagen... se siente que sólo está pegada"): antes el borde de la foto
+// cortaba en seco contra el fondo de la página. Se agregan dos capas:
+// - ".contacto-hero-overlay": adentro del contenedor con overflow-hidden,
+//   combina el gradiente lineal original (contraste para el H1) con un
+//   SEGUNDO gradiente lineal (no radial -- ver más abajo por qué) que
+//   oscurece hacia arriba/abajo usando el MISMO tono #050505 del fondo
+//   oscuro del sitio (no "transparent": revelar el fondo real de la página
+//   se vería mal en tema claro, donde el fondo es gris claro -- un tono
+//   fijo cercano al negro de la propia foto funciona igual en ambos temas).
+//   OJO -- dos intentos anteriores no bastaron, confirmado recortando
+//   screenshots justo en el borde:
+//     1) El primer intento llegaba solo a opacidad 0.85 en el borde: sobraba
+//        un 15% de la foto original asomando, y como esa esquina no es
+//        negro puro, contra el fondo sólido #050505 se seguía viendo una
+//        línea.
+//     2) El segundo intento (radial-gradient con tamaño de elipse en %)
+//        subsanó la opacidad pero el tamaño de la elipse no llegaba a
+//        opacidad 1 EXACTO en el borde real de la caja (dependía del
+//        cálculo del % sobre ambos ejes a la vez). Un gradiente LINEAL
+//        vertical, con stops en 0%/100% explícitos, sí garantiza #050505
+//        sólido exactamente en y=0 y y=100% -- sin aproximar. Además, como
+//        la foto es full-bleed (izquierda/derecha tocan el borde de la
+//        pantalla, no hay "línea" posible ahí, nada contra qué chocar), solo
+//        hace falta difuminar arriba/abajo -- un lineal vertical le puede
+//        dedicar TODO su rango a esa dirección, con una franja de
+//        transición más generosa que la que lograba la elipse.
+// - ".contacto-hero-glow": afuera de ese contenedor (mismo wrapper 100vw,
+//   pero SIN overflow-hidden), alineado aprox. con el punto donde el
+//   teléfono de la foto ya emite su propio brillo morado (~40% desde la
+//   izquierda, ver la imagen). OJO -- un intento anterior lo centraba
+//   verticalmente dentro de la MISMA caja que la imagen, así que quedaba
+//   100% tapado por la foto (opaca) y nunca se llegaba a ver: acá se ancla
+//   con "-bottom-16/-24" (fuera de la caja de la imagen a propósito) para
+//   que una porción real quede visible en el espacio vacío antes de la
+//   siguiente sección, como si esa luz siguiera escapando hacia la página.
 import { Image } from 'astro:assets';
 import ImgContactoHero from '@assets/contactos-portada.webp';
 ---
 
 <section class="keep-white relative mx-auto w-full max-w-5xl px-4 pt-16 text-center md:pt-8">
-   <div class="relative left-1/2 aspect-[2135/1825] w-screen -translate-x-1/2 overflow-hidden md:max-h-[60vh]" aria-hidden="true">
-      <Image src={ImgContactoHero} alt="" width={1600} class="h-full w-full object-cover" loading="eager" />
-      <div class="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/80"></div>
-      <h1 class="absolute inset-0 flex items-center justify-center px-4 text-3xl font-bold uppercase leading-tight text-white md:text-5xl">
-         Contáctanos
-      </h1>
+   <div class="relative left-1/2 w-screen -translate-x-1/2">
+      <div
+         class="contacto-hero-glow pointer-events-none absolute -bottom-16 left-[40%] -z-10 h-72 w-72 -translate-x-1/2 rounded-full bg-purple_mv/[0.1] blur-[130px] dark:bg-purple_mv/[0.3] md:-bottom-24 md:h-96 md:w-96"
+         aria-hidden="true"
+      >
+      </div>
+      <!--
+         Mismo glow que el de abajo, pero más chico/tenue y arriba (hacia el
+         header) -- el borde superior también quedaba con un remanente
+         visible sin nada que lo distraiga/mezcle.
+      -->
+      <div
+         class="pointer-events-none absolute -top-10 left-[40%] -z-10 h-48 w-48 -translate-x-1/2 rounded-full bg-purple_mv/[0.05] blur-[110px] dark:bg-purple_mv/[0.15] md:-top-14 md:h-64 md:w-64"
+         aria-hidden="true"
+      >
+      </div>
+
+      <div class="relative w-full aspect-[2135/1825] overflow-hidden md:max-h-[60vh]" aria-hidden="true">
+         <Image src={ImgContactoHero} alt="" width={1600} class="h-full w-full object-cover" loading="eager" />
+         <div class="contacto-hero-overlay absolute inset-0"></div>
+         <h1 class="absolute inset-0 flex items-center justify-center px-4 text-3xl font-bold uppercase leading-tight text-white md:text-5xl">
+            Contáctanos
+         </h1>
+      </div>
    </div>
 </section>
+
+<style>
+   .contacto-hero-overlay {
+      background-image:
+         linear-gradient(to bottom, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.5) 50%, rgba(0, 0, 0, 0.8) 100%),
+         linear-gradient(to bottom, #050505 0%, transparent 28%, transparent 72%, #050505 100%);
+   }
+</style>
