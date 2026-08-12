@@ -1,10 +1,9 @@
 ---
 // CTA de cierre de la página, según la revisión de estructura semántica
 // (Angel Martínez): H2 + <p> descriptivo + <a> (no <button>, redirige a una
-// conversación externa de WhatsApp) con id "cta_whatsapp_testimonios_01" --
-// mismo patrón de nombre que el resto de los CTAs de WhatsApp del sitio
-// (ver naming "whatsapp-<página>-<sección>" en Home/ElHackHero.astro/
-// ElHackCTA.astro).
+// conversación externa de WhatsApp) con id "whatsapp-testimonios-cta" --
+// mismo patrón de nombre "whatsapp-<página>-<sección>" que el resto de los
+// CTAs de WhatsApp del sitio (ver Home/ElHackHero.astro/ElHackCTA.astro).
 //
 // "Mismo diseño LITERAL que el botón de Home" a pedido: se reutiliza
 // ButtonContact.astro tal cual (mismo componente, mismo estilo/ícono/
@@ -32,7 +31,7 @@ import ButtonContact from '@components/ui/ButtonContact.astro';
 
    <div class="mt-8 flex justify-center">
       <ButtonContact
-         id="cta_whatsapp_testimonios_01"
+         id="whatsapp-testimonios-cta"
          label="Compartir mi experiencia"
          message="¡Hola! Quiero compartir mi experiencia con Movapp."
       />
