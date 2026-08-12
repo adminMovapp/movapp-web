@@ -18,9 +18,9 @@
 // "que sean las mismas que las del footer") en vez de los Icono-*.png que
 // usa NosotrosSocials.astro: son dos sets de assets distintos en el
 // proyecto para la misma red, y esta sección debe usar el del footer.
-// Mismas URLs de siempre (@constants/socials.ts), sin inventar links nuevos.
+// Mismas URLs de siempre (@utils/config.jsx), sin inventar links nuevos.
 import StarField from '@components/decorative/StarField.astro';
-import { SOCIALS } from '@constants/socials.ts';
+import { SOCIALS } from '@utils/config.jsx';
 
 const FOOTER_ICONS: Record<string, string> = {
    YouTube: '/img/logo-youtube.webp',

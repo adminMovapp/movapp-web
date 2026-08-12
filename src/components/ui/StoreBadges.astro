@@ -5,7 +5,7 @@
 // (antes vivían sueltos y duplicados en HomeHero.astro/HomeCTA.astro/
 // ElHackFeatures.astro, cada uno con su propio href="#" placeholder).
 //
-// Los links reales (Play Store/App Store) viven en @constants/socials.ts
+// Los links reales (Play Store/App Store) viven en @utils/config.jsx
 // (URLS.playStore/URLS.appStore), junto con el resto de los links externos
 // del sitio -- una sola fuente de verdad si alguna vez cambian.
 //
@@ -25,7 +25,7 @@
 import { Image } from 'astro:assets';
 import ImgPlayStore from '@assets/play-store-v2.webp';
 import ImgAppStore from '@assets/app-store-v2.webp';
-import { URLS } from '@constants/socials.ts';
+import { URLS } from '@utils/config.jsx';
 
 interface Props {
    class?: string;

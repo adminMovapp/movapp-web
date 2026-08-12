@@ -34,8 +34,7 @@
      search.google.com/test/rich-results  ·  validator.schema.org
 */
 
-import { getSiteConfig } from '@utils/config.jsx';
-import { URLS } from '@constants/socials.ts';
+import { getSiteConfig, URLS } from '@utils/config.jsx';
 import { EL_HACK_FAQS, EL_HACK_STEPS, EL_HACK_HOW_IT_WORKS_TITLE } from '@constants/elhack.ts';
 import { FAQS_PAGE_ACOSO } from '@constants/faqsPageAcoso.ts';
 import { FAQS_PAGE_EL_HACK } from '@constants/faqsPageElHack.ts';
@@ -51,8 +50,8 @@ export const SCHEMA_DATA = {
    organization: {
       foundingDate: '2022',
       founder: 'Erik Mann',
-      // Solo perfiles oficiales verificados. Se toman de @constants/socials.ts
-      // para no mantener dos listas de redes en el repo.
+      // Solo perfiles oficiales verificados. Se toman de @utils/config.jsx
+      // (URLS) para no mantener dos listas de redes en el repo.
       sameAs: [URLS.youtube, URLS.facebook, URLS.instagram, URLS.tiktok],
       // Canal de contacto oficial: WhatsApp.
       contactPhone: URLS.whatsapp.oficial,

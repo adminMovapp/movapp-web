@@ -20,9 +20,12 @@ export const siteConfigData = {
     "stage.movapp.org",
   ],
   social: {
-    twitter: "@movapp_oficial",
-    facebook: "https://facebook.com/movapp",
-    instagram: "https://instagram.com/movapp_oficial"
+    // Solo Twitter: es el único campo de este objeto que se usa de verdad
+    // (twitter:site/twitter:creator en Layout.astro). "facebook"/"instagram"
+    // vivían acá con URLs viejas/incorrectas, sin ningún uso real -- ver
+    // URLS.facebook/URLS.instagram más abajo para los links reales y
+    // vigentes (los mismos que usan Footer/Nosotros/Contáctanos).
+    twitter: "@movapp_oficial"
   },
   assets: {
     // Apuntaba a /images/logo.png, que no existe en public/ (404). El schema
@@ -47,6 +50,70 @@ export const siteConfigData = {
   }
 };
 
+
+// ============================================================
+// 1b. DATA: Redes sociales, tiendas y videos (antes @constants/socials.ts,
+// fusionado acá a pedido -- una sola fuente de configuración del sitio en
+// vez de dos archivos separados). Todo lo que antes se importaba desde ese
+// archivo ahora se importa desde acá.
+// ============================================================
+
+export const URLS = {
+  youtube: "https://www.youtube.com/@movappoficial",
+  facebook: "https://www.facebook.com/movappbymann",
+  instagram: "https://www.instagram.com/movappbymann",
+  tiktok: "https://www.tiktok.com/@movappbymann",
+  playStore: "https://play.google.com/store/apps/details?id=com.movapp.mobile&hl=es_MX&referrer=utm_source%3Dwebsite%26utm_medium%3Dorganic%26utm_campaign%3Dsite_download",
+  appStore: "https://apps.apple.com/mx/app/movapp-by-erik-mann/id6755009066?ct=website_download",
+  whatsapp: {
+    // Número que debe aparecer en los botones de WhatsApp del sitio (ver
+    // ButtonContact.astro): SIEMPRE "principal", no "oficial" -- son números
+    // distintos, a pedido explícito.
+    oficial: "+5215574360621",
+    principal: "+5215578767442",
+    colombia: "+573045829040",
+    ecuador: "+593983639715",
+    peru: "+51958102730"
+  }
+};
+
+export const SOCIALS = [
+  {
+    name: "YouTube",
+    url: URLS.youtube,
+    icon: "Icono-Youtube.png",
+    count: 28400,
+    description: "Accede a contenido exclusivo, tutoriales sobre El Hack, entrevistas con expertos y mucho más. ¡Suscríbete y activa las notificaciones para no perderte nada!"
+  },
+  {
+    name: "Facebook",
+    url: URLS.facebook,
+    icon: "Icono-Facebook.png",
+    count: 21000,
+    description: "Únete a nuestra comunidad en Facebook para mantenerte al tanto de las últimas noticias y actualizaciones."
+  },
+  {
+    name: "Instagram",
+    url: URLS.instagram,
+    icon: "Icono-Instagram.png",
+    count: 8400,
+    description: "¡Síguenos para ver tips rápidos, noticias y contenido visual sobre cómo proteger tu información!"
+  },
+  {
+    name: "TikTok",
+    url: URLS.tiktok,
+    icon: "Icono-Tik-Tok.png",
+    count: 55100,
+    description: "Síguenos en TikTok para ver contenido dinámico y divertido sobre cómo proteger tus datos y más."
+  }
+];
+
+export const VIDEOS = {
+  inicio: `${import.meta.env.PUBLIC_SHOW_HEADER_URL}`,
+  movapp: "https://www.youtube.com/embed/SM5hBiuv-og?autoplay=1&mute=1&loop=1&playlist=SM5hBiuv-og",
+  testimonios: "https://www.youtube.com/embed/iiuid3nlolU?autoplay=1&mute=1&loop=1&playlist=iiuid3nlolU",
+  colaboraciones: "https://www.youtube.com/embed/owi6YB41tnM?autoplay=1&mute=1&loop=1&playlist=owi6YB41tnM"
+};
 
 // ============================================================
 // 2. LOGIC: Resolución de Entornos y Configuración Dinámica
