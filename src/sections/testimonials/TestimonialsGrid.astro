@@ -9,11 +9,12 @@
 //   (no un ícono/div decorativo aria-hidden como ImagePlaceholder.astro,
 //   que no tiene semántica de imagen real).
 //
-// Sin foto real todavía (ver constants/testimonials.ts): el avatar se genera
-// acá mismo como un <svg> (iniciales sobre un color) codificado como data URI
-// -- sigue siendo un <img> de verdad con su propio alt, solo que la imagen
-// vive inline en vez de en un archivo, hasta que Marketing entregue fotos
-// reales para reemplazarla 1 a 1.
+// Foto real por testimonio (ver constants/testimonials.ts, t.photo) --
+// migradas de public/img/testimonios a src/assets siguiendo la skill de
+// Rendimiento. El generador de iniciales de abajo queda como fallback (no se
+// usa hoy, los 9 ya tienen foto) por si se agrega un testimonio nuevo sin
+// foto todavía.
+import { Image } from 'astro:assets';
 import StarField from '@components/decorative/StarField.astro';
 import { TESTIMONIALS } from '@constants/testimonials.ts';
 
@@ -59,14 +60,24 @@ const tiltOf = (i: number) => (i % 2 === 0 ? -1 : 1) * (4 + (i % 3) * 1.5);
                class="testimonial-card flex flex-col items-center rounded-2xl border border-purple_mv/25 bg-gradient-to-b from-purple_mv/[0.06] to-transparent p-3 text-center shadow-card transition-colors duration-300 hover:border-purple_mv/50 hover:shadow-card-hover dark:border-white/10 dark:from-purple_mv/[0.1] dark:to-black/30 sm:p-5"
                style={`--tilt: ${tiltOf(i)}deg;`}
             >
-               <img
-                  src={avatarSrc(t.name, AVATAR_COLORS[i % AVATAR_COLORS.length])}
-                  alt={`${t.name}, testimonio de Movapp`}
-                  width="40"
-                  height="40"
-                  class="testimonial-avatar h-10 w-10 rounded-full sm:h-12 sm:w-12"
-                  loading="lazy"
-               />
+               {t.photo ? (
+                  <Image
+                     src={t.photo}
+                     alt={`${t.name}, testimonio de Movapp`}
+                     width={100}
+                     class="testimonial-avatar h-10 w-10 rounded-full object-cover sm:h-12 sm:w-12"
+                     loading="lazy"
+                  />
+               ) : (
+                  <img
+                     src={avatarSrc(t.name, AVATAR_COLORS[i % AVATAR_COLORS.length])}
+                     alt={`${t.name}, testimonio de Movapp`}
+                     width="40"
+                     height="40"
+                     class="testimonial-avatar h-10 w-10 rounded-full sm:h-12 sm:w-12"
+                     loading="lazy"
+                  />
+               )}
                <p class="mt-3">
                   <strong class="text-sm text-purple_mv sm:text-base">{t.name}</strong>
                </p>

@@ -1,7 +1,11 @@
 ---
+import { Image } from 'astro:assets';
 import ImagePlaceholder from '@components/ui/ImagePlaceholder.astro';
 import StarField from '@components/decorative/StarField.astro';
 import { BLOG_FEATURED } from '@constants/blog.ts';
+import { BLOG_IMAGES } from '@constants/blogImages.ts';
+
+const featuredImage = BLOG_IMAGES[BLOG_FEATURED.slug];
 ---
 
 <section class="relative mx-auto my-section w-full max-w-3xl px-4 text-center" data-aos="fade-up">
@@ -15,7 +19,11 @@ import { BLOG_FEATURED } from '@constants/blog.ts';
 
    <!-- Artículo destacado: único, sin carrusel (a diferencia de las categorías de abajo). -->
    <div class="float-anim mx-auto mt-10 max-w-xl rounded-2xl border border-purple_mv/25 bg-gradient-to-b from-purple_mv/[0.06] to-transparent p-5 text-left shadow-card dark:border-white/10 dark:from-purple_mv/[0.1] dark:to-black/30">
-      <ImagePlaceholder class="aspect-[16/9] w-full" />
+      {featuredImage ? (
+         <Image src={featuredImage} alt={BLOG_FEATURED.title} width={700} class="aspect-[16/9] w-full rounded-xl object-cover" />
+      ) : (
+         <ImagePlaceholder class="aspect-[16/9] w-full" />
+      )}
       <!--
          h2 (no h3): sin esto, la jerarquía saltaba de h1 directo a h3 -- este
          es el primer subtítulo de la página, antes de que exista ningún h2
