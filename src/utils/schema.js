@@ -100,15 +100,20 @@ export const SCHEMA_DATA = {
       /*
          OJO -- divergencia deliberada respecto a la guía: el documento pide un
          Offer con price 0 para El Hack, pero el copy visible de /el-hack dice
-         "la asesoría es 100% gratuita, el costo del hack va desde los $500
-         MXN". Declarar price 0 sería justo el "schema engañoso" que la propia
-         guía prohíbe (regla 3), así que se usa AggregateOffer con lowPrice,
-         que es lo que corresponde a un "desde $X".
+         que el costo del hack es de $500 MXN (la asesoría sí es 100%
+         gratuita). Declarar price 0 sería justo el "schema engañoso" que la
+         propia guía prohíbe (regla 3).
+
+         Antes se usaba AggregateOffer con lowPrice -- hallazgo de auditoría:
+         Google exige "offerCount" en todo AggregateOffer y no se estaba
+         declarando, dejándolo incompleto/inválido. Con el precio ya
+         confirmado (no es un rango real, es un monto fijo), un Offer simple
+         con price:500 es lo que corresponde y evita ese requisito.
 
          ⚠ Este 500 y el copy de la FAQ en @constants/elhack.ts tienen que
          moverse juntos.
       */
-      offer: { '@type': 'AggregateOffer', lowPrice: '500', priceCurrency: 'MXN' },
+      offer: { '@type': 'Offer', price: '500', priceCurrency: 'MXN' },
    },
 };
 
