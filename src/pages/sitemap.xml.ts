@@ -7,6 +7,7 @@ const pages = [
   { path: '/el-hack',        changefreq: 'monthly', priority: '0.8' },
   { path: '/nosotros',       changefreq: 'monthly', priority: '0.8' },
   { path: '/red',            changefreq: 'monthly', priority: '0.8' },
+  { path: '/contactanos',    changefreq: 'monthly', priority: '0.8' },
   { path: '/testimonials',   changefreq: 'monthly', priority: '0.7' },
   { path: '/collaborations', changefreq: 'monthly', priority: '0.7' },
   { path: '/faqs',           changefreq: 'monthly', priority: '0.7' },

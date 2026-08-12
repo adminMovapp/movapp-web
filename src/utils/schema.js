@@ -371,6 +371,15 @@ export const PAGE_SCHEMA = {
       breadcrumb: 'Testimonios',
    },
 
+   '/contactanos': {
+      // ContactPage: la guía la reserva justamente para páginas con
+      // formulario de contacto real, como esta.
+      type: 'ContactPage',
+      name: 'Contáctanos',
+      description: 'Escríbenos tus dudas sobre Movapp y El Hack, o síguenos en redes sociales.',
+      breadcrumb: 'Contáctanos',
+   },
+
    // --- CollectionPage: listado de artículos agrupados por categoría, mismo
    // criterio que /testimonials. Sin BlogPosting/ItemList todavía: no hay
    // fecha/autor por artículo en el copy visible, y declararlos sería

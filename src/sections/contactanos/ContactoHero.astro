@@ -1,0 +1,44 @@
+---
+// H1 (único H1 de la página). Foto real de fondo (contactos-portada.webp,
+// migrada de public/img a src/assets siguiendo la skill de Rendimiento) en
+// vez del fondo decorativo StarField/StormField que usan otras heroes --
+// full-bleed con el mismo truco left-1/2 + w-screen + -translate-x-1/2 que
+// StarField.astro, para que la foto llene todo el ancho de la pantalla y no
+// se vea como un recuadro aparte.
+//
+// aspect-[2135/1825] -- el aspect-ratio REAL del archivo fuente (2135x1825):
+// a pedido, la imagen completa debe verse, sin recortar nada. Con un alto
+// fijo (min-h-*) + object-cover, el ancho real de la pantalla casi nunca
+// coincide con la proporción de la foto y "object-cover" recorta los lados
+// (pantallas anchas) o arriba/abajo (pantallas angostas) para rellenar ese
+// alto. Igualando el aspect-ratio del contenedor al de la foto, a CUALQUIER
+// ancho de pantalla el alto que le corresponde es exactamente el que hace
+// falta para mostrarla completa -- object-cover ya no tiene nada que
+// recortar (contenedor e imagen miden lo mismo, proporcionalmente).
+//
+// md:max-h-[60vh] -- a pedido: sin este límite, en escritorio (pantalla
+// ancha) el aspect-ratio de una foto casi cuadrada exige un alto enorme
+// (~1100px en un viewport de 1280px) para mostrarla completa, y el hero
+// termina dominando toda la página. Con el límite, en escritorio SÍ vuelve
+// a recortar un poco los lados (aspect-ratio ya no se cumple exacto,
+// object-cover recorta lo que sobra) -- trade-off aceptado a propósito para
+// esa resolución; en móvil (sin el límite) sigue mostrándose completa.
+//
+// "keep-white": el overlay oscuro + texto blanco deben verse igual sin
+// importar el tema claro/oscuro del sitio (a diferencia del resto de las
+// secciones, acá el fondo es una foto de color fijo, no reinterpretable por
+// el override de tema en global.css) -- mismo criterio que el botón de
+// WhatsApp de ButtonContact.astro.
+import { Image } from 'astro:assets';
+import ImgContactoHero from '@assets/contactos-portada.webp';
+---
+
+<section class="keep-white relative mx-auto w-full max-w-5xl px-4 pt-16 text-center md:pt-8">
+   <div class="relative left-1/2 aspect-[2135/1825] w-screen -translate-x-1/2 overflow-hidden md:max-h-[60vh]" aria-hidden="true">
+      <Image src={ImgContactoHero} alt="" width={1600} class="h-full w-full object-cover" loading="eager" />
+      <div class="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/80"></div>
+      <h1 class="absolute inset-0 flex items-center justify-center px-4 text-3xl font-bold uppercase leading-tight text-white md:text-5xl">
+         Contáctanos
+      </h1>
+   </div>
+</section>
