@@ -1,16 +1,11 @@
 // src/constants/testimonials.ts
 //
-// PLACEHOLDER -- pendiente de validación (ver comentario de Angel Martínez en
-// la revisión de estructura semántica de /testimonials): el texto de cada
-// testimonio todavía no está confirmado. El mockup fuente traía estas mismas
-// 9 personas (con foto real, ver import de abajo) con citas parcialmente
-// ilegibles/con errores de OCR; se redactó un texto placeholder limpio y con
-// el mismo tono (agradecimiento, tranquilidad recuperada) para cada una en
-// vez de reproducir literalmente el texto dañado del mockup. No reemplazar
-// el texto por contenido real sin que el equipo de contenido lo confirme
-// primero -- las fotos, en cambio, ya son las reales entregadas
-// (public/img/testimonios, migradas a src/assets siguiendo la skill de
-// Rendimiento).
+// Texto confirmado y verbatim (ver skill Importaciones): reemplaza el
+// placeholder que había antes (el mockup original traía estas citas con
+// errores de OCR/parcialmente ilegibles, así que se había redactado un
+// texto provisional con el mismo tono en lo que se confirmaba el real). Las
+// fotos ya eran las reales entregadas desde antes (public/img/testimonios,
+// migradas a src/assets siguiendo la skill de Rendimiento).
 import ImgRamon from '@assets/ramon-aparicio.webp';
 import ImgElizabeth from '@assets/elizabeth-chima.webp';
 import ImgLorena from '@assets/lorena-garcia.webp';
@@ -24,47 +19,47 @@ import ImgGaby from '@assets/gaby-testimonio.webp';
 export const TESTIMONIALS = [
    {
       name: 'Ramón Aparicio',
-      text: 'Agradezco mucho la atención que recibí. Sin duda recomendaría Movapp a cualquiera que esté pasando por lo mismo que yo pasé.',
+      text: 'Le agradezco por la atención que me brindó y ofrezco rotundamente mi apoyo para recomendar Movapp a alguien que pase por el mismo problema que yo.',
       photo: ImgRamon,
    },
    {
       name: 'Elizabeth Chima',
-      text: 'Gracias a ustedes recuperé mi tranquilidad. No fue fácil, pero el mensaje me llegó justo a tiempo.',
+      text: 'Gracias a ustedes recuperé mi tranquilidad. No fue nada fácil salir de esto, pero les agradezco por estar ahí cada vez que me llegaba un mensaje.',
       photo: ImgElizabeth,
    },
    {
       name: 'Lorena García',
-      text: 'Quiero agradecer todo el apoyo durante este proceso. Las llamadas y los mensajes disminuyeron muchísimo, gran equipo.',
+      text: 'Quería agradecer por todo su apoyo a lo largo de esta situación. Los mensajes han disminuido bastante y las llamadas igual, son un gran equipo.',
       photo: ImgLorena,
    },
    {
       name: 'Salma Valeria',
-      text: 'Muchas gracias por su apoyo. Poco a poco recuperé mi paz y mi tranquilidad; nunca imaginé que esto tuviera solución.',
+      text: 'Muchas gracias por su apoyo, paso a paso me han devuelto mucha paz y tranquilidad. Yo jamás imaginé que esto se hiciera un círculo sin fin.',
       photo: ImgSalma,
    },
    {
       name: 'Amed Zacala',
-      text: 'La verdad soy súper fan de Movapp. Estoy recuperando mi estabilidad emocional, económica y sobre todo personal.',
+      text: 'Muchas gracias, la verdad soy súper fan de Movapp. Hasta ahora estoy empezando a regresar a mi estabilidad emocional, económica y sobre todo personal.',
       photo: ImgAmed,
    },
    {
       name: 'Oliver Vargas',
-      text: 'Admiro mucho su labor y el tiempo que le dedican a cada caso. Me devolvieron la tranquilidad justo cuando más la necesitaba.',
+      text: 'Admiro mucho su labor y el hecho de que se entreguen a su trabajo durante tantas horas y tantos días. De verdad me regresaron el alma al cuerpo, estuve a punto de perder a mi familia...',
       photo: ImgOliver,
    },
    {
       name: 'José de Jesús',
-      text: 'Debo agradecer mucho la ayuda y el acompañamiento. Ya pasaron varios meses y no he vuelto a tener problemas con esas aplicaciones.',
+      text: 'Debo agradecer mucho la ayuda y solidaridad. Ya han pasado los meses y no volví a tener detalle alguno con las aplicaciones que me ayudaste.',
       photo: ImgJose,
    },
    {
       name: 'Omar',
-      text: 'La diferencia es enorme gracias al equipo de Movapp. Hoy estoy recuperando mi paz y puedo seguir adelante sin tanta preocupación.',
+      text: 'La diferencia es abismal gracias a la familia Movapp. Ya río y estoy recuperando mi peso. Respiro, tranquilo, me devolvieron la vida, puedo caminar sin preocupación.',
       photo: ImgOmar,
    },
    {
       name: 'Gaby',
-      text: 'Volví a dormir tranquila después de meses. Las llamadas pararon casi de inmediato. No hay que enfrentar esto solos.',
+      text: 'Volví a dormir, después de meses no tomé medicamento y dormí. Las llamadas se quitaron, se notó inmediatamente el cambio. Siempre hay que hablar porque solos no podemos.',
       photo: ImgGaby,
    },
 ];
