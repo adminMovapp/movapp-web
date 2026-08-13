@@ -51,4 +51,38 @@ export const BLOG_CATEGORY_PAGES: BlogCategoryPage[] = [
          { slug: 'que-paso-con-fortaprest', title: '¿Qué Pasó Con La Aplicación Fortaprest?' },
       ],
    },
+   {
+      // "riesgo": mismo id que @constants/blog.ts (BLOG_CATEGORIES). Todavía
+      // NO tiene entrada en PAGE_SCHEMA (@utils/schema.js) ni está enlazada
+      // desde ningún lado del sitio (menú, /blog, el buscador) -- a pedido
+      // explícito, se deja "en espera": la ruta existe y se puede visitar
+      // directo, pero no se activa/publica hasta nuevo aviso.
+      categorySlug: 'riesgo',
+      h1: 'Modus operandi y consultas de riesgo',
+      intro: 'Descubre cómo operan los montadeudas y prestamistas ilegales. Conoce sus tácticas de engaño, cobro abusivo y aprende a medir tu nivel de riesgo.',
+      recentArticles: [
+         { slug: 'ojo-aplicaciones-montadeudas', title: '¡Ojo Con Las Aplicaciones Montadeudas!' },
+         {
+            slug: 'estrategias-comunes-de-los-montadeudas',
+            title: 'Estrategias Más Comunes De Los Montadeudas Y Cómo Enfrentarlas',
+         },
+         {
+            slug: 'montadeudas-van-a-tu-casa',
+            title: '¿Los Montadeudas Van A Tu Casa? – ¿Qué Puedes Hacer En Caso De Caer Con Montadeudas?',
+         },
+         { slug: 'montadeudas-kaby-llama-contactos', title: 'Montadeudas – ¿Kaby Llama A Tus Contactos?' },
+         { slug: 'mexdin-llama-a-tus-contactos', title: '¿MexDin Llama A Tus Contactos?' },
+      ],
+      oldArticles: [
+         {
+            slug: 'montadeudas-publicar-en-redes-sociales',
+            title: '¿Pueden Las Apps Montadeudas Publicar En Mis Redes Sociales?',
+         },
+         { slug: 'la-cobranza-de-starpresta', title: 'Montadeudas – La Cobranza De Starpresta' },
+         { slug: 'hicredito-te-esta-cobrando', title: '¿HiCrédito Te Está Cobrando?' },
+         // Sin imagen todavía -- ver blogImages.ts (usa ImagePlaceholder de fallback).
+         { slug: 'que-pasa-si-no-le-pago-a-credmex', title: '¿Qué Pasa Si No Le Pago A Credmex?' },
+         { slug: 'mexicash-molesta-a-tus-contactos', title: '¿Mexicash Molesta A Tus Contactos?' },
+      ],
+   },
 ];
