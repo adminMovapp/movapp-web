@@ -201,6 +201,18 @@ html.no-js .faq-reveal {
    transform: none;
 }
 
+/*
+   DirectorioQueHacer.astro (/directorio-de-apps): mismo criterio que
+   ".faq-reveal" arriba -- ".step-reveal" arranca en opacity:0 esperando que
+   un IntersectionObserver le agregue ".is-in-view" al hacer scroll. Sin JS
+   ese observer nunca corre, así que los pasos de "Qué hacer si tienes
+   problemas" quedarían invisibles aunque el texto ya esté en el HTML.
+*/
+html.no-js .step-reveal {
+   opacity: 1;
+   transform: none;
+}
+
 /* --- FAQ (usa <details>/<summary> nativos, ya funcionan sin JS) --- */
 html.no-js details {
    margin-bottom: 0.75rem;

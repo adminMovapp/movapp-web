@@ -1,0 +1,137 @@
+---
+// Reveal progresivo "uno por uno" (mismo mecanismo que FAQAccordion.astro:
+// IntersectionObserver por ítem, se queda revelado para siempre una vez
+// que aparece) pero SIN el giro/spin de las FAQs -- a pedido explícito, acá
+// solo es un fundido simple.
+//
+// Círculos que "prenden": cada paso tiene un círculo indicador que arranca
+// apagado. Al hacer scroll y que el SIGUIENTE paso entra en viewport, el
+// círculo del paso ANTERIOR se prende -- como indicando "ya leíste esa
+// sugerencia, avanzaste a la siguiente" (lógica pedida explícitamente). El
+// último paso no tiene un "siguiente" que lo prenda, así que se prende solo
+// al aparecer él mismo (ver <script> más abajo).
+import ButtonContact from '@components/ui/ButtonContact.astro';
+import StarField from '@components/decorative/StarField.astro';
+import { WHAT_TO_DO_STEPS } from '@constants/directorioApps.ts';
+---
+
+<section class="relative mx-auto my-section w-full max-w-3xl px-4" data-aos="fade-up" data-quehacer-root>
+   <StarField id="directorio-que-hacer" ambientCount={40} />
+
+   <h2 class="text-center text-2xl md:text-4xl font-bold uppercase gradient-text-move bg-gradient-to-r from-gray-900 to-purple_mv bg-clip-text text-transparent dark:from-white dark:to-purple_mv">
+      ¿Qué hacer si tienes problemas con una app de préstamos?
+   </h2>
+
+   <div class="relative mt-10">
+      <div class="absolute bottom-2 left-[15px] top-2 w-px bg-gradient-to-b from-purple_mv via-purple_mv/40 to-transparent" aria-hidden="true"></div>
+
+      <div class="flex flex-col gap-8">
+         {
+            WHAT_TO_DO_STEPS.map((step, i) => (
+               <div class="step-reveal relative flex items-start gap-5" style={`--step-delay: ${i * 0.12}s;`} data-step-index={i}>
+                  <span
+                     class="step-dot relative z-10 mt-1 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border-2 border-purple_mv/30 bg-gray-50 dark:bg-[#050505]"
+                     data-step-dot={i}
+                  >
+                     <span class="step-dot-inner h-2.5 w-2.5 rounded-full bg-purple_mv/20" />
+                  </span>
+                  <div class="flex-1 pt-1">
+                     <h3 class="text-lg font-bold text-text_banner">{step.title}</h3>
+                     <p class="mt-2 text-sm text-gray-700 dark:text-white/80">{step.text}</p>
+                  </div>
+               </div>
+            ))
+         }
+      </div>
+   </div>
+
+   <div class="mt-10 flex justify-center">
+      <ButtonContact
+         id="whatsapp-directorio-quehacer"
+         label="Solicitar orientación por WhatsApp"
+         message="¡Hola! Quiero orientación sobre una app de préstamos."
+      />
+   </div>
+</section>
+
+<style>
+   .step-reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition:
+         opacity 0.5s ease var(--step-delay, 0s),
+         transform 0.5s ease var(--step-delay, 0s);
+   }
+   .step-reveal.is-in-view {
+      opacity: 1;
+      transform: translateY(0);
+   }
+
+   /* Círculo "apagado" -> "prendido": borde + punto interno cambian de un
+      tono tenue a morado sólido con un pequeño glow, mismo lenguaje visual
+      que .field-star de StarField.astro. */
+   .step-dot {
+      transition: border-color 0.4s ease;
+   }
+   .step-dot-inner {
+      transition:
+         background-color 0.4s ease,
+         box-shadow 0.4s ease;
+   }
+   .step-dot.is-lit {
+      border-color: #8149e2;
+   }
+   .step-dot.is-lit .step-dot-inner {
+      background-color: #8149e2;
+      box-shadow: 0 0 10px rgba(129, 73, 226, 0.7);
+   }
+</style>
+
+<script>
+   const initQueHacerReveal = (root: Element) => {
+      if (root.getAttribute('data-quehacer-ready') === 'true') return;
+      root.setAttribute('data-quehacer-ready', 'true');
+
+      const items = Array.from(root.querySelectorAll('.step-reveal'));
+      if (!items.length) return;
+
+      const lightDot = (index: number) => {
+         root.querySelector(`[data-step-dot="${index}"]`)?.classList.add('is-lit');
+      };
+
+      if (!('IntersectionObserver' in window)) {
+         items.forEach((el, i) => {
+            el.classList.add('is-in-view');
+            lightDot(i);
+         });
+         return;
+      }
+
+      const observer = new IntersectionObserver(
+         (entries, obs) => {
+            entries.forEach((entry) => {
+               if (!entry.isIntersecting) return;
+               const el = entry.target as HTMLElement;
+               const index = Number(el.dataset.stepIndex);
+               el.classList.add('is-in-view');
+               obs.unobserve(el);
+
+               // Prende el círculo del paso ANTERIOR ("ya se leyó"). El último
+               // paso no tiene un "siguiente" que lo prenda, así que se prende
+               // a sí mismo al aparecer.
+               if (index > 0) lightDot(index - 1);
+               if (index === items.length - 1) lightDot(index);
+            });
+         },
+         { threshold: 0, rootMargin: '0px 0px -10% 0px' },
+      );
+      items.forEach((el) => observer.observe(el));
+   };
+
+   const initAllQueHacer = () => {
+      document.querySelectorAll('[data-quehacer-root]').forEach(initQueHacerReveal);
+   };
+
+   initAllQueHacer();
+   document.addEventListener('astro:page-load', initAllQueHacer);
+</script>

@@ -416,6 +416,17 @@ export const PAGE_SCHEMA = {
       breadcrumb: 'Colaboraciones',
    },
 
+   // --- CollectionPage: listado de apps agrupadas por estatus (reportadas vs.
+   // reguladas), mismo criterio que /blog. Sin Review/AggregateRating: la
+   // página no muestra calificaciones, solo estatus de reporte/regulación.
+   '/directorio-de-apps': {
+      type: 'CollectionPage',
+      name: 'Apps de préstamos legales e ilegales en México',
+      description:
+         'Encuentra un listado actualizado con el estatus legal de las apps de crédito en México. Te mostramos las señales de alerta para detectar fraudes o "montadeudas" y una guía directa con qué hacer para proteger tu información o realizar denuncias de forma segura.',
+      breadcrumb: 'Aplicaciones',
+   },
+
    // ⚠ /mind y /red pueden evolucionar a Article o CollectionPage si se
    // convierten en hubs de contenido. Por ahora WebPage + Breadcrumb es
    // suficiente y correcto (guía §2.5).
