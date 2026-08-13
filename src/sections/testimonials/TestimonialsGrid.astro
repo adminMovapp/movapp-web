@@ -113,10 +113,20 @@ const tiltOf = (i: number) => (i % 2 === 0 ? -1 : 1) * (4 + (i % 3) * 1.5);
       (--tilt, ver arriba) como si fueran fotos puestas de cualquier forma, y
       se "cuadran" (rotate(0)) al interactuar -- con mouse real, al pasar el
       cursor; sin mouse (touch), al entrar en viewport (ver <script> más
-      abajo, agrega "is-aligned"). "(hover: hover)"/"(hover: none)" (no solo
-      un breakpoint de ancho) es lo que separa ambos casos: un mouse en una
-      pantalla angosta sigue usando hover, y una tablet táctil grande sigue
-      usando scroll.
+      abajo, agrega "is-aligned").
+
+      OJO -- este componente usaba antes "@media (hover: hover)"/"(hover:
+      none)" para separar ambos casos, y se cambió tras un reporte real: en
+      un Galaxy A52s con el navegador Samsung Internet las tarjetas nunca se
+      cuadraban al hacer scroll. Causa confirmada: Samsung Internet tiene un
+      bug conocido donde "(hover: hover)" da TRUE en pantallas táctiles puras
+      (sin mouse ni lápiz) -- el navegador entra por la rama "de escritorio"
+      (espera un :hover real) y como nunca llega, el tilt queda inclinado
+      para siempre. La media query de CSS no es confiable para esto en la
+      práctica. En vez de eso, el <script> de abajo detecta touch por JS
+      (navigator.maxTouchPoints/ontouchstart, no depende del media feature)
+      y agrega ".is-touch-device" a este section -- el CSS decide el cuadre
+      según esa clase, no según "(hover: ...)".
    */
    .testimonial-card {
       transform: rotate(var(--tilt, 0deg));
@@ -125,25 +135,28 @@ const tiltOf = (i: number) => (i % 2 === 0 ? -1 : 1) * (4 + (i % 3) * 1.5);
          border-color 0.3s ease,
          box-shadow 0.3s ease;
    }
-   @media (hover: hover) {
-      .testimonial-card:hover {
-         transform: rotate(0deg);
-      }
+   [data-testimonials-grid].is-touch-device .testimonial-card.is-aligned {
+      transform: rotate(0deg);
    }
-   @media (hover: none) {
-      .testimonial-card.is-aligned {
-         transform: rotate(0deg);
-      }
+   [data-testimonials-grid]:not(.is-touch-device) .testimonial-card:hover {
+      transform: rotate(0deg);
    }
 </style>
 
 <script>
-   // Cuadra cada tarjeta al entrar en viewport -- SOLO tiene efecto visual en
-   // touch (ver "(hover: none)" arriba); en desktop la clase se agrega igual
-   // pero el CSS la ignora, el cuadre ahí depende únicamente del :hover.
+   // Cuadra cada tarjeta al entrar en viewport -- sólo tiene efecto visual en
+   // touch (ver ".is-touch-device" arriba); en desktop la clase "is-aligned"
+   // se agrega igual pero el CSS la ignora, el cuadre ahí depende únicamente
+   // del :hover real.
    const initTestimonialTilt = (root: Element) => {
       if (root.getAttribute('data-tilt-ready') === 'true') return;
       root.setAttribute('data-tilt-ready', 'true');
+
+      // Ver nota arriba: detección real de touch por JS, NO por
+      // "matchMedia('(hover: none)')" -- Samsung Internet (confirmado en
+      // Galaxy A52s) reporta "hover: hover" incluso sin mouse/lápiz.
+      const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+      root.classList.toggle('is-touch-device', isTouchDevice);
 
       const cards = Array.from(root.querySelectorAll('.testimonial-card'));
       if (!cards.length) return;
