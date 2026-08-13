@@ -15,7 +15,7 @@ import { FAQ_ICONS, FAQ_COLORS } from './faqIcons';
 export const FAQS_PAGE_MOVAPP = [
    {
       q: '¿Quién es Movapp?',
-      a: '[PENDIENTE DE CONFIRMAR -- el mockup repetía aquí la respuesta de la pregunta de Acoso sobre si es legal que te acosen por una deuda; no corresponde a esta pregunta.]',
+      a: 'Es una herramienta digital que bloquea el acoso de las apps de préstamo, protege tus contactos y tu galería, y te conecta con un asesor real.',
       icon: FAQ_ICONS.building,
       color: FAQ_COLORS.company,
    },
