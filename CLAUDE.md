@@ -43,7 +43,7 @@ Every new section/component is designed and verified on mobile (~375-428px viewp
 
 ### SEO content import
 
-New pages/sections are typically implemented from a master SEO/content document (attached to the conversation, not stored in the repo); SEO copy (H1, heading hierarchy, meta title/description/keywords, verbatim body copy) is the top priority of the project, ahead of any urge to paraphrase. The `.claude/skills/seo-content-import/SKILL.md` skill encodes the exact extraction/mapping/verification process to follow.
+New pages/sections are typically implemented from a master SEO/content document (attached to the conversation, not stored in the repo); SEO copy (H1, heading hierarchy, meta title/description, verbatim body copy) is the top priority of the project, ahead of any urge to paraphrase. The `.claude/skills/Importaciones/SKILL.md` skill encodes the exact extraction/mapping/verification process to follow, plus two conventions that apply regardless of a source document: unique `id`s on WhatsApp buttons and contextual `alt` text on content images.
 
 ### Performance (Lighthouse / PSI)
 

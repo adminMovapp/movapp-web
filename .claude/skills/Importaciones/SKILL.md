@@ -1,6 +1,6 @@
 ---
-name: seo-content-import
-description: Implementa en el sitio Astro el copy de una sección o rango de páginas del documento maestro de SEO/contenido de Movapp (el PDF de ~54 páginas del rediseño), priorizando fidelidad de SEO (H1, meta title/description, keywords, jerarquía de encabezados). Úsala cuando el usuario diga cosas como "de la página X a la Y está el contenido de [sección]" o "implementa el copy de [sección] del documento".
+name: Importaciones
+description: Implementa en el sitio Astro el copy de una sección o rango de páginas del documento maestro de SEO/contenido de Movapp (el PDF de ~54 páginas del rediseño), priorizando fidelidad de SEO (H1, meta title/description, keywords, jerarquía de encabezados). También cubre las dos convenciones de tracking/accesibilidad que deben aplicarse a todo botón de WhatsApp e imagen de contenido nuevos, se estén importando de un documento o no: id único por CTA y alt contextual con keyword. Úsala cuando el usuario diga cosas como "de la página X a la Y está el contenido de [sección]" o "implementa el copy de [sección] del documento", y también al agregar un botón de WhatsApp o una imagen de contenido nueva a cualquier sección.
 ---
 
 # Importar copy del documento maestro de SEO a la web
@@ -73,6 +73,43 @@ termina en la web debe ser **una copia exacta**, sin excepciones:
   compara explícitamente el peso/color de cada frase marcada contra el código actual — no
   asumas que una importación anterior ya las respetó correctamente.
 
+## Otras convenciones obligatorias (con o sin documento fuente)
+
+Estas dos reglas no dependen de que haya un documento/mockup de por medio — aplican a
+**cualquier** botón de WhatsApp o imagen de contenido nueva que agregues, tanto al importar
+una sección del documento maestro como al hacer cualquier otro cambio.
+
+### ID único en cada botón de WhatsApp
+
+Todo `<ButtonContact />` nuevo debe llevar su prop `id` con el patrón
+`whatsapp-<página>-<sección>` (todo minúsculas, palabras separadas por guiones) — sin esto,
+GA4 no puede distinguir desde qué CTA convirtió el usuario. Ejemplos ya aplicados:
+`whatsapp-home-hero`, `whatsapp-home-servicios`, `whatsapp-home-footer`,
+`whatsapp-elhack-hero`, `whatsapp-elhack-empiezahoy`, `whatsapp-testimonios-cta`. Si la
+sección/página es nueva, sigue el mismo patrón con el nombre de página/sección que
+corresponda — no dejes el botón sin `id` "por ahora".
+
+### Alt contextual (con keyword) en imágenes de contenido
+
+Toda imagen **funcional/de contenido** nueva (una foto o ilustración real que ilustra algo:
+un asesor, un paso de un proceso, una feature, un testimonio) necesita un `alt` descriptivo
+que incluya contexto + keyword relevante del negocio — no un `alt` genérico ni vacío. Ejemplo
+ya aplicado: `alt="Asesor de Movapp ayudando a frenar el acoso de apps montadeudas"` (en vez
+de algo como `alt="Guía de asesoría Movapp"` o `alt=""`).
+
+Esto **no aplica** a:
+- **Logos** (`alt="Movapp"`, `alt="El Hack"`) — el alt de un logo es el nombre de marca, no
+  keywords.
+- **Imágenes puramente decorativas** (fondos, glows, logos repetidos con efecto glitch,
+  fotos de fondo de un hero con overlay + texto real encima) — esas van con `alt=""` y
+  `aria-hidden="true"` en su contenedor, igual que ya se hace en el resto del sitio.
+- **Íconos redundantes con un texto visible junto a ellos** (p. ej. un pictograma dentro de
+  una card que ya tiene su propio `<h3>`/`<p>` con la misma idea) — ahí un `alt=""` evita que
+  un lector de pantalla lea la misma información dos veces.
+
+Antes de dar una sección por terminada, revisa cada `<Image>`/`<img>` nueva que no caiga en
+las excepciones de arriba y confirma que su `alt` sea contextual, no genérico.
+
 ## Procedimiento
 
 1. **Identifica el alcance.** Si el usuario da un rango de páginas ("de la 33 a la 40") o
@@ -107,9 +144,13 @@ termina en la web debe ser **una copia exacta**, sin excepciones:
 5. **Verifica las reglas de SEO antes de dar por terminado:**
    - Exactamente un `<h1>` por página (grep en el HTML renderizado si hay dudas).
    - No se salta ningún nivel de encabezado.
-   - `title`/`description`/`keywords` están seteados vía props del `Layout`, no hardcodeados
-     en el `<head>`.
+   - `title`/`description` están seteados vía props del `Layout`, no hardcodeados en el
+     `<head>` (el sitio ya NO usa meta keywords -- se quitó del todo, Google/Bing no lo usan
+     para ranking; no lo reintroduzcas).
    - El copy coincide con el documento, no es una paráfrasis.
+   - Todo `<ButtonContact />` nuevo tiene su `id` (`whatsapp-<página>-<sección>`) y toda
+     imagen de contenido nueva tiene su `alt` contextual — ver la sección "Otras
+     convenciones obligatorias" más arriba.
 
 6. **Construye y valida:** `npm run build` y `npm run check` (o `astro check`) desde
    `movapp-web/` — no deben aparecer errores nuevos (hay ~6 errores de TS preexistentes en

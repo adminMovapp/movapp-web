@@ -4,7 +4,7 @@
 // archivo de imagen del wireframe (ej. "erik-mann-contra-los-
 // montadeudas.webp", ya en formato slug) y arma el enlace a /blog/<slug> --
 // esa página de artículo individual todavía no existe, pero el enlace se
-// crea de todos modos (ver skill seo-content-import).
+// crea de todos modos (ver skill Importaciones).
 
 export const BLOG_FEATURED = {
    slug: 'erik-mann-contra-los-montadeudas',

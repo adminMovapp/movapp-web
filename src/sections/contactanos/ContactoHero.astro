@@ -32,48 +32,60 @@
 //
 // Viñeta + resplandor morado (a pedido, "que no se vean las líneas de la
 // imagen... se siente que sólo está pegada"): antes el borde de la foto
-// cortaba en seco contra el fondo de la página. Se agregan dos capas:
+// cortaba en seco contra el fondo de la página. Se agregan varias capas:
 // - ".contacto-hero-overlay": adentro del contenedor con overflow-hidden,
 //   combina el gradiente lineal original (contraste para el H1) con un
 //   SEGUNDO gradiente lineal (no radial -- ver más abajo por qué) que
-//   oscurece hacia arriba/abajo usando el MISMO tono #050505 del fondo
-//   oscuro del sitio (no "transparent": revelar el fondo real de la página
-//   se vería mal en tema claro, donde el fondo es gris claro -- un tono
-//   fijo cercano al negro de la propia foto funciona igual en ambos temas).
-//   OJO -- dos intentos anteriores no bastaron, confirmado recortando
-//   screenshots justo en el borde:
+//   oscurece hacia arriba/abajo. OJO -- dos intentos anteriores no
+//   bastaron, confirmado recortando screenshots justo en el borde:
 //     1) El primer intento llegaba solo a opacidad 0.85 en el borde: sobraba
 //        un 15% de la foto original asomando, y como esa esquina no es
-//        negro puro, contra el fondo sólido #050505 se seguía viendo una
-//        línea.
+//        negro puro, contra el fondo sólido se seguía viendo una línea.
 //     2) El segundo intento (radial-gradient con tamaño de elipse en %)
 //        subsanó la opacidad pero el tamaño de la elipse no llegaba a
-//        opacidad 1 EXACTO en el borde real de la caja (dependía del
-//        cálculo del % sobre ambos ejes a la vez). Un gradiente LINEAL
-//        vertical, con stops en 0%/100% explícitos, sí garantiza #050505
-//        sólido exactamente en y=0 y y=100% -- sin aproximar. Además, como
-//        la foto es full-bleed (izquierda/derecha tocan el borde de la
-//        pantalla, no hay "línea" posible ahí, nada contra qué chocar), solo
-//        hace falta difuminar arriba/abajo -- un lineal vertical le puede
-//        dedicar TODO su rango a esa dirección, con una franja de
-//        transición más generosa que la que lograba la elipse.
-// - ".contacto-hero-glow": afuera de ese contenedor (mismo wrapper 100vw,
-//   pero SIN overflow-hidden), alineado aprox. con el punto donde el
-//   teléfono de la foto ya emite su propio brillo morado (~40% desde la
-//   izquierda, ver la imagen). OJO -- un intento anterior lo centraba
-//   verticalmente dentro de la MISMA caja que la imagen, así que quedaba
-//   100% tapado por la foto (opaca) y nunca se llegaba a ver: acá se ancla
-//   con "-bottom-16/-24" (fuera de la caja de la imagen a propósito) para
-//   que una porción real quede visible en el espacio vacío antes de la
-//   siguiente sección, como si esa luz siguiera escapando hacia la página.
+//        opacidad 1 EXACTO en el borde real de la caja. Un gradiente LINEAL
+//        vertical, con stops en 0%/100% explícitos, sí garantiza el color
+//        sólido exactamente en y=0 y y=100% -- sin aproximar.
+//   El color final del degradado ya NO es el #050505 neutro del fondo del
+//   sitio, sino un negro con un toque de morado (--seam-color más abajo):
+//   confirmado con un muestreo de píxeles que aunque la opacidad llegaba a
+//   1.0 exacta, el tono era neutro mientras que el resplandor de afuera
+//   (abajo) es morado -- ese cambio de TONO, no de opacidad, es lo que
+//   seguía leyéndose como un corte, aunque la opacidad ya estuviera resuelta.
+// - ".contacto-hero-seam-bottom"/".-top": el problema real que quedaba
+//   (confirmado con Playwright + muestreo de píxeles fila por fila) es que
+//   el resplandor morado vive TOTALMENTE fuera del contenedor con
+//   overflow-hidden (no puede vivir adentro sin quedar tapado por la foto
+//   opaca) -- así que en el pixel justo antes del borde no hay nada de
+//   morado, y en el pixel justo después aparece de golpe: un salto de color
+//   instantáneo exactamente en la línea recta del contenedor, muy fácil de
+//   percibir para el ojo por ser una línea geométrica perfecta. Ningún
+//   ajuste de opacidad/blur del resplandor de afuera arregla esto, porque
+//   el salto ocurre por la existencia de un borde de recorte, no por la
+//   intensidad de la luz. La solución real es un "puente": un div FUERA del
+//   contenedor recortado (mismo wrapper sin overflow-hidden) pegado exacto
+//   al borde (top-full / bottom-full), que arranca con el MISMO color exacto
+//   en el que termina el degradado de adentro (--seam-color, la MISMA
+//   variable/valor, no una aproximación) y se desvanece a "transparent" --
+//   garantiza continuidad por construcción (mismo valor literal a ambos
+//   lados del borde), dejando que el resplandor morado de abajo (que sigue
+//   existiendo, ver siguiente punto) se revele gradualmente en vez de de
+//   golpe.
+// - ".contacto-hero-glow": afuera del contenedor recortado, alineado aprox.
+//   con el punto donde el teléfono de la foto ya emite su propio brillo
+//   morado (~40% desde la izquierda, ver la imagen). Ancla con
+//   "-bottom-16/-24" para que una porción real quede visible en el espacio
+//   vacío antes de la siguiente sección, como si esa luz siguiera escapando
+//   hacia la página -- ahora la transición hacia ella ya no es un salto
+//   sino continua, gracias al puente de arriba.
 import { Image } from 'astro:assets';
 import ImgContactoHero from '@assets/contactos-portada.webp';
 ---
 
 <section class="keep-white relative mx-auto w-full max-w-5xl px-4 pt-16 text-center md:pt-8">
-   <div class="relative left-1/2 w-screen -translate-x-1/2">
+   <div class="contacto-hero-frame relative left-1/2 w-screen -translate-x-1/2">
       <div
-         class="contacto-hero-glow pointer-events-none absolute -bottom-16 left-[40%] -z-10 h-72 w-72 -translate-x-1/2 rounded-full bg-purple_mv/[0.1] blur-[130px] dark:bg-purple_mv/[0.3] md:-bottom-24 md:h-96 md:w-96"
+         class="contacto-hero-glow pointer-events-none absolute -bottom-16 left-[40%] -z-10 h-72 w-72 -translate-x-1/2 rounded-full bg-purple_mv/[0.14] blur-[110px] dark:bg-purple_mv/[0.38] md:-bottom-24 md:h-96 md:w-96"
          aria-hidden="true"
       >
       </div>
@@ -83,9 +95,28 @@ import ImgContactoHero from '@assets/contactos-portada.webp';
          visible sin nada que lo distraiga/mezcle.
       -->
       <div
-         class="pointer-events-none absolute -top-10 left-[40%] -z-10 h-48 w-48 -translate-x-1/2 rounded-full bg-purple_mv/[0.05] blur-[110px] dark:bg-purple_mv/[0.15] md:-top-14 md:h-64 md:w-64"
+         class="pointer-events-none absolute -top-10 left-[40%] -z-10 h-48 w-48 -translate-x-1/2 rounded-full bg-purple_mv/[0.07] blur-[100px] dark:bg-purple_mv/[0.2] md:-top-14 md:h-64 md:w-64"
          aria-hidden="true"
       >
+      </div>
+
+      <!--
+         "Puentes" de costura: viven en este wrapper sin overflow-hidden
+         (a diferencia del contenedor de la imagen), pegados exacto al borde
+         de arriba/abajo de ese contenedor ("bottom-full"/"top-full" quedan
+         justo en el límite porque este wrapper no tiene alto propio -- lo
+         hereda del contenedor de la imagen, su único hijo en flujo normal).
+         Arrancan con el MISMO valor de --seam-color con el que termina el
+         degradado de adentro (".contacto-hero-overlay") y se desvanecen a
+         transparent -- garantiza continuidad exacta en el borde por
+         construcción (mismo color literal a ambos lados), en vez de
+         depender de que la opacidad/blur del glow de abajo "adivine" el
+         tono correcto. Lo que queda revelándose gradualmente detrás, a
+         medida que el puente se desvanece, es el glow morado real.
+      -->
+      <div class="contacto-hero-seam contacto-hero-seam-bottom pointer-events-none absolute inset-x-0 top-full h-20 md:h-28" aria-hidden="true">
+      </div>
+      <div class="contacto-hero-seam contacto-hero-seam-top pointer-events-none absolute inset-x-0 bottom-full h-14 md:h-20" aria-hidden="true">
       </div>
 
       <div class="relative w-full aspect-[2135/1825] overflow-hidden md:max-h-[60vh]" aria-hidden="true">
@@ -99,9 +130,34 @@ import ImgContactoHero from '@assets/contactos-portada.webp';
 </section>
 
 <style>
+   .contacto-hero-frame {
+      /*
+         Negro con un toque deliberado de morado (no el #050505 neutro del
+         fondo del sitio): confirmado con muestreo de píxeles que el salto
+         de TONO (neutro adentro vs. morado afuera, por el glow) se seguía
+         percibiendo como corte aunque la opacidad ya llegara a 1.0 exacta.
+         Un solo valor compartido, literal, entre el degradado de adentro y
+         los puentes de afuera.
+      */
+      --seam-color: #130b1e;
+   }
+
    .contacto-hero-overlay {
-      background-image:
-         linear-gradient(to bottom, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.5) 50%, rgba(0, 0, 0, 0.8) 100%),
-         linear-gradient(to bottom, #050505 0%, transparent 28%, transparent 72%, #050505 100%);
+      background-image: linear-gradient(
+         to bottom,
+         var(--seam-color) 0%,
+         rgba(0, 0, 0, 0.55) 18%,
+         rgba(0, 0, 0, 0.45) 50%,
+         rgba(0, 0, 0, 0.6) 82%,
+         var(--seam-color) 100%
+      );
+   }
+
+   .contacto-hero-seam-bottom {
+      background: linear-gradient(to bottom, var(--seam-color) 0%, transparent 100%);
+   }
+
+   .contacto-hero-seam-top {
+      background: linear-gradient(to top, var(--seam-color) 0%, transparent 100%);
    }
 </style>
