@@ -3,12 +3,6 @@
 // Preguntas de la sección "Movapp" en /faqs. Mismo criterio que
 // @constants/faqsPageAcoso.ts.
 //
-// OJO -- la respuesta de "¿Quién es Movapp?" se deja marcada como
-// [PENDIENTE DE CONFIRMAR]: el mockup fuente trae ahí, literal, el mismo
-// texto de la respuesta de "¿Es legal que me acosen por una deuda?" (sección
-// Acoso) -- no tiene relación con la pregunta y se ve como un error de
-// copiar/pegar en el documento. No se inventó una respuesta nueva; falta que
-// el equipo de contenido confirme el texto real antes de publicar.
 
 import { FAQ_ICONS, FAQ_COLORS } from './faqIcons';
 
