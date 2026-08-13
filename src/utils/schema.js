@@ -410,6 +410,21 @@ export const PAGE_SCHEMA = {
       breadcrumb: 'Blog',
    },
 
+   // --- Páginas de detalle por categoría del blog (plantilla única, ver
+   // src/pages/blog/[categoria].astro + @constants/blogCategoryPages.ts).
+   // Ruta dinámica: cada categoría de ese archivo necesita su propia entrada
+   // acá (mismo `name`/`breadcrumb` que su `h1`, misma `description` que su
+   // `intro`) -- agregar una categoría nueva a ese archivo sin agregar su
+   // entrada acá la deja sin BreadcrumbList/WebPage propios (cae al fallback
+   // de solo Organization, ver getPageSchema).
+   '/blog/evaluaciones': {
+      type: 'CollectionPage',
+      name: 'Evaluaciones de apps y lista negra',
+      description:
+         'Revisa nuestro listado actualizado de apps fraudulentas e ilegales. Analizamos cada plataforma para que sepas cuáles evitar y cuáles sí son seguras.',
+      breadcrumb: 'Evaluaciones de apps y lista negra',
+   },
+
    '/collaborations': {
       name: 'Colaboraciones',
       description: 'Colaboraciones de Movapp con medios y creadores que difunden cómo frenar a las apps montadeuda.',
