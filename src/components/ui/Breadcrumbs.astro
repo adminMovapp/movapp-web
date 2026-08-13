@@ -1,0 +1,68 @@
+---
+// Migas de pan visibles -- "Inicio | <página actual>" (o "Inicio | X | Y" si
+// alguna vez una ruta necesita un nivel intermedio, ver prop "items" abajo).
+// Primer uso de este patrón: DirectorioHero.astro (antes de refactorizarlo
+// para usar este componente). Ahora se usa en cada página con un
+// PAGE_SCHEMA[...].breadcrumb declarado.
+//
+// Por qué se resuelve solo desde schema.js en vez de recibir el texto por
+// prop: schema.js YA declara un BreadcrumbList (invisible, JSON-LD) para
+// cada una de estas rutas -- la regla no negociable del archivo es que el
+// schema solo declare lo que existe VISUALMENTE en la página (ver comentario
+// de cabecera de schema.js). Si este componente reciviera el label a mano,
+// alguien podría editarlo acá sin tocar breadcrumb en PAGE_SCHEMA (o
+// viceversa) y las migas visibles divergirían del BreadcrumbList real. Leer
+// el mismo dato desde el mismo lugar hace la divergencia imposible.
+import { getPageEntry } from '@utils/schema.js';
+
+export interface BreadcrumbItem {
+   label: string;
+   // Se omite en el último ítem (la página actual: no es link).
+   href?: string;
+}
+
+interface Props {
+   // Solo hace falta pasarla a mano si una ruta necesita más de un nivel
+   // intermedio (ninguna hoy la necesita -- todas las entradas de
+   // PAGE_SCHEMA son de un solo nivel). Sin esta prop, se arma sola con el
+   // "breadcrumb" de PAGE_SCHEMA para la ruta actual.
+   items?: BreadcrumbItem[];
+}
+
+const { items } = Astro.props;
+
+const resolved: BreadcrumbItem[] =
+   items ??
+   (() => {
+      const entry = getPageEntry(Astro.url.pathname);
+      return entry?.breadcrumb ? [{ label: entry.breadcrumb }] : [];
+   })();
+---
+
+{
+   resolved.length > 0 && (
+      <nav aria-label="Migas de pan" class="relative z-10 mb-4 text-sm text-gray-600 dark:text-white/60">
+         <a href="/" class="hover:text-purple_mv dark:hover:text-white">
+            Inicio
+         </a>
+         {resolved.flatMap((item, i) => {
+            const isCurrent = i === resolved.length - 1;
+            return [
+               <span aria-hidden="true">
+                  {' '}
+                  |{' '}
+               </span>,
+               isCurrent ? (
+                  <span aria-current="page" class="text-gray-900 dark:text-white">
+                     {item.label}
+                  </span>
+               ) : (
+                  <a href={item.href} class="hover:text-purple_mv dark:hover:text-white">
+                     {item.label}
+                  </a>
+               ),
+            ];
+         })}
+      </nav>
+   )
+}

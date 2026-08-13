@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import ImgLogo from '@assets/Logo.png';
 import ImgLogoBlanco from '@assets/Logo-Blanco.png';
+import HeaderSearch from '@components/layout/HeaderSearch.astro';
 ---
 
 <header
@@ -26,7 +27,13 @@ import ImgLogoBlanco from '@assets/Logo-Blanco.png';
    -->
    <div class="hidden lg:flex items-center gap-2">
       <!--
-         Tienda / Carrito (desktop): por defecto se muestra el ícono de
+         Buscador (desktop): se despliega dentro de la propia navbar (ver
+         HeaderSearch.astro) -- a pedido explícito, NO es el mismo modal
+         centrado que usa el botón flotante de móvil (SearchPanel.astro).
+      -->
+      <HeaderSearch />
+
+      <!-- Tienda / Carrito (desktop): por defecto se muestra el ícono de
          tienda (igual al de la barra inferior en móvil); solo se cambia
          por el ícono de carrito (con su badge) cuando hay algo dentro --
          ver el toggle de data-cart-empty-icon/data-cart-filled-icon en el

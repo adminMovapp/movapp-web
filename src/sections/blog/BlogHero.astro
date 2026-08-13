@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import ImagePlaceholder from '@components/ui/ImagePlaceholder.astro';
 import StarField from '@components/decorative/StarField.astro';
+import Breadcrumbs from '@components/ui/Breadcrumbs.astro';
 import { BLOG_FEATURED } from '@constants/blog.ts';
 import { BLOG_IMAGES } from '@constants/blogImages.ts';
 
@@ -11,6 +12,8 @@ const featuredImage = BLOG_IMAGES[BLOG_FEATURED.slug];
 <section class="relative mx-auto my-section w-full max-w-3xl px-4 text-center" data-aos="fade-up">
    <!-- Mismo StarField (estrellas ambiente + fugaces) que el resto de las secciones del blog (ver BlogCategorySection.astro), para que todo el blog comparta el mismo fondo/animaciones. -->
    <StarField id="blog-hero" />
+
+   <Breadcrumbs />
 
    <!-- H1 (único H1 de la página) -->
    <h1 class="mx-auto max-w-2xl text-3xl font-bold uppercase leading-tight text-gray-900 dark:text-white md:text-5xl">

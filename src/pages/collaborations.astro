@@ -1,5 +1,6 @@
 ---
 import Layout from '@layouts/Layout.astro';
+import Breadcrumbs from '@components/ui/Breadcrumbs.astro';
 import { VIDEOS } from '@utils/config.jsx';
 
 const cardHover =
@@ -7,11 +8,19 @@ const cardHover =
 ---
 
 <Layout title="Colaboraciones">
-   <div class="mt-32 mx-auto mb-4 max-w-2xl px-4 md:px-0" data-aos="fade-down">
+   <!-- El "mt-32" (despeje del header fijo) se movió acá -- antes vivía en
+        el div de la tarjeta de abajo, que ahora arranca en "mt-0" para que
+        el margen entre el breadcrumb y la tarjeta sea el "mb-4" del propio
+        breadcrumb, no el mt-32 colapsando con él. -->
+   <div class="mx-auto mt-32 max-w-2xl px-4 text-center md:px-0">
+      <Breadcrumbs />
+   </div>
+
+   <div class="mx-auto mb-4 max-w-2xl px-4 md:px-0" data-aos="fade-down">
       <div
-         class={`flex flex-col p-6 rounded-xl shadow-md 
-    
-    
+         class={`flex flex-col p-6 rounded-xl shadow-md
+
+
     ${cardHover}`}
       >
          <h2 class="mb-4 text-center text-xl font-bold text-transparent bg-clip-text text-white md:text-4xl">

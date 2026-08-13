@@ -1,21 +1,18 @@
 ---
 // H1 (único H1 de la página). Breadcrumb visible "Inicio | Aplicaciones" --
 // primer uso de este patrón en el sitio (antes solo existía como
-// BreadcrumbList invisible en schema.js, ver PAGE_SCHEMA['/directorio-de-apps']);
-// el último nivel no es link (aria-current="page"), mismo criterio semántico
-// de cualquier breadcrumb.
+// BreadcrumbList invisible en schema.js, ver PAGE_SCHEMA['/directorio-de-apps']),
+// ahora vía el componente compartido Breadcrumbs.astro (ver ese archivo:
+// resuelve el label solo desde PAGE_SCHEMA, no puede divergir del schema).
 import ButtonContact from '@components/ui/ButtonContact.astro';
 import StarField from '@components/decorative/StarField.astro';
+import Breadcrumbs from '@components/ui/Breadcrumbs.astro';
 ---
 
 <section class="relative mx-auto max-w-3xl px-4 pt-16 text-center md:pt-8" data-aos="fade-up">
    <StarField id="directorio-hero" ambientCount={40} />
 
-   <nav aria-label="Migas de pan" class="relative z-10 mb-4 text-sm text-gray-600 dark:text-white/60">
-      <a href="/" class="hover:text-purple_mv dark:hover:text-white">Inicio</a>
-      <span aria-hidden="true"> | </span>
-      <span aria-current="page" class="text-gray-900 dark:text-white">Aplicaciones</span>
-   </nav>
+   <Breadcrumbs />
 
    <h1 class="relative z-10 mx-auto max-w-2xl text-3xl font-bold uppercase leading-tight text-gray-900 dark:text-white md:text-5xl">
       Apps de préstamos legales e ilegales en México

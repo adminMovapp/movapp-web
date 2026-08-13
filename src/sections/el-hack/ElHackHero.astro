@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import ButtonContact from '@components/ui/ButtonContact.astro';
 import StormField from '@components/decorative/StormField.astro';
+import Breadcrumbs from '@components/ui/Breadcrumbs.astro';
 import ImgElHackBlanco from '@assets/elhack-blanco.png';
 import ImgElHackNegro from '@assets/elhack-negro.png';
 ---
@@ -24,6 +25,8 @@ import ImgElHackNegro from '@assets/elhack-negro.png';
       grande que el resto de las secciones (max-w-4xl + más padding vertical).
    -->
    <StormField id="el-hack-hero" boltCount={5} />
+
+   <Breadcrumbs />
 
    <!--
       Fondo negro + resplandor central: capa aparte del StormField de arriba

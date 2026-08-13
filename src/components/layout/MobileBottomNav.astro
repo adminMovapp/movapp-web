@@ -3,6 +3,7 @@ import { Image } from 'astro:assets';
 import ImgLogoResp from '@assets/logo_resp.webp';
 import ImgLogoRespBlanco from '@assets/logo_resp_blanco.webp';
 import MenuMobile from '@components/layout/MenuMobile.astro';
+import MobileSearch from '@components/layout/MobileSearch.astro';
 ---
 
 <!--
@@ -47,6 +48,10 @@ import MenuMobile from '@components/layout/MenuMobile.astro';
 
    <!-- Menú (hamburguesa con el resto de opciones) -->
    <MenuMobile />
+
+   <!-- Buscador (móvil): se despliega in-place (ver MobileSearch.astro),
+        mismo patrón que HeaderSearch.astro en escritorio -- ningún modal. -->
+   <MobileSearch />
 </nav>
 
 <style>

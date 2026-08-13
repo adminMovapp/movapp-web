@@ -79,10 +79,25 @@
 //   hacia la página -- ahora la transición hacia ella ya no es un salto
 //   sino continua, gracias al puente de arriba.
 import { Image } from 'astro:assets';
+import Breadcrumbs from '@components/ui/Breadcrumbs.astro';
 import ImgContactoHero from '@assets/contactos-portada.webp';
 ---
 
-<section class="keep-white relative mx-auto w-full max-w-5xl px-4 pt-16 text-center md:pt-8">
+<!--
+   El breadcrumb vive FUERA de la sección "keep-white" (a diferencia del
+   resto de los Hero, donde va adentro) -- esa clase fuerza texto blanco
+   sin importar el tema (ver global.css: ".keep-white [class*='text-white']"),
+   pensada para el texto que va ENCIMA de la foto de fondo. Puesto adentro,
+   ese mismo mecanismo por substring atraparía las clases
+   "dark:text-white/60" del breadcrumb (aunque solo deberían aplicar en modo
+   oscuro) y lo forzaría a blanco también en modo claro -- ilegible ahí
+   arriba, donde el fondo sigue siendo el del sitio (claro), no la foto.
+-->
+<div class="relative mx-auto max-w-5xl px-4 pt-16 text-center md:pt-8">
+   <Breadcrumbs />
+</div>
+
+<section class="keep-white relative mx-auto w-full max-w-5xl px-4 text-center">
    <div class="contacto-hero-frame relative left-1/2 w-screen -translate-x-1/2">
       <div
          class="contacto-hero-glow pointer-events-none absolute -bottom-16 left-[40%] -z-10 h-72 w-72 -translate-x-1/2 rounded-full bg-purple_mv/[0.14] blur-[110px] dark:bg-purple_mv/[0.38] md:-bottom-24 md:h-96 md:w-96"
