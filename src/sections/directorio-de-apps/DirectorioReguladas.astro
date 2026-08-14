@@ -2,7 +2,10 @@
 // Grid de apps reguladas/autorizadas. Solo 1 entrada confirmada por ahora
 // (CrediSeguro) -- el mockup mostraba 3 espacios vacíos adicionales, no se
 // inventan más apps hasta que se confirmen (ver constants/directorioApps.ts).
-import { REGULATED_APPS } from '@constants/directorioApps.ts';
+// Ícono: mismo criterio que DirectorioReportadas.astro (DIRECTORIO_ICONS,
+// alt vacío por ser redundante con el <h3> de al lado).
+import { Image } from 'astro:assets';
+import { REGULATED_APPS, DIRECTORIO_ICONS } from '@constants/directorioApps.ts';
 import StarField from '@components/decorative/StarField.astro';
 ---
 
@@ -21,6 +24,11 @@ import StarField from '@components/decorative/StarField.astro';
       {
          REGULATED_APPS.map((app) => (
             <li class="flex flex-col items-center rounded-2xl border border-purple_mv/25 bg-gradient-to-b from-purple_mv/[0.06] to-transparent p-5 text-center shadow-card transition-colors duration-300 hover:border-purple_mv/50 hover:shadow-card-hover dark:border-white/10 dark:from-purple_mv/[0.1] dark:to-black/30">
+               {DIRECTORIO_ICONS[app.slug] && (
+                  <div class="mb-3 flex h-14 w-14 items-center justify-center overflow-hidden rounded-2xl border border-purple_mv/20 bg-purple_mv/5 dark:border-white/10 dark:bg-white/5">
+                     <Image src={DIRECTORIO_ICONS[app.slug]} alt="" width={112} class="h-full w-full object-contain p-2" loading="lazy" />
+                  </div>
+               )}
                <h3 class="text-lg font-bold text-gray-900 dark:text-white">{app.name}</h3>
                <p class="mt-2 text-sm font-semibold text-green-500">✓ {app.status}</p>
                <a

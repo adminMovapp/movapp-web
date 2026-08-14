@@ -2,6 +2,9 @@
 import { Image } from 'astro:assets';
 import ImgLogoResp from '@assets/logo_resp.webp';
 import ImgLogoRespBlanco from '@assets/logo_resp_blanco.webp';
+// width=480 (~2x retina para el hueco máximo de 240px, ver skill Rendimiento)
+// en vez del tamaño real del archivo fuente.
+import ImgAsesoria from '@assets/Asesoria-gratuita.webp';
 import ButtonContact from '@components/ui/ButtonContact.astro';
 import StoreBadges from '@components/ui/StoreBadges.astro';
 ---
@@ -254,9 +257,10 @@ import StoreBadges from '@components/ui/StoreBadges.astro';
            demasiado grande frente al texto. Oculta en móvil: ese espacio lo
            ocupa ahora el bloque de íconos de tienda + descargas de arriba. -->
       <div class="mx-auto hidden aspect-[4/3] w-full max-w-[220px] items-center justify-center overflow-hidden rounded-2xl border border-purple_mv/20 bg-purple_mv/5 dark:border-white/10 dark:bg-white/5 md:flex md:aspect-square md:max-w-[240px]">
-         <img
-            src="/img/Asesoria-gratuita.webp"
+         <Image
+            src={ImgAsesoria}
             alt="Asesor de Movapp ayudando a frenar el acoso de apps montadeudas"
+            width={480}
             class="h-full w-full object-cover"
             loading="lazy"
          />

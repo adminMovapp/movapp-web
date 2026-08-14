@@ -5,11 +5,24 @@
 // esas páginas de detalle todavía no existen, pero el enlace se crea de
 // todos modos (mismo criterio ya usado en blog.ts).
 //
-// Los 5 íconos (icono_prestafacil.webp, icono_fortaprest.webp,
-// icono_mexicash.webp, icono_starpresta.webp, icono_crediseguro.webp) no
-// existen todavía en el repo -- a pedido explícito, las tarjetas se
-// muestran solo con texto (nombre + estatus) hasta que se agreguen los
-// archivos reales.
+// Los 5 íconos ya llegaron (antes no existían en el repo, ver historial) --
+// migrados de public/img/directorio a src/assets siguiendo la skill de
+// Rendimiento, con nombre limpio en kebab-case (icono-crediseguro.webp en
+// vez de "icono_crediseguro_1.webp", icono-starpresta.webp en vez de
+// "icono-starpresta.webp" con guion bajo/medio mezclado en el resto del set).
+import ImgPrestafacil from '@assets/icono-prestafacil.webp';
+import ImgFortaprest from '@assets/icono-fortaprest.webp';
+import ImgMexicash from '@assets/icono-mexicash.webp';
+import ImgStarpresta from '@assets/icono-starpresta.webp';
+import ImgCrediseguro from '@assets/icono-crediseguro.webp';
+
+export const DIRECTORIO_ICONS: Record<string, ImageMetadata> = {
+   prestafacil: ImgPrestafacil,
+   fortaprest: ImgFortaprest,
+   mexicash: ImgMexicash,
+   starpresta: ImgStarpresta,
+   crediseguro: ImgCrediseguro,
+};
 
 export interface DirectorioApp {
    slug: string;

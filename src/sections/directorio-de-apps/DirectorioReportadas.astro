@@ -1,9 +1,11 @@
 ---
-// Grid de apps con reportes verificados. Sin ícono por app a propósito (a
-// pedido explícito): los 4 archivos de ícono del mockup (icono_prestafacil.webp,
-// etc.) no existen todavía en el repo -- se agregan cuando estén disponibles,
-// sin inventar un logo de estas marcas mientras tanto.
-import { REPORTED_APPS } from '@constants/directorioApps.ts';
+// Grid de apps con reportes verificados. Los íconos ya llegaron (ver
+// DIRECTORIO_ICONS en directorioApps.ts) -- "alt" vacío a propósito: cada
+// ícono es puramente redundante con el nombre de la app que ya está en el
+// <h3> de al lado (ver skill Importaciones, excepción de "íconos
+// redundantes con texto visible junto a ellos").
+import { Image } from 'astro:assets';
+import { REPORTED_APPS, DIRECTORIO_ICONS } from '@constants/directorioApps.ts';
 import StarField from '@components/decorative/StarField.astro';
 ---
 
@@ -23,6 +25,11 @@ import StarField from '@components/decorative/StarField.astro';
       {
          REPORTED_APPS.map((app) => (
             <li class="flex flex-col items-center rounded-2xl border border-purple_mv/25 bg-gradient-to-b from-purple_mv/[0.06] to-transparent p-5 text-center shadow-card transition-colors duration-300 hover:border-purple_mv/50 hover:shadow-card-hover dark:border-white/10 dark:from-purple_mv/[0.1] dark:to-black/30">
+               {DIRECTORIO_ICONS[app.slug] && (
+                  <div class="mb-3 flex h-14 w-14 items-center justify-center overflow-hidden rounded-2xl border border-purple_mv/20 bg-purple_mv/5 dark:border-white/10 dark:bg-white/5">
+                     <Image src={DIRECTORIO_ICONS[app.slug]} alt="" width={112} class="h-full w-full object-contain p-2" loading="lazy" />
+                  </div>
+               )}
                <h3 class="text-lg font-bold text-gray-900 dark:text-white">{app.name}</h3>
                <p class="mt-2 text-sm font-semibold text-red-500">✓ {app.status}</p>
                <a
