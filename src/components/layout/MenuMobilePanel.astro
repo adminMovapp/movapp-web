@@ -256,20 +256,12 @@ const socials = [
    }
 
    /*
-      Scrollbar morada (a pedido, "igual que en la versión de escritorio"):
-      el thumb morado del scroll de la página (ver global.css,
-      "html::-webkit-scrollbar-thumb") solo se define dentro de
-      "@media (min-width: 768px)" -- a propósito, en móvil el scroll de LA
-      PÁGINA usa el overlay nativo del navegador, sin espacio propio que
-      valga la pena estilizar. Pero "scrollbar-color" es una propiedad que
-      SE HEREDA: en escritorio, este mismo contenedor scrollable (cuando
-      "Contenido" se expande y no entra completo) hereda el morado de
-      "html" sin necesitar su propia regla -- y en móvil, como "html" nunca
-      llega a declarar "scrollbar-color" (la media query lo evita), este
-      panel se queda con el scrollbar gris por defecto del navegador. Estas
-      reglas replican el mismo morado directamente sobre el contenedor,
-      sin depender de esa herencia -- y sin tocar la regla global de
-      "html", que debe seguir sin aplicar en móvil.
+      Scrollbar morada (a pedido, "igual que en la versión de escritorio").
+      "scrollbar-color" se hereda, así que este contenedor ya tomaría el
+      morado global de "html" (ver global.css) sin necesitar su propia
+      regla -- pero se declara igual explícitamente acá, sin depender de
+      esa herencia, por si el navegador no la propaga a un contenedor con
+      su propio scroll interno.
    */
    .menu-mobile-scroll {
       scrollbar-width: thin;
