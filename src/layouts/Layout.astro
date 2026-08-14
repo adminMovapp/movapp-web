@@ -15,6 +15,7 @@ import Header from '@components/layout/Header.astro';
 import MobileBottomNav from '@components/layout/MobileBottomNav.astro';
 import MenuMobilePanel from '@components/layout/MenuMobilePanel.astro';
 import MenuDesktopPanel from '@components/layout/MenuDesktopPanel.astro';
+import MobileSearchBackdrop from '@components/layout/MobileSearchBackdrop.astro';
 import Footer from '@components/layout/Footer.astro';
 import HeaderLayer from '@/components/layout/HeaderLayer.astro';
 import Preloader from '@/components/layout/Preloader.astro';
@@ -312,6 +313,7 @@ const schemaJson = JSON.stringify(Array.isArray(pageSchema) ? pageSchema : [page
       </main>
 
       <MobileBottomNav />
+      <MobileSearchBackdrop />
       <MenuMobilePanel />
       <MenuDesktopPanel />
 

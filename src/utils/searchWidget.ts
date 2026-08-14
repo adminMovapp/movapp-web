@@ -15,6 +15,22 @@ export interface SearchWidgetIds {
    dropdown: string;
    results: string;
    empty: string;
+   // Opcional -- botón "x" al lado del cuadro de texto que también cierra
+   // el buscador (a pedido explícito, además del propio botón flotante).
+   close?: string;
+   // Opcional -- solo lo usa MobileSearch.astro. Un backdrop de pantalla
+   // completa (fuera del cluster, ver MobileSearchBackdrop.astro) que
+   // intercepta cualquier touch sobre el resto de la página mientras el
+   // dropdown está abierto: sin esto, un tap en un link de atrás dispara SU
+   // navegación normal al mismo tiempo que el listener de "click afuera"
+   // cierra el buscador -- cerraba, pero igual te sacaba de la página. El
+   // buscador de escritorio no lo necesita (con mouse, "click afuera" ya es
+   // suficiente: no hay gesto de scroll táctil que discriminar).
+   backdrop?: string;
+   // Opcional -- bloquea el scroll del body mientras está abierto
+   // (document.body.classList.add('overflow-hidden')). Solo móvil: en
+   // escritorio el dropdown no ocupa toda la pantalla, no hace falta.
+   lockBodyScroll?: boolean;
 }
 
 export function initSearchWidget(ids: SearchWidgetIds) {
@@ -24,6 +40,8 @@ export function initSearchWidget(ids: SearchWidgetIds) {
    const dropdown = document.getElementById(ids.dropdown);
    const resultsList = document.getElementById(ids.results) as HTMLUListElement | null;
    const emptyState = document.getElementById(ids.empty);
+   const closeBtn = ids.close ? document.getElementById(ids.close) : null;
+   const backdrop = ids.backdrop ? document.getElementById(ids.backdrop) : null;
    if (!root || !toggle || !input || !dropdown || !resultsList || !emptyState) return;
 
    let currentResults: SearchEntry[] = [];
@@ -85,6 +103,8 @@ export function initSearchWidget(ids: SearchWidgetIds) {
       root!.classList.add('is-open');
       toggle!.setAttribute('aria-expanded', 'true');
       dropdown!.classList.remove('hidden');
+      backdrop?.classList.remove('hidden');
+      if (ids.lockBodyScroll) document.body.classList.add('overflow-hidden');
       runSearch();
       input!.focus();
    }
@@ -94,6 +114,8 @@ export function initSearchWidget(ids: SearchWidgetIds) {
       root!.classList.remove('is-open');
       toggle!.setAttribute('aria-expanded', 'false');
       dropdown!.classList.add('hidden');
+      backdrop?.classList.add('hidden');
+      if (ids.lockBodyScroll) document.body.classList.remove('overflow-hidden');
       input!.value = '';
    }
 
@@ -102,10 +124,16 @@ export function initSearchWidget(ids: SearchWidgetIds) {
       else open();
    });
 
+   closeBtn?.addEventListener('click', close);
+
    input.addEventListener('input', runSearch);
 
    // Cierra al hacer click afuera del cluster (ícono + campo + dropdown) --
-   // no hay backdrop propio porque esto no es un modal.
+   // en escritorio esto alcanza solo (no hay backdrop). En móvil, el
+   // backdrop (si se pasó "backdrop") ya intercepta el touch antes de que
+   // llegue a cualquier link de atrás -- ese click en el backdrop también
+   // cae acá (no está "adentro" de root), así que un solo listener cierra
+   // en ambos casos.
    document.addEventListener('click', (e) => {
       if (!isOpen()) return;
       if (!(e.target instanceof Node)) return;

@@ -50,7 +50,10 @@ import MobileSearch from '@components/layout/MobileSearch.astro';
    <MenuMobile />
 
    <!-- Buscador (móvil): se despliega in-place (ver MobileSearch.astro),
-        mismo patrón que HeaderSearch.astro en escritorio -- ningún modal. -->
+        mismo patrón que HeaderSearch.astro en escritorio. Su backdrop
+        (bloquea scroll/toques de la página de atrás mientras está abierto)
+        vive aparte, como hermano de este <nav> (MobileSearchBackdrop.astro,
+        ver ese componente para el porqué). -->
    <MobileSearch />
 </nav>
 

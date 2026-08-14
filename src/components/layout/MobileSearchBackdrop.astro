@@ -1,0 +1,24 @@
+---
+// Backdrop del buscador de móvil (ver MobileSearch.astro/searchWidget.ts):
+// una capa de pantalla completa que intercepta cualquier touch sobre el
+// resto de la página mientras el dropdown de sugerencias está abierto --
+// sin esto, un tap en un link de atrás disparaba su navegación normal AL
+// MISMO TIEMPO que el listener de "click afuera" cerraba el buscador (lo
+// cerraba, pero igual te sacaba de la página). No tiene su propio listener:
+// un click acá cae en el listener de "click afuera" de searchWidget.ts
+// (este div no es descendiente de #mobileSearch), que ya cierra el buscador.
+//
+// Vive FUERA de #mobileBottomNav, como hermano suyo -- mismo motivo ya
+// documentado ahí para MenuMobilePanel.astro: esa barra tiene
+// "backdrop-filter" (backdrop-blur-md), que por spec de CSS la convierte en
+// el contenedor de referencia de cualquier descendiente "position: fixed"
+// -- anidado ahí adentro, este backdrop quedaría encerrado en la altura de
+// la barra en vez de cubrir la pantalla.
+//
+// z-[999999990]: por debajo del z-[999999999] de #mobileBottomNav (y de
+// todo lo que cuelga de ella, como el botón/campo/dropdown del buscador),
+// así la barra y el propio buscador siguen pintando ENCIMA sin importar el
+// orden en el DOM -- "que se vea la navbar y el menú", como se pidió.
+---
+
+<div id="mobileSearchBackdrop" class="fixed inset-0 z-[999999990] hidden bg-black/30" aria-hidden="true"></div>

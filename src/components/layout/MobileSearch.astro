@@ -1,41 +1,28 @@
 ---
 // Buscador de móvil: mismo patrón de "despliegue in-place" que
-// HeaderSearch.astro (ningún modal), adaptado a la barra inferior --
-// vive DENTRO de #mobileBottomNav (ver MobileBottomNav.astro), flotando
-// pegado arriba de ella con un pequeño espacio (ver ese componente para el
-// porqué de "absolute" + la traslación).
-//
-// Diferencias de layout respecto al de escritorio (mismas por las que este
-// es su propio componente, no el mismo con clases condicionales):
-//   - El botón vive anclado al borde derecho de la pantalla, así que el
-//     campo se expande hacia la IZQUIERDA (flex-row-reverse + justify-end),
-//     no hacia la derecha como en el header.
-//   - El botón está cerca del borde inferior de la pantalla, así que el
-//     dropdown de sugerencias se abre hacia ARRIBA ("bottom-full" del
-//     cluster), no hacia abajo.
-//   - El ancho del campo usa un cálculo de viewport (no un valor fijo como
-//     el "w-64" de escritorio) para no desbordar en pantallas angostas.
-//
-// El comportamiento (abrir/cerrar, buscar, teclado) es el mismo código,
-// compartido vía @utils/searchWidget.ts.
+// HeaderSearch.astro (ningún modal a pantalla completa) -- el ícono se
+// convierte en un campo que se expande hacia la izquierda del propio botón,
+// con el dropdown de sugerencias abriéndose hacia arriba, ambos flotando
+// arriba de la barra inferior (que se queda visible, igual que el resto del
+// menú). A diferencia de la primera versión de este patrón: ahora SÍ
+// bloquea el scroll/toque del resto de la página mientras está abierto (ver
+// "backdrop"/"lockBodyScroll" en @utils/searchWidget.ts) -- antes no lo
+// hacía y se podía seguir navegando/scrolleando la página de atrás.
 ---
 
 <!--
    Posicionado igual que el botón original (ver MobileBottomNav.astro): hijo
    "absolute" de #mobileBottomNav ("position: sticky", que también sirve de
-   contenedor de referencia), pegado arriba de la barra con un pequeño
-   espacio. "position: absolute" en esta misma raíz también sirve de
-   contenedor para el dropdown de sugerencias (bottom-full más abajo), sin
-   necesitar además "relative".
+   contenedor de referencia para descendientes "position: absolute"), pegado
+   arriba de la barra con un pequeño espacio ("-translate-y-3", a pedido).
 
-   "flex-row-reverse" + SIN justify-content explícito (default:
-   flex-start): en row-reverse el eje principal corre de derecha a
-   izquierda, así que "flex-start" ancla al DOM-primer-hijo (el botón) al
-   lado derecho -- exactamente donde ya estaba fijo con "right-4" antes de
-   este cambio -- y el campo (segundo hijo) se despliega hacia la izquierda
-   de ahí.
+   "flex-row-reverse" + SIN justify-content explícito (default: flex-start):
+   en row-reverse el eje principal corre de derecha a izquierda, así que
+   "flex-start" ancla al DOM-primer-hijo (el botón) al lado derecho --
+   exactamente donde vive fijo con "right-4" -- y el campo (segundo hijo) se
+   despliega hacia la izquierda de ahí.
 -->
-<div id="mobileSearch" class="absolute bottom-full right-4 flex -translate-y-3 flex-row-reverse items-center gap-2">
+<div id="mobileSearch" class="absolute bottom-full right-4 z-10 flex -translate-y-3 flex-row-reverse items-center gap-2">
    <button
       id="mobileSearchToggle"
       type="button"
@@ -59,14 +46,26 @@
             placeholder="Buscar en Movapp…"
             class="w-full bg-transparent text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none dark:text-white dark:placeholder:text-white/40"
          />
+         <!-- "x" pedida explícitamente al lado del cuadro de texto, además
+              del propio botón flotante (que también alterna abrir/cerrar). -->
+         <button
+            id="mobileSearchClose"
+            type="button"
+            aria-label="Cerrar búsqueda"
+            class="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full text-gray-500 hover:bg-black/5 hover:text-text_banner dark:text-white/70 dark:hover:bg-white/10 dark:hover:text-white"
+         >
+            <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+               <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+         </button>
       </div>
    </div>
 
    <div
       id="mobileSearchDropdown"
-      class="search-dropdown absolute bottom-full right-0 z-50 mb-2 hidden w-[calc(100vw-2rem)] flex-col rounded-2xl border border-purple_mv/20 bg-white p-2 shadow-2xl dark:border-white/10 dark:bg-background_bottom"
+      class="search-dropdown absolute bottom-full right-0 z-50 mb-2 hidden max-h-[65vh] w-[calc(100vw-2rem)] flex-col rounded-2xl border border-purple_mv/20 bg-white p-2 shadow-2xl dark:border-white/10 dark:bg-background_bottom"
    >
-      <ul id="mobileSearchResults" class="max-h-[45vh] overflow-y-auto"></ul>
+      <ul id="mobileSearchResults" class="max-h-[55vh] overflow-y-auto"></ul>
       <p id="mobileSearchEmpty" class="hidden px-3 py-6 text-center text-sm text-gray-500 dark:text-white/60">
          Sin resultados. Prueba con otra palabra.
       </p>
@@ -109,5 +108,8 @@
       dropdown: 'mobileSearchDropdown',
       results: 'mobileSearchResults',
       empty: 'mobileSearchEmpty',
+      close: 'mobileSearchClose',
+      backdrop: 'mobileSearchBackdrop',
+      lockBodyScroll: true,
    });
 </script>
