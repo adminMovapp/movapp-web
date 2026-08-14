@@ -41,24 +41,40 @@ const resolved: BreadcrumbItem[] =
 
 {
    resolved.length > 0 && (
-      <nav aria-label="Migas de pan" class="relative z-10 mb-4 text-sm text-gray-600 dark:text-white/60">
-         <a href="/" class="hover:text-purple_mv dark:hover:text-white">
-            Inicio
+      <nav aria-label="Migas de pan" class="breadcrumb-glitch relative z-10 mb-4 text-sm">
+         <a
+            href="/"
+            aria-label="Inicio"
+            class="gradient-text-move bg-gradient-to-r from-gray-900 to-purple_mv bg-clip-text text-transparent hover:text-purple_mv dark:from-white dark:to-purple_mv dark:hover:text-white"
+         >
+            <span data-glitch aria-hidden="true">Inicio</span>
          </a>
          {resolved.flatMap((item, i) => {
             const isCurrent = i === resolved.length - 1;
             return [
-               <span aria-hidden="true">
+               <span aria-hidden="true" class="text-gray-600 dark:text-white/60">
                   {' '}
                   |{' '}
                </span>,
                isCurrent ? (
-                  <span aria-current="page" class="text-gray-900 dark:text-white">
-                     {item.label}
+                  <span
+                     aria-current="page"
+                     aria-label={item.label}
+                     class="gradient-text-move bg-gradient-to-r from-gray-900 to-purple_mv bg-clip-text text-transparent dark:from-white dark:to-purple_mv"
+                  >
+                     <span data-glitch aria-hidden="true">
+                        {item.label}
+                     </span>
                   </span>
                ) : (
-                  <a href={item.href} class="hover:text-purple_mv dark:hover:text-white">
-                     {item.label}
+                  <a
+                     href={item.href}
+                     aria-label={item.label}
+                     class="gradient-text-move bg-gradient-to-r from-gray-900 to-purple_mv bg-clip-text text-transparent hover:text-purple_mv dark:from-white dark:to-purple_mv dark:hover:text-white"
+                  >
+                     <span data-glitch aria-hidden="true">
+                        {item.label}
+                     </span>
                   </a>
                ),
             ];
@@ -66,3 +82,145 @@ const resolved: BreadcrumbItem[] =
       </nav>
    )
 }
+
+<style>
+   /* Entrada: el breadcrumb "llega deslizando" desde la izquierda al
+      cargar/recargar la página (a pedido) -- pura animación CSS, dispara
+      sola en cuanto el <nav> se pinta, sin depender del script de abajo.
+      "both" mantiene el estado inicial (opacity 0) hasta que arranca y el
+      final (posición real) para siempre después -- si no, al terminar el
+      keyframe el navegador podría devolver el elemento a sus valores base
+      y se vería un salto.
+   */
+   @keyframes breadcrumbEnter {
+      from {
+         opacity: 0;
+         transform: translateX(-72px);
+      }
+      to {
+         opacity: 1;
+         transform: translateX(0);
+      }
+   }
+   .breadcrumb-glitch {
+      animation: breadcrumbEnter 750ms cubic-bezier(0.16, 1, 0.3, 1) both;
+   }
+
+   /* Color "como el de los títulos de sección" (a pedido): mismas clases
+      que gradientTextMove en global.css (degradado gris/blanco -> morado,
+      en movimiento). Acá, arriba de eso, "Glitch" ambiental estilo archivo
+      corrupto: cada texto se corrompe en símbolos aleatorios y se
+      "descifra" de vuelta, en bucle -- durante la corrupción se fuerza un
+      morado sólido (tapando el degradado, como un aviso de "esto está mal")
+      que al resolverse vuelve a dejar pasar el degradado en movimiento.
+      El nombre accesible de cada link/span viene de "aria-label" (fijo,
+      nunca cambia) y el span visible con el glitch lleva "aria-hidden",
+      así que un lector de pantalla siempre anuncia el texto real, nunca
+      los caracteres corrompidos ni el color.
+   */
+   .breadcrumb-glitch [data-glitch] {
+      display: inline-block;
+   }
+   .breadcrumb-glitch.is-glitching [data-glitch] {
+      color: #8149e2;
+   }
+   :global(html.dark) .breadcrumb-glitch.is-glitching [data-glitch] {
+      color: #b794f6;
+   }
+</style>
+
+<script>
+   // Caracteres "de corrupción" -- símbolos, no letras, para que se lea
+   // como ruido/basura de archivo en vez de otro idioma.
+   const GLITCH_CHARS = '!<>-_\\/[]{}—=+*^?#$%&@~01';
+
+   function randomChar() {
+      return GLITCH_CHARS[Math.floor(Math.random() * GLITCH_CHARS.length)];
+   }
+
+   function scramble(original: string) {
+      let out = '';
+      for (const ch of original) out += ch === ' ' ? ' ' : randomChar();
+      return out;
+   }
+
+   // Recibe el texto real (guardado una sola vez en dataset.text antes de
+   // la primera corrupción) y lo corrompe por completo unos frames, luego
+   // lo va "revelando" de izquierda a derecha -- efecto típico de
+   // descifrado/hacker, no una transición pareja.
+   function glitchOnce(el: HTMLElement, onDone: () => void) {
+      const original = el.dataset.text ?? '';
+      let scrambleFrames = 6;
+
+      const scrambleTimer = window.setInterval(() => {
+         el.textContent = scramble(original);
+         scrambleFrames--;
+         if (scrambleFrames <= 0) {
+            window.clearInterval(scrambleTimer);
+            revealFrom(el, original, 0, onDone);
+         }
+      }, 60);
+   }
+
+   function revealFrom(el: HTMLElement, original: string, revealed: number, onDone: () => void) {
+      if (revealed >= original.length) {
+         el.textContent = original;
+         onDone();
+         return;
+      }
+      let out = '';
+      for (let i = 0; i < original.length; i++) {
+         out += i < revealed || original[i] === ' ' ? original[i] : randomChar();
+      }
+      el.textContent = out;
+      window.setTimeout(() => revealFrom(el, original, revealed + 1, onDone), 35);
+   }
+
+   function initBreadcrumbGlitch() {
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduceMotion) return;
+
+      const navs = document.querySelectorAll<HTMLElement>('.breadcrumb-glitch');
+      navs.forEach((nav) => {
+         const targets = Array.from(nav.querySelectorAll<HTMLElement>('[data-glitch]'));
+         if (!targets.length) return;
+         targets.forEach((el) => {
+            el.dataset.text = el.textContent ?? '';
+         });
+
+         let active = 0;
+
+         function pulse() {
+            active = targets.length;
+            nav.classList.add('is-glitching');
+            targets.forEach((el) => {
+               glitchOnce(el, () => {
+                  active--;
+                  if (active <= 0) nav.classList.remove('is-glitching');
+               });
+            });
+         }
+
+         // Cada 8s, fijo, después del primer glitch (a pedido). El HTML que
+         // ve un crawler/lector sigue siendo siempre el texto real -- esto
+         // solo corrompe "textContent" en el cliente, después de que el
+         // documento ya cargó con el texto correcto.
+         function scheduleNext() {
+            window.setTimeout(() => {
+               if (document.visibilityState === 'visible') pulse();
+               scheduleNext();
+            }, 8000);
+         }
+
+         // Primer glitch de inmediato (a pedido, "que directamente haga el
+         // efecto de los símbolos" al entrar/recargar la página), a la par
+         // de la animación de entrada ("breadcrumbEnter" arriba) -- se ve
+         // como si el breadcrumb llegara deslizándose y corrompiéndose a la
+         // vez, y ya se resuelve. Los siguientes ciclos, cada 8s.
+         pulse();
+         scheduleNext();
+      });
+   }
+
+   initBreadcrumbGlitch();
+</script>
