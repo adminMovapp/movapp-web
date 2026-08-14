@@ -153,6 +153,31 @@ const contentLinks = [
       will-change: transform;
    }
 
+   /*
+      Costura entre los dos paneles (bug real, confirmado con Playwright en
+      un viewport de ancho impar -- ej. 1441px): "will-change: transform" en
+      AMBOS paneles promueve cada uno a su propia capa de composición, y el
+      navegador redondea el borde de cada capa al píxel de dispositivo más
+      cercano de forma independiente al rasterizar. En anchos donde el 50%
+      exacto cae en un valor fraccionario (720.5px, por ejemplo), una capa
+      puede redondear hacia abajo y la otra hacia arriba, dejando una costura
+      de ~1px por la que se ve lo que esté detrás del overlay -- el layout en
+      sí sigue siendo perfecto ("getBoundingClientRect" no muestra ningún
+      gap, 720.5 + 720.5 = 1441 exacto), el problema es solo de rasterizado,
+      invisible a cualquier inspección del DOM.
+
+      Fix: el panel derecho se extiende 1px hacia la izquierda (margin-left
+      negativo + width mayor a "w-1/2"), superponiéndose sobre esa costura en
+      vez de depender de que ambos bordes coincidan exacto. Imperceptible:
+      ambos paneles son fondos sólidos, y el contenido de cada uno ya se
+      centra por su cuenta con flex, así que 1px de superposición no
+      desalinea nada visible.
+   */
+   #menuDesktopRight {
+      width: calc(50% + 1px);
+      margin-left: -1px;
+   }
+
    /* Respeta la preferencia del sistema: sin movimiento, aparece directo.
       El script también acorta su espera de cierre en ese caso (ver ANIM_MS). */
    @media (prefers-reduced-motion: reduce) {
