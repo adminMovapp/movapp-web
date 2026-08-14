@@ -17,7 +17,10 @@
 // "...-1024x683"; mexicash-molesta-a-tus-contactos, en vez de "Mexicash
 // molesta a tus contactos"; montadeudas-publicar-en-redes-sociales, en vez
 // de "...-1024x683"), así el slug/URL de artículo (/blog/<slug>) queda
-// limpio en vez de arrastrar ese sufijo.
+// limpio en vez de arrastrar ese sufijo. Igual para 2 archivos de la
+// categoría "noticias": movapp-confiable-erik-mann (en vez de
+// "...-1024x683") y defensa-del-deudor-v-movapp (en vez de "...-2", un
+// sufijo de variante/duplicado de WordPress sin significado real).
 import ImgErikMann from '@assets/erik-mann-contra-los-montadeudas.webp';
 import ImgAppsPrestamos from '@assets/aplicaciones-de-prestamos-confiables.webp';
 import ImgOjoApps from '@assets/ojo-aplicaciones-montadeudas.webp';
@@ -35,6 +38,8 @@ import ImgPublicarEnRedes from '@assets/montadeudas-publicar-en-redes-sociales.w
 import ImgCobranzaStarpresta from '@assets/la-cobranza-de-starpresta.webp';
 import ImgHicreditoCobrando from '@assets/hicredito-te-esta-cobrando.webp';
 import ImgMexicashMolesta from '@assets/mexicash-molesta-a-tus-contactos.webp';
+import ImgMovappConfiable from '@assets/movapp-confiable-erik-mann.webp';
+import ImgDefensaDeudor from '@assets/defensa-del-deudor-v-movapp.webp';
 
 export const BLOG_IMAGES: Record<string, ImageMetadata> = {
    'erik-mann-contra-los-montadeudas': ImgErikMann,
@@ -60,4 +65,13 @@ export const BLOG_IMAGES: Record<string, ImageMetadata> = {
    // 'que-pasa-si-no-le-pago-a-credmex' -- sin imagen todavía (no existe en
    // public/img/blog ni en ningún otro lado del repo); usa el fallback
    // ImagePlaceholder hasta que se entregue el archivo real.
+   // 'el-hack-funciona' (categoría "noticias") reutiliza el mismo archivo que
+   // 'que-es-movapp' de arriba -- es la misma imagen del wireframe, para dos
+   // artículos distintos.
+   'el-hack-funciona': ImgElHackFunciona,
+   'movapp-confiable-erik-mann': ImgMovappConfiable,
+   'defensa-del-deudor-v-movapp': ImgDefensaDeudor,
+   // 'realizar-el-hack' -- sin imagen todavía (no existe en public/img/blog
+   // ni en ningún otro lado del repo); usa el fallback ImagePlaceholder hasta
+   // que se entregue el archivo real.
 };

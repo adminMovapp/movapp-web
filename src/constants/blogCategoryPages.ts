@@ -85,4 +85,29 @@ export const BLOG_CATEGORY_PAGES: BlogCategoryPage[] = [
          { slug: 'mexicash-molesta-a-tus-contactos', title: '¿Mexicash Molesta A Tus Contactos?' },
       ],
    },
+   {
+      // "noticias": mismo id que @constants/blog.ts (BLOG_CATEGORIES). Igual
+      // que "riesgo" arriba: todavía sin entrada en PAGE_SCHEMA ni enlazada
+      // desde ningún lado del sitio -- en espera, solo visitable directo.
+      categorySlug: 'noticias',
+      h1: 'Noticias de Movapp',
+      intro: 'Mantente al día con los últimos operativos, alertas financieras y actualizaciones del equipo de Movapp en la lucha contra el fraude digital.',
+      recentArticles: [
+         { slug: 'que-es-movapp', title: '¿Qué Es Movapp?' },
+         {
+            slug: 'erik-mann-contra-los-montadeudas',
+            title: 'Erik Mann Y Movapp Contra Los Montadeudas – Conoce La Historia De Cómo Surgió Movapp',
+         },
+         { slug: 'movapp-confiable-erik-mann', title: '¿Qué Tan Confiable Es Movapp?' },
+      ],
+      oldArticles: [
+         { slug: 'el-hack-funciona', title: '¿El Hack De Movapp Funciona?' },
+         // Sin imagen todavía -- ver blogImages.ts (usa ImagePlaceholder de fallback).
+         {
+            slug: 'realizar-el-hack',
+            title: '¿Se Puede Realizar El Hack Si Ya No Se Encuentra En La Play O App Store?',
+         },
+         { slug: 'defensa-del-deudor-v-movapp', title: 'Defensa Del Deudor Vs Movapp' },
+      ],
+   },
 ];

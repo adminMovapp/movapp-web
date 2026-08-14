@@ -1,0 +1,57 @@
+---
+// Hero de la plantilla de artículo individual del blog (ver
+// src/pages/blog/[articulo].astro): breadcrumb de 3 niveles ("Inicio |
+// Blog | <título>") + H1 + imagen destacada + línea de autor/fecha/tiempo
+// de lectura.
+//
+// El breadcrumb se arma a mano vía el prop "items" de Breadcrumbs.astro en
+// vez de dejarlo auto-resolverse desde PAGE_SCHEMA -- esta página, igual
+// que blogCategoryPages.ts "riesgo"/"noticias", se deja "en espera" sin
+// entrada en PAGE_SCHEMA (@utils/schema.js), así que el modo automático no
+// mostraría nada. "items" es justo el escape hatch que Breadcrumbs.astro ya
+// tenía para rutas con más de un nivel intermedio -- primer uso real.
+//
+// A diferencia de BlogCategoryHero.astro (centrado, texto corto de
+// landing), este layout va alineado a la izquierda: estilo artículo de
+// blog tradicional, con más texto y una imagen destacada de por medio.
+import { Image } from 'astro:assets';
+import ImagePlaceholder from '@components/ui/ImagePlaceholder.astro';
+import Breadcrumbs from '@components/ui/Breadcrumbs.astro';
+import StarField from '@components/decorative/StarField.astro';
+import { BLOG_IMAGES } from '@constants/blogImages.ts';
+
+interface Props {
+   slug: string;
+   title: string;
+   breadcrumbLabel: string;
+   author: string;
+   publishDate: string;
+   readingMinutes: number;
+}
+const { slug, title, breadcrumbLabel, author, publishDate, readingMinutes } = Astro.props;
+---
+
+<section class="relative mx-auto max-w-3xl px-4 pt-16 md:pt-8" data-aos="fade-up">
+   <StarField id={`blog-article-hero-${slug}`} ambientCount={40} />
+
+   <Breadcrumbs items={[{ label: 'Blog', href: '/blog' }, { label: breadcrumbLabel }]} />
+
+   <h1 class="relative z-10 text-3xl font-bold uppercase leading-tight text-gray-900 dark:text-white md:text-5xl">
+      {title}
+   </h1>
+
+   <div class="relative z-10 mt-8">
+      {
+         BLOG_IMAGES[slug] ? (
+            <Image src={BLOG_IMAGES[slug]} alt={title} width={1000} class="aspect-[16/10] w-full rounded-2xl object-cover" />
+         ) : (
+            <ImagePlaceholder class="aspect-[16/10] w-full" />
+         )
+      }
+   </div>
+
+   <div class="relative z-10 mt-6 flex items-center gap-3 text-sm text-gray-600 dark:text-white/60">
+      <span class="h-9 w-9 flex-shrink-0 rounded-full bg-purple_mv/15 dark:bg-white/10" aria-hidden="true"></span>
+      <span>{author} • {publishDate} • {readingMinutes} minutos de lectura</span>
+   </div>
+</section>
