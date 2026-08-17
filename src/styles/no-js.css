@@ -160,6 +160,27 @@ html.no-js .header-spacer {
 }
 
 /*
+   MenuDesktopVisual.astro (#menuVisualStage): pieza vectorial 100%
+   decorativa (aria-hidden, sin texto real -- las palabras que cruzan la
+   pantalla, "ACOSO"/"AMENAZAS"/etc., son ambientales, el copy real vive en
+   frases completas en otras secciones) del panel izquierdo del menú de
+   escritorio (MenuDesktopPanel.astro). Ese panel entero es "hidden" por
+   Tailwind hasta que JS lo abre (click en el botón de hamburguesa) -- sin
+   Tailwind, "hidden" no hace nada y el panel completo queda visible todo el
+   tiempo, en TODAS las páginas (vive en el layout compartido). Sus círculos
+   que rotan sin parar (menuOrbitSpin) y las ondas que crecen sin parar
+   (menuShieldWave) vienen de su <style> con scope, que sí se inyecta
+   siempre -- eso es lo que hacía que el alto scrolleable de CUALQUIER
+   página oscilara en no-js (el mismo síntoma que ".hero-orbit-group" en
+   HomeHero.astro, pero sitewide). El panel de navegación real (enlaces,
+   lado derecho de MenuDesktopPanel.astro) NO se toca -- solo se esconde
+   esta pieza puramente visual.
+*/
+html.no-js #menuVisualStage {
+   display: none;
+}
+
+/*
    <header> es SOLO de escritorio (Tailwind lo pinta "hidden lg:flex") y
    <nav id="mobileBottomNav"> es SOLO de móvil ("lg:hidden") -- son dos
    barras alternativas para el mismo destino (Inicio/Tienda/Menú), nunca se
@@ -211,6 +232,25 @@ html.no-js .faq-reveal {
 html.no-js .step-reveal {
    opacity: 1;
    transform: none;
+}
+
+/*
+   HomeHero.astro: la "órbita de escudos" + el logo-fantasma detrás de ella
+   (bloque 100% decorativo, aria-hidden, pensado solo para escritorio) se
+   esconde en móvil con la clase de Tailwind "hidden" y se posiciona/dimensiona
+   dentro de un círculo chico con "absolute" + tamaños -- ambas cosas dejan de
+   funcionar sin Tailwind (no-js): el bloque queda visible en cualquier ancho,
+   como elementos de bloque normales en el flujo (el logo se estira a todo el
+   ancho de la pantalla), y sus <style> con scope (que sí se inyectan siempre)
+   lo siguen rotando/agrandando sin parar. Eso es lo que hacía que el ancho
+   scrolleable de la página oscilara todo el tiempo -- la barra de scroll
+   "respirando" aunque el scroll real no se moviera un píxel. Es contenido
+   puramente decorativo (sin texto), así que ocultarlo entero acá no pierde
+   nada.
+*/
+html.no-js .hero-orbit-group,
+html.no-js .hero-logo-wrap {
+   display: none;
 }
 
 /* --- FAQ (usa <details>/<summary> nativos, ya funcionan sin JS) --- */

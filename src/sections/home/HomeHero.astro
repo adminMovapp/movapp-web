@@ -458,11 +458,13 @@ import StoreBadges from '@components/ui/StoreBadges.astro';
       animation: heroOrbitSpin 14.4s linear infinite reverse;
    }
    /*
-      La órbita ya no existe en el DOM en móvil (bloque removido a pedido --
-      solo la versión de escritorio, "hidden md:flex", usa estas clases). Por
-      debajo de 768px ese bloque queda en display:none y el navegador no le
-      calcula estilo ni pintado, así que su animación no tiene costo alguno
-      ahí -- no hace falta apagarla explícitamente.
+      El bloque sigue en el DOM en móvil (solo la versión de escritorio,
+      "hidden md:flex", usa estas clases) -- por debajo de 768px ese "hidden"
+      de Tailwind lo pone en display:none y el navegador no le calcula estilo
+      ni pintado, así que su animación no tiene costo alguno ahí. OJO: eso
+      depende de que Tailwind haya cargado. Sin JS (no-js) esa clase no hace
+      nada y el bloque queda visible+animándose en cualquier ancho -- ver el
+      "display:none" dedicado en no-js.css (busca ".hero-orbit-group").
    */
 
    /*
