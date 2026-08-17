@@ -35,6 +35,7 @@
 */
 
 import { getSiteConfig, URLS } from '@utils/config.jsx';
+import { HOME_FAQS } from '@constants/homeFaqs.ts';
 import { EL_HACK_FAQS, EL_HACK_STEPS, EL_HACK_HOW_IT_WORKS_TITLE } from '@constants/elhack.ts';
 import { FAQS_PAGE_ACOSO } from '@constants/faqsPageAcoso.ts';
 import { FAQS_PAGE_EL_HACK } from '@constants/faqsPageElHack.ts';
@@ -322,8 +323,9 @@ export function generateHowToSchema({ name, description, totalTime, tool, steps 
 export const PAGE_SCHEMA = {
    // --- Home: la página más crítica. Establece a Movapp como entidad ante
    // Google y los LLMs (clave para GEO); el Organization alimenta el
-   // Knowledge Panel. Sin BreadcrumbList: es la raíz. Sin FAQPage: no tiene
-   // sección de preguntas visible. (Guía §2.1)
+   // Knowledge Panel. Sin BreadcrumbList: es la raíz. Se suma FAQPage porque
+   // HomeFAQ.astro ya la hace una sección visible de la página (debajo de
+   // los testimonios, ver HomeTrust.astro). (Guía §2.1)
    //
    // Sin generateElHackSchema acá (hallazgo de auditoría corregido): El Hack
    // es una LP propia con su propio Service en /el-hack -- Home solo lo
@@ -334,7 +336,12 @@ export const PAGE_SCHEMA = {
       name: 'Movapp',
       description: null, // usa la del sitio (siteConfigData.site.description)
       breadcrumb: null,
-      build: (request) => [generateWebSiteSchema(request), generateOrganizationSchema(request), generateMovappAppSchema(request)],
+      build: (request) => [
+         generateWebSiteSchema(request),
+         generateOrganizationSchema(request),
+         generateMovappAppSchema(request),
+         generateFAQSchema(HOME_FAQS),
+      ],
    },
 
    // --- LP de conversión. El Service es más detallado que la mención de
