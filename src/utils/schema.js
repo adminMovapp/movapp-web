@@ -68,8 +68,9 @@ export const SCHEMA_DATA = {
    /*
       Los dos productos son ENTIDADES SEPARADAS de cara a Google, y la guía
       marca la distinción como crítica: la app Movapp se descarga de las
-      stores; El Hack se usa por WhatsApp y NO está en ninguna store (por eso
-      no lleva operatingSystem ni downloadUrl).
+      stores (SoftwareApplication, con operatingSystem/downloadUrl); El Hack
+      se usa por WhatsApp y NO está en ninguna store, por eso es un Service
+      (provider/areaServed) en vez de una app.
    */
    movappApp: {
       name: 'Movapp',
@@ -91,29 +92,38 @@ export const SCHEMA_DATA = {
 
    elHack: {
       name: 'El Hack',
-      applicationCategory: 'FinanceApplication',
-      description: 'Bot de WhatsApp gratuito que te guía para salir de apps montadeuda.',
+      // Service, no SoftwareApplication: no es una app de descarga (no está en
+      // Google Play ni App Store), es un servicio de acompañamiento vía
+      // WhatsApp -- de ahí también provider/areaServed en vez de un `offer`
+      // de tipo "app gratuita".
+      serviceType: 'Protección contra acoso de aplicaciones de préstamo no reguladas',
+      description:
+         'Servicio de Movapp que detiene las llamadas y mensajes de acoso de apps montadeuda, protege tus contactos y te acompaña con un asesor real por WhatsApp.',
       // Versión más detallada para su propia LP (misma entidad, más texto).
       descriptionLP:
-         'Bot de WhatsApp gratuito que te guía paso a paso para salir de apps montadeuda. No requiere descarga.',
+         'Servicio de Movapp que detiene las llamadas y mensajes de acoso de apps montadeuda, protege tus contactos y te acompaña con un asesor real por WhatsApp.',
       path: '/el-hack',
       /*
          OJO -- divergencia deliberada respecto a la guía: el documento pide un
          Offer con price 0 para El Hack, pero el copy visible de /el-hack dice
          que el costo del hack es de $500 MXN (la asesoría sí es 100%
          gratuita). Declarar price 0 sería justo el "schema engañoso" que la
-         propia guía prohíbe (regla 3).
+         propia guía prohíbe (regla 3). Por eso priceSpecification lleva un
+         price numérico explícito y no solo la description en texto libre.
 
-         Antes se usaba AggregateOffer con lowPrice -- hallazgo de auditoría:
-         Google exige "offerCount" en todo AggregateOffer y no se estaba
-         declarando, dejándolo incompleto/inválido. Con el precio ya
-         confirmado (no es un rango real, es un monto fijo), un Offer simple
-         con price:500 es lo que corresponde y evita ese requisito.
-
-         ⚠ Este 500 y el copy de la FAQ en @constants/elhack.ts tienen que
-         moverse juntos.
+         ⚠ Este 500 y el copy de la FAQ "¿Cuánto cuesta?" en
+         @constants/elhack.ts tienen que moverse juntos.
       */
-      offer: { '@type': 'Offer', price: '500', priceCurrency: 'MXN' },
+      offer: {
+         '@type': 'Offer',
+         priceCurrency: 'MXN',
+         priceSpecification: {
+            '@type': 'PriceSpecification',
+            priceCurrency: 'MXN',
+            price: '500',
+            description: 'La asesoría inicial es gratuita. El costo del servicio varía según el caso.',
+         },
+      },
    },
 };
 
@@ -198,18 +208,21 @@ export function generateMovappAppSchema(request = null) {
    });
 }
 
-// --- SoftwareApplication #2: El Hack (bot de WhatsApp) ---
-// ⚠ Sin operatingSystem ni downloadUrl: no está en Google Play ni App Store.
+// --- Service: El Hack (acompañamiento vía WhatsApp) ---
+// ⚠ Service, no SoftwareApplication: no está en Google Play ni App Store.
 export function generateElHackSchema({ detailed = false } = {}, request = null) {
    const cfg = getSiteConfig(request);
    const app = SCHEMA_DATA.elHack;
    return prune({
       '@context': CONTEXT,
-      '@type': 'SoftwareApplication',
+      '@type': 'Service',
       name: app.name,
-      applicationCategory: app.applicationCategory,
+      serviceType: app.serviceType,
       url: abs(app.path, cfg),
       description: detailed ? app.descriptionLP : app.description,
+      provider: { '@type': 'Organization', name: cfg.site.name, url: cfg.canonicalUrl },
+      areaServed: { '@type': 'Country', name: cfg.business.country },
+      inLanguage: cfg.site.language,
       offers: app.offer,
    });
 }
@@ -313,10 +326,10 @@ export const PAGE_SCHEMA = {
    // sección de preguntas visible. (Guía §2.1)
    //
    // Sin generateElHackSchema acá (hallazgo de auditoría corregido): El Hack
-   // es una LP propia con su propio SoftwareApplication en /el-hack -- Home
-   // solo lo menciona de pasada (card de HomeFeatured.astro, sin detalle),
-   // así que declarar su schema completo acá era redundante/duplicado con
-   // el de su propia página. Ver PAGE_SCHEMA['/el-hack'] para ese schema.
+   // es una LP propia con su propio Service en /el-hack -- Home solo lo
+   // menciona de pasada (card de HomeFeatured.astro, sin detalle), así que
+   // declarar su schema completo acá era redundante/duplicado con el de su
+   // propia página. Ver PAGE_SCHEMA['/el-hack'] para ese schema.
    '/': {
       name: 'Movapp',
       description: null, // usa la del sitio (siteConfigData.site.description)
@@ -324,7 +337,7 @@ export const PAGE_SCHEMA = {
       build: (request) => [generateWebSiteSchema(request), generateOrganizationSchema(request), generateMovappAppSchema(request)],
    },
 
-   // --- LP de conversión. El SoftwareApplication es más detallado que el de
+   // --- LP de conversión. El Service es más detallado que la mención de
    // Home, y se suman HowTo y FAQPage porque ambas secciones existen
    // visualmente (ElHackHowItWorks y ElHackFAQ). (Guía §2.2)
    '/el-hack': {
