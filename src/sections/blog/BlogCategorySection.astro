@@ -24,8 +24,12 @@ interface Props {
    id: string;
    title: string;
    articles: Article[];
+   // Texto del link de cada tarjeta -- "Ver noticia" por defecto; la
+   // categoría "Noticias de Movapp" (blog.astro) pasa "Ver todas las
+   // noticias" a pedido.
+   linkLabel?: string;
 }
-const { id, title, articles } = Astro.props;
+const { id, title, articles, linkLabel = 'Ver noticia' } = Astro.props;
 const isCarousel = articles.length >= 2;
 ---
 
@@ -53,7 +57,7 @@ const isCarousel = articles.length >= 2;
                      )}
                      <h3 class="mt-4 font-bold text-purple_mv">{a.title}</h3>
                      <a href={`/blog/${a.slug}`} class="mt-2 inline-block text-sm font-medium text-gray-900 dark:text-white underline">
-                        Ver noticia
+                        {linkLabel}
                      </a>
                   </li>
                ))}
@@ -82,7 +86,7 @@ const isCarousel = articles.length >= 2;
             )}
             <h3 class="mt-4 font-bold text-purple_mv">{articles[0].title}</h3>
             <a href={`/blog/${articles[0].slug}`} class="mt-2 inline-block text-sm font-medium text-gray-900 dark:text-white underline">
-               Ver noticia
+               {linkLabel}
             </a>
          </div>
       )
