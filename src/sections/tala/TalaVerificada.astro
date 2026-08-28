@@ -1,0 +1,33 @@
+---
+const VERIFIED_REASONS = [
+   {
+      title: 'Registro vigente',
+      text: 'Tala Mobile aparece registrada ante CONDUSEF/SIPRES con clave 695521 y estatus "En operación".',
+   },
+   {
+      title: 'Aviso de privacidad publicado',
+      text: 'Aviso de privacidad publicado: https://talamobile.mx/aviso-de-privacidad-mx/',
+   },
+   {
+      title: 'Condiciones visibles antes de contratar',
+      text: 'Tala publica información de tasas, CAT y comisiones de sus productos antes de la contratación, junto con sus contratos y condiciones aplicables.',
+   },
+];
+---
+
+<section class="relative mx-auto my-section w-full max-w-4xl px-4" data-aos="fade-up">
+   <h2 class="text-center text-2xl md:text-4xl font-bold uppercase gradient-text-move bg-gradient-to-r from-gray-900 to-purple_mv bg-clip-text text-transparent dark:from-white dark:to-purple_mv">
+      ¿Por qué se considera verificada?
+   </h2>
+
+   <ul class="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3">
+      {
+         VERIFIED_REASONS.map((reason) => (
+            <li class="rounded-2xl bg-gray-100 p-6 text-center dark:bg-white/5">
+               <h3 class="font-bold text-gray-900 dark:text-white">{reason.title}</h3>
+               <p class="mt-2 text-sm italic text-gray-600 dark:text-white/70">{reason.text}</p>
+            </li>
+         ))
+      }
+   </ul>
+</section>

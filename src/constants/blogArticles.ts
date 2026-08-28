@@ -7,7 +7,7 @@
 // completo). Mismo criterio de la plantilla: una entrada acá = una página
 // nueva, nada que tocar en el .astro.
 //
-// El primer artículo (slug "aplicaciones-de-prestamos-confiables") ya
+// El primer artículo (slug "apps-prestamos-confiables") ya
 // aparece como tarjeta en @constants/blog.ts y en
 // @constants/blogCategoryPages.ts ("evaluaciones") -- son datos distintos a
 // propósito: esas dos listas solo necesitan slug+título para la tarjeta,
@@ -36,7 +36,7 @@ export interface BlogArticle {
 
 export const BLOG_ARTICLES: BlogArticle[] = [
    {
-      slug: 'aplicaciones-de-prestamos-confiables',
+      slug: 'apps-prestamos-confiables',
       title: 'Aplicaciones De Préstamos Confiables – Los Mejores Préstamos Confiables En Línea',
       breadcrumbLabel: 'Aplicaciones de préstamos confiables – Los mejores préstamos confiables en línea',
       author: 'Equipo Movapp',
@@ -54,11 +54,11 @@ export const BLOG_ARTICLES: BlogArticle[] = [
       },
       // Mismos 3 artículos que ya son "oldArticles" de la categoría
       // "evaluaciones" en blogCategoryPages.ts -- ya tienen imagen resuelta
-      // en blogImages.ts (o el placeholder, para que-paso-con-fortaprest).
+      // en blogImages.ts (o el placeholder, para que-paso-fortaprest).
       relatedArticles: [
          { slug: 'fast-efectivo-es-confiable', title: 'Montadeudas – ¿Fast Efectivo Es Confiable?' },
          { slug: 'ok-dinero-condusef', title: 'Ok Dinero Ante CONDUSEF' },
-         { slug: 'que-paso-con-fortaprest', title: '¿Qué Pasó Con La Aplicación Fortaprest?' },
+         { slug: 'que-paso-fortaprest', title: '¿Qué Pasó Con La Aplicación Fortaprest?' },
       ],
    },
 ];

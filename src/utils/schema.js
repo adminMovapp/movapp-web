@@ -40,6 +40,8 @@ import { EL_HACK_FAQS, EL_HACK_STEPS, EL_HACK_HOW_IT_WORKS_TITLE } from '@consta
 import { FAQS_PAGE_ACOSO } from '@constants/faqsPageAcoso.ts';
 import { FAQS_PAGE_EL_HACK } from '@constants/faqsPageElHack.ts';
 import { FAQS_PAGE_MOVAPP } from '@constants/faqsPageMovapp.ts';
+import { CREDISEGURO_FAQS } from '@constants/crediseguroFaqs.ts';
+import { TALA_FAQS } from '@constants/talaFaqs.ts';
 
 // ============================================================
 // 1. DATOS DE LAS ENTIDADES
@@ -371,13 +373,13 @@ export const PAGE_SCHEMA = {
    // Combina las 3 secciones de la página (Acoso, El Hack, Movapp) en un solo
    // FAQPage: el schema no necesita conservar la agrupación visual, solo que
    // cada Question/acceptedAnswer coincida con lo que se lee en pantalla.
-   '/faqs': {
+   '/preguntas-frecuente': {
       name: 'Preguntas frecuentes',
       description: 'Respondemos las dudas más comunes sobre acoso de apps de préstamo, El Hack y Movapp.',
       breadcrumb: 'Preguntas frecuentes',
       build: (request) => [
          generateFAQSchema([...FAQS_PAGE_ACOSO, ...FAQS_PAGE_EL_HACK, ...FAQS_PAGE_MOVAPP]),
-         breadcrumbFor('/faqs', request),
+         breadcrumbFor('/preguntas-frecuente', request),
       ],
    },
 
@@ -398,7 +400,7 @@ export const PAGE_SCHEMA = {
 
       Sin `build`, se arma solo: WebPage (o el `type` indicado) + Breadcrumb.
    */
-   '/testimonials': {
+   '/testimonios': {
       // La guía sugiere CollectionPage para testimonios. Todavía NO se declara
       // Review ni AggregateRating: no hay calificaciones estructuradas en la
       // página, solo video, y declararlas sería schema engañoso.
@@ -409,7 +411,7 @@ export const PAGE_SCHEMA = {
       breadcrumb: 'Testimonios',
    },
 
-   '/contactanos': {
+   '/contacto': {
       // ContactPage: la guía la reserva justamente para páginas con
       // formulario de contacto real, como esta.
       type: 'ContactPage',
@@ -419,7 +421,7 @@ export const PAGE_SCHEMA = {
    },
 
    // --- CollectionPage: listado de artículos agrupados por categoría, mismo
-   // criterio que /testimonials. Sin BlogPosting/ItemList todavía: no hay
+   // criterio que /testimonios. Sin BlogPosting/ItemList todavía: no hay
    // fecha/autor por artículo en el copy visible, y declararlos sería
    // inventar datos que no están en pantalla.
    '/blog': {
@@ -454,12 +456,73 @@ export const PAGE_SCHEMA = {
    // --- CollectionPage: listado de apps agrupadas por estatus (reportadas vs.
    // reguladas), mismo criterio que /blog. Sin Review/AggregateRating: la
    // página no muestra calificaciones, solo estatus de reporte/regulación.
-   '/directorio-de-apps': {
+   '/aplicaciones-prestamo': {
       type: 'CollectionPage',
       name: 'Apps de préstamos legales e ilegales en México',
       description:
          'Encuentra un listado actualizado con el estatus legal de las apps de crédito en México. Te mostramos las señales de alerta para detectar fraudes o "montadeudas" y una guía directa con qué hacer para proteger tu información o realizar denuncias de forma segura.',
       breadcrumb: 'Aplicaciones',
+   },
+
+   // --- Perfil de app individual (primera de la serie /aplicaciones-prestamo/<slug>,
+   // ver skill Importaciones). WebPage + FAQPage porque CrediseguroFaqs.astro
+   // ya hace visible esa sección (misma fuente de datos, CREDISEGURO_FAQS).
+   // Breadcrumb de 2 niveles ("Inicio | Aplicaciones | CrediSeguro") -- por
+   // eso build() arma el BreadcrumbList a mano en vez de usar breadcrumbFor()
+   // (que solo soporta un nivel intermedio). Ver Breadcrumbs.astro para el
+   // mismo trail en la miga visible (prop "items").
+   '/aplicaciones-prestamo/crediseguro': {
+      name: 'CrediSeguro: información verificada, registro y datos de contacto',
+      description:
+         'Consulta la información disponible de CrediSeguro: registro, datos de contacto y los criterios que Movapp revisa para evaluar esta app de préstamos.',
+      breadcrumb: 'CrediSeguro',
+      build: (request) => [
+         generateWebPageSchema(
+            {
+               name: 'CrediSeguro: información verificada, registro y datos de contacto',
+               path: '/aplicaciones-prestamo/crediseguro',
+               description:
+                  'Consulta la información disponible de CrediSeguro: registro, datos de contacto y los criterios que Movapp revisa para evaluar esta app de préstamos.',
+            },
+            request,
+         ),
+         generateBreadcrumbSchema(
+            [
+               { name: 'Aplicaciones', path: '/aplicaciones-prestamo' },
+               { name: 'CrediSeguro', path: '/aplicaciones-prestamo/crediseguro' },
+            ],
+            request,
+         ),
+         generateFAQSchema(CREDISEGURO_FAQS),
+      ],
+   },
+
+   // --- Segunda página de perfil de app, mismo patrón que CrediSeguro
+   // (WebPage + BreadcrumbList de 2 niveles armado a mano + FAQPage).
+   '/aplicaciones-prestamo/tala': {
+      name: 'Tala: información verificada, registro y datos de contacto',
+      description:
+         'Consulta la información disponible de Tala: registro, datos de contacto y los criterios que Movapp revisa para evaluar esta app de préstamos.',
+      breadcrumb: 'Tala',
+      build: (request) => [
+         generateWebPageSchema(
+            {
+               name: 'Tala: información verificada, registro y datos de contacto',
+               path: '/aplicaciones-prestamo/tala',
+               description:
+                  'Consulta la información disponible de Tala: registro, datos de contacto y los criterios que Movapp revisa para evaluar esta app de préstamos.',
+            },
+            request,
+         ),
+         generateBreadcrumbSchema(
+            [
+               { name: 'Aplicaciones', path: '/aplicaciones-prestamo' },
+               { name: 'Tala', path: '/aplicaciones-prestamo/tala' },
+            ],
+            request,
+         ),
+         generateFAQSchema(TALA_FAQS),
+      ],
    },
 
    // ⚠ /mind y /red pueden evolucionar a Article o CollectionPage si se
@@ -497,7 +560,7 @@ function breadcrumbFor(pathname, request) {
 // 4. API PÚBLICA — lo que consume Layout.astro
 // ============================================================
 
-// Normaliza la ruta: "/faqs/" y "/faqs" son la misma página; "" es "/".
+// Normaliza la ruta: "/preguntas-frecuente/" y "/preguntas-frecuente" son la misma página; "" es "/".
 function normalize(pathname) {
    if (!pathname) return '/';
    const clean = pathname.replace(/\/+$/, '');
@@ -520,7 +583,7 @@ export function getPageSchema(pathname, request = null) {
    const page = getPageEntry(pathname);
    if (!page) return [generateOrganizationSchema(request)];
 
-   // Páginas con composición propia (Home, /el-hack, /faqs).
+   // Páginas con composición propia (Home, /el-hack, /preguntas-frecuente).
    if (page.build) return page.build(request);
 
    // Caso por defecto: WebPage (o su subtipo) + BreadcrumbList.

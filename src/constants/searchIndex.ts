@@ -54,7 +54,7 @@ export const SEARCH_INDEX: SearchEntry[] = [
    },
    {
       title: 'Aplicaciones',
-      href: '/directorio-de-apps',
+      href: '/aplicaciones-prestamo',
       description: 'Listado del estatus legal de apps de préstamos en México.',
       keywords: [
          'aplicaciones',
@@ -70,8 +70,20 @@ export const SEARCH_INDEX: SearchEntry[] = [
       ],
    },
    {
+      title: 'CrediSeguro',
+      href: '/aplicaciones-prestamo/crediseguro',
+      description: 'Información verificada, registro CONDUSEF y datos de contacto de CrediSeguro.',
+      keywords: ['crediseguro', 'condusef', 'registro', 'app regulada', 'es confiable'],
+   },
+   {
+      title: 'Tala',
+      href: '/aplicaciones-prestamo/tala',
+      description: 'Información verificada, registro CONDUSEF y datos de contacto de Tala.',
+      keywords: ['tala', 'condusef', 'registro', 'app regulada', 'es confiable'],
+   },
+   {
       title: 'Apps de préstamos reportadas',
-      href: '/directorio-de-apps#directorio-reportadas',
+      href: '/aplicaciones-prestamo#directorio-reportadas',
       description: 'Historial de apps con reportes verificados por extorsión o cobros indebidos.',
       keywords: [
          'apps reportadas',
@@ -85,7 +97,7 @@ export const SEARCH_INDEX: SearchEntry[] = [
    },
    {
       title: 'Apps de préstamos reguladas',
-      href: '/directorio-de-apps#directorio-reguladas',
+      href: '/aplicaciones-prestamo#directorio-reguladas',
       description: 'Catálogo de plataformas autorizadas por la Condusef y la CNBV.',
       keywords: [
          'apps reguladas',
@@ -99,19 +111,19 @@ export const SEARCH_INDEX: SearchEntry[] = [
    },
    {
       title: '¿Cómo identificamos el estatus de una app?',
-      href: '/directorio-de-apps#directorio-como-identificamos',
+      href: '/aplicaciones-prestamo#directorio-como-identificamos',
       description: 'Criterios usados para clasificar el estatus de una app de préstamos.',
       keywords: ['como identificamos', 'criterios', 'como saber si una app es segura', 'verificar app'],
    },
    {
       title: 'Señales de alerta en una app de préstamos',
-      href: '/directorio-de-apps#directorio-senales-alerta',
+      href: '/aplicaciones-prestamo#directorio-senales-alerta',
       description: 'Señales para detectar fraudes o apps montadeudas.',
       keywords: ['señales de alerta', 'como detectar fraude', 'permisos sospechosos', 'acceso a contactos', 'amenazas'],
    },
    {
       title: '¿Qué hacer si tienes problemas con una app de préstamos?',
-      href: '/directorio-de-apps#directorio-que-hacer',
+      href: '/aplicaciones-prestamo#directorio-que-hacer',
       description: 'Guía de pasos si estás siendo acosado por una app de préstamos.',
       keywords: [
          'que hacer',
@@ -133,13 +145,13 @@ export const SEARCH_INDEX: SearchEntry[] = [
    },
    {
       title: 'Preguntas frecuentes',
-      href: '/faqs',
+      href: '/preguntas-frecuente',
       description: 'Dudas frecuentes sobre El Hack, Movapp y el acoso de apps de préstamos.',
       keywords: ['preguntas frecuentes', 'dudas', 'faq', 'ayuda', 'como funciona'],
    },
    {
       title: 'Testimonios',
-      href: '/testimonials',
+      href: '/testimonios',
       description: 'Experiencias reales de personas que usaron El Hack.',
       keywords: ['testimonios', 'opiniones', 'experiencias', 'casos de exito', 'reseñas', 'clientes'],
    },
@@ -179,7 +191,7 @@ export const SEARCH_INDEX: SearchEntry[] = [
    },
    {
       title: 'Contáctanos',
-      href: '/contactanos',
+      href: '/contacto',
       description: 'Escríbenos por WhatsApp o contacto directo.',
       keywords: ['contacto', 'whatsapp', 'hablar con alguien', 'asesoria', 'denunciar', 'ayuda', 'telefono', 'correo', 'escribenos'],
    },

@@ -35,12 +35,12 @@ export const BLOG_CATEGORY_PAGES: BlogCategoryPage[] = [
       intro: 'Revisa nuestro listado actualizado de apps fraudulentas e ilegales. Analizamos cada plataforma para que sepas cuáles evitar y cuáles sí son seguras.',
       recentArticles: [
          {
-            slug: 'aplicaciones-de-prestamos-confiables',
+            slug: 'apps-prestamos-confiables',
             title: 'Aplicaciones De Préstamos Confiables – Los Mejores Préstamos Confiables En Línea',
          },
          { slug: 'prestamax-es-confiable', title: 'Montadeudas – ¿Prestamax Es Confiable?' },
          {
-            slug: 'lista-de-montadeudas',
+            slug: 'lista-montadeudas',
             title: 'Lista De Montadeudas 2025 – Evita Caer Con Las Aplicaciones Más Peligrosas Del Año',
          },
       ],
@@ -48,7 +48,7 @@ export const BLOG_CATEGORY_PAGES: BlogCategoryPage[] = [
          { slug: 'fast-efectivo-es-confiable', title: 'Montadeudas – ¿Fast Efectivo Es Confiable?' },
          { slug: 'ok-dinero-condusef', title: 'Ok Dinero Ante CONDUSEF' },
          // Sin imagen todavía -- ver blogImages.ts (usa ImagePlaceholder de fallback).
-         { slug: 'que-paso-con-fortaprest', title: '¿Qué Pasó Con La Aplicación Fortaprest?' },
+         { slug: 'que-paso-fortaprest', title: '¿Qué Pasó Con La Aplicación Fortaprest?' },
       ],
    },
    {
@@ -61,28 +61,28 @@ export const BLOG_CATEGORY_PAGES: BlogCategoryPage[] = [
       h1: 'Modus operandi y consultas de riesgo',
       intro: 'Descubre cómo operan los montadeudas y prestamistas ilegales. Conoce sus tácticas de engaño, cobro abusivo y aprende a medir tu nivel de riesgo.',
       recentArticles: [
-         { slug: 'ojo-aplicaciones-montadeudas', title: '¡Ojo Con Las Aplicaciones Montadeudas!' },
+         { slug: 'como-identificar-apps-montadeudas', title: '¡Ojo Con Las Aplicaciones Montadeudas!' },
          {
-            slug: 'estrategias-comunes-de-los-montadeudas',
+            slug: 'estrategias-montadeudas',
             title: 'Estrategias Más Comunes De Los Montadeudas Y Cómo Enfrentarlas',
          },
          {
             slug: 'montadeudas-van-a-tu-casa',
             title: '¿Los Montadeudas Van A Tu Casa? – ¿Qué Puedes Hacer En Caso De Caer Con Montadeudas?',
          },
-         { slug: 'montadeudas-kaby-llama-contactos', title: 'Montadeudas – ¿Kaby Llama A Tus Contactos?' },
-         { slug: 'mexdin-llama-a-tus-contactos', title: '¿MexDin Llama A Tus Contactos?' },
+         { slug: 'kaby-es-montadeudas', title: 'Montadeudas – ¿Kaby Llama A Tus Contactos?' },
+         { slug: 'mexdin-llama-contactos', title: '¿MexDin Llama A Tus Contactos?' },
       ],
       oldArticles: [
          {
-            slug: 'montadeudas-publicar-en-redes-sociales',
+            slug: 'montadeudas-redes-sociales',
             title: '¿Pueden Las Apps Montadeudas Publicar En Mis Redes Sociales?',
          },
-         { slug: 'la-cobranza-de-starpresta', title: 'Montadeudas – La Cobranza De Starpresta' },
-         { slug: 'hicredito-te-esta-cobrando', title: '¿HiCrédito Te Está Cobrando?' },
+         { slug: 'cobranza-starpresta', title: 'Montadeudas – La Cobranza De Starpresta' },
+         { slug: 'hicredito-es-confiable', title: '¿HiCrédito Te Está Cobrando?' },
          // Sin imagen todavía -- ver blogImages.ts (usa ImagePlaceholder de fallback).
-         { slug: 'que-pasa-si-no-le-pago-a-credmex', title: '¿Qué Pasa Si No Le Pago A Credmex?' },
-         { slug: 'mexicash-molesta-a-tus-contactos', title: '¿Mexicash Molesta A Tus Contactos?' },
+         { slug: 'que-pasa-si-no-pago-credmex', title: '¿Qué Pasa Si No Le Pago A Credmex?' },
+         { slug: 'mexicash-es-montadeudas', title: '¿Mexicash Molesta A Tus Contactos?' },
       ],
    },
    {
@@ -95,19 +95,19 @@ export const BLOG_CATEGORY_PAGES: BlogCategoryPage[] = [
       recentArticles: [
          { slug: 'que-es-movapp', title: '¿Qué Es Movapp?' },
          {
-            slug: 'erik-mann-contra-los-montadeudas',
+            slug: 'historia-movapp',
             title: 'Erik Mann Y Movapp Contra Los Montadeudas – Conoce La Historia De Cómo Surgió Movapp',
          },
-         { slug: 'movapp-confiable-erik-mann', title: '¿Qué Tan Confiable Es Movapp?' },
+         { slug: 'movapp-es-confiable', title: '¿Qué Tan Confiable Es Movapp?' },
       ],
       oldArticles: [
-         { slug: 'el-hack-funciona', title: '¿El Hack De Movapp Funciona?' },
+         { slug: 'hack-movapp-es-confiable', title: '¿El Hack De Movapp Funciona?' },
          // Sin imagen todavía -- ver blogImages.ts (usa ImagePlaceholder de fallback).
          {
-            slug: 'realizar-el-hack',
+            slug: 'hack-app-no-disponible',
             title: '¿Se Puede Realizar El Hack Si Ya No Se Encuentra En La Play O App Store?',
          },
-         { slug: 'defensa-del-deudor-v-movapp', title: 'Defensa Del Deudor Vs Movapp' },
+         { slug: 'defensa-del-deudor-vs-movapp', title: 'Defensa Del Deudor Vs Movapp' },
       ],
    },
 ];

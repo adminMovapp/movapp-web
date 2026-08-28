@@ -1,0 +1,163 @@
+---
+// Buscador de apps del directorio (a pedido, 2026-08-27): a diferencia del
+// buscador del header (HeaderSearch.astro/MobileSearch.astro, que busca en
+// TODO el sitio vía @constants/searchIndex.ts), este SOLO busca dentro de
+// REPORTED_APPS/REGULATED_APPS -- nunca fuera del sitio, y nunca otras
+// páginas/secciones. Conforme se agreguen más apps a esos dos arrays (ver
+// directorioApps.ts), aparecen acá automáticamente, sin tocar este archivo.
+//
+// Reusa el mismo matching difuso de @utils/search.ts (tolera acentos/tipeos)
+// dándole a cada app la forma de SearchEntry (@constants/searchIndex.ts) más
+// un campo "legal" extra, para no escribir un segundo motor de búsqueda.
+import { REPORTED_APPS, REGULATED_APPS } from '@constants/directorioApps.ts';
+
+const searchEntries = [
+   ...REGULATED_APPS.map((app) => ({
+      title: app.name,
+      href: `/aplicaciones-prestamo/${app.slug}`,
+      description: app.status,
+      keywords: [app.slug],
+      legal: true,
+   })),
+   ...REPORTED_APPS.map((app) => ({
+      title: app.name,
+      href: `/aplicaciones-prestamo/${app.slug}`,
+      description: app.status,
+      keywords: [app.slug],
+      legal: false,
+   })),
+];
+---
+
+<!--
+   z-10 (a diferencia del resto de las secciones "data-aos", que se quedan en
+   z-index:auto): todo [data-aos] tiene "will-change: opacity, transform"
+   permanente (ver global.css), y eso ya alcanza para que CADA sección sea su
+   propio contexto de apilamiento -- sin z-index explícito acá, la sección
+   siguiente (DirectorioReportadas, más abajo en el DOM) pinta ENCIMA de esta
+   completa, sin importar el z-20 interno del dropdown de resultados. Un
+   z-index explícito > 0 en la sección promueve todo su contenido (dropdown
+   incluido) por encima de las secciones vecinas, que siguen en auto.
+-->
+<section class="relative z-10 mx-auto my-section w-full max-w-2xl px-4" data-aos="fade-up">
+   <div class="rounded-3xl bg-gray-100 p-8 text-center dark:bg-white/5 md:p-10">
+      <h2 class="text-2xl md:text-4xl font-bold uppercase gradient-text-move bg-gradient-to-r from-gray-900 to-purple_mv bg-clip-text text-transparent dark:from-white dark:to-purple_mv">
+         ¿Tu app de préstamos es legal y segura?
+      </h2>
+      <p class="mx-auto mt-4 max-w-md text-gray-700 dark:text-white/80">
+         Busca la app de préstamos que quieres utilizar y descubre si es legal, confiable o presenta señales de riesgo
+         antes de solicitar un préstamo.
+      </p>
+
+      <div class="relative mx-auto mt-6 max-w-md text-left">
+         <input
+            type="search"
+            id="directorioSearchInput"
+            autocomplete="off"
+            placeholder="Buscar app de préstamos…"
+            aria-label="Buscar app de préstamos en nuestro directorio"
+            class="w-full rounded-full border border-purple_mv/20 bg-white py-3 pl-5 pr-12 text-sm text-gray-900 shadow-sm outline-none transition focus:border-purple_mv dark:border-white/10 dark:bg-black/20 dark:text-white"
+         />
+         <svg
+            class="pointer-events-none absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400 dark:text-white/40"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+            aria-hidden="true"
+         >
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z" />
+         </svg>
+
+         <ul
+            id="directorioSearchResults"
+            class="absolute inset-x-0 top-full z-20 mt-2 hidden max-h-72 overflow-y-auto rounded-2xl border border-purple_mv/20 bg-white shadow-lg dark:border-white/10 dark:bg-[#0b0b0f]"
+         ></ul>
+         <p id="directorioSearchEmpty" class="mt-3 hidden text-center text-sm text-gray-500 dark:text-white/60">
+            No encontramos esa app en nuestro directorio.
+         </p>
+      </div>
+   </div>
+</section>
+
+<script type="application/json" id="directorioSearchData" is:inline set:html={JSON.stringify(searchEntries)} />
+
+<script>
+   import { searchSite } from '@utils/search';
+   import type { SearchEntry } from '@constants/searchIndex';
+
+   interface DirectorioSearchEntry extends SearchEntry {
+      legal: boolean;
+   }
+
+   const init = () => {
+      const input = document.getElementById('directorioSearchInput') as HTMLInputElement | null;
+      const list = document.getElementById('directorioSearchResults');
+      const empty = document.getElementById('directorioSearchEmpty');
+      const dataScript = document.getElementById('directorioSearchData');
+      if (!input || !list || !empty || !dataScript || input.dataset.ready === 'true') return;
+      input.dataset.ready = 'true';
+
+      const entries: DirectorioSearchEntry[] = JSON.parse(dataScript.textContent || '[]');
+
+      const render = (results: DirectorioSearchEntry[]) => {
+         list.innerHTML = '';
+         results.forEach((entry) => {
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.href = entry.href;
+            a.className =
+               'flex items-center justify-between gap-3 px-4 py-3 transition-colors hover:bg-purple_mv/10 dark:hover:bg-white/5';
+
+            const name = document.createElement('span');
+            name.className = 'font-semibold text-gray-900 dark:text-white';
+            name.textContent = entry.title;
+
+            const status = document.createElement('span');
+            status.className = `flex-shrink-0 text-sm font-semibold ${entry.legal ? 'text-green-500' : 'text-red-500'}`;
+            status.textContent = entry.description;
+
+            a.append(name, status);
+            li.appendChild(a);
+            list.appendChild(li);
+         });
+      };
+
+      const closeResults = () => {
+         list.classList.add('hidden');
+         empty.classList.add('hidden');
+      };
+
+      const runSearch = () => {
+         const query = input.value.trim();
+         if (!query) {
+            closeResults();
+            return;
+         }
+         // searchSite acepta cualquier array con forma de SearchEntry -- acá
+         // le pasamos DirectorioSearchEntry[] (SearchEntry + "legal"), nunca
+         // el índice del sitio completo, así los resultados quedan acotados
+         // solo a las apps del directorio.
+         const matches = searchSite(query, entries, 8) as DirectorioSearchEntry[];
+         empty.classList.toggle('hidden', matches.length > 0);
+         list.classList.toggle('hidden', matches.length === 0);
+         render(matches);
+      };
+
+      input.addEventListener('input', runSearch);
+
+      input.addEventListener('keydown', (e) => {
+         if (e.key !== 'Enter') return;
+         const first = list.querySelector('a');
+         if (first instanceof HTMLAnchorElement) window.location.href = first.href;
+      });
+
+      document.addEventListener('click', (e) => {
+         if (!(e.target instanceof Node)) return;
+         if (!input.parentElement?.contains(e.target)) closeResults();
+      });
+   };
+
+   init();
+   document.addEventListener('astro:page-load', init);
+</script>

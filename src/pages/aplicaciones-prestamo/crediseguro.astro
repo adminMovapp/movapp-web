@@ -1,0 +1,23 @@
+---
+import Layout from '@layouts/Layout.astro';
+import CrediseguroHero from '@sections/crediseguro/CrediseguroHero.astro';
+import CrediseguroInfo from '@sections/crediseguro/CrediseguroInfo.astro';
+import CrediseguroVerificada from '@sections/crediseguro/CrediseguroVerificada.astro';
+import CrediseguroFaqs from '@sections/crediseguro/CrediseguroFaqs.astro';
+import CrediseguroOtrasApps from '@sections/crediseguro/CrediseguroOtrasApps.astro';
+import CrediseguroCTA from '@sections/crediseguro/CrediseguroCTA.astro';
+---
+
+<Layout
+   title="CrediSeguro: información y datos verificados | Movapp"
+   description="Consulta la información disponible de CrediSeguro: registro, datos de contacto y los criterios que Movapp revisa para evaluar esta app de préstamos."
+   type="website"
+   showGrid={false}
+>
+   <CrediseguroHero />
+   <CrediseguroInfo />
+   <CrediseguroVerificada />
+   <CrediseguroFaqs />
+   <CrediseguroOtrasApps />
+   <CrediseguroCTA />
+</Layout>

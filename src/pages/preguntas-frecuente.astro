@@ -1,0 +1,19 @@
+---
+import Layout from '@layouts/Layout.astro';
+import FaqsHero from '@sections/preguntas-frecuente/FaqsHero.astro';
+import FaqsAcoso from '@sections/preguntas-frecuente/FaqsAcoso.astro';
+import FaqsElHack from '@sections/preguntas-frecuente/FaqsElHack.astro';
+import FaqsMovapp from '@sections/preguntas-frecuente/FaqsMovapp.astro';
+---
+
+<Layout
+   title="Preguntas frecuentes | Movapp"
+   description="Respondemos las dudas más comunes sobre acoso de apps de préstamo, El Hack y Movapp."
+   type="website"
+   showGrid={false}
+>
+   <FaqsHero />
+   <FaqsAcoso />
+   <FaqsElHack />
+   <FaqsMovapp />
+</Layout>

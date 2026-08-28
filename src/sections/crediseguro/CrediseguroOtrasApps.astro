@@ -1,0 +1,47 @@
+---
+// Mismo card (ícono + nombre + estatus + "Ver información") que
+// DirectorioReguladas.astro -- misma app, mismo tratamiento visual, en vez
+// de inventar un tercer estilo de card para esta página. Corregido
+// 2026-08-28: el mockup original mostraba Kueski/Tala/Klar bajo el título
+// "otras aplicaciones ILEGALES" con estatus rojo "Reportes verificados" --
+// Santiago confirmó que el título del mockup estaba mal (debía decir
+// "legales") y que las apps mostradas SÍ debían ser esas 3, no las que se
+// habían usado en la primera pasada (StarPresta/MexiCash/FortaPrest, que son
+// las reportadas reales). Por eso ahora filtra sobre REGULATED_APPS
+// (verde "Verificada"), no REPORTED_APPS.
+import { Image } from 'astro:assets';
+import { REGULATED_APPS, DIRECTORIO_ICONS } from '@constants/directorioApps.ts';
+import StarField from '@components/decorative/StarField.astro';
+
+const OTHER_APPS = REGULATED_APPS.filter((app) => ['tala', 'kueski', 'klar'].includes(app.slug));
+---
+
+<section class="relative mx-auto my-section w-full max-w-4xl px-4" data-aos="fade-up">
+   <StarField id="crediseguro-otras-apps" ambientCount={40} />
+
+   <h2 class="text-center text-2xl md:text-4xl font-bold uppercase gradient-text-move bg-gradient-to-r from-gray-900 to-purple_mv bg-clip-text text-transparent dark:from-white dark:to-purple_mv">
+      Otras aplicaciones legales que podrías consultar
+   </h2>
+
+   <ul class="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-3">
+      {
+         OTHER_APPS.map((app) => (
+            <li class="flex flex-col items-center rounded-2xl border border-purple_mv/25 bg-gradient-to-b from-purple_mv/[0.06] to-transparent p-5 text-center shadow-card transition-colors duration-300 hover:border-purple_mv/50 hover:shadow-card-hover dark:border-white/10 dark:from-purple_mv/[0.1] dark:to-black/30">
+               {DIRECTORIO_ICONS[app.slug] && (
+                  <div class="mb-3 flex h-14 w-14 items-center justify-center overflow-hidden rounded-2xl border border-purple_mv/20 bg-purple_mv/5 dark:border-white/10 dark:bg-white/5">
+                     <Image src={DIRECTORIO_ICONS[app.slug]} alt="" width={112} class="h-full w-full object-contain p-2" loading="lazy" />
+                  </div>
+               )}
+               <h3 class="text-lg font-bold text-gray-900 dark:text-white">{app.name}</h3>
+               <p class="mt-2 text-sm font-semibold text-green-500">✓ {app.status}</p>
+               <a
+                  href={`/aplicaciones-prestamo/${app.slug}`}
+                  class="mt-3 text-sm font-semibold text-text_banner underline-offset-4 hover:underline"
+               >
+                  Ver información
+               </a>
+            </li>
+         ))
+      }
+   </ul>
+</section>

@@ -1,0 +1,114 @@
+---
+// Estructura semántica pedida en la revisión de contenido (Angel Martínez,
+// comentarios sobre /contacto):
+// - "Nombres"/"Apellido"/"Correo"/"Mensaje" NO son <h3> -- cada uno es un
+//   <label for="..."> asociado al id de su <input>/<textarea>, con name,
+//   autocomplete y required (los 4 campos son obligatorios).
+// - "Enviar" es <button type="submit"> (no <a>, envía el formulario), con
+//   id="contacto-formulario-enviar" para medición en GA4 (mismo criterio que
+//   el id de ButtonContact.astro: el trigger de GTM/GA4 se configura del
+//   lado de Analytics apuntando a este id, no hace falta un dataLayer.push
+//   manual acá).
+import StarField from '@components/decorative/StarField.astro';
+
+const fieldClass =
+   'rounded-xl border border-purple_mv/25 bg-purple_mv/5 px-4 py-3 text-gray-900 placeholder:text-gray-500 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-white/40';
+---
+
+<section class="relative mx-auto my-section w-full max-w-2xl px-4" data-aos="fade-up">
+   <StarField id="contacto-form" ambientCount={30} />
+
+   <div class="text-center">
+      <h2 class="text-2xl md:text-4xl font-bold uppercase gradient-text-move bg-gradient-to-r from-gray-900 to-purple_mv bg-clip-text text-transparent dark:from-white dark:to-purple_mv">
+         ¿Tienes alguna pregunta?
+      </h2>
+      <p class="mt-3 text-gray-700 dark:text-white/80">Pregúntanos cómo podemos ayudarte.</p>
+   </div>
+
+   <form id="contactoForm" class="glass-card mt-10 flex flex-col gap-5 rounded-2xl border border-purple_mv/20 p-6 dark:border-white/10 md:p-8">
+      <div class="flex flex-col gap-2 text-left">
+         <label for="contacto-nombre" class="text-sm font-semibold text-gray-900 dark:text-white">Nombres</label>
+         <input
+            id="contacto-nombre"
+            name="nombre"
+            type="text"
+            autocomplete="given-name"
+            required
+            class={fieldClass}
+         />
+      </div>
+
+      <div class="flex flex-col gap-2 text-left">
+         <label for="contacto-apellido" class="text-sm font-semibold text-gray-900 dark:text-white">Apellido</label>
+         <input
+            id="contacto-apellido"
+            name="apellido"
+            type="text"
+            autocomplete="family-name"
+            required
+            class={fieldClass}
+         />
+      </div>
+
+      <div class="flex flex-col gap-2 text-left">
+         <label for="contacto-correo" class="text-sm font-semibold text-gray-900 dark:text-white">Correo electrónico</label>
+         <input
+            id="contacto-correo"
+            name="correo"
+            type="email"
+            autocomplete="email"
+            required
+            class={fieldClass}
+         />
+      </div>
+
+      <div class="flex flex-col gap-2 text-left">
+         <label for="contacto-mensaje" class="text-sm font-semibold text-gray-900 dark:text-white">Mensaje</label>
+         <textarea id="contacto-mensaje" name="mensaje" rows="5" required class={fieldClass}></textarea>
+      </div>
+
+      <p
+         id="contactoFormStatus"
+         role="status"
+         class="hidden rounded-xl border border-purple_mv/25 bg-purple_mv/10 p-3 text-center text-sm font-medium text-purple_mv dark:border-white/10"
+      >
+         ¡Gracias! Recibimos tu mensaje y te contactaremos pronto.
+      </p>
+
+      <button
+         id="contacto-formulario-enviar"
+         type="submit"
+         class="rounded-full bg-purple_mv px-6 py-4 text-base font-bold text-white transition hover:bg-purple_mv/85"
+      >
+         Enviar
+      </button>
+   </form>
+</section>
+
+<script>
+   // Sin backend todavía -- pendiente de confirmar el endpoint real que
+   // reciba este formulario. Por ahora valida en el navegador (required +
+   // type="email" nativos) y muestra un mensaje de confirmación local, sin
+   // enviar el POST a ningún lado; swap directo por un fetch() real en
+   // cuanto exista el endpoint (no inventar una llamada a una URL que no
+   // existe todavía).
+   const initContactoForm = (form: HTMLFormElement) => {
+      if (form.getAttribute('data-ready') === 'true') return;
+      form.setAttribute('data-ready', 'true');
+
+      const status = document.getElementById('contactoFormStatus');
+
+      form.addEventListener('submit', (e) => {
+         e.preventDefault();
+         status?.classList.remove('hidden');
+         form.reset();
+      });
+   };
+
+   const initAllContactoForms = () => {
+      document.querySelectorAll<HTMLFormElement>('#contactoForm').forEach(initContactoForm);
+   };
+
+   initAllContactoForms();
+   document.addEventListener('astro:page-load', initAllContactoForms);
+</script>

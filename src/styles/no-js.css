@@ -223,7 +223,7 @@ html.no-js .faq-reveal {
 }
 
 /*
-   DirectorioQueHacer.astro (/directorio-de-apps): mismo criterio que
+   DirectorioQueHacer.astro (/aplicaciones-prestamo): mismo criterio que
    ".faq-reveal" arriba -- ".step-reveal" arranca en opacity:0 esperando que
    un IntersectionObserver le agregue ".is-in-view" al hacer scroll. Sin JS
    ese observer nunca corre, así que los pasos de "Qué hacer si tienes

@@ -30,3 +30,28 @@
   from = "/api/*"
   to = "/.netlify/functions/:splat"
   status = 200
+
+[[redirects]]
+  from = "/directorio-de-apps"
+  to = "/aplicaciones-prestamo"
+  status = 301
+
+[[redirects]]
+  from = "/faqs"
+  to = "/preguntas-frecuente"
+  status = 301
+
+[[redirects]]
+  from = "/testimonials"
+  to = "/testimonios"
+  status = 301
+
+[[redirects]]
+  from = "/contactanos"
+  to = "/contacto"
+  status = 301
+
+[[redirects]]
+  from = "/blog/aplicaciones-de-prestamos-confiables"
+  to = "/blog/apps-prestamos-confiables"
+  status = 301

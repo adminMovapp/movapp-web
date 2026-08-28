@@ -1,0 +1,23 @@
+---
+import Layout from '@layouts/Layout.astro';
+import TalaHero from '@sections/tala/TalaHero.astro';
+import TalaInfo from '@sections/tala/TalaInfo.astro';
+import TalaVerificada from '@sections/tala/TalaVerificada.astro';
+import TalaFaqs from '@sections/tala/TalaFaqs.astro';
+import TalaOtrasApps from '@sections/tala/TalaOtrasApps.astro';
+import TalaCTA from '@sections/tala/TalaCTA.astro';
+---
+
+<Layout
+   title="Tala: información y datos verificados | Movapp"
+   description="Consulta la información disponible de Tala: registro, datos de contacto y los criterios que Movapp revisa para evaluar esta app de préstamos."
+   type="website"
+   showGrid={false}
+>
+   <TalaHero />
+   <TalaInfo />
+   <TalaVerificada />
+   <TalaFaqs />
+   <TalaOtrasApps />
+   <TalaCTA />
+</Layout>

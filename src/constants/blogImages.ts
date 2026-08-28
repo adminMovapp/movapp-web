@@ -1,26 +1,19 @@
 // src/constants/blogImages.ts
 //
-// Imagen real por artículo, keyed por slug (mismo criterio que
-// @constants/blog.ts: "slug sale del nombre de archivo de imagen del
-// wireframe") -- migradas de public/img/blog a src/assets siguiendo la skill
-// de Rendimiento. El resto de public/img/blog que no aparece acá todavía no
-// tiene un slug/artículo correspondiente en @constants/blog.ts ni en
-// @constants/blogCategoryPages.ts, así que se quedó donde estaba sin usar.
+// Imagen real por artículo, keyed por slug -- migradas de public/img/blog a
+// src/assets siguiendo la skill de Rendimiento. El resto de public/img/blog
+// que no aparece acá todavía no tiene un slug/artículo correspondiente en
+// @constants/blog.ts ni en @constants/blogCategoryPages.ts, así que se
+// quedó donde estaba sin usar.
 //
-// Excepción a "slug = nombre de archivo": 'que-es-movapp' no tenía ninguna
-// imagen con ese nombre -- a pedido, usa el-hack-funciona.webp (no coincide
-// con el slug, asignada a mano en vez de por convención de nombre). Mismo
-// criterio para 3 de los archivos de la categoría "riesgo": el origen en
-// public/img/blog traía un sufijo de resolución ("-1024x683") o espacios/
-// mayúsculas sueltas (WordPress) -- se copiaron a src/assets con un nombre
-// limpio en kebab-case (mexdin-llama-a-tus-contactos, en vez de
-// "...-1024x683"; mexicash-molesta-a-tus-contactos, en vez de "Mexicash
-// molesta a tus contactos"; montadeudas-publicar-en-redes-sociales, en vez
-// de "...-1024x683"), así el slug/URL de artículo (/blog/<slug>) queda
-// limpio en vez de arrastrar ese sufijo. Igual para 2 archivos de la
-// categoría "noticias": movapp-confiable-erik-mann (en vez de
-// "...-1024x683") y defensa-del-deudor-v-movapp (en vez de "...-2", un
-// sufijo de variante/duplicado de WordPress sin significado real).
+// El nombre del archivo importado (@assets/<archivo>.webp) ya no coincide
+// con el slug del artículo en varios casos -- el slug ahora sigue la URL
+// canónica del documento maestro de SEO, mientras que el nombre de archivo
+// quedó fijo al del wireframe/origen original (incl. 3 archivos de
+// "riesgo" y 2 de "noticias" ya limpiados a mano de sufijos de WordPress
+// como "-1024x683" o "-2" al migrarlos a src/assets). Solo la clave del
+// diccionario (el slug) importa para la resolución de imagen; el nombre de
+// archivo es independiente y no hace falta que coincida.
 import ImgErikMann from '@assets/erik-mann-contra-los-montadeudas.webp';
 import ImgAppsPrestamos from '@assets/aplicaciones-de-prestamos-confiables.webp';
 import ImgOjoApps from '@assets/ojo-aplicaciones-montadeudas.webp';
@@ -40,38 +33,35 @@ import ImgHicreditoCobrando from '@assets/hicredito-te-esta-cobrando.webp';
 import ImgMexicashMolesta from '@assets/mexicash-molesta-a-tus-contactos.webp';
 import ImgMovappConfiable from '@assets/movapp-confiable-erik-mann.webp';
 import ImgDefensaDeudor from '@assets/defensa-del-deudor-v-movapp.webp';
+import ImgQuePasoFortaprest from '@assets/que-paso-con-fortaprest.webp';
+import ImgQuePasaCredmex from '@assets/que-pasa-si-no-pago-credmex.webp';
+import ImgRealizarElHack from '@assets/realizar-el-hack.webp';
 
 export const BLOG_IMAGES: Record<string, ImageMetadata> = {
-   'erik-mann-contra-los-montadeudas': ImgErikMann,
-   'aplicaciones-de-prestamos-confiables': ImgAppsPrestamos,
-   'ojo-aplicaciones-montadeudas': ImgOjoApps,
-   'app-montadeudas-que-hacer': ImgQueHacer,
+   'historia-movapp': ImgErikMann,
+   'apps-prestamos-confiables': ImgAppsPrestamos,
+   'como-identificar-apps-montadeudas': ImgOjoApps,
+   'que-hacer-con-apps-montadeudas': ImgQueHacer,
    'que-es-movapp': ImgElHackFunciona,
    'prestamax-es-confiable': ImgPrestamaxConfiable,
-   'lista-de-montadeudas': ImgListaMontadeudas,
+   'lista-montadeudas': ImgListaMontadeudas,
    'fast-efectivo-es-confiable': ImgFastEfectivo,
    'ok-dinero-condusef': ImgOkDineroCondusef,
-   // 'que-paso-con-fortaprest' -- sin imagen todavía (no existe en public/img/blog
-   // ni en ningún otro lado del repo); usa el fallback ImagePlaceholder hasta que
-   // se entregue el archivo real.
-   'estrategias-comunes-de-los-montadeudas': ImgEstrategiasComunes,
+   'que-paso-fortaprest': ImgQuePasoFortaprest,
+   'estrategias-montadeudas': ImgEstrategiasComunes,
    'montadeudas-van-a-tu-casa': ImgMontadeudasVanATuCasa,
-   'montadeudas-kaby-llama-contactos': ImgKabyLlamaContactos,
-   'mexdin-llama-a-tus-contactos': ImgMexdinLlamaContactos,
-   'montadeudas-publicar-en-redes-sociales': ImgPublicarEnRedes,
-   'la-cobranza-de-starpresta': ImgCobranzaStarpresta,
-   'hicredito-te-esta-cobrando': ImgHicreditoCobrando,
-   'mexicash-molesta-a-tus-contactos': ImgMexicashMolesta,
-   // 'que-pasa-si-no-le-pago-a-credmex' -- sin imagen todavía (no existe en
-   // public/img/blog ni en ningún otro lado del repo); usa el fallback
-   // ImagePlaceholder hasta que se entregue el archivo real.
-   // 'el-hack-funciona' (categoría "noticias") reutiliza el mismo archivo que
-   // 'que-es-movapp' de arriba -- es la misma imagen del wireframe, para dos
+   'kaby-es-montadeudas': ImgKabyLlamaContactos,
+   'mexdin-llama-contactos': ImgMexdinLlamaContactos,
+   'montadeudas-redes-sociales': ImgPublicarEnRedes,
+   'cobranza-starpresta': ImgCobranzaStarpresta,
+   'hicredito-es-confiable': ImgHicreditoCobrando,
+   'mexicash-es-montadeudas': ImgMexicashMolesta,
+   'que-pasa-si-no-pago-credmex': ImgQuePasaCredmex,
+   // 'hack-movapp-es-confiable' (categoría "noticias") reutiliza el mismo archivo
+   // que 'que-es-movapp' de arriba -- es la misma imagen del wireframe, para dos
    // artículos distintos.
-   'el-hack-funciona': ImgElHackFunciona,
-   'movapp-confiable-erik-mann': ImgMovappConfiable,
-   'defensa-del-deudor-v-movapp': ImgDefensaDeudor,
-   // 'realizar-el-hack' -- sin imagen todavía (no existe en public/img/blog
-   // ni en ningún otro lado del repo); usa el fallback ImagePlaceholder hasta
-   // que se entregue el archivo real.
+   'hack-movapp-es-confiable': ImgElHackFunciona,
+   'movapp-es-confiable': ImgMovappConfiable,
+   'defensa-del-deudor-vs-movapp': ImgDefensaDeudor,
+   'hack-app-no-disponible': ImgRealizarElHack,
 };
