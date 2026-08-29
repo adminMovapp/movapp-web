@@ -1,0 +1,23 @@
+---
+import Layout from '@layouts/Layout.astro';
+import KueskiHero from '@sections/kueski/KueskiHero.astro';
+import KueskiInfo from '@sections/kueski/KueskiInfo.astro';
+import KueskiVerificada from '@sections/kueski/KueskiVerificada.astro';
+import KueskiFaqs from '@sections/kueski/KueskiFaqs.astro';
+import KueskiOtrasApps from '@sections/kueski/KueskiOtrasApps.astro';
+import KueskiCTA from '@sections/kueski/KueskiCTA.astro';
+---
+
+<Layout
+   title="Kueski: información y datos verificados | Movapp"
+   description="Consulta la información disponible de Kueski: registro, datos de contacto y los criterios que Movapp revisa para evaluar esta app de préstamos."
+   type="website"
+   showGrid={false}
+>
+   <KueskiHero />
+   <KueskiInfo />
+   <KueskiVerificada />
+   <KueskiFaqs />
+   <KueskiOtrasApps />
+   <KueskiCTA />
+</Layout>

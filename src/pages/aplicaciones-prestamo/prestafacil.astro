@@ -1,0 +1,27 @@
+---
+import Layout from '@layouts/Layout.astro';
+import PrestafacilHero from '@sections/prestafacil/PrestafacilHero.astro';
+import PrestafacilInfo from '@sections/prestafacil/PrestafacilInfo.astro';
+import PrestafacilSenalesRiesgo from '@sections/prestafacil/PrestafacilSenalesRiesgo.astro';
+import PrestafacilQueHacer from '@sections/prestafacil/PrestafacilQueHacer.astro';
+import PrestafacilDondeDenunciar from '@sections/prestafacil/PrestafacilDondeDenunciar.astro';
+import PrestafacilFaqs from '@sections/prestafacil/PrestafacilFaqs.astro';
+import PrestafacilOtrasApps from '@sections/prestafacil/PrestafacilOtrasApps.astro';
+import PrestafacilCTA from '@sections/prestafacil/PrestafacilCTA.astro';
+---
+
+<Layout
+   title="¿Prestafácil es confiable? Reportes y riesgos | Movapp"
+   description="Analizamos los reportes de usuarios sobre Prestafácil, sus riesgos y los pasos que puedes seguir para protegerte si ya la descargaste."
+   type="website"
+   showGrid={false}
+>
+   <PrestafacilHero />
+   <PrestafacilInfo />
+   <PrestafacilSenalesRiesgo />
+   <PrestafacilQueHacer />
+   <PrestafacilDondeDenunciar />
+   <PrestafacilFaqs />
+   <PrestafacilOtrasApps />
+   <PrestafacilCTA />
+</Layout>

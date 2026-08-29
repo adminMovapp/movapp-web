@@ -1,0 +1,90 @@
+---
+// Modal de confirmación reutilizable para cualquier botón que lleve a un
+// sitio externo (fuera de movapp.org) -- pedido explícito de Santiago en los
+// comentarios del wireframe de "Dónde denunciar" (PrestaFácil/FortaPrest):
+// antes de salir del sitio, avisar al usuario. Un solo modal compartido por
+// página: cualquier link con el atributo `data-external-warn` (+
+// `data-external-label`, opcional, el nombre visible del destino) dispara
+// este mismo modal en vez de que cada botón tenga su propio diálogo.
+//
+// Progresivo sin JS: el <a> real conserva su href siempre -- sin JS, el
+// click navega directo (degradación correcta, ver skill Diseño). Con JS, el
+// script de abajo intercepta el click, muestra el modal, y solo navega si
+// el usuario confirma.
+---
+
+<dialog id="external-link-modal" class="external-link-modal">
+   <div class="external-link-modal-card rounded-2xl bg-white p-7 dark:bg-[#111]">
+      <h2 class="text-lg font-bold text-gray-900 dark:text-white">Vas a salir de Movapp</h2>
+      <p class="mt-2 text-sm text-gray-600 dark:text-white/70">
+         Estás a punto de visitar <span id="external-link-target" class="font-semibold text-gray-900 dark:text-white" />, un
+         sitio externo a Movapp. ¿Deseas continuar?
+      </p>
+      <div class="mt-6 flex justify-end gap-3">
+         <button
+            type="button"
+            id="external-link-cancel"
+            class="rounded-full border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-700 transition hover:bg-gray-100 dark:border-white/20 dark:text-white/80 dark:hover:bg-white/10"
+         >
+            Cancelar
+         </button>
+         <a
+            id="external-link-confirm"
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="rounded-full bg-purple_mv px-5 py-2.5 text-sm font-bold text-white transition hover:bg-purple_mv/85"
+         >
+            Continuar
+         </a>
+      </div>
+   </div>
+</dialog>
+
+<style>
+   .external-link-modal {
+      max-width: 26rem;
+      width: calc(100% - 2rem);
+      border: none;
+      border-radius: 1rem;
+      padding: 0;
+      background: transparent;
+   }
+   .external-link-modal::backdrop {
+      background: rgba(0, 0, 0, 0.6);
+   }
+</style>
+
+<script>
+   function initExternalLinkModal(modal: HTMLDialogElement) {
+      if (modal.dataset.ready === 'true') return;
+      modal.dataset.ready = 'true';
+
+      const targetLabel = modal.querySelector('#external-link-target');
+      const confirmLink = modal.querySelector<HTMLAnchorElement>('#external-link-confirm');
+      const cancelBtn = modal.querySelector('#external-link-cancel');
+      if (!targetLabel || !confirmLink || !cancelBtn) return;
+
+      document.querySelectorAll<HTMLAnchorElement>('a[data-external-warn]').forEach((link) => {
+         link.addEventListener('click', (e) => {
+            e.preventDefault();
+            confirmLink.href = link.href;
+            targetLabel.textContent = link.dataset.externalLabel || link.href;
+            modal.showModal();
+         });
+      });
+
+      cancelBtn.addEventListener('click', () => modal.close());
+      confirmLink.addEventListener('click', () => modal.close());
+      modal.addEventListener('click', (e) => {
+         if (e.target === modal) modal.close();
+      });
+   }
+
+   const initAllExternalLinkModals = () => {
+      document.querySelectorAll<HTMLDialogElement>('#external-link-modal').forEach(initExternalLinkModal);
+   };
+
+   initAllExternalLinkModals();
+   document.addEventListener('astro:page-load', initAllExternalLinkModals);
+</script>

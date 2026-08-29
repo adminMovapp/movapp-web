@@ -1,0 +1,27 @@
+---
+import Layout from '@layouts/Layout.astro';
+import FortaprestaHero from '@sections/fortapresta/FortaprestaHero.astro';
+import FortaprestaInfo from '@sections/fortapresta/FortaprestaInfo.astro';
+import FortaprestaSenalesRiesgo from '@sections/fortapresta/FortaprestaSenalesRiesgo.astro';
+import FortaprestaQueHacer from '@sections/fortapresta/FortaprestaQueHacer.astro';
+import FortaprestaDondeDenunciar from '@sections/fortapresta/FortaprestaDondeDenunciar.astro';
+import FortaprestaFaqs from '@sections/fortapresta/FortaprestaFaqs.astro';
+import FortaprestaOtrasApps from '@sections/fortapresta/FortaprestaOtrasApps.astro';
+import FortaprestaCTA from '@sections/fortapresta/FortaprestaCTA.astro';
+---
+
+<Layout
+   title="Fortaprest: reportes de usuarios y qué hacer | Movapp"
+   description="Descubre qué están reportando los usuarios de Fortaprest sobre riesgo de ingresar su información personal y qué acciones puedes tomar hoy."
+   type="website"
+   showGrid={false}
+>
+   <FortaprestaHero />
+   <FortaprestaInfo />
+   <FortaprestaSenalesRiesgo />
+   <FortaprestaQueHacer />
+   <FortaprestaDondeDenunciar />
+   <FortaprestaFaqs />
+   <FortaprestaOtrasApps />
+   <FortaprestaCTA />
+</Layout>

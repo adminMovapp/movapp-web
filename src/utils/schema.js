@@ -42,6 +42,10 @@ import { FAQS_PAGE_EL_HACK } from '@constants/faqsPageElHack.ts';
 import { FAQS_PAGE_MOVAPP } from '@constants/faqsPageMovapp.ts';
 import { CREDISEGURO_FAQS } from '@constants/crediseguroFaqs.ts';
 import { TALA_FAQS } from '@constants/talaFaqs.ts';
+import { KUESKI_FAQS } from '@constants/kueskiFaqs.ts';
+import { KLAR_FAQS } from '@constants/klarFaqs.ts';
+import { PRESTAFACIL_FAQS } from '@constants/prestafacilFaqs.ts';
+import { FORTAPRESTA_FAQS } from '@constants/fortaprestaFaqs.ts';
 
 // ============================================================
 // 1. DATOS DE LAS ENTIDADES
@@ -522,6 +526,119 @@ export const PAGE_SCHEMA = {
             request,
          ),
          generateFAQSchema(TALA_FAQS),
+      ],
+   },
+
+   // --- Tercera página de perfil de app, mismo patrón que CrediSeguro/Tala.
+   '/aplicaciones-prestamo/kueski': {
+      name: 'Kueski: información verificada, registro y datos de contacto',
+      description:
+         'Consulta la información disponible de Kueski: registro, datos de contacto y los criterios que Movapp revisa para evaluar esta app de préstamos.',
+      breadcrumb: 'Kueski',
+      build: (request) => [
+         generateWebPageSchema(
+            {
+               name: 'Kueski: información verificada, registro y datos de contacto',
+               path: '/aplicaciones-prestamo/kueski',
+               description:
+                  'Consulta la información disponible de Kueski: registro, datos de contacto y los criterios que Movapp revisa para evaluar esta app de préstamos.',
+            },
+            request,
+         ),
+         generateBreadcrumbSchema(
+            [
+               { name: 'Aplicaciones', path: '/aplicaciones-prestamo' },
+               { name: 'Kueski', path: '/aplicaciones-prestamo/kueski' },
+            ],
+            request,
+         ),
+         generateFAQSchema(KUESKI_FAQS),
+      ],
+   },
+
+   // --- Cuarta página de perfil de app, mismo patrón que CrediSeguro/Tala/Kueski.
+   '/aplicaciones-prestamo/klar': {
+      name: 'Klar: información verificada, registro y datos de contacto',
+      description:
+         'Consulta la información disponible de Klar: registro, datos de contacto y los criterios que Movapp revisa para evaluar esta app de préstamos.',
+      breadcrumb: 'Klar',
+      build: (request) => [
+         generateWebPageSchema(
+            {
+               name: 'Klar: información verificada, registro y datos de contacto',
+               path: '/aplicaciones-prestamo/klar',
+               description:
+                  'Consulta la información disponible de Klar: registro, datos de contacto y los criterios que Movapp revisa para evaluar esta app de préstamos.',
+            },
+            request,
+         ),
+         generateBreadcrumbSchema(
+            [
+               { name: 'Aplicaciones', path: '/aplicaciones-prestamo' },
+               { name: 'Klar', path: '/aplicaciones-prestamo/klar' },
+            ],
+            request,
+         ),
+         generateFAQSchema(KLAR_FAQS),
+      ],
+   },
+
+   // --- Primera página del lado "app reportada/ilegal" de la serie (ver
+   // skill Importaciones) -- mismo patrón WebPage + BreadcrumbList de 2
+   // niveles + FAQPage que CrediSeguro/Tala/Kueski/Klar, pero el H1/copy de
+   // la página siguen una plantilla distinta (ver PrestafacilHero.astro).
+   '/aplicaciones-prestamo/prestafacil': {
+      name: '¿Prestafácil es confiable? Reportes y riesgos',
+      description:
+         'Analizamos los reportes de usuarios sobre Prestafácil, sus riesgos y los pasos que puedes seguir para protegerte si ya la descargaste.',
+      breadcrumb: 'PrestaFácil',
+      build: (request) => [
+         generateWebPageSchema(
+            {
+               name: '¿Prestafácil es confiable? Reportes y riesgos',
+               path: '/aplicaciones-prestamo/prestafacil',
+               description:
+                  'Analizamos los reportes de usuarios sobre Prestafácil, sus riesgos y los pasos que puedes seguir para protegerte si ya la descargaste.',
+            },
+            request,
+         ),
+         generateBreadcrumbSchema(
+            [
+               { name: 'Aplicaciones', path: '/aplicaciones-prestamo' },
+               { name: 'PrestaFácil', path: '/aplicaciones-prestamo/prestafacil' },
+            ],
+            request,
+         ),
+         generateFAQSchema(PRESTAFACIL_FAQS),
+      ],
+   },
+
+   // --- Segunda página del lado "app reportada/ilegal". Ruta "fortapresta"
+   // (no "fortaprest") -- ver comentario en directorioApps.ts, es el slug
+   // canónico del documento maestro de SEO.
+   '/aplicaciones-prestamo/fortapresta': {
+      name: 'Fortaprest: reportes de usuarios y qué hacer',
+      description:
+         'Descubre qué están reportando los usuarios de Fortaprest sobre riesgo de ingresar su información personal y qué acciones puedes tomar hoy.',
+      breadcrumb: 'FortaPrest',
+      build: (request) => [
+         generateWebPageSchema(
+            {
+               name: 'Fortaprest: reportes de usuarios y qué hacer',
+               path: '/aplicaciones-prestamo/fortapresta',
+               description:
+                  'Descubre qué están reportando los usuarios de Fortaprest sobre riesgo de ingresar su información personal y qué acciones puedes tomar hoy.',
+            },
+            request,
+         ),
+         generateBreadcrumbSchema(
+            [
+               { name: 'Aplicaciones', path: '/aplicaciones-prestamo' },
+               { name: 'FortaPrest', path: '/aplicaciones-prestamo/fortapresta' },
+            ],
+            request,
+         ),
+         generateFAQSchema(FORTAPRESTA_FAQS),
       ],
    },
 

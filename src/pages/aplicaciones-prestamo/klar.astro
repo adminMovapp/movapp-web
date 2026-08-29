@@ -1,0 +1,23 @@
+---
+import Layout from '@layouts/Layout.astro';
+import KlarHero from '@sections/klar/KlarHero.astro';
+import KlarInfo from '@sections/klar/KlarInfo.astro';
+import KlarVerificada from '@sections/klar/KlarVerificada.astro';
+import KlarFaqs from '@sections/klar/KlarFaqs.astro';
+import KlarOtrasApps from '@sections/klar/KlarOtrasApps.astro';
+import KlarCTA from '@sections/klar/KlarCTA.astro';
+---
+
+<Layout
+   title="Klar: información y datos verificados | Movapp"
+   description="Consulta la información disponible de Klar: registro, datos de contacto y los criterios que Movapp revisa para evaluar esta app de préstamos."
+   type="website"
+   showGrid={false}
+>
+   <KlarHero />
+   <KlarInfo />
+   <KlarVerificada />
+   <KlarFaqs />
+   <KlarOtrasApps />
+   <KlarCTA />
+</Layout>

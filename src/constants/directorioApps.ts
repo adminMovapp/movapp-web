@@ -21,7 +21,12 @@ import ImgKlar from '@assets/icono-klar.webp';
 
 export const DIRECTORIO_ICONS: Record<string, ImageMetadata> = {
    prestafacil: ImgPrestafacil,
-   fortaprest: ImgFortaprest,
+   // Clave "fortapresta" (no "fortaprest") a propósito: el slug canónico del
+   // documento maestro de SEO para esta página es
+   // /aplicaciones-prestamo/fortapresta -- el archivo de imagen se queda con
+   // su nombre original (icono-fortaprest.webp), solo la clave/slug usado
+   // para armar rutas cambia.
+   fortapresta: ImgFortaprest,
    mexicash: ImgMexicash,
    starpresta: ImgStarpresta,
    crediseguro: ImgCrediseguro,
@@ -40,7 +45,7 @@ export interface DirectorioApp {
 // verificados por extorsión o cobros indebidos.
 export const REPORTED_APPS: DirectorioApp[] = [
    { slug: 'prestafacil', name: 'PrestaFácil', status: 'Reportes verificados' },
-   { slug: 'fortaprest', name: 'FortaPrest', status: 'Reportes verificados' },
+   { slug: 'fortapresta', name: 'FortaPrest', status: 'Reportes verificados' },
    { slug: 'mexicash', name: 'MexiCash', status: 'Reportes verificados' },
    { slug: 'starpresta', name: 'StarPresta', status: 'Reportes verificados' },
 ];

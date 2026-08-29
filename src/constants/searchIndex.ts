@@ -82,6 +82,30 @@ export const SEARCH_INDEX: SearchEntry[] = [
       keywords: ['tala', 'condusef', 'registro', 'app regulada', 'es confiable'],
    },
    {
+      title: 'Kueski',
+      href: '/aplicaciones-prestamo/kueski',
+      description: 'Información verificada, registro CONDUSEF y datos de contacto de Kueski.',
+      keywords: ['kueski', 'condusef', 'registro', 'app regulada', 'es confiable'],
+   },
+   {
+      title: 'Klar',
+      href: '/aplicaciones-prestamo/klar',
+      description: 'Información verificada, registro CONDUSEF y datos de contacto de Klar.',
+      keywords: ['klar', 'condusef', 'registro', 'app regulada', 'es confiable'],
+   },
+   {
+      title: 'PrestaFácil',
+      href: '/aplicaciones-prestamo/prestafacil',
+      description: 'Reportes, señales de riesgo y pasos para protegerte de PrestaFácil.',
+      keywords: ['prestafacil', 'es confiable', 'es legal', 'reportes', 'denunciar', 'app ilegal'],
+   },
+   {
+      title: 'FortaPrest',
+      href: '/aplicaciones-prestamo/fortapresta',
+      description: 'Qué reportan los usuarios de FortaPrest y qué puedes hacer.',
+      keywords: ['fortaprest', 'fortapresta', 'es confiable', 'es legal', 'reportes', 'denunciar', 'app ilegal'],
+   },
+   {
       title: 'Apps de préstamos reportadas',
       href: '/aplicaciones-prestamo#directorio-reportadas',
       description: 'Historial de apps con reportes verificados por extorsión o cobros indebidos.',

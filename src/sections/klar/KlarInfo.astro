@@ -1,0 +1,27 @@
+---
+// Tarjetas gris planas -- mismo criterio que CrediseguroInfo.astro/etc.
+const INFO_CARDS = [
+   {
+      title: 'Desarrollador',
+      text: 'Klar Technologies, S.A. de C.V., S.F.P. Tipo de entidad: Sociedad Financiera Popular (SOFIPO), autorizada y supervisada por la CNBV.',
+   },
+   { title: 'Registro CONDUSEF', text: '27009 · En operación' },
+];
+---
+
+<section class="relative mx-auto my-section w-full max-w-3xl px-4" data-aos="fade-up">
+   <h2 class="text-center text-2xl md:text-4xl font-bold uppercase gradient-text-move bg-gradient-to-r from-gray-900 to-purple_mv bg-clip-text text-transparent dark:from-white dark:to-purple_mv">
+      Información disponible sobre Klar
+   </h2>
+
+   <ul class="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2">
+      {
+         INFO_CARDS.map((card) => (
+            <li class="rounded-2xl bg-gray-100 p-6 text-center dark:bg-white/5">
+               <h3 class="font-bold text-gray-900 dark:text-white">{card.title}</h3>
+               <p class="mt-2 text-sm italic text-gray-600 dark:text-white/70">{card.text}</p>
+            </li>
+         ))
+      }
+   </ul>
+</section>
