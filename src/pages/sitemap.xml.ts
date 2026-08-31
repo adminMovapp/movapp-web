@@ -15,6 +15,8 @@ const pages = [
   { path: '/aplicaciones-prestamo/klar', changefreq: 'monthly', priority: '0.6' },
   { path: '/aplicaciones-prestamo/prestafacil', changefreq: 'monthly', priority: '0.6' },
   { path: '/aplicaciones-prestamo/fortapresta', changefreq: 'monthly', priority: '0.6' },
+  { path: '/aplicaciones-prestamo/mexicash', changefreq: 'monthly', priority: '0.6' },
+  { path: '/aplicaciones-prestamo/starpresta', changefreq: 'monthly', priority: '0.6' },
   { path: '/testimonios',           changefreq: 'monthly', priority: '0.7' },
   { path: '/collaborations',        changefreq: 'monthly', priority: '0.7' },
   { path: '/preguntas-frecuente',   changefreq: 'monthly', priority: '0.7' },

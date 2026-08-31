@@ -27,9 +27,23 @@ import { DIRECTORIO_ICONS } from '@constants/directorioApps.ts';
       <div class="mx-auto flex h-28 w-28 flex-shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-gray-100 dark:bg-white/5 sm:mx-0">
          <Image src={DIRECTORIO_ICONS.fortapresta} alt="" width={112} class="h-full w-full object-contain p-3" loading="lazy" />
       </div>
+      <!--
+         Texto distinto en móvil vs. escritorio (2026-08-28, mismo criterio
+         que PrestafacilHero.astro): el wireframe de móviles trajo un párrafo
+         completamente distinto (más largo, en primera persona hacia el
+         usuario) -- se aplica SOLO en móvil, el texto de escritorio ya
+         construido no se toca.
+      -->
       <p class="text-center text-gray-700 dark:text-white/80 sm:text-left">
-         FortaPrest se presenta como una app de préstamos rápidos. Estuvo un tiempo fuera de las tiendas de
-         aplicaciones y volvió a aparecer, que es algo que solemos ver en este tipo de plataformas.
+         <span class="md:hidden">
+            Si llegaste aquí porque no dejan de llegarte mensajes de Fortaprest, respira un momento. Vamos por partes,
+            sin adornos y sin asustarte de más: esto es todo lo que sabemos de esta aplicación, por qué está en
+            nuestra lista de apps reportadas y qué puedes hacer hoy mismo.
+         </span>
+         <span class="hidden md:inline">
+            FortaPrest se presenta como una app de préstamos rápidos. Estuvo un tiempo fuera de las tiendas de
+            aplicaciones y volvió a aparecer, que es algo que solemos ver en este tipo de plataformas.
+         </span>
       </p>
    </div>
 

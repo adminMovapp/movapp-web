@@ -106,6 +106,18 @@ export const SEARCH_INDEX: SearchEntry[] = [
       keywords: ['fortaprest', 'fortapresta', 'es confiable', 'es legal', 'reportes', 'denunciar', 'app ilegal'],
    },
    {
+      title: 'Mexicash',
+      href: '/aplicaciones-prestamo/mexicash',
+      description: 'Qué hacer si Mexicash te depositó dinero que no solicitaste.',
+      keywords: ['mexicash', 'me depositaron', 'es confiable', 'es legal', 'reportes', 'denunciar', 'app ilegal'],
+   },
+   {
+      title: 'StarPresta',
+      href: '/aplicaciones-prestamo/starpresta',
+      description: 'Qué hacer si StarPresta creó un grupo de WhatsApp con tus contactos.',
+      keywords: ['starpresta', 'grupo de whatsapp', 'es confiable', 'es legal', 'reportes', 'denunciar', 'app ilegal'],
+   },
+   {
       title: 'Apps de préstamos reportadas',
       href: '/aplicaciones-prestamo#directorio-reportadas',
       description: 'Historial de apps con reportes verificados por extorsión o cobros indebidos.',

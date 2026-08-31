@@ -16,6 +16,7 @@ import BlogArticleBody from '@sections/blog/BlogArticleBody.astro';
 import BlogArticleGrid from '@sections/blog/BlogArticleGrid.astro';
 import BlogArticleCTA from '@sections/blog/BlogArticleCTA.astro';
 import { BLOG_ARTICLES } from '@constants/blogArticles.ts';
+import { getSiteConfig } from '@utils/config.jsx';
 
 // Mismo motivo que [categoria].astro: el sitio corre en SSR (output:
 // 'server'), así que sin este flag "getStaticPaths" se ignora por completo.
@@ -29,9 +30,15 @@ export function getStaticPaths() {
 }
 
 const { article } = Astro.props;
+
+const shareUrl = `${getSiteConfig(Astro.request).siteUrl}/blog/${article.slug}`;
+
+// Primer párrafo del cuerpo, sin importar cuántos bloques "appGrid" haya
+// antes -- usado como meta description.
+const firstParagraph = article.sections[0].blocks.find((b) => b.type === 'paragraph')?.text ?? '';
 ---
 
-<Layout title={`${article.title} | Movapp`} description={article.paragraphs[0]} type="article" showGrid={false}>
+<Layout title={`${article.title} | Movapp`} description={firstParagraph} type="article" showGrid={false}>
    <BlogArticleHero
       slug={article.slug}
       title={article.title}
@@ -39,8 +46,15 @@ const { article } = Astro.props;
       author={article.author}
       publishDate={article.publishDate}
       readingMinutes={article.readingMinutes}
+      mobileAuthor={article.mobileAuthor}
+      mobileReadingMinutes={article.mobileReadingMinutes}
    />
-   <BlogArticleBody paragraphs={article.paragraphs} authorBio={article.authorBio} />
+   <BlogArticleBody
+      sections={article.sections}
+      authorBio={article.authorBio}
+      shareUrl={shareUrl}
+      shareTitle={article.title}
+   />
    <BlogArticleGrid
       id={`articulo-${article.slug}-relacionados`}
       title="Artículos relacionados"

@@ -1,6 +1,20 @@
 ---
-// Mismo criterio que FortaprestaInfo.astro: tarjetas sin título, solo texto.
-const RISK_SIGNS = ['Nos llegaron 484 reportes en un solo mes.', 'Amenazas, acoso y cobranza abusiva.'];
+// El wireframe de móviles (2026-08-28) completó esta lista de 2 a 7 señales
+// -- contenido aditivo, se agrega igual en ambos breakpoints. Su comentario
+// explícito ("de las secciones más fuertes, usar <ul><li>, no párrafos
+// independientes") ya se cumplía a nivel de markup (esto siempre fue un
+// <ul>/<li>), pero con 7 ítems se pasa a una sola columna -- una lista
+// vertical se lee como una lista de evidencia real, no como una grilla de
+// tarjetas decorativas.
+const RISK_SIGNS = [
+   'Nos llegaron 484 reportes en un solo mes.',
+   'Las tasas llegan hasta 372.41%. No es un caso aislado: es un patrón.',
+   'Amenazas, acoso y cobranza abusiva.',
+   'Usan tu propio teléfono en tu contra.',
+   'Amenazan con ir a tu casa o a tu trabajo.',
+   'Mandan mensajes a tus contactos, a tu familia y hasta tu jefe.',
+   'Difunden fotos tomadas de tu galería.',
+];
 ---
 
 <section class="relative mx-auto my-section w-full max-w-3xl px-4" data-aos="fade-up">
@@ -8,10 +22,10 @@ const RISK_SIGNS = ['Nos llegaron 484 reportes en un solo mes.', 'Amenazas, acos
       Señales de riesgo relacionadas con FortaPrest
    </h2>
 
-   <ul class="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2">
+   <ul class="mt-8 flex flex-col gap-3">
       {
          RISK_SIGNS.map((text) => (
-            <li class="flex items-center justify-center rounded-2xl bg-gray-100 p-6 text-center dark:bg-white/5">
+            <li class="rounded-2xl bg-gray-100 p-4 text-center dark:bg-white/5">
                <p class="text-sm text-gray-700 dark:text-white/80">{text}</p>
             </li>
          ))

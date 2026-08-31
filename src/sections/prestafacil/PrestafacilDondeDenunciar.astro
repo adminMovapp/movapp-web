@@ -1,12 +1,7 @@
 ---
 // Tarjetas gris planas con un botón de acción (no es un ButtonContact de
-// WhatsApp -- son enlaces a instancias externas de denuncia). El wireframe
-// trae el placeholder "página enlazada" en el href de ambos botones y
-// Santiago confirmó que el contenido de esta plantilla todavía está
-// incompleto ("esa la actualizo después de que crees la plantilla") -- por
-// eso el href queda como "#" explícito en vez de inventar una URL real de
-// Policía Cibernética/CONDUSEF. Reemplazar en cuanto Santiago mande el
-// enlace real de cada uno.
+// WhatsApp -- son enlaces a instancias externas de denuncia). URLs reales
+// confirmadas por Santiago (2026-08-28).
 //
 // Aviso de salida (2026-08-28, pedido explícito en los comentarios del
 // wireframe): cada botón lleva data-external-warn + data-external-label, que
@@ -15,8 +10,13 @@
 import ExternalLinkModal from '@components/ui/ExternalLinkModal.astro';
 
 const REPORT_CHANNELS = [
-   { title: 'Policía Cibernética', text: 'Amenazas, extorsión, suplantación.', buttonLabel: 'Contactar', href: '#' },
-   { title: 'CONDUSEF', text: 'Queja contra institución identificada.', buttonLabel: 'Presentar queja', href: '#' },
+   {
+      title: 'Policía Cibernética',
+      text: 'Amenazas, extorsión, suplantación.',
+      buttonLabel: 'Contactar',
+      href: 'https://www.ssc.cdmx.gob.mx/organizacion-policial/subsecretaria-de-inteligencia-e-investigacion-policial/policia-cibernetica',
+   },
+   { title: 'CONDUSEF', text: 'Queja contra institución identificada.', buttonLabel: 'Presentar queja', href: 'https://www.condusef.gob.mx/' },
 ];
 ---
 
@@ -30,7 +30,7 @@ const REPORT_CHANNELS = [
          REPORT_CHANNELS.map((channel) => (
             <li class="flex flex-col items-start justify-between gap-4 rounded-2xl bg-gray-100 p-6 dark:bg-white/5 sm:flex-row sm:items-center">
                <div>
-                  <h3 class="font-bold text-gray-900 dark:text-white">{channel.title}</h3>
+                  <h3 class="font-bold text-text_banner">{channel.title}</h3>
                   <p class="mt-1 text-sm italic text-gray-600 dark:text-white/70">{channel.text}</p>
                </div>
                <a

@@ -28,7 +28,7 @@ const OTHER_APPS = REPORTED_APPS.filter((app) => ['fortapresta', 'mexicash', 'st
                      <Image src={DIRECTORIO_ICONS[app.slug]} alt="" width={112} class="h-full w-full object-contain p-2" loading="lazy" />
                   </div>
                )}
-               <h3 class="text-lg font-bold text-gray-900 dark:text-white">{app.name}</h3>
+               <h3 class="text-lg font-bold text-text_banner">{app.name}</h3>
                <p class="mt-2 text-sm font-semibold text-red-500">✓ {app.status}</p>
                <a
                   href={`/aplicaciones-prestamo/${app.slug}`}

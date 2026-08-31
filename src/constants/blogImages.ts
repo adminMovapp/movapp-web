@@ -36,13 +36,23 @@ import ImgDefensaDeudor from '@assets/defensa-del-deudor-v-movapp.webp';
 import ImgQuePasoFortaprest from '@assets/que-paso-con-fortaprest.webp';
 import ImgQuePasaCredmex from '@assets/que-pasa-si-no-pago-credmex.webp';
 import ImgRealizarElHack from '@assets/realizar-el-hack.webp';
+import ImgQueHacerSiDescargaste from '@assets/que-hacer-en-caso-de-descargar-apps-montadeudas.webp';
+import ImgComoDenunciarMontadeudas from '@assets/como-denunciar-app-de-prestamos-fraude.webp';
+import ImgCondusefVsMontadeudas from '@assets/condusef-vs-los-montadeudas.webp';
+import ImgComoNoPagarMontadeudas from '@assets/como-no-pagar-a-montadeudas.webp';
+import ImgQueEsMovapp from '@assets/que-es-movapp.webp';
 
 export const BLOG_IMAGES: Record<string, ImageMetadata> = {
    'historia-movapp': ImgErikMann,
    'apps-prestamos-confiables': ImgAppsPrestamos,
    'como-identificar-apps-montadeudas': ImgOjoApps,
    'que-hacer-con-apps-montadeudas': ImgQueHacer,
-   'que-es-movapp': ImgElHackFunciona,
+   // 2026-08-30: reemplaza el placeholder compartido con
+   // 'hack-movapp-es-confiable' -- este artículo ya tiene wireframe propio
+   // con su propia imagen ("que-es-movapp.webp", encontrada sin usar en
+   // public/img/blog/, migrada a src/assets). 'hack-movapp-es-confiable'
+   // sigue con ImgElHackFunciona hasta que se construya su propio wireframe.
+   'que-es-movapp': ImgQueEsMovapp,
    'prestamax-es-confiable': ImgPrestamaxConfiable,
    'lista-montadeudas': ImgListaMontadeudas,
    'fast-efectivo-es-confiable': ImgFastEfectivo,
@@ -57,11 +67,15 @@ export const BLOG_IMAGES: Record<string, ImageMetadata> = {
    'hicredito-es-confiable': ImgHicreditoCobrando,
    'mexicash-es-montadeudas': ImgMexicashMolesta,
    'que-pasa-si-no-pago-credmex': ImgQuePasaCredmex,
-   // 'hack-movapp-es-confiable' (categoría "noticias") reutiliza el mismo archivo
-   // que 'que-es-movapp' de arriba -- es la misma imagen del wireframe, para dos
-   // artículos distintos.
+   // 'hack-movapp-es-confiable' (categoría "noticias") -- sin wireframe
+   // propio todavía, usa este placeholder temporal (ImgElHackFunciona)
+   // hasta que se construya su propio artículo.
    'hack-movapp-es-confiable': ImgElHackFunciona,
    'movapp-es-confiable': ImgMovappConfiable,
    'defensa-del-deudor-vs-movapp': ImgDefensaDeudor,
    'hack-app-no-disponible': ImgRealizarElHack,
+   'que-hacer-si-descargaste-app-montadeudas': ImgQueHacerSiDescargaste,
+   'como-denunciar-montadeudas': ImgComoDenunciarMontadeudas,
+   'condusef-montadeudas': ImgCondusefVsMontadeudas,
+   'que-pasa-si-no-pagas-montadeudas': ImgComoNoPagarMontadeudas,
 };

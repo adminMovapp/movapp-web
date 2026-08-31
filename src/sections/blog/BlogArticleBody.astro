@@ -1,24 +1,168 @@
 ---
-// Cuerpo del artículo (párrafos) + tarjeta de bio del equipo autor. Mismo
-// contenedor angosto que BlogArticleHero.astro (max-w-3xl) para que el
-// texto se lea cómodo en una sola columna, en vez de estirarse a todo el
-// ancho de la página.
+// Cuerpo del artículo (secciones de párrafos, cada una con un H2 opcional) +
+// bloque de compartir + tarjeta de bio del equipo autor, en ese orden (ver
+// wireframe). Mismo contenedor angosto que BlogArticleHero.astro
+// (max-w-3xl) para que el texto se lea cómodo en una sola columna, en vez de
+// estirarse a todo el ancho de la página.
+//
+// "sections" en vez de un solo array plano de párrafos (2026-08-29,
+// artículo "prestamax-es-confiable"): ese artículo trae un H2 intermedio
+// ("¿Qué pasa si no pago Prestamax?") antes de retomar párrafos -- el
+// primer artículo (sin subtítulo) sigue funcionando igual, solo con una
+// sección sin "heading".
+//
+// Cada sección es una secuencia de "blocks" (no solo párrafos, 2026-08-29,
+// artículo "lista-montadeudas"): ese artículo intercala grids de íconos de
+// apps entre párrafos dentro de la misma sección/país, de ahí el tipo unión
+// 'paragraph' | 'appGrid' en vez de un simple array de strings.
+import ImagePlaceholder from '@components/ui/ImagePlaceholder.astro';
+import BlogArticleShare from '@sections/blog/BlogArticleShare.astro';
+
 interface Props {
-   paragraphs: string[];
+   sections: {
+      heading?: string;
+      blocks: (
+         // "mobileText" opcional (2026-08-29, "lista-montadeudas"): mismo
+         // criterio de conflicto móvil/escritorio del resto del proyecto --
+         // cuando el wireframe de móviles trae otro texto para el mismo
+         // párrafo, se muestra solo ahí vía el span responsivo de abajo,
+         // sin tocar "text" (el de escritorio).
+         | { type: 'paragraph'; text: string; mobileText?: string }
+         | { type: 'appGrid'; apps: { name: string; icon: string | null }[] }
+         // Lista numerada (2026-08-30, "ok-dinero-condusef"): ese artículo
+         // trae dos listas de pasos/características enumeradas (1, 2, 3...)
+         // dentro del cuerpo -- no son párrafos independientes.
+         // "start" opcional (2026-08-30, "como-denunciar-montadeudas"): ese
+         // artículo intercala párrafos explicativos ENTRE items de una
+         // misma lista numerada (confirmado real en el pase de móviles, no
+         // un artefacto del mockup) -- se parte en varios bloques
+         // "orderedList" consecutivos con "start" para que la numeración
+         // visual continúe (1, luego 2, luego 3-6) en vez de reiniciar.
+         | { type: 'orderedList'; items: string[]; start?: number }
+         // Lista con viñetas (2026-08-30, "que-hacer-con-apps-montadeudas"):
+         // ese artículo trae una lista de características SIN numerar (•),
+         // a diferencia de "orderedList" que sí lleva 1, 2, 3...
+         | { type: 'unorderedList'; items: string[] }
+         // Lista con letras (2026-08-30, "como-denunciar-montadeudas"): ese
+         // artículo trae un índice corto tipo "A) Fiscalía del estado", "B)
+         // Policía Cibernética"... -- la letra ya viene incluida como texto
+         // literal en cada item (fuente), así que se renderiza sin marcador
+         // adicional (list-none), a diferencia de "unorderedList" (•).
+         | { type: 'letteredList'; items: string[] }
+         // Imagen ilustrativa de cuerpo (2026-08-30, "montadeudas-van-a-tu-
+         // casa"): ese wireframe trae una segunda imagen a media sección,
+         // distinta de la imagen destacada del Hero -- sin archivo real
+         // entregado aún, así que se muestra como ImagePlaceholder (mismo
+         // criterio ya usado para íconos de apps sin ícono real).
+         | { type: 'image'; alt: string }
+      )[];
+   }[];
    authorBio: { name: string; text: string };
+   shareUrl: string;
+   shareTitle: string;
 }
-const { paragraphs, authorBio } = Astro.props;
+const { sections, authorBio, shareUrl, shareTitle } = Astro.props;
+
+// Negritas inline dentro de un párrafo (2026-08-30, "como-identificar-apps-
+// montadeudas": la fuente marca "El Hack" en negritas dentro de una
+// oración) -- sintaxis "**texto**" en los datos, parseada acá a
+// <strong class="font-bold text-text_banner"> (negrita Y morado, regla de
+// la skill Importaciones). El resto del texto se imprime tal cual.
+function renderInline(text: string) {
+   return text.split(/(\*\*[^*]+\*\*)/g).map((part) =>
+      part.startsWith('**') && part.endsWith('**') ? { bold: part.slice(2, -2) } : part,
+   );
+}
 ---
 
 <section class="relative mx-auto max-w-3xl px-4" data-aos="fade-up">
-   <div class="space-y-4 text-base text-gray-700 dark:text-white/80 md:text-lg">
-      {paragraphs.map((p) => <p>{p}</p>)}
+   <div class="space-y-6 text-base text-gray-700 dark:text-white/80 md:text-lg">
+      {
+         sections.map((s) => (
+            <div class="space-y-4">
+               {s.heading && <h2 class="text-xl font-bold text-text_banner md:text-2xl">{s.heading}</h2>}
+               {s.blocks.map((block) =>
+                  block.type === 'paragraph' ? (
+                     block.mobileText ? (
+                        <p>
+                           <span class="md:hidden">
+                              {renderInline(block.mobileText).map((seg) =>
+                                 typeof seg === 'string' ? seg : <strong class="font-bold text-text_banner">{seg.bold}</strong>,
+                              )}
+                           </span>
+                           <span class="hidden md:inline">
+                              {renderInline(block.text).map((seg) =>
+                                 typeof seg === 'string' ? seg : <strong class="font-bold text-text_banner">{seg.bold}</strong>,
+                              )}
+                           </span>
+                        </p>
+                     ) : (
+                        <p>
+                           {renderInline(block.text).map((seg) =>
+                              typeof seg === 'string' ? seg : <strong class="font-bold text-text_banner">{seg.bold}</strong>,
+                           )}
+                        </p>
+                     )
+                  ) : block.type === 'appGrid' ? (
+                     <ul class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+                        {block.apps.map((app) => (
+                           <li class="flex flex-col items-center rounded-2xl border border-purple_mv/25 bg-gradient-to-b from-purple_mv/[0.06] to-transparent p-4 text-center dark:border-white/10 dark:from-purple_mv/[0.1] dark:to-black/30">
+                              {app.icon ? (
+                                 <div class="mb-2 flex h-14 w-14 items-center justify-center overflow-hidden rounded-2xl border border-purple_mv/20 bg-purple_mv/5 dark:border-white/10 dark:bg-white/5">
+                                    <img src={app.icon} alt="" width="56" height="56" class="h-full w-full object-contain p-2" loading="lazy" />
+                                 </div>
+                              ) : (
+                                 <ImagePlaceholder class="mb-2 h-14 w-14" />
+                              )}
+                              <h3 class="text-sm font-bold text-text_banner">{app.name}</h3>
+                           </li>
+                        ))}
+                     </ul>
+                  ) : block.type === 'orderedList' ? (
+                     <ol start={block.start} class="list-decimal space-y-2 pl-5 marker:font-bold marker:text-text_banner">
+                        {block.items.map((item) => (
+                           <li>
+                              {renderInline(item).map((seg) =>
+                                 typeof seg === 'string' ? seg : <strong class="font-bold text-text_banner">{seg.bold}</strong>,
+                              )}
+                           </li>
+                        ))}
+                     </ol>
+                  ) : block.type === 'unorderedList' ? (
+                     <ul class="list-disc space-y-2 pl-5 marker:text-text_banner">
+                        {block.items.map((item) => (
+                           <li>
+                              {renderInline(item).map((seg) =>
+                                 typeof seg === 'string' ? seg : <strong class="font-bold text-text_banner">{seg.bold}</strong>,
+                              )}
+                           </li>
+                        ))}
+                     </ul>
+                  ) : block.type === 'letteredList' ? (
+                     <ul class="list-none space-y-1">
+                        {block.items.map((item) => (
+                           <li>
+                              {renderInline(item).map((seg) =>
+                                 typeof seg === 'string' ? seg : <strong class="font-bold text-text_banner">{seg.bold}</strong>,
+                              )}
+                           </li>
+                        ))}
+                     </ul>
+                  ) : (
+                     <ImagePlaceholder class="aspect-[16/10] w-full" />
+                  ),
+               )}
+            </div>
+         ))
+      }
    </div>
+
+   <BlogArticleShare url={shareUrl} title={shareTitle} />
 
    <div class="mt-10 flex items-start gap-4 rounded-2xl border border-purple_mv/25 bg-gradient-to-b from-purple_mv/[0.06] to-transparent p-5 dark:border-white/10 dark:from-purple_mv/[0.1] dark:to-black/30">
       <span class="h-12 w-12 flex-shrink-0 rounded-full bg-purple_mv/15 dark:bg-white/10" aria-hidden="true"></span>
       <div>
-         <h3 class="font-bold text-gray-900 dark:text-white">{authorBio.name}</h3>
+         <h3 class="font-bold text-text_banner">{authorBio.name}</h3>
          <p class="mt-1 text-sm italic text-gray-600 dark:text-white/60">{authorBio.text}</p>
       </div>
    </div>

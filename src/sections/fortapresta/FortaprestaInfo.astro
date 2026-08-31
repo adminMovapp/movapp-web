@@ -1,9 +1,16 @@
 ---
 // A diferencia de PrestafacilInfo.astro, este wireframe trae las tarjetas
 // SIN título -- solo el dato en texto, así se sigue verbatim (no se inventa
-// un h3 que no está en la fuente). El tercer recuadro vacío del wireframe
-// se omite, mismo criterio que el resto de la serie.
-const INFO_ITEMS = ['Presta hasta $20,000 pesos.', 'Ofrece plazos de 91 a 365 días.'];
+// un h3 que no está en la fuente). Los 2 recuadros que el wireframe de
+// escritorio traía vacíos se completaron en el wireframe de móviles
+// (2026-08-28) -- contenido puramente aditivo (no contradice nada ya
+// construido), así que se agrega igual en ambos breakpoints.
+const INFO_ITEMS = [
+   'Presta hasta $20,000 pesos.',
+   'Ofrece plazos de 91 a 365 días.',
+   'Te pide solo tu INE, ser mayor de edad y una cuenta bancaria mexicana.',
+   'No pide aval ni comprobante de ingresos.',
+];
 ---
 
 <section class="relative mx-auto my-section w-full max-w-3xl px-4" data-aos="fade-up">

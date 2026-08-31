@@ -46,6 +46,8 @@ import { KUESKI_FAQS } from '@constants/kueskiFaqs.ts';
 import { KLAR_FAQS } from '@constants/klarFaqs.ts';
 import { PRESTAFACIL_FAQS } from '@constants/prestafacilFaqs.ts';
 import { FORTAPRESTA_FAQS } from '@constants/fortaprestaFaqs.ts';
+import { MEXICASH_FAQS } from '@constants/mexicashFaqs.ts';
+import { STARPRESTA_FAQS } from '@constants/starprestaFaqs.ts';
 
 // ============================================================
 // 1. DATOS DE LAS ENTIDADES
@@ -409,9 +411,9 @@ export const PAGE_SCHEMA = {
       // Review ni AggregateRating: no hay calificaciones estructuradas en la
       // página, solo video, y declararlas sería schema engañoso.
       type: 'CollectionPage',
-      name: 'La voz de nuestros usuarios',
+      name: 'Testimonios de personas ayudadas',
       description:
-         'Más de 2,000 usuarios han confirmado que El Hack es la solución para recuperar el control de su vida digital. Conoce sus historias.',
+         'Lee testimonios reales de personas que dejaron de ser acosadas por apps de préstamos montadeudas gracias a Movapp. Comparte tu experiencia también.',
       breadcrumb: 'Testimonios',
    },
 
@@ -419,8 +421,9 @@ export const PAGE_SCHEMA = {
       // ContactPage: la guía la reserva justamente para páginas con
       // formulario de contacto real, como esta.
       type: 'ContactPage',
-      name: 'Contáctanos',
-      description: 'Escríbenos tus dudas sobre Movapp y El Hack, o síguenos en redes sociales.',
+      name: 'Contacto: ayuda contra apps de préstamos',
+      description:
+         '¿Necesitas ayuda con una app de préstamos que te acosa? Completa el formulario o síguenos en redes sociales. Movapp te responde y te asesora.',
       breadcrumb: 'Contáctanos',
    },
 
@@ -430,9 +433,9 @@ export const PAGE_SCHEMA = {
    // inventar datos que no están en pantalla.
    '/blog': {
       type: 'CollectionPage',
-      name: 'Blog de préstamos, deudas y montadeudas',
+      name: 'Blog: alertas y noticias sobre apps montadeudas',
       description:
-         'Guías, evaluaciones de apps y noticias de Movapp sobre préstamos, deudas y aplicaciones montadeudas.',
+         'Entérate de las últimas alertas sobre apps de préstamos montadeudas en México. Casos reales, reportes de usuarios y consejos de Movapp para protegerte.',
       breadcrumb: 'Blog',
    },
 
@@ -464,7 +467,7 @@ export const PAGE_SCHEMA = {
       type: 'CollectionPage',
       name: 'Apps de préstamos legales e ilegales en México',
       description:
-         'Encuentra un listado actualizado con el estatus legal de las apps de crédito en México. Te mostramos las señales de alerta para detectar fraudes o "montadeudas" y una guía directa con qué hacer para proteger tu información o realizar denuncias de forma segura.',
+         'Descubre qué apps de préstamos son legales y cuáles son montadeudas. Aprende a identificar señales de alerta y qué hacer si ya tienes problemas.',
       breadcrumb: 'Aplicaciones',
    },
 
@@ -639,6 +642,61 @@ export const PAGE_SCHEMA = {
             request,
          ),
          generateFAQSchema(FORTAPRESTA_FAQS),
+      ],
+   },
+
+   // --- Tercera página del lado "app reportada/ilegal".
+   '/aplicaciones-prestamo/mexicash': {
+      name: 'Mexicash: el depósito que nunca pediste y qué puedes hacer',
+      description:
+         '¿Mexicash te depositó dinero que no solicitaste? Te explicamos por qué ocurre esta táctica y qué pasos seguir para protegerte del cobro forzado.',
+      breadcrumb: 'Mexicash',
+      build: (request) => [
+         generateWebPageSchema(
+            {
+               name: 'Mexicash: el depósito que nunca pediste y qué puedes hacer',
+               path: '/aplicaciones-prestamo/mexicash',
+               description:
+                  '¿Mexicash te depositó dinero que no solicitaste? Te explicamos por qué ocurre esta táctica y qué pasos seguir para protegerte del cobro forzado.',
+            },
+            request,
+         ),
+         generateBreadcrumbSchema(
+            [
+               { name: 'Aplicaciones', path: '/aplicaciones-prestamo' },
+               { name: 'Mexicash', path: '/aplicaciones-prestamo/mexicash' },
+            ],
+            request,
+         ),
+         generateFAQSchema(MEXICASH_FAQS),
+      ],
+   },
+
+   // --- Cuarta y última página del lado "app reportada/ilegal" -- octava y
+   // última página de perfil de app de toda la serie.
+   '/aplicaciones-prestamo/starpresta': {
+      name: 'StarPresta: el grupo de WhatsApp con tus contactos y qué puedes hacer',
+      description:
+         'Starpresta arma grupos de WhatsApp con tus contactos para presionar el pago. Conoce las señales de riesgo y qué hacer si ya te está pasando.',
+      breadcrumb: 'StarPresta',
+      build: (request) => [
+         generateWebPageSchema(
+            {
+               name: 'StarPresta: el grupo de WhatsApp con tus contactos y qué puedes hacer',
+               path: '/aplicaciones-prestamo/starpresta',
+               description:
+                  'Starpresta arma grupos de WhatsApp con tus contactos para presionar el pago. Conoce las señales de riesgo y qué hacer si ya te está pasando.',
+            },
+            request,
+         ),
+         generateBreadcrumbSchema(
+            [
+               { name: 'Aplicaciones', path: '/aplicaciones-prestamo' },
+               { name: 'StarPresta', path: '/aplicaciones-prestamo/starpresta' },
+            ],
+            request,
+         ),
+         generateFAQSchema(STARPRESTA_FAQS),
       ],
    },
 

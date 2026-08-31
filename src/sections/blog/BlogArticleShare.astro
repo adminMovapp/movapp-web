@@ -1,0 +1,103 @@
+---
+// "¡Comparte esta nota!" -- fila de accesos directos para compartir el
+// artículo, entre el cuerpo y la card de bio del autor (ver
+// src/sections/blog/BlogArticleBody.astro, que renderiza este bloque).
+//
+// Los 4 íconos de plataforma son enlaces normales (funcionan sin JS, cada uno
+// usa el "share intent" estándar de esa red con la URL/título del artículo).
+// El primer ícono ("Compartir") es el único que necesita JS: usa la Web
+// Share API nativa si el navegador la soporta, y si no, copia el enlace al
+// portapapeles -- igual que el botón "Volver arriba" del Footer, es un
+// utilitario que queda inerte sin JS, no contenido.
+//
+// Íconos: assets reales de /public/img (mismo criterio que los logos de
+// redes del Footer -- <img>, no SVG inline). "Icono_ Whatsapp.webp" trae un
+// espacio en el nombre de archivo tal cual existe en /public/img -- se
+// referencia con %20, no se renombra el archivo.
+interface Props {
+   url: string;
+   title: string;
+}
+const { url, title } = Astro.props;
+
+const encodedUrl = encodeURIComponent(url);
+const encodedTitle = encodeURIComponent(title);
+
+const platforms = [
+   {
+      label: 'Facebook',
+      href: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
+      icon: '/img/logo-facebook.webp',
+   },
+   {
+      label: 'LinkedIn',
+      href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`,
+      icon: '/img/Icono_Linkedin.webp',
+   },
+   {
+      label: 'WhatsApp',
+      href: `https://api.whatsapp.com/send?text=${encodedTitle}%20${encodedUrl}`,
+      icon: '/img/Icono_%20Whatsapp.webp',
+   },
+   {
+      label: 'X (Twitter)',
+      href: `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`,
+      icon: '/img/Icono_X.webp',
+   },
+];
+---
+
+<div class="mt-10" data-share-block data-url={url} data-title={title}>
+   <p class="text-center text-sm font-bold uppercase tracking-wide text-gray-500 dark:text-white/60">¡Comparte esta nota!</p>
+
+   <div class="mt-4 flex justify-center gap-3">
+      <button
+         type="button"
+         data-share-native
+         aria-label="Compartir"
+         class="flex h-10 w-10 items-center justify-center transition hover:-translate-y-0.5"
+      >
+         <img src="/img/iconos/Icono_share.webp" alt="Compartir" width="40" height="40" class="h-10 w-10 rounded-full object-cover" />
+      </button>
+
+      {
+         platforms.map((p) => (
+            <a
+               href={p.href}
+               target="_blank"
+               rel="noopener noreferrer"
+               aria-label={`Compartir en ${p.label}`}
+               class="flex h-10 w-10 items-center justify-center transition hover:-translate-y-0.5"
+            >
+               <img src={p.icon} alt={p.label} width="40" height="40" class="h-10 w-10 rounded-full object-cover" />
+            </a>
+         ))
+      }
+   </div>
+</div>
+
+<script>
+   document.querySelectorAll<HTMLElement>('[data-share-block]').forEach((block) => {
+      const button = block.querySelector<HTMLButtonElement>('[data-share-native]');
+      const url = block.dataset.url ?? '';
+      const title = block.dataset.title ?? '';
+
+      button?.addEventListener('click', async () => {
+         if (navigator.share) {
+            try {
+               await navigator.share({ title, url });
+            } catch {
+               // Usuario canceló el share sheet -- no hacer nada.
+            }
+            return;
+         }
+
+         try {
+            await navigator.clipboard.writeText(url);
+         } catch {
+            // Clipboard no disponible -- sin fallback visual, el enlace
+            // sigue accesible desde la barra de direcciones.
+         }
+      });
+   });
+</script>
