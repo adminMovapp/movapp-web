@@ -17,8 +17,10 @@
 // 'paragraph' | 'appGrid' en vez de un simple array de strings.
 import ImagePlaceholder from '@components/ui/ImagePlaceholder.astro';
 import BlogArticleShare from '@sections/blog/BlogArticleShare.astro';
+import StarField from '@components/decorative/StarField.astro';
 
 interface Props {
+   slug: string;
    sections: {
       heading?: string;
       blocks: (
@@ -61,7 +63,7 @@ interface Props {
    shareUrl: string;
    shareTitle: string;
 }
-const { sections, authorBio, shareUrl, shareTitle } = Astro.props;
+const { slug, sections, authorBio, shareUrl, shareTitle } = Astro.props;
 
 // Negritas inline dentro de un párrafo (2026-08-30, "como-identificar-apps-
 // montadeudas": la fuente marca "El Hack" en negritas dentro de una
@@ -76,7 +78,9 @@ function renderInline(text: string) {
 ---
 
 <section class="relative mx-auto max-w-3xl px-4" data-aos="fade-up">
-   <div class="space-y-6 text-base text-gray-700 dark:text-white/80 md:text-lg">
+   <StarField id={`blog-article-body-${slug}`} ambientCount={40} />
+
+   <div class="relative z-10 space-y-6 text-base text-gray-700 dark:text-white/80 md:text-lg">
       {
          sections.map((s) => (
             <div class="space-y-4">

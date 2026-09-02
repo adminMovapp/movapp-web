@@ -50,6 +50,7 @@ const firstParagraph = article.sections[0].blocks.find((b) => b.type === 'paragr
       mobileReadingMinutes={article.mobileReadingMinutes}
    />
    <BlogArticleBody
+      slug={article.slug}
       sections={article.sections}
       authorBio={article.authorBio}
       shareUrl={shareUrl}

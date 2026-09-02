@@ -10,6 +10,11 @@
 // No localizada"). Confirmado con Santiago: se aplica ÚNICAMENTE en móvil
 // (textMobile) -- el texto de escritorio ya construido no se toca. Mismo
 // patrón responsive que HomeSymptoms.astro.
+//
+// Línea de tiempo de scroll (2026-09-01, extendida desde StarPresta a las 4
+// apps "montadeudas") -- ver <RiskTimeline /> para el mecanismo completo.
+import RiskTimeline from '@components/decorative/RiskTimeline.astro';
+
 const RISK_SIGNS = [
    {
       title: 'Acceso a contactos',
@@ -21,27 +26,4 @@ const RISK_SIGNS = [
 ];
 ---
 
-<section class="relative mx-auto my-section w-full max-w-3xl px-4" data-aos="fade-up">
-   <h2 class="text-center text-2xl md:text-4xl font-bold uppercase gradient-text-move bg-gradient-to-r from-gray-900 to-purple_mv bg-clip-text text-transparent dark:from-white dark:to-purple_mv">
-      Señales de riesgo relacionadas con PrestaFácil
-   </h2>
-
-   <ul class="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3">
-      {
-         RISK_SIGNS.map((sign) =>
-            sign.textMobile ? (
-               <li class="rounded-2xl bg-gray-100 p-6 text-center dark:bg-white/5">
-                  <h3 class="font-bold text-text_banner">{sign.title}</h3>
-                  <p class="mt-2 text-sm italic text-gray-600 dark:text-white/70 md:hidden">{sign.textMobile}</p>
-                  <p class="mt-2 hidden text-sm italic text-gray-600 dark:text-white/70 md:block">{sign.text}</p>
-               </li>
-            ) : (
-               <li class="rounded-2xl bg-gray-100 p-6 text-center dark:bg-white/5">
-                  <h3 class="font-bold text-text_banner">{sign.title}</h3>
-                  <p class="mt-2 text-sm italic text-gray-600 dark:text-white/70">{sign.text}</p>
-               </li>
-            ),
-         )
-      }
-   </ul>
-</section>
+<RiskTimeline id="prestafacil" heading="Señales de riesgo relacionadas con PrestaFácil" items={RISK_SIGNS} />

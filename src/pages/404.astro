@@ -1,14 +1,49 @@
 ---
 import Layout from '@layouts/Layout.astro';
+
+// output: 'server' (SSR) no aplica el 404 automáticamente en todos los
+// adaptadores/entornos solo por el nombre del archivo (a diferencia del modo
+// 'static') -- se fija explícito para que el status sea correcto sin
+// depender de que Netlify/Astro lo infieran por convención.
+Astro.response.status = 404;
+Astro.response.statusText = 'Not Found';
+
+// Enlaces de recuperación (2026-09-02, a pedido: agentes/crawlers y
+// usuarios reales necesitan saber a dónde ir desde un 404, no solo un botón
+// de "volver al inicio"). Rutas reales del sitemap (ver sitemap.xml.ts).
+const RECOVERY_LINKS = [
+   { href: '/', label: 'Inicio' },
+   { href: '/tienda', label: 'Tienda · El Hack' },
+   { href: '/aplicaciones-prestamo', label: 'Directorio de apps de préstamo' },
+   { href: '/blog', label: 'Blog' },
+   { href: '/preguntas-frecuente', label: 'Preguntas frecuentes' },
+   { href: '/contacto', label: 'Contacto' },
+   { href: '/sitemap.xml', label: 'Mapa del sitio (sitemap.xml)' },
+];
 ---
 
-<Layout title="Error en el pago">
-   <section class="flex flex-col items-center justify-center min-h-[60vh] text-center">
+<Layout title="Página no encontrada">
+   <section class="flex flex-col items-center justify-center min-h-[60vh] px-4 text-center">
       <h1 class="text-5xl font-bold text-purple-700 mb-4">404</h1>
       <h2 class="text-2xl font-semibold text-gray-700 mb-2">Página no encontrada</h2>
       <p class="text-gray-500 mb-6">Lo sentimos, el enlace que buscas no existe o fue movido.</p>
       <a href="/" class="bg-purple-600 text-white px-6 py-3 rounded-full font-medium hover:bg-purple-700 transition"
          >Volver al inicio</a
       >
+
+      <nav aria-label="Enlaces útiles" class="mt-10 w-full max-w-md text-left">
+         <p class="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-500">¿A dónde ir desde aquí?</p>
+         <ul class="flex flex-col gap-2">
+            {
+               RECOVERY_LINKS.map((link) => (
+                  <li>
+                     <a href={link.href} class="text-purple_mv underline decoration-purple_mv/40 underline-offset-2 hover:decoration-purple_mv">
+                        {link.label}
+                     </a>
+                  </li>
+               ))
+            }
+         </ul>
+      </nav>
    </section>
 </Layout>
