@@ -12,14 +12,35 @@
 // ElHackHero.astro: solo "pt-16/md:pt-8" para el despeje del header fijo, el
 // alto real lo define el contenido.
 //
-// Video debajo del título -- a pedido, se reemplazó la imagen que había acá
-// (probada primero) por el video que antes vivía en su propia sección
-// (TestimonialsVideo.astro, ahora fusionada acá). Mismo <iframe> real, mismo
-// tratamiento de card que el resto del sitio; sin StarField propio (ya
-// comparte el de arriba, StarField duplicado se veía superpuesto).
+// Foto real debajo del título (2026-08-31, reemplaza el video que había acá
+// -- a pedido, se quita "el cuadro" de tarjeta con borde que envolvía el
+// iframe) -- mismo tratamiento full-bleed que la foto de portada de
+// ContactoHero.astro ("el diseño que tiene la imagen del home de
+// contáctanos"): sin recuadro/tarjeta, la foto ocupa todo el ancho de la
+// pantalla (left-1/2 + w-screen + -translate-x-1/2, igual que StarField.astro
+// y ContactoHero.astro) con degradado + resplandor morado en los bordes para
+// que no se vea como un recorte pegado, en vez de quedar dentro de una
+// tarjeta con borde como el video anterior. A diferencia de Contáctanos, acá
+// el H1 NO va superpuesto a la foto (sigue arriba, como texto de gradiente
+// independiente) -- el pedido fue sobre el diseño de la imagen, no sobre
+// mover el título.
+//
+// aspect-[4/3] -- proporción real del archivo fuente
+// (ImagenPortadaTestimonios.webp, 1448x1086 = exactamente 4:3), migrado a
+// src/assets como testimonios-portada.webp siguiendo la skill de Rendimiento.
+// Mismo criterio que ContactoHero: igualar el aspect-ratio del contenedor al
+// de la foto para que se vea completa a cualquier ancho, con el mismo límite
+// "md:max-h-[60vh]" en escritorio para que el hero no domine toda la página.
+//
+// Alt contextual (no alt="", a diferencia de ContactoHero): ahí el overlay +
+// el H1 "Contáctanos" superpuesto SÍ transmiten el contenido real (foto de
+// fondo puramente decorativa, excepción de la skill Importaciones). Acá no
+// hay texto superpuesto -- la foto es el contenido real (un testimonio real
+// de un usuario), así que le corresponde un alt descriptivo, no vacío.
+import { Image } from 'astro:assets';
 import StarField from '@components/decorative/StarField.astro';
 import Breadcrumbs from '@components/ui/Breadcrumbs.astro';
-import { VIDEOS } from '@utils/config.jsx';
+import ImgTestimoniosHero from '@assets/testimonios-portada.webp';
 ---
 
 <section class="relative mx-auto flex max-w-3xl flex-col items-center px-4 pt-16 text-center md:pt-8">
@@ -30,20 +51,62 @@ import { VIDEOS } from '@utils/config.jsx';
    <h1 class="gradient-text-move mx-auto max-w-3xl bg-gradient-to-r from-gray-900 to-purple_mv bg-clip-text text-3xl font-bold uppercase leading-tight text-transparent dark:from-white dark:to-purple_mv md:text-5xl">
       Testimonios
    </h1>
+</section>
 
-   <div
-      class="float-anim relative z-10 mx-auto mt-8 w-full overflow-hidden rounded-3xl border border-purple_mv/25 bg-gradient-to-b from-purple_mv/[0.06] to-transparent p-3 shadow-card dark:border-white/10 dark:from-purple_mv/[0.1] dark:to-black/30 md:mt-10 md:p-4"
-      style="--float-dur: 6.2s; --float-delay: 0s;"
-   >
-      <div class="aspect-video w-full overflow-hidden rounded-2xl">
-         <iframe
-            src={VIDEOS.testimonios}
-            title="Testimonios de usuarios de Movapp"
-            class="h-full w-full"
-            allow="autoplay; encrypted-media"
-            allowfullscreen
-            loading="lazy"
-         ></iframe>
+<section class="relative mx-auto w-full max-w-5xl px-4">
+   <div class="testimonios-hero-frame relative left-1/2 mt-8 w-screen -translate-x-1/2 md:mt-10">
+      <div
+         class="pointer-events-none absolute -bottom-16 left-1/2 -z-10 h-72 w-72 -translate-x-1/2 rounded-full bg-purple_mv/[0.14] blur-[110px] dark:bg-purple_mv/[0.38] md:-bottom-24 md:h-96 md:w-96"
+         aria-hidden="true"
+      >
+      </div>
+      <div
+         class="pointer-events-none absolute -top-10 left-1/2 -z-10 h-48 w-48 -translate-x-1/2 rounded-full bg-purple_mv/[0.07] blur-[100px] dark:bg-purple_mv/[0.2] md:-top-14 md:h-64 md:w-64"
+         aria-hidden="true"
+      >
+      </div>
+
+      <!-- "Puentes" de costura, ver ContactoHero.astro para el detalle completo de por qué hacen falta (evitan un corte de tono visible en el borde recortado). -->
+      <div class="testimonios-hero-seam testimonios-hero-seam-bottom pointer-events-none absolute inset-x-0 top-full h-20 md:h-28" aria-hidden="true">
+      </div>
+      <div class="testimonios-hero-seam testimonios-hero-seam-top pointer-events-none absolute inset-x-0 bottom-full h-14 md:h-20" aria-hidden="true">
+      </div>
+
+      <div class="relative w-full aspect-[4/3] overflow-hidden md:max-h-[60vh]">
+         <Image
+            src={ImgTestimoniosHero}
+            alt="Testimonio real de un usuario de Movapp mostrando el chat de El Hack en su teléfono"
+            width={1600}
+            class="h-full w-full object-cover"
+            loading="eager"
+         />
+         <div class="testimonios-hero-overlay absolute inset-0"></div>
       </div>
    </div>
 </section>
+
+<style>
+   .testimonios-hero-frame {
+      /* Mismo --seam-color que ContactoHero.astro (no el #050505 neutro del fondo): un solo valor compartido, literal, entre el degradado de adentro y los puentes de afuera. */
+      --seam-color: #130b1e;
+   }
+
+   .testimonios-hero-overlay {
+      background-image: linear-gradient(
+         to bottom,
+         var(--seam-color) 0%,
+         rgba(0, 0, 0, 0.4) 18%,
+         rgba(0, 0, 0, 0.3) 50%,
+         rgba(0, 0, 0, 0.45) 82%,
+         var(--seam-color) 100%
+      );
+   }
+
+   .testimonios-hero-seam-bottom {
+      background: linear-gradient(to bottom, var(--seam-color) 0%, transparent 100%);
+   }
+
+   .testimonios-hero-seam-top {
+      background: linear-gradient(to top, var(--seam-color) 0%, transparent 100%);
+   }
+</style>

@@ -64,12 +64,16 @@ export const BLOG_ARTICLES: BlogArticle[] = [
       breadcrumbLabel: 'Aplicaciones de préstamos confiables – Los mejores préstamos confiables en línea',
       author: 'Equipo Movapp',
       publishDate: 'Diciembre 10, 2025',
-      readingMinutes: 6,
-      // 2026-08-29: wireframe de móviles trae "Ricardo" / 3 min en vez de
-      // "Equipo Movapp" / 6 min -- conflicto de texto, se aplica solo en
-      // móvil (decisión explícita de Santiago), escritorio no se toca.
+      // 2026-08-31: minutos de lectura corregidos a los 3 min del wireframe
+      // de móviles (decisión explícita de Santiago: el valor de móviles es
+      // el correcto) -- ya no hay discrepancia, un solo valor para ambos
+      // breakpoints. El autor sí sigue divergiendo (ver mobileAuthor abajo),
+      // eso no formaba parte de este ajuste.
+      readingMinutes: 3,
+      // 2026-08-29: wireframe de móviles trae "Ricardo" en vez de "Equipo
+      // Movapp" -- conflicto de texto, se aplica solo en móvil (decisión
+      // explícita de Santiago), escritorio no se toca.
       mobileAuthor: 'Ricardo',
-      mobileReadingMinutes: 3,
       sections: [
          {
             blocks: [
@@ -439,11 +443,12 @@ export const BLOG_ARTICLES: BlogArticle[] = [
       breadcrumbLabel: '¿Qué pasó con la aplicación Fortaprest?',
       author: 'Ricardo',
       publishDate: 'Septiembre 25, 2025',
-      readingMinutes: 6,
-      // 2026-08-30: tiempo de lectura real y distinto por breakpoint (no un
-      // error de lectura, confirmado por Santiago) -- 6 min en escritorio,
-      // 12 en móviles.
-      mobileReadingMinutes: 12,
+      // 2026-08-31: minutos de lectura corregidos a los 12 min del wireframe
+      // de móviles (decisión explícita de Santiago: el valor de móviles es
+      // el correcto) -- reemplaza la nota anterior del 2026-08-30 que
+      // trataba esta diferencia como intencional; ya no hay discrepancia,
+      // un solo valor para ambos breakpoints.
+      readingMinutes: 12,
       sections: [
          {
             blocks: [
@@ -585,11 +590,11 @@ export const BLOG_ARTICLES: BlogArticle[] = [
       breadcrumbLabel: 'Estrategias más comunes de los montadeudas y cómo enfrentarlas',
       author: 'Dra. Dalia',
       publishDate: 'Octubre 17, 2025',
-      readingMinutes: 10,
-      // 2026-08-30: tiempo de lectura real y distinto por breakpoint (mismo
-      // criterio ya confirmado por Santiago en "que-paso-fortaprest") -- 10
-      // min en escritorio, 12 en móviles.
-      mobileReadingMinutes: 12,
+      // 2026-08-31: minutos de lectura corregidos a los 12 min del wireframe
+      // de móviles (decisión explícita de Santiago: el valor de móviles es
+      // el correcto) -- ya no hay discrepancia, un solo valor para ambos
+      // breakpoints.
+      readingMinutes: 12,
       sections: [
          {
             blocks: [
@@ -762,11 +767,11 @@ export const BLOG_ARTICLES: BlogArticle[] = [
       breadcrumbLabel: '¿Los montadeudas van a tu casa? – ¿Qué puedes hacer en caso de caer con montadeudas?',
       author: 'Ricardo',
       publishDate: 'Diciembre 8, 2025',
-      readingMinutes: 6,
-      // 2026-08-30: tiempo de lectura real y distinto por breakpoint (mismo
-      // criterio ya confirmado por Santiago en "que-paso-fortaprest" y
-      // "estrategias-montadeudas") -- 6 min en escritorio, 12 en móviles.
-      mobileReadingMinutes: 12,
+      // 2026-08-31: minutos de lectura corregidos a los 12 min del wireframe
+      // de móviles (decisión explícita de Santiago: el valor de móviles es
+      // el correcto) -- ya no hay discrepancia, un solo valor para ambos
+      // breakpoints.
+      readingMinutes: 12,
       sections: [
          {
             blocks: [
@@ -1756,6 +1761,332 @@ export const BLOG_ARTICLES: BlogArticle[] = [
             slug: 'hack-app-no-disponible',
             title: '¿Se Puede Realizar El Hack Si Ya No Se Encuentra En La Play O App Store?',
          },
+      ],
+   },
+   {
+      slug: 'historia-movapp',
+      title: 'Erik Mann Y Movapp Contra Los Montadeudas – Conoce La Historia De Cómo Surgió Movapp',
+      breadcrumbLabel: 'Erik Mann y Movapp contra los montadeudas',
+      author: 'Ricardo',
+      publishDate: 'Diciembre 30, 2025',
+      readingMinutes: 10,
+      sections: [
+         {
+            // "contras" y "articulo" -- así en la fuente (sin tilde / preposición
+            // no estándar), verbatim.
+            blocks: [
+               { type: 'paragraph', text: 'Erik Mann es el líder y fundador de Movapp, el movimiento contras las aplicaciones montadeudas. En este articulo te contamos la verdad sobre cómo inició la lucha contra las aplicaciones montadeudas.' },
+            ],
+         },
+         {
+            heading: 'Erik Mann fue víctima de los montadeudas',
+            blocks: [
+               { type: 'paragraph', text: 'Hace seis años, Erik Mann atravesó junto con su familia un problema de salud que requería conseguir un préstamo de manera urgente. Recurrió a una aplicación de préstamos para salir del apuro y le concedieron el dinero de forma inmediata.' },
+               // "ext***ión" -- así censurado tal cual en la fuente (verbatim, ver skill Importaciones).
+               { type: 'paragraph', text: 'En ese momento, descargó una aplicación llamada Gryphus y, tras atrasarse un par de horas en realizar el pago, comenzaron los problemas. Comenzaron el acoso y las prácticas de ext***ión.' },
+               { type: 'paragraph', text: 'Ante la desesperación, Erik empeñó sus pertenencias para poder hacer frente a los pagos, hasta quedarse sin dinero.' },
+            ],
+         },
+         {
+            heading: 'El horror de los montadeudas',
+            blocks: [
+               { type: 'paragraph', text: 'Estos montadeudas lo intimidaban mediante fotos y videos, además de haber obtenido información de su teléfono móvil. Le decían que estaban afuera de su casa y le enviaban imágenes de su domicilio obtenidas a través de Google Maps.' },
+               { type: 'paragraph', text: 'Erik continuó realizando pagos; sin embargo, la supuesta deuda seguía aumentando de forma descontrolada y desmesurada. Cuanto más pagaba, mayor era la intimidación y más aumentaba la deuda. Esto se convirtió en una "bola de nieve" de la que sentía que no podía salir.' },
+               { type: 'paragraph', text: 'La situación llegó a afectarlo emocionalmente de manera profunda y atravesó momentos de desesperación extrema. Afortunadamente, logró seguir adelante y continuar con su misión. En ese entonces, existía poca información sobre cómo operaban este tipo de delitos digitales y Movapp aún no existía.' },
+            ],
+         },
+         {
+            // "aco*o" -- así censurado tal cual en la fuente, incluso dentro
+            // del encabezado (verbatim, ver skill Importaciones).
+            heading: 'Erik Mann encontró una solución para acabar con el aco*o',
+            blocks: [
+               { type: 'paragraph', text: 'Finalmente, después de un proceso de prueba y error, Erik logró crear El Hack. Se trata de un sistema diseñado para detener el acoso hacia los contactos. Posteriormente, Erik comenzó a hablar sobre este método en su podcast.' },
+               { type: 'paragraph', text: 'Las personas comenzaron a acudir a él en busca de una solución a su problema. Fue entonces cuando se dio cuenta de que muchas de ellas llegaban en un estado emocional vulnerable debido a la situación que estaban atravesando. A partir de ahí, comenzaron a brindar asesoría gratuita, así como atención psicológica.' },
+               { type: 'paragraph', text: 'De esta manera, crearon un movimiento conformado por personas que habían sido víctimas de los montadeudas y que ahora tienen la disposición de ayudar a otras a enfrentar y salir de este problema.' },
+            ],
+         },
+         {
+            heading: 'Movapp en el presente',
+            blocks: [
+               { type: 'paragraph', text: 'Ahora ya conoces la historia. Así es como se formó Movapp, una historia que continúa escribiéndose día con día. Desafortunadamente, las aplicaciones montadeudas siguen operando y afectando a miles de personas.' },
+               { type: 'paragraph', text: 'Nosotros ponemos de nuestra parte difundiendo información para prevenir que más personas caigan en este tipo de situaciones y contribuir a que esta problemática termine lo antes posible. Tú también puedes apoyarnos compartiendo nuestra historia en tus redes sociales, así como con tus amigos, familiares y conocidos.' },
+               { type: 'paragraph', text: 'Si tú o alguien que conoces está pasando por una situación similar, no dudes en compartir esta información para que podamos ayudarle a enfrentar y salir de este problema.' },
+            ],
+         },
+      ],
+      authorBio: {
+         name: 'Equipo Movapp',
+         text: 'Investigamos y verificamos reportes de usuarios sobre apps financieras en México.',
+      },
+      // 4to artículo (2026-08-30: el wireframe de móviles trae uno más --
+      // defensa-del-deudor-vs-movapp -- que el pase de escritorio no tenía;
+      // se agrega en ambos breakpoints por ser aditivo, no un conflicto.
+      relatedArticles: [
+         { slug: 'movapp-es-confiable', title: '¿Qué Tan Confiable Es Movapp?' },
+         { slug: 'hack-movapp-es-confiable', title: '¿El Hack De Movapp Funciona?' },
+         {
+            slug: 'hack-app-no-disponible',
+            title: '¿Se Puede Realizar El Hack Si Ya No Se Encuentra En La Play O App Store?',
+         },
+         { slug: 'defensa-del-deudor-vs-movapp', title: 'Defensa Del Deudor Vs Movapp' },
+      ],
+   },
+   {
+      slug: 'movapp-es-confiable',
+      title: '¿Qué Tan Confiable Es Movapp?',
+      breadcrumbLabel: '¿Qué tan confiable es Movapp?',
+      author: 'Dra. Dalia',
+      publishDate: 'Septiembre 27, 2025',
+      readingMinutes: 12,
+      sections: [
+         {
+            blocks: [
+               { type: 'paragraph', text: 'Una pregunta frecuente que hacen las personas al buscar soluciones relacionadas con las aplicaciones montadeudas es: ¿qué tan confiable es Movapp?' },
+               { type: 'paragraph', text: 'Hoy vamos a aclarar este tema, ya que suele existir mucha confusión entre las personas que buscan información sobre Movapp. Algunas pueden creer que ofrecemos préstamos y, por esa razón, llegan a asociarnos con las aplicaciones montadeudas. Sin embargo, esto es totalmente falso.' },
+               { type: 'paragraph', text: 'Otras personas suelen pensar que somos simplemente una aplicación que se descarga para evitar el acoso de los montadeudas, pero tampoco es así.' },
+            ],
+         },
+         {
+            heading: '¿Qué es Movapp?',
+            blocks: [
+               { type: 'paragraph', text: 'Primero que nada, aclaremos: ¿qué es Movapp? Para comenzar, podemos definir a Movapp como una organización que surge a partir de la experiencia y desesperación de un grupo de personas que vivieron el acoso de las aplicaciones de préstamos inmediatos, conocidas como montadeudas.' },
+               { type: 'paragraph', text: 'Movapp se define, entonces, como una organización que ayuda a las personas que han sido víctimas de las aplicaciones montadeudas. Lo hace a través de una estrategia estructurada y desarrollada para brindar apoyo ante este tipo de situaciones.' },
+               { type: 'paragraph', text: 'En este sentido, también es importante explicar qué son las aplicaciones montadeudas y cómo operan, para poder dimensionar la magnitud del apoyo integral que proporciona Movapp.' },
+            ],
+         },
+         {
+            heading: '¿Qué son las aplicaciones montadeudas?',
+            blocks: [
+               { type: 'paragraph', text: 'Son aplicaciones de préstamos inmediatos, de préstamos fáciles. Usualmente están en la Play y App Store, pero también las puedes encontrar en Google. Lo cual puede dar una sensación de ser legales y reguladas por estar dentro de estas tiendas de descarga, pero este tema es muy independiente.' },
+               { type: 'paragraph', text: 'Estas aplicaciones no cuentan con permisos de operar como financieras y mucho menos están reguladas por la Comisión Nacional Bancaria y de Valores (CNBV), organismo regulador financiero en México. Por lo tanto, los préstamos que otorgan son anzuelos para robar la información de todas las personas que las descargan, aunque sea para realizar una simulación de préstamo; con eso basta para robar información sensible.' },
+               { type: 'paragraph', text: 'Con la información robada, pueden utilizarla, principalmente, para llevar a cabo cobros excesivos, realizando amenazas, extorsión y difamación a través de molestar a todos los contactos que resguardan y manosean los cobradores, diciendo que irán a los domicilios de las personas a realizar embargos.' },
+               { type: 'paragraph', text: 'La forma de operar para el robo de información es a través de un virus, con el cual, al dar accesos y permisos para poder descargar la app de préstamo, se instala parte del robo de la información de todo el sistema de tu teléfono celular.' },
+            ],
+         },
+         {
+            heading: 'Y entonces ¿cómo interviene Movapp con las apps montadeudas?',
+            blocks: [
+               { type: 'paragraph', text: 'Nuestro líder y CEO, Erik Mann, hace unos años cayó en estas estafas digitales. Llegó al borde del suicidio, pero no se rindió. Logró juntar un equipo especializado de personas que habían sido molestadas por los montadeudas y creó El Hack.' },
+               { type: 'paragraph', text: 'Hoy en día, Movapp sigue en la lucha. Seguimos inspirando a miles de personas día con día a que no se rindan, a que también logren salir de este problema y retomen su paz mental y financiera.' },
+               { type: 'paragraph', text: 'Nosotros entendemos por lo que estás pasando, ya que todos nuestros asesores también fueron víctimas en algún momento. Pero, gracias a Movapp y a Erik Mann, lograron superar este problema y se unieron a la causa.' },
+            ],
+         },
+         {
+            heading: '¿Movapp está dado de alta ante CONDUSEF?',
+            blocks: [
+               { type: 'paragraph', text: 'Movapp al no otorgar préstamos no requerimos de ese permiso. Nosotros contamos con todos los permisos necesarios para operar y lo hacemos legalmente.' },
+            ],
+         },
+         {
+            heading: 'Conclusión',
+            blocks: [
+               { type: 'paragraph', text: 'Si conoces a alguien o tú mismo has caído en este tipo de préstamos inmediatos, llamados montadeudas, o bien, entraste a algún link y ahora te están haciendo cobros, Movapp es la única alternativa comprobada de ayuda, si visitas la página web, te sugerimos veas los videos de sus múltiples colaboraciones con instituciones privadas y de gobierno para que corrobores la fiabilidad de Movapp.' },
+            ],
+         },
+      ],
+      authorBio: {
+         name: 'Equipo Movapp',
+         text: 'Investigamos y verificamos reportes de usuarios sobre apps financieras en México.',
+      },
+      // 4to artículo (2026-08-30: el wireframe de móviles trae uno más --
+      // historia-movapp -- que el pase de escritorio no tenía; se agrega en
+      // ambos breakpoints por ser aditivo, no un conflicto.
+      relatedArticles: [
+         {
+            slug: 'historia-movapp',
+            title: 'Erik Mann Y Movapp Contra Los Montadeudas – Conoce La Historia De Cómo Surgió Movapp',
+         },
+         { slug: 'hack-movapp-es-confiable', title: '¿El Hack De Movapp Funciona?' },
+         {
+            slug: 'hack-app-no-disponible',
+            title: '¿Se Puede Realizar El Hack Si Ya No Se Encuentra En La Play O App Store?',
+         },
+         { slug: 'defensa-del-deudor-vs-movapp', title: 'Defensa Del Deudor Vs Movapp' },
+      ],
+   },
+   {
+      slug: 'hack-movapp-es-confiable',
+      title: '¿El Hack De Movapp Funciona?',
+      breadcrumbLabel: '¿El Hack de Movapp funciona?',
+      author: 'Dra. Dalia',
+      publishDate: 'Octubre 1, 2025',
+      readingMinutes: 10,
+      sections: [
+         {
+            blocks: [
+               { type: 'paragraph', text: 'Esta es una pregunta frecuente y sumamente importante; y antes de responder directamente que El Hack de Movapp sí funciona, es primordial conozcas más sobre Movapp y por qué sí funciona su Hack.' },
+               { type: 'paragraph', text: 'Las personas que utilizan préstamos inmediatos a través de la descarga de apps de préstamos, al paso de pocos días, saben que cayeron con apps montadeudas, ya que de forma pronta comienzan la cobranza de tipo hostil, agresiva, sin respetar intereses, entre otras cosas.' },
+               { type: 'paragraph', text: 'En algunos casos, las apps de préstamo van subiendo los intereses poco a poco y hasta ofrecen beneficios si hacen pagos anticipados, siendo la intención que sus clientes aumenten el monto de la deuda.' },
+               { type: 'paragraph', text: 'Los adeudos pueden ser montos variados, desde 300 pesos mexicanos hasta 80 mil pesos mexicanos, sin contar los intereses. Por eso es que se vuelven impagables, ya que cobran un 400 % a un 600 % de intereses, adicional al monto del préstamo.' },
+               { type: 'paragraph', text: 'Una vez que lo deciden los cobradores, comienzan a utilizar métodos de cobranza a través de la intimidación, y es justo en este punto donde la gente comienza a buscar ayuda, buscar los alcances y limitaciones de estas apps de préstamos, también llamadas montadeudas.' },
+               { type: 'paragraph', text: 'En la búsqueda de salir de este problema, Erik Mann desarrolló para sí una forma de salir de esta situación, pues estaba en desesperación, en pensamientos suicidas, al borde de la locura por el acoso de la cobranza de estas apps, encontrando la alternativa que llamó El Hack.' },
+               { type: 'paragraph', text: 'Surgiendo así el movimiento de Movapp y la alternativa del Hack, lo cual ha llevado a Movapp al desarrollo y perfeccionamiento del Hack desde hace 4 años para ayudar y defender a las personas víctimas de este delito digital.' },
+            ],
+         },
+         {
+            heading: '¿El Hack de Movapp es confiable?',
+            blocks: [
+               { type: 'paragraph', text: 'Al ser una alternativa utilizada por su propio creador y por personas cercanas que fueron víctimas de apps montadeudas, El Hack de Movapp es 100 % confiable. No hay trucos, no hay letras pequeñas. ¡Funciona!, en definitiva.' },
+               { type: 'paragraph', text: 'A lo largo de 4 años han sido miles de personas beneficiadas por El Hack de Movapp, lo cual indica, por sí mismo, que funciona El Hack, ya que la mayor recomendación ha sido de boca en boca.' },
+               { type: 'paragraph', text: 'Diversas instituciones, tanto privadas como de gobierno, han utilizado El Hack de Movapp, y es a través de las mismas instituciones que surgen entrevistas, capacitaciones y un sinfín de proyectos individuales.' },
+            ],
+         },
+         {
+            heading: 'El Hack funciona',
+            blocks: [
+               { type: 'paragraph', text: 'Como se ha mencionado, El Hack sí funciona, recordando que su primera prueba de efectividad fue a través del uso personal de su creador, Erik Mann. Además, Movapp cuenta con miles de testimonios que confirman su funcionalidad al haberlo adquirido.' },
+               { type: 'paragraph', text: 'El Hack es un desarrollo tecnológico que habla por sí mismo en el sentido de terminar con el problema de los estafadores de las apps montadeudas, contando con varios años de experiencia que respaldan su funcionalidad y efectividad.' },
+               { type: 'paragraph', text: 'Logrando que El Hack funciona, Movapp se expande en ofrecer su servicio a otros países de Latinoamérica, con la finalidad de ayudar a más personas a salir de la presión de aplicativos de préstamos inmediatos, o llamados montadeudas.' },
+            ],
+         },
+         {
+            heading: 'El Hack para montadeudas',
+            blocks: [
+               { type: 'paragraph', text: 'El Hack fue desarrollado exclusivamente para montadeudas. Es un desarrollo tecnológico enfocado y especializado en apps de préstamos inmediatos de México y todos los países de Latinoamérica, teniendo una alta efectividad inmediata.' },
+               { type: 'paragraph', text: 'Erik Mann ha podido perfeccionar el desarrollo del Hack con la ayuda de programadores y expertos en el área digital, lo cual, a lo largo de los años, se ha traducido en mayor efectividad. Movapp ha logrado ser líder mundial en ofrecer el servicio del Hack. Por tal motivo, es importante difundir esta información.' },
+               { type: 'paragraph', text: 'Si buscas ayuda para salir del problema de las apps montadeudas, es de suma importancia que te acerques a Movapp y escribas pidiendo ayuda y mencionando la situación por la que estás pasando. Te asignarán un asesor experto en las apps de préstamo que tengas para darte la asesoría correspondiente y puedas gozar de los beneficios de que "El Hack sí funciona".' },
+            ],
+         },
+      ],
+      authorBio: {
+         name: 'Equipo Movapp',
+         text: 'Investigamos y verificamos reportes de usuarios sobre apps financieras en México.',
+      },
+      // 4to artículo (2026-08-31: el wireframe de móviles trae uno más --
+      // historia-movapp -- que el pase de escritorio no tenía; se agrega en
+      // ambos breakpoints por ser aditivo, no un conflicto (mismo patrón que
+      // el resto del trío de marca Movapp).
+      relatedArticles: [
+         {
+            slug: 'historia-movapp',
+            title: 'Erik Mann Y Movapp Contra Los Montadeudas – Conoce La Historia De Cómo Surgió Movapp',
+         },
+         {
+            slug: 'hack-app-no-disponible',
+            title: '¿Se Puede Realizar El Hack Si Ya No Se Encuentra En La Play O App Store?',
+         },
+         { slug: 'defensa-del-deudor-vs-movapp', title: 'Defensa Del Deudor Vs Movapp' },
+         { slug: 'que-es-movapp', title: '¿Qué Es Movapp?' },
+      ],
+   },
+   {
+      slug: 'hack-app-no-disponible',
+      title: '¿Se Puede Realizar El Hack Si Ya No Se Encuentra En La Play O App Store?',
+      breadcrumbLabel: '¿Se puede realizar El Hack si ya no se encuentra en la Play o App Store?',
+      author: 'Dra. Dalia',
+      publishDate: 'Octubre 6, 2025',
+      readingMinutes: 6,
+      sections: [
+         {
+            blocks: [
+               { type: 'paragraph', text: 'En el mundo de las tiendas de descargas de aplicaciones, podemos encontrarnos un sinfín de estas, pero vemos que permanecen ahí; entonces, ¿por qué, si descargué una aplicación de préstamo, después ya no está?' },
+               { type: 'paragraph', text: 'Es común que existan apps de préstamos inmediatos, o llamados montadeudas, que, al descargar de las tiendas de aplicaciones, nos otorguen préstamos inmediatos, pero desaparezcan, y eso nos haga dudar de su veracidad o confundirnos.' },
+               { type: 'paragraph', text: 'En definitiva, lo que buscan estas apps de préstamos inmediatos, o llamadas montadeudas, es el robo de tu información para que nunca dejes de pagar tu supuesto préstamo; además, para seguir vendiendo tu información al mejor postor.' },
+               { type: 'paragraph', text: 'Teniendo en práctica muchas estrategias que les permitan cobrar el mayor tiempo posible, convirtiéndolos en extorsionadores, así como la facilidad para desaparecer por esta misma razón.' },
+               { type: 'paragraph', text: 'En ese sentido, cuando se han generado muchos reportes hacia las apps de préstamos, malos comentarios y calificaciones por debajo de las tres estrellas, las tiendas de aplicaciones toman la decisión de no permitir descargas de estas apps por las denuncias recibidas, logrando que no existan en las tiendas de Play Store o App Store.' },
+            ],
+         },
+         {
+            heading: '¿Dejan de cobrarme el préstamo si la app ya no está disponible?',
+            blocks: [
+               { type: 'paragraph', text: 'Podríamos pensar que el acoso se detiene o dejan de cobrar las apps que desaparecen de las tiendas de aplicaciones; sin embargo, no sucede así. Los cobradores siguen igual de intensos, hostiles y amenazantes. Seguirán buscando el cobro a pesar de ya no tener la disponibilidad para descargar.' },
+               { type: 'paragraph', text: 'Pero las fechas de vencimiento, la cobranza agresiva, las llamadas y el robo de información quedan intactos, por lo cual, la gente sigue buscando ayuda para que pare el acoso y se detenga la bola de nieve en la que te hacen caer los montadeudas. Por tal motivo, las personas que caen en este tipo de delitos siguen buscando ayuda para dar solución a dichos problemas, encontrando El Hack de Movapp como alternativa para salir de esta situación.' },
+               { type: 'paragraph', text: 'En Movapp se cuenta con una estrategia que permite instalar El Hack, a pesar de que no estén en tienda dichas apps, ya que su área técnica ha previsto mantener actualizados sus equipos con las descargas de más de 1,300 aplicaciones.' },
+               { type: 'paragraph', text: 'Movapp tiene cuatro años recabando los links y APK de todas las aplicaciones de préstamos inmediatos, o bien, llamados montadeudas, que son subidas a las tiendas de descargas, con el fin de poder proporcionar la alternativa de El Hack sin ningún inconveniente.' },
+            ],
+         },
+         {
+            heading: 'Conclusión',
+            blocks: [
+               { type: 'paragraph', text: 'En conclusión, si las apps de préstamos inmediato o llamada montadeudas no se encuentra en la tienda de aplicaciones, podemos hacer El Hack aunque ya no estén en la tienda de descargas. El Hack, hacia un nuevo inicio.' },
+            ],
+         },
+      ],
+      authorBio: {
+         name: 'Equipo Movapp',
+         text: 'Investigamos y verificamos reportes de usuarios sobre apps financieras en México.',
+      },
+      // 4to artículo (2026-08-31: el wireframe de móviles trae uno más --
+      // movapp-es-confiable -- que el pase de escritorio no tenía, además de
+      // reordenar los 3 ya existentes; se agrega y reordena en ambos
+      // breakpoints por ser aditivo, no un conflicto (mismo patrón que el
+      // resto del clúster de marca Movapp).
+      relatedArticles: [
+         {
+            slug: 'historia-movapp',
+            title: 'Erik Mann Y Movapp Contra Los Montadeudas – Conoce La Historia De Cómo Surgió Movapp',
+         },
+         { slug: 'defensa-del-deudor-vs-movapp', title: 'Defensa Del Deudor Vs Movapp' },
+         { slug: 'que-es-movapp', title: '¿Qué Es Movapp?' },
+         { slug: 'movapp-es-confiable', title: '¿Qué Tan Confiable Es Movapp?' },
+      ],
+   },
+   {
+      slug: 'defensa-del-deudor-vs-movapp',
+      title: 'Defensa Del Deudor Vs Movapp',
+      breadcrumbLabel: 'Defensa del deudor vs Movapp',
+      author: 'Dra. Dalia',
+      publishDate: 'Octubre 16, 2025',
+      readingMinutes: 20,
+      sections: [
+         {
+            blocks: [
+               { type: 'paragraph', text: 'Sabemos que hay una situación que separa a dos entidades cuando leemos que la abreviatura "vs." está en medio de su mención; y, en torno a esto, podemos pensar, crear e hipotetizar un sinfín de historias entre los involucrados, en este caso, La Defensa del Deudor y Movapp.' },
+               { type: 'paragraph', text: 'Siendo muy interesante saber la historia de cada uno para poder definir: ¿por qué la gente llega a percibir el "vs." entre ellos?, sin que sea realidad, y contar la historia sin manipular ofrece veracidad a ambas partes.' },
+            ],
+         },
+         {
+            heading: '¿Qué pasó con la defensa del deudor y Movapp?',
+            blocks: [
+               { type: 'paragraph', text: 'Comenzando dicha historia entre el año 2022 y 2023, siendo un momento en el que, en estos tiempos, surge mucha información sobre apps montadeudas, pues la economía mundial estaba desgastada por la gran pandemia del COVID-19 y la gente tuvo que acudir a este tipo de préstamos para salir de situaciones de enfermedades y falta de trabajo.' },
+               { type: 'paragraph', text: 'Siendo entonces la contribución del paso de más de un año, donde la gente no termina de pagar estos préstamos, pero, lo más grave, recibe amenazas, robo de información, acoso, creación de grupos de WhatsApp para cobrar y difamar; en general, viven intimidación y, desesperadamente, comienzan a buscar información, y Movapp comienza a hacerse más presente y a especializarse en apps no legales, designadas como montadeudas, gracias a sus amplias investigaciones que realiza Erik Mann.' },
+               { type: 'paragraph', text: 'De forma paralela, comienza Ángel González, de La Defensa del Deudor, a exponer argumentos legales enfocados a préstamos regulados a través de transmisiones que son vistas por miles de personas, ofreciendo asesoramiento para poder pagar deudas totalmente legales a través de su asesoría.' },
+               { type: 'paragraph', text: 'Erik Mann y Ángel González comienzan a ser pioneros en ambas ramas, y las investigaciones de ambos permitieron que hubiera una discrepancia, en exclusivo y únicamente con la app de préstamo de Credmex, causando polémica entre las asesorías que ambos ofrecían en ese momento y lo propicio revuelo entre la gente que sigue a ambos líderes.' },
+               { type: 'paragraph', text: 'La app de Credmex tiene una particularidad, al igual que algunas apps que Movapp denomina hermanas entre ellas (Maya Cash, Azteca Credit, Haab y Star Presta), ya que su característica principal es que cuentan con un permiso para operar como financieras, pero no están reguladas, lo cual le permite robar información y hacer cobranza de extorsión, como lo hacen las apps montadeudas.' },
+               { type: 'paragraph', text: 'En Movapp ponen un ejemplo que ayuda a comprender esta dinámica de operación de estas apps. Un ejemplo cotidiano que ayuda a entender su funcionalidad es el siguiente: imaginemos que es equivalente a que tus padres te otorgaran permiso para asistir a una fiesta, y justo estas apps tienen ese permiso de estar en tiendas y de otorgar un préstamo, y hasta ahí, solo es un permiso; pero no están reguladas ante la Comisión Nacional Bancaria y de Valores, al igual que tus padres no vigilan ni regulan lo que harás en la fiesta a la que te permitieron asistir. Entonces, imagina que en esa fiesta se hace de todo, tal cual como lo hacen las apps montadeudas a través del robo de información sensible.' },
+            ],
+         },
+         {
+            heading: '¿Por qué se enfrentaron Movapp y la Defensa del deudor?',
+            blocks: [
+               { type: 'paragraph', text: 'En este sentido, Ángel González y Erik Mann tuvieron confrontaciones en el pasado. Incluso Movapp, a través de uno de sus colaboradores, Enigmático Apps, realizaron un video muy interesante llamado "El Iceberg de Credmex", donde se explica la dinámica de operación de esta aplicación.' },
+               { type: 'paragraph', text: 'Surgiendo una discrepancia para reunir en una transmisión en vivo a ambos de forma conmemorable, ambos, desde sus investigaciones y con la gran autoridad y reconocimiento que distingue a Ángel González y a Erik Mann, acuerdan profundizar evidencias de lo que sostiene Movapp con respecto a esta app de Credmex.' },
+               { type: 'paragraph', text: 'Ángel González se da cuenta, después de obtener evidencias, que los argumentos de Movapp son sólidos y verídicos, afirmando que el trabajo que realiza Movapp tiene toda su credibilidad y recomendación.' },
+            ],
+         },
+         {
+            heading: 'Hoy hay respeto entre Movapp y la defensa del deudor',
+            blocks: [
+               { type: 'paragraph', text: 'La audiencia que estuvo presente para escuchar los argumentos de cada experto propuso que deberían de unir fuerzas para ayudar a ambos sectores que se han visto involucrados en este tipo de préstamos, ya que, después de los estragos del COVID-19, se necesitan líderes que guíen y ayuden en ambos rubros.' },
+               { type: 'paragraph', text: 'Siguiendo esta propuesta, La Defensa del Deudor y Movapp, a través de Ángel González y Erik Mann, respectivamente, intercambian opiniones y llegaron a acuerdos que benefician a la gente que busca ser asesorada. Uno de los acuerdos es la recomendación de ambos servicios, además de respetar el trabajo y servicio que cada uno ofrece.' },
+               { type: 'paragraph', text: 'Dejando atrás el supuesto sobre La Defensa del Deudor vs. Movapp, ahora es muy claro que son una alianza certera en la que ambos trabajan por el bienestar de la gente que tiene la necesidad de acudir a préstamos.' },
+            ],
+         },
+      ],
+      authorBio: {
+         name: 'Equipo Movapp',
+         text: 'Investigamos y verificamos reportes de usuarios sobre apps financieras en México.',
+      },
+      // El wireframe de móviles (2026-08-31) trae 4 tarjetas, pero la 3ra es
+      // el propio artículo (defensa-del-deudor-vs-movapp) -- error del
+      // mockup, mismo criterio ya confirmado por Santiago para este tipo de
+      // autorreferencia (ver "cobranza-starpresta"), se ignora esa tarjeta.
+      // De las 3 tarjetas válidas de móviles, "hack-app-no-disponible" es
+      // nueva (no estaba en escritorio) -- aditivo, se agrega en ambos
+      // breakpoints. Se conserva también "movapp-es-confiable" (ya validada
+      // en escritorio) ya que el bug de autorreferencia probablemente ocupó
+      // el lugar que le hubiera correspondido en el mockup de móviles.
+      relatedArticles: [
+         {
+            slug: 'historia-movapp',
+            title: 'Erik Mann Y Movapp Contra Los Montadeudas – Conoce La Historia De Cómo Surgió Movapp',
+         },
+         {
+            slug: 'hack-app-no-disponible',
+            title: '¿Se Puede Realizar El Hack Si Ya No Se Encuentra En La Play O App Store?',
+         },
+         { slug: 'que-es-movapp', title: '¿Qué Es Movapp?' },
+         { slug: 'movapp-es-confiable', title: '¿Qué Tan Confiable Es Movapp?' },
       ],
    },
 ];

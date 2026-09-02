@@ -111,7 +111,6 @@ export const SOCIALS = [
 export const VIDEOS = {
   inicio: `${import.meta.env.PUBLIC_SHOW_HEADER_URL}`,
   movapp: "https://www.youtube.com/embed/SM5hBiuv-og?autoplay=1&mute=1&loop=1&playlist=SM5hBiuv-og",
-  testimonios: "https://www.youtube.com/embed/iiuid3nlolU?autoplay=1&mute=1&loop=1&playlist=iiuid3nlolU",
   colaboraciones: "https://www.youtube.com/embed/owi6YB41tnM?autoplay=1&mute=1&loop=1&playlist=owi6YB41tnM"
 };
 

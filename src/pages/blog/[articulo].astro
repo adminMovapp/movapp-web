@@ -13,7 +13,7 @@
 import Layout from '@layouts/Layout.astro';
 import BlogArticleHero from '@sections/blog/BlogArticleHero.astro';
 import BlogArticleBody from '@sections/blog/BlogArticleBody.astro';
-import BlogArticleGrid from '@sections/blog/BlogArticleGrid.astro';
+import BlogRelatedArticles from '@sections/blog/BlogRelatedArticles.astro';
 import BlogArticleCTA from '@sections/blog/BlogArticleCTA.astro';
 import { BLOG_ARTICLES } from '@constants/blogArticles.ts';
 import { getSiteConfig } from '@utils/config.jsx';
@@ -56,10 +56,6 @@ const firstParagraph = article.sections[0].blocks.find((b) => b.type === 'paragr
       shareUrl={shareUrl}
       shareTitle={article.title}
    />
-   <BlogArticleGrid
-      id={`articulo-${article.slug}-relacionados`}
-      title="Artículos relacionados"
-      articles={article.relatedArticles}
-   />
+   <BlogRelatedArticles id={`articulo-${article.slug}-relacionados`} articles={article.relatedArticles} />
    <BlogArticleCTA slug={article.slug} />
 </Layout>
