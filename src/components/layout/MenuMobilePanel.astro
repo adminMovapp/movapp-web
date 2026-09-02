@@ -7,19 +7,20 @@ import ArrowIcon from '@assets/ArrowIcon.astro';
 
 const topLinks = [
    { href: '/', label: 'Inicio' },
-   { href: '/nosotros', label: 'Movapp' },
    { href: '/el-hack', label: 'Hack' },
 ];
 
 // Mismo agrupamiento que el submenú "Contenido" del header de escritorio
 // (Header.astro) -- ver ese archivo para la fuente de verdad de estos enlaces.
+//
+// "Movapp"/"Colaboraciones"/"Mente digital"/"Nuestras redes" quitados del
+// menú (2026-09-02, a pedido explícito) -- las páginas (/nosotros,
+// /collaborations, /mind, /red) siguen existiendo, solo dejan de ser
+// alcanzables desde acá.
 const contentLinks = [
    { href: '/aplicaciones-prestamo', label: 'Aplicaciones' },
-   { href: '/collaborations', label: 'Colaboraciones' },
    { href: '/preguntas-frecuente', label: 'Preguntas frecuentes' },
    { href: '/testimonios', label: 'Testimonios' },
-   { href: '/mind', label: 'Mente digital' },
-   { href: '/red', label: 'Nuestras redes' },
    { href: '/blog', label: 'Blog' },
    { href: '/contacto', label: 'Contáctanos' },
 ];
