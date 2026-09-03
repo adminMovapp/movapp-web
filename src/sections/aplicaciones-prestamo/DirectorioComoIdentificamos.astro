@@ -10,10 +10,30 @@ import StarField from '@components/decorative/StarField.astro';
       ¿Cómo identificamos el estatus de una app?
    </h2>
 
+   <!--
+      Card transparente estándar (antes: píldora rounded-full + fondo plano
+      bg-purple_mv/5, distinta al resto del sitio) -- a pedido, 2026-09-02:
+      "estandariza... deja todas las cards con el diseño que ya tenemos".
+
+      Animación de entrada (2026-09-02, segunda vuelta a pedido explícito:
+      "dije que cada sección tenga una diferente" -- UNA sola animación
+      para TODA esta sección, no una distinta por card -- y "más
+      llamativo... no me gusta que se vean como simples cards"): rebote
+      elástico con overshoot ("como-id-card", clase local, ver <style>
+      abajo) en vez del fade/flip sutil de antes, desfasado por índice
+      (--reveal-delay) para que las 4 cards reboten en cascada, una detrás
+      de otra. (Se probó además un halo continuo tipo "respiración"
+      después de aparecer -- se sacó a pedido: "no pongas el destello/
+      color en la card, sólo deja la animación de cuando se muestran".)
+   -->
    <ul class="mt-8 grid grid-cols-1 gap-3 md:grid-cols-2">
       {
-         IDENTIFICATION_CRITERIA.map((label) => (
-            <li class="flex items-center gap-3 rounded-full border border-purple_mv/20 bg-purple_mv/5 px-5 py-3 dark:border-white/10 dark:bg-white/5">
+         IDENTIFICATION_CRITERIA.map((label, i) => (
+            <li
+               class="como-id-card flex items-center gap-3 rounded-2xl border border-purple_mv/25 bg-gradient-to-b from-purple_mv/[0.06] to-transparent px-5 py-3 shadow-card transition-colors duration-300 hover:border-purple_mv/50 hover:shadow-card-hover dark:border-white/10 dark:from-purple_mv/[0.1] dark:to-black/30"
+               data-aos="bounce-in"
+               style={`--reveal-delay: ${i * 90}ms`}
+            >
                <svg class="h-5 w-5 flex-shrink-0 text-green-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <path d="M5 13l4 4L19 7" />
                </svg>
@@ -23,3 +43,40 @@ import StarField from '@components/decorative/StarField.astro';
       }
    </ul>
 </section>
+
+<style>
+   li.como-id-card[data-aos] {
+      opacity: 0;
+      transform: scale(0.4) rotate(-6deg);
+      transition: none;
+   }
+   li.como-id-card[data-aos].aos-animate {
+      opacity: 1;
+      transform: none;
+      animation: comoIdBounceIn 0.75s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+      animation-delay: var(--reveal-delay, 0s);
+   }
+   @keyframes comoIdBounceIn {
+      0% {
+         opacity: 0;
+         transform: scale(0.4) rotate(-6deg);
+      }
+      55% {
+         opacity: 1;
+         transform: scale(1.08) rotate(2deg);
+      }
+      75% {
+         transform: scale(0.96) rotate(-1deg);
+      }
+      100% {
+         opacity: 1;
+         transform: scale(1) rotate(0deg);
+      }
+   }
+
+   @media (prefers-reduced-motion: reduce) {
+      li.como-id-card[data-aos].aos-animate {
+         animation: none;
+      }
+   }
+</style>

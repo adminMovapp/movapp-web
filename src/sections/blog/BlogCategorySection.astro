@@ -1,17 +1,23 @@
 ---
-// Sección reutilizable para cada categoría del blog (Evaluaciones, Modus
-// operandi, Guías, Noticias): mismas 4 usan exactamente la misma estructura
-// (H2 + artículos), así que viven en un solo componente parametrizado en vez
-// de 4 archivos casi idénticos con la misma lógica de carrusel duplicada.
+// Sección reutilizable para cada bloque de noticias del blog (Recientes/
+// Populares/Antiguas en blog.astro, ver @constants/blog.ts). Con 2+
+// artículos:
+// - Móvil: carrusel deslizable (scroll-snap nativo, funciona sin JS) con
+//   pista de swipe + botones de flecha (mismo patrón que HomeTrust.astro).
+// - Escritorio (2026-09-02, a pedido: "como con los testimonios, que tengan
+//   las flechas para pasar a la siguiente"): páginas de 3 tarjetas con
+//   flechas izq/der, igual que el carrusel de escritorio de HomeTrust.astro/
+//   BlogRelatedArticles.astro -- 3 "slots" fijos en el DOM cuyo contenido
+//   (imagen/título/link) se reemplaza por JS al cambiar de página, en vez de
+//   pre-renderizar todas las páginas ocultas (evita duplicar el markup de
+//   imagen de cada tarjeta -- con hasta 11 artículos por sección, eso
+//   pesaría mucho más en el HTML). Sin repetir artículos entre páginas; la
+//   última página incompleta muestra menos tarjetas en vez de rellenar.
 //
-// Con 2+ artículos se comporta como el carrusel móvil de HomeFeatured.astro/
-// HomeTrust.astro (peek en vw, snap, tarjeta activa resaltada, pista de
-// swipe). Con solo 1 artículo (el caso real hoy en las 4 categorías) se
-// muestra como una tarjeta simple centrada, sin scroll ni pista de swipe --
-// a pedido: "hasta que no haya dos o más [artículos], que no aparezca lo de
-// 'Desliza para ver más'". El carrusel se activa solo, sin tocar este
-// archivo, en cuanto una categoría sume un segundo artículo.
-import { Image } from 'astro:assets';
+// Con solo 1 artículo se muestra como una tarjeta simple centrada, sin
+// carrusel de ningún tipo -- a pedido: "hasta que no haya dos o más
+// [artículos], que no aparezca lo de 'Desliza para ver más'".
+import { Image, getImage } from 'astro:assets';
 import ImagePlaceholder from '@components/ui/ImagePlaceholder.astro';
 import StarField from '@components/decorative/StarField.astro';
 import { BLOG_IMAGES } from '@constants/blogImages.ts';
@@ -24,13 +30,29 @@ interface Props {
    id: string;
    title: string;
    articles: Article[];
-   // Texto del link de cada tarjeta -- "Ver noticia" por defecto; la
-   // categoría "Noticias de Movapp" (blog.astro) pasa "Ver todas las
-   // noticias" a pedido.
+   // Texto del link de cada tarjeta -- "Ver noticia" por defecto.
    linkLabel?: string;
 }
 const { id, title, articles, linkLabel = 'Ver noticia' } = Astro.props;
 const isCarousel = articles.length >= 2;
+
+const PAGE_SIZE = 3;
+const hasMultiplePages = articles.length > PAGE_SIZE;
+
+// Resuelve la imagen optimizada de cada artículo UNA vez en build/SSR -- el
+// carrusel de escritorio solo necesita el "src" final ya procesado para
+// poder actualizar el <img> por JS al cambiar de página (no se puede invocar
+// el componente <Image> desde el cliente). Mismo criterio que
+// BlogRelatedArticles.astro.
+const resolvedArticles = isCarousel
+   ? await Promise.all(
+        articles.map(async (a) => {
+           const source = BLOG_IMAGES[a.slug];
+           const image = source ? await getImage({ src: source, width: 700 }) : null;
+           return { slug: a.slug, title: a.title, image: image?.src ?? null };
+        }),
+     )
+   : [];
 ---
 
 <section class="relative mx-auto my-section w-full max-w-5xl px-4" data-aos="fade-up">
@@ -41,13 +63,14 @@ const isCarousel = articles.length >= 2;
    {
       isCarousel ? (
          <>
+            <!-- Móvil: carrusel deslizable con TODOS los artículos (scroll-snap, sin paginar). -->
             <ul
                data-blog-carousel
-               class="no-scrollbar mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-[11vw] pb-2 md:grid md:grid-cols-2 md:gap-6 md:overflow-visible md:px-0 md:pb-0 md:snap-none"
+               class="no-scrollbar mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-[11vw] pb-2 md:hidden"
             >
                {articles.map((a, i) => (
                   <li
-                     class="blog-card float-anim w-[78vw] flex-shrink-0 snap-center overflow-hidden rounded-2xl border border-purple_mv/25 bg-gradient-to-b from-purple_mv/[0.06] to-transparent p-5 text-left shadow-card transition-colors duration-300 hover:border-purple_mv/50 hover:shadow-card-hover dark:border-white/10 dark:from-purple_mv/[0.1] dark:to-black/30 md:w-auto"
+                     class="blog-card float-anim w-[78vw] flex-shrink-0 snap-center overflow-hidden rounded-2xl border border-purple_mv/25 bg-gradient-to-b from-purple_mv/[0.06] to-transparent p-5 text-left shadow-card transition-colors duration-300 hover:border-purple_mv/50 hover:shadow-card-hover dark:border-white/10 dark:from-purple_mv/[0.1] dark:to-black/30"
                      style={`--float-dur: ${5.6 + i * 0.3}s; --float-delay: ${i * 0.2}s;`}
                   >
                      {BLOG_IMAGES[a.slug] ? (
@@ -76,6 +99,81 @@ const isCarousel = articles.length >= 2;
                   </svg>
                </button>
             </div>
+
+            <!-- Escritorio: páginas de 3 artículos con flechas (mismo patrón que HomeTrust.astro / BlogRelatedArticles.astro). -->
+            <div class="mt-10 hidden md:flex md:items-center md:justify-center md:gap-4 lg:gap-6">
+               {hasMultiplePages && (
+                  <button
+                     id={`${id}Prev`}
+                     type="button"
+                     aria-label="Ver artículos anteriores"
+                     class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full border border-purple_mv/40 text-purple_mv transition hover:bg-text_banner hover:text-white dark:border-white/20"
+                  >
+                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                     </svg>
+                  </button>
+               )}
+
+               <ul id={`${id}Slots`} class="grid w-full grid-cols-3 gap-5 md:max-w-3xl lg:max-w-4xl lg:gap-6">
+                  {[0, 1, 2].map((slot) => {
+                     const a = resolvedArticles[slot];
+                     return (
+                        <li
+                           class:list={[
+                              'category-card overflow-hidden rounded-2xl border border-purple_mv/25 bg-gradient-to-b from-purple_mv/[0.06] to-transparent p-5 text-left shadow-card transition-opacity duration-300 dark:border-white/10 dark:from-purple_mv/[0.1] dark:to-black/30',
+                              !a && 'hidden',
+                           ]}
+                        >
+                           <img
+                              class:list={['category-img aspect-[16/9] w-full rounded-xl object-cover', !a?.image && 'hidden']}
+                              src={a?.image ?? ''}
+                              alt={a?.title ?? ''}
+                              width="700"
+                              loading="lazy"
+                           />
+                           <div
+                              class:list={[
+                                 'category-placeholder aspect-[16/9] w-full items-center justify-center overflow-hidden rounded-2xl border border-dashed border-purple_mv/30 bg-purple_mv/5 dark:border-white/15 dark:bg-white/5',
+                                 a?.image ? 'hidden' : 'flex',
+                              ]}
+                              aria-hidden="true"
+                           >
+                              <svg class="h-7 w-7 text-purple_mv/40 dark:text-white/25" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                 <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                              </svg>
+                           </div>
+                           <h3 class="category-title mt-4 font-bold text-purple_mv">{a?.title}</h3>
+                           <a class="category-link mt-2 inline-block text-sm font-medium text-gray-900 dark:text-white underline" href={a ? `/blog/${a.slug}` : undefined}>
+                              {linkLabel}
+                           </a>
+                        </li>
+                     );
+                  })}
+               </ul>
+
+               {hasMultiplePages && (
+                  <button
+                     id={`${id}Next`}
+                     type="button"
+                     aria-label="Ver más artículos"
+                     class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full border border-purple_mv/40 text-purple_mv transition hover:bg-text_banner hover:text-white dark:border-white/20"
+                  >
+                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                     </svg>
+                  </button>
+               )}
+            </div>
+
+            <!-- Progressive enhancement: sin JS, el bloque de escritorio de arriba
+                 (Tailwind "hidden md:flex", clases que no existen sin el CSS de
+                 Tailwind cargado) queda invisible en la práctica -- el <ul> móvil
+                 de arriba, que SÍ es HTML/CSS puro (scroll-snap nativo), es el que
+                 efectivamente muestra el 100% de los artículos sin depender de JS. -->
+
+            <!-- Datos completos (imagen ya optimizada) para el script del carrusel de escritorio -- las 3 tarjetas de arriba solo pintan la página 0 al cargar. -->
+            <script type="application/json" id={`${id}-data`} is:inline set:html={JSON.stringify(resolvedArticles)} />
          </>
       ) : (
          <div class="float-anim mx-auto mt-10 max-w-md rounded-2xl border border-purple_mv/25 bg-gradient-to-b from-purple_mv/[0.06] to-transparent p-5 text-left shadow-card dark:border-white/10 dark:from-purple_mv/[0.1] dark:to-black/30">
@@ -132,10 +230,10 @@ const isCarousel = articles.length >= 2;
 </style>
 
 <script>
-   // Mismo patrón que initFeaturedCarousel/initTrustCarousel en
+   // Móvil: mismo patrón que initFeaturedCarousel/initTrustCarousel en
    // HomeFeatured.astro/HomeTrust.astro, generalizado para inicializar TODAS
-   // las instancias de esta sección en la página a la vez (una por
-   // categoría) en vez de depender de IDs únicos por instancia -- ver esos
+   // las instancias de esta sección en la página a la vez (una por bloque de
+   // noticias) en vez de depender de IDs únicos por instancia -- ver esos
    // archivos para el detalle completo de por qué el click de las flechas se
    // intercepta por coordenadas (widget de chat con overlay fixed de
    // z-index gigante) y por qué el desplazamiento va detrás de un doble rAF
@@ -223,6 +321,101 @@ const isCarousel = articles.length >= 2;
       });
    };
 
+   // Escritorio: páginas de 3 artículos distintos (sin repetir), flechas
+   // izq/der -- mismo patrón que BlogRelatedArticles.astro/HomeTrust.astro,
+   // generalizado para inicializar todas las instancias de esta sección a la
+   // vez (los IDs de cada `<ul id="{id}Slots">` identifican a qué bloque de
+   // datos ("{id}-data") y botones ("{id}Prev"/"{id}Next") corresponden).
+   const FADE_MS = 300;
+   const PAGE_SIZE = 3;
+
+   const initCategoryDesktopCarousels = () => {
+      document.querySelectorAll<HTMLUListElement>('ul[id$="Slots"]').forEach((root) => {
+         const idPrefix = root.id.replace(/Slots$/, '');
+         const dataScript = document.getElementById(`${idPrefix}-data`);
+         if (!dataScript || root.dataset.ready === 'true') return;
+         root.dataset.ready = 'true';
+
+         type CategoryItem = { slug: string; title: string; image: string | null };
+         const items: CategoryItem[] = JSON.parse(dataScript.textContent || '[]');
+         if (!items.length) return;
+
+         const totalPages = Math.max(1, Math.ceil(items.length / PAGE_SIZE));
+         const itemFor = (p: number, i: number): CategoryItem | undefined => items[p * PAGE_SIZE + i];
+
+         const slots = Array.from(root.querySelectorAll<HTMLLIElement>(':scope > .category-card'));
+         let page = 0;
+         let animating = false;
+
+         const fillSlot = (slot: HTMLLIElement, item: CategoryItem) => {
+            const img = slot.querySelector<HTMLImageElement>('.category-img');
+            const placeholder = slot.querySelector<HTMLElement>('.category-placeholder');
+            const heading = slot.querySelector<HTMLElement>('.category-title');
+            const link = slot.querySelector<HTMLAnchorElement>('.category-link');
+            if (img) {
+               if (item.image) {
+                  img.src = item.image;
+                  img.alt = item.title;
+                  img.classList.remove('hidden');
+               } else {
+                  img.classList.add('hidden');
+               }
+            }
+            // "hidden" como CLASE (no atributo/propiedad DOM): un "hidden"
+            // atributo pierde contra una clase Tailwind con display propio
+            // como "flex" (misma especificidad, la clase de autor gana sobre
+            // el estilo de user-agent) -- mismo patrón que HomeTrust.astro/
+            // BlogRelatedArticles.astro.
+            if (placeholder) placeholder.classList.toggle('hidden', !!item.image);
+            if (placeholder) placeholder.classList.toggle('flex', !item.image);
+            if (heading) heading.textContent = item.title;
+            if (link) link.href = `/blog/${item.slug}`;
+         };
+
+         const go = (delta: number) => {
+            if (animating || totalPages <= 1) return;
+            const nextPage = (page + delta + totalPages) % totalPages;
+            if (nextPage === page) return;
+            animating = true;
+
+            slots.forEach((slot) => slot.classList.add('opacity-0'));
+
+            setTimeout(() => {
+               slots.forEach((slot, i) => {
+                  const item = itemFor(nextPage, i);
+                  if (!item) {
+                     slot.classList.add('hidden');
+                     return;
+                  }
+                  slot.classList.remove('hidden');
+                  fillSlot(slot, item);
+               });
+
+               // Reflow forzado antes de volver a subir la opacidad: sin esto
+               // el navegador puede fusionar el cambio de contenido de arriba
+               // con el toggle de clases de abajo en un mismo frame y
+               // saltarse la transición (mismo motivo documentado en
+               // HomeTrust.astro).
+               void root.offsetHeight;
+
+               slots.forEach((slot, i) => {
+                  if (itemFor(nextPage, i)) slot.classList.remove('opacity-0');
+               });
+
+               page = nextPage;
+               animating = false;
+            }, FADE_MS);
+         };
+
+         document.getElementById(`${idPrefix}Prev`)?.addEventListener('click', () => go(-1));
+         document.getElementById(`${idPrefix}Next`)?.addEventListener('click', () => go(1));
+      });
+   };
+
    initBlogCarousels();
-   document.addEventListener('astro:page-load', initBlogCarousels);
+   initCategoryDesktopCarousels();
+   document.addEventListener('astro:page-load', () => {
+      initBlogCarousels();
+      initCategoryDesktopCarousels();
+   });
 </script>

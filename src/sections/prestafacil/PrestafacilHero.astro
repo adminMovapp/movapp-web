@@ -3,51 +3,18 @@
 // (CrediSeguro/Tala/Kueski/Klar): acá el H1 es una pregunta directa sobre
 // confiabilidad, no un "X: información verificada..." -- primera página del
 // lado "app reportada" de la serie (ver skill Importaciones).
-// Breadcrumb de 2 niveles ("Inicio | Aplicaciones | PrestaFácil"), mismo
-// criterio que el resto de la serie -- ver
-// PAGE_SCHEMA['/aplicaciones-prestamo/prestafacil'] en schema.js.
-import { Image } from 'astro:assets';
-import ButtonContact from '@components/ui/ButtonContact.astro';
-import StarField from '@components/decorative/StarField.astro';
-import Breadcrumbs from '@components/ui/Breadcrumbs.astro';
-import { DIRECTORIO_ICONS } from '@constants/directorioApps.ts';
+// Hero de 2 columnas (2026-09-02, a pedido) -- ver AppHero.astro para el
+// mecanismo compartido por las 8 apps. "paragraphMobile" es el texto más
+// corto que va SOLO en móvil (a pedido explícito de Santiago, 2026-08-28) --
+// el de escritorio ("paragraph") no se toca.
+import AppHero from '@components/decorative/AppHero.astro';
 ---
 
-<section class="relative mx-auto max-w-3xl px-4 pt-16 text-center md:pt-8" data-aos="fade-up">
-   <StarField id="prestafacil-hero" ambientCount={35} />
-
-   <Breadcrumbs items={[{ label: 'Aplicaciones', href: '/aplicaciones-prestamo' }, { label: 'PrestaFácil' }]} />
-
-   <h1 class="relative z-10 mx-auto max-w-2xl text-3xl font-bold uppercase leading-tight text-gray-900 dark:text-white md:text-5xl">
-      ¿PrestaFácil es confiable? Reportes, riesgos y pasos para protegerte
-   </h1>
-
-   <div class="relative z-10 mx-auto mt-8 grid max-w-xl grid-cols-1 items-center gap-6 text-left sm:grid-cols-[auto_1fr] sm:text-left">
-      <div class="mx-auto flex h-28 w-28 flex-shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-gray-100 dark:bg-white/5 sm:mx-0">
-         <Image src={DIRECTORIO_ICONS.prestafacil} alt="" width={112} class="h-full w-full object-contain p-3" loading="lazy" />
-      </div>
-      <!--
-         Texto distinto en móvil vs. escritorio (a pedido explícito de
-         Santiago, 2026-08-28): el wireframe de actualización trajo un
-         párrafo más corto que el original -- se aplica SOLO en móvil, el
-         texto de escritorio ya construido no se toca. Mismo patrón
-         "<span class='md:hidden'>...</span>/<span class='hidden md:...'>...</span>"
-         que HomeSymptoms.astro.
-      -->
-      <p class="text-center text-gray-700 dark:text-white/80 sm:text-left">
-         <span class="md:hidden">Consulta la información disponible y los pasos para proteger tus datos.</span>
-         <span class="hidden md:inline">
-            Consulta la información disponible, las señales de riesgo identificadas y los pasos para proteger tus
-            datos.
-         </span>
-      </p>
-   </div>
-
-   <div class="relative z-10 mt-8">
-      <ButtonContact
-         id="whatsapp-prestafacil-hero"
-         label="Solicitar orientación"
-         message="¡Hola! Quiero orientación sobre PrestaFácil."
-      />
-   </div>
-</section>
+<AppHero
+   id="prestafacil"
+   breadcrumbLabel="PrestaFácil"
+   h1="¿PrestaFácil es confiable? Reportes, riesgos y pasos para protegerte"
+   paragraph="Consulta la información disponible, las señales de riesgo identificadas y los pasos para proteger tus datos."
+   paragraphMobile="Consulta la información disponible y los pasos para proteger tus datos."
+   whatsappMessage="¡Hola! Quiero orientación sobre PrestaFácil."
+/>

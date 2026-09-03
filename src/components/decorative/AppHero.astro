@@ -1,0 +1,105 @@
+---
+// Hero de las 8 páginas de apps (Starpresta/Prestafacil/Mexicash/
+// Fortapresta/Tala/Kueski/Klar/Crediseguro) -- antes cada archivo repetía
+// el mismo markup (StarField + Breadcrumbs + H1 + icono chico junto a un
+// párrafo + CTA), solo cambiaba el texto. Extraído a un componente
+// compartido (mismo criterio que RiskTimeline.astro/AppOptionsCarousel.astro)
+// y rediseñado en 2 columnas (2026-09-02, a pedido explícito: "quiero que
+// lo dividas. la mitad a la izquierda, debe tener la imagen de la app, y
+// en la otra mitad, ya el título/texto que hay en el hero") -- en móvil
+// (sin mitades posibles) la imagen queda arriba y el texto abajo, mismo
+// criterio que el grid título+órbita de HomeHero.astro.
+//
+// Segunda vuelta (mismo día, a pedido explícito): "se ven demasiado
+// separadas" (gap-8/12 -> gap-5/8), "quiero que la imagen esté abarcando
+// el tamaño, de inicio, hasta el último párrafo del texto" (la card de la
+// imagen ya NO tiene alto fijo -- sin "items-center" en el grid, el
+// default de CSS Grid es "stretch", así que la columna de la imagen se
+// estira sola hasta igualar el alto de la columna de texto) y "dale otro
+// diseño a la card... se ve muy simple" (bg-gray-100 plano -> el mismo
+// border+degradado+shadow-card transparente que ya es el estándar del
+// sitio, en vez de inventar un tercer estilo de card).
+import { Image } from 'astro:assets';
+import ButtonContact from '@components/ui/ButtonContact.astro';
+import StarField from '@components/decorative/StarField.astro';
+import Breadcrumbs from '@components/ui/Breadcrumbs.astro';
+import { DIRECTORIO_ICONS } from '@constants/directorioApps.ts';
+
+interface Props {
+   id: string;
+   breadcrumbLabel: string;
+   h1: string;
+   paragraph: string;
+   // Excepción confirmada (PrestafacilHero.astro/FortaprestaHero.astro,
+   // 2026-08-28): un texto distinto SOLO en móvil para esas 2 apps -- el de
+   // escritorio (prop "paragraph") no se toca. Mismo criterio que
+   // RiskTimeline.astro (title/text/textMobile).
+   paragraphMobile?: string;
+   whatsappMessage: string;
+}
+
+const { id, breadcrumbLabel, h1, paragraph, paragraphMobile, whatsappMessage } = Astro.props;
+---
+
+<section class="relative mx-auto max-w-5xl px-4 pt-16 md:pt-8" data-aos="fade-up">
+   <StarField id={`${id}-hero`} ambientCount={35} />
+
+   <div class="text-center">
+      <Breadcrumbs items={[{ label: 'Aplicaciones', href: '/aplicaciones-prestamo' }, { label: breadcrumbLabel }]} />
+   </div>
+
+   <div class="relative z-10 mt-8 grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-8">
+      <!--
+         Mitad izquierda: imagen de la app (arriba, en móvil). Sin alto fijo
+         a propósito -- en escritorio, "stretch" (default de CSS Grid, no
+         hay "items-center" en el <div> de arriba) hace que esta columna
+         tome el mismo alto que la columna de texto de al lado, de punta a
+         punta ("abarcando... hasta el último párrafo"). En móvil no hay
+         columna vecina con la que igualar alto, así que se fija un
+         aspect-square razonable en su lugar.
+      -->
+      <div class="app-hero-icon-card mx-auto flex aspect-square w-full max-w-xs items-center justify-center overflow-hidden rounded-3xl border border-purple_mv/25 bg-gradient-to-b from-purple_mv/[0.06] to-transparent p-8 shadow-card dark:border-white/10 dark:from-purple_mv/[0.1] dark:to-black/30 md:mx-0 md:aspect-auto md:h-full md:max-w-none">
+         <Image src={DIRECTORIO_ICONS[id]} alt="" width={448} class="h-full w-full object-contain" loading="eager" fetchpriority="high" />
+      </div>
+
+      <!-- Mitad derecha: título + texto + CTA (abajo, en móvil) -->
+      <div class="flex flex-col justify-center text-center md:text-left">
+         <h1 class="text-3xl font-bold uppercase leading-tight text-gray-900 dark:text-white md:text-5xl">
+            {h1}
+         </h1>
+         <p class="mt-4 text-gray-700 dark:text-white/80">
+            {paragraphMobile ? (
+               <>
+                  <span class="md:hidden">{paragraphMobile}</span>
+                  <span class="hidden md:inline">{paragraph}</span>
+               </>
+            ) : (
+               paragraph
+            )}
+         </p>
+         <div class="mt-6 flex justify-center md:justify-start">
+            <ButtonContact id={`whatsapp-${id}-hero`} label="Solicitar orientación" message={whatsappMessage} />
+         </div>
+      </div>
+   </div>
+</section>
+
+<style>
+   /*
+      CLS por tamaño de imagen (ver skill Rendimiento): el <Image> pide
+      width=448 (2x retina) -- en móvil el tamaño final real lo da
+      aspect-square + max-w-xs (20rem), no un height/width fijo de
+      Tailwind, así que se fija ese mismo tope acá para que no salte
+      mientras carga Tailwind. En escritorio el alto es "stretch" (depende
+      del texto vecino, variable por app) -- ahí no hay salto que evitar
+      porque no hay un alto Tailwind fijo compitiendo con éste.
+   */
+   .app-hero-icon-card {
+      max-height: 20rem; /* = max-w-xs, por el aspect-square */
+   }
+   @media (min-width: 768px) {
+      .app-hero-icon-card {
+         max-height: none;
+      }
+   }
+</style>

@@ -5,23 +5,25 @@ import ImgLogoRespBlanco from '@assets/logo_resp_blanco.webp';
 // width=480 (~2x retina para el hueco máximo de 240px, ver skill Rendimiento)
 // en vez del tamaño real del archivo fuente.
 import ImgAsesoria from '@assets/Asesoria-gratuita.webp';
+import ImgHeroCiudad from '@assets/foto-urbana-erik.webp';
 import ButtonContact from '@components/ui/ButtonContact.astro';
 import StoreBadges from '@components/ui/StoreBadges.astro';
 ---
 
 <!--
-   Sin pb-* a propósito (a diferencia de pt-16/md:pt-8, que sí se mantiene
-   para el espacio bajo el header): a diferencia del resto del sitio, este
+   Sin pt-*/pb-* a propósito: a diferencia del resto del sitio, este
    <section> no usa "my-section" (margen, que colapsa con el margin-top de la
    siguiente sección y da el espaciado estándar de 4rem, ver
-   tailwind.config.mjs) sino padding, por el min-h+flex de centrado vertical.
-   Un pb-* extra AQUÍ no colapsa con el mt-section de HomeSymptoms -- se suma
-   encima, dejando mucho más espacio del que hay entre cualquier otro par de
-   secciones. Quitarlo del todo deja que el margin-top de la siguiente
-   sección sea el único responsable del espacio, igual que en todo el resto
-   del sitio.
+   tailwind.config.mjs) sino min-h+flex para el centrado vertical. El
+   pt-16/md:pt-8 que tenía antes (espacio bajo el header, para cuando el H1
+   era lo primero del Hero) se quitó (2026-09-02) al pasar la foto de
+   portada a ser lo primero -- esa foto debe quedar pegada al borde de la
+   pantalla en móvil, y justo debajo del header en escritorio (ya resuelto
+   por ".header-spacer", ver Header.astro), sin un padding de más encima
+   dejando un hueco. Tampoco se agrega pb-* por la razón de siempre: no
+   colapsa con el mt-section de HomeSymptoms, se sumaría encima.
 -->
-<section class="relative mx-auto flex min-h-[85vh] max-w-5xl flex-col items-center justify-center px-4 pt-16 text-center md:min-h-[70vh] md:pt-8">
+<section class="relative mx-auto flex min-h-[85vh] max-w-5xl flex-col items-center justify-center px-4 text-center md:min-h-[70vh]">
    <!--
       Fondo espacial: full-bleed (ignora el max-w del section con el truco
       left-1/2 + w-screen + -translate-x-1/2) para que llene todo el ancho
@@ -55,8 +57,39 @@ import StoreBadges from '@components/ui/StoreBadges.astro';
       escritorio (md+) se abre a 2 columnas: el texto queda a la izquierda y
       la órbita (intacta, sin cambios) es el elemento visual de la columna
       derecha.
+
+      Escenario de scroll (2026-09-02): este bloque queda "clavado" en
+      pantalla (position: sticky) mientras la foto de portada (Erik en la
+      calle) se le encima, se achica y se desvanece -- mismo criterio de
+      solo-lectura de scroll que .riesgo-track en RiskTimeline.astro (nunca
+      preventDefault()/scrollTo()). El wrapper mide más que la pantalla
+      (h-[170vh]) para darle "recorrido" al efecto mientras el escenario
+      queda pegado arriba; al terminar ese alto extra, se despega y sigue
+      el flujo normal (la card de "Asesoría gratuita" de más abajo). Al
+      vivir título+órbita y foto en el MISMO punto de pantalla (no uno
+      después del otro en la página), quedan a la vista en el instante en
+      que la foto se vuelve transparente -- a pedido explícito: "quiero que
+      el texto que sigue después de la imagen, prácticamente aparezca al
+      desvanecerse la imagen".
+
+      "items-end" en móvil (en vez de centrado): con el título solo (sin
+      órbita) centrado en una caja de 100vh, quedaba mucho aire debajo de
+      él -- ese aire, al despegarse el escenario, es lo que había que
+      scrollear de más antes de llegar a la card de "Asesoría gratuita"
+      (a pedido: "el título del hero deja otro espacio... con la card").
+      Pegando el título abajo, ese aire queda ARRIBA (invisible mientras
+      el escenario está clavado, tapado por la foto) y no después. El
+      pb-16 deja lugar justo sobre MobileBottomNav (aunque no es "fixed",
+      sigue siendo "sticky bottom-0" -- confirmado que igual queda
+      encimado sobre el contenido de abajo durante todo el scroll, no solo
+      al final de la página; medido en 45px de alto, este padding le deja
+      margen de sobra sin volver a abrir el hueco grande de antes). En
+      escritorio se mantiene centrado (md:items-center) -- ahí la órbita sí
+      llena ese espacio, así que no hay hueco que corregir.
    -->
-   <div class="relative w-full md:grid md:grid-cols-2 md:items-center md:gap-10 lg:gap-16">
+   <div id="home-hero-stage-wrapper" class="relative w-full h-[170vh]">
+      <div class="sticky top-0 flex h-screen w-full items-end justify-center pb-16 md:items-center md:pb-0">
+   <div class="relative z-0 w-full md:grid md:grid-cols-2 md:items-center md:gap-10 lg:gap-16">
       <div class="relative">
          <!--
             H1 (único H1 de la página). Todo el texto (el "eyebrow" +
@@ -211,6 +244,38 @@ Frena el <span class="text-text_banner">acoso</span> de las <span class="text-te
                style="animation: heroFloat 5.5s ease-in-out 0.45s infinite;"
             />
          </div>
+      </div>
+   </div>
+
+      <!--
+         Foto de portada (Erik en la calle): cubre el escenario por encima
+         del título+órbita (z-10) y se achica/desvanece por scroll -- ver
+         el <script> al final del archivo. Full-bleed dentro del escenario
+         con el mismo truco que el fondo espacial de arriba (left-1/2 +
+         w-screen + -translate-x-1/2), aunque el escenario herede el
+         max-w-5xl angosto del <section>. overflow-hidden sólo en ESTE div
+         (no en el escenario completo) para no arriesgar recortar el
+         título+órbita si llegan a medir más que 100vh (zoom/fuente grande).
+      -->
+      <div id="home-hero-image-cover" class="pointer-events-none absolute top-0 bottom-0 left-1/2 z-10 w-screen -translate-x-1/2 overflow-hidden">
+         <Image
+            src={ImgHeroCiudad}
+            alt="Erik Mann, fundador de Movapp, en una calle de la ciudad"
+            widths={[640, 1024, 1536, 1920]}
+            sizes="100vw"
+            width={1920}
+            height={1080}
+            loading="eager"
+            fetchpriority="high"
+            class="h-full w-full object-cover"
+         />
+         <!-- Degradado hacia el fondo real de la página (gray-50 / #050505, ver <body> en Layout.astro) para que el corte con lo de abajo sea gradual -->
+         <div
+            class="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-gray-50 dark:to-[#050505]"
+            aria-hidden="true"
+         >
+         </div>
+      </div>
       </div>
    </div>
 
@@ -498,6 +563,11 @@ Frena el <span class="text-text_banner">acoso</span> de las <span class="text-te
          animation-iteration-count: infinite !important;
       }
    }
+
+   #home-hero-image-cover {
+      will-change: transform, opacity;
+      transform-origin: center center;
+   }
 </style>
 
 <script>
@@ -601,4 +671,48 @@ Frena el <span class="text-text_banner">acoso</span> de las <span class="text-te
    // Escuchar el evento de Astro para navegaciones internas
    document.addEventListener('astro:page-load', initStars);
    document.addEventListener('astro:page-load', initShootingStars);
+</script>
+
+<script>
+   // Efecto de scroll (2026-09-02): la foto de portada, ya "clavada" en el
+   // mismo punto de pantalla que el título+órbita (ver "home-hero-stage-
+   // wrapper" en el markup de arriba), se achica y se desvanece a medida
+   // que se hace scroll -- solo LEE la posición del wrapper para calcular
+   // escala/opacidad, nunca preventDefault()/scrollTo() (mismo criterio de
+   // .riesgo-track en RiskTimeline.astro, no es scroll-jacking).
+   const initHeroStage = () => {
+      const wrapper = document.getElementById('home-hero-stage-wrapper');
+      const cover = document.getElementById('home-hero-image-cover');
+      if (!wrapper || !cover || wrapper.dataset.ready === 'true') return;
+      wrapper.dataset.ready = 'true';
+
+      let ticking = false;
+
+      const apply = () => {
+         ticking = false;
+         const rect = wrapper.getBoundingClientRect();
+         const scrollable = rect.height - window.innerHeight;
+         const ratio = scrollable > 0 ? Math.min(1, Math.max(0, -rect.top / scrollable)) : 0;
+
+         // translateX(-50%) primero: es lo que centra el full-bleed
+         // (clase "-translate-x-1/2" en el markup) -- si se pisa el
+         // "transform" completo con solo el scale(), se pierde ese
+         // centrado y la foto queda corrida a la derecha.
+         cover.style.transform = `translateX(-50%) scale(${1 - ratio * 0.15})`;
+         cover.style.opacity = String(1 - ratio);
+      };
+
+      const onScroll = () => {
+         if (ticking) return;
+         ticking = true;
+         requestAnimationFrame(apply);
+      };
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', apply);
+      apply();
+   };
+
+   initHeroStage();
+   document.addEventListener('astro:page-load', initHeroStage);
 </script>

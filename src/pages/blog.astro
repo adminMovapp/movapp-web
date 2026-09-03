@@ -3,7 +3,7 @@ import Layout from '@layouts/Layout.astro';
 import BlogHero from '@sections/blog/BlogHero.astro';
 import BlogCategorySection from '@sections/blog/BlogCategorySection.astro';
 import BlogCategoryCTA from '@sections/blog/BlogCategoryCTA.astro';
-import { BLOG_CATEGORIES } from '@constants/blog.ts';
+import { BLOG_HOME_SECTIONS } from '@constants/blog.ts';
 ---
 
 <Layout
@@ -14,13 +14,8 @@ import { BLOG_CATEGORIES } from '@constants/blog.ts';
 >
    <BlogHero />
    {
-      BLOG_CATEGORIES.map((cat) => (
-         <BlogCategorySection
-            id={cat.id}
-            title={cat.title}
-            articles={cat.articles}
-            linkLabel={cat.id === 'noticias' ? 'Ver todas las noticias' : undefined}
-         />
+      BLOG_HOME_SECTIONS.map((section) => (
+         <BlogCategorySection id={section.id} title={section.title} articles={section.articles} />
       ))
    }
    <BlogCategoryCTA categorySlug="general" />
