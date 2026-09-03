@@ -59,8 +59,19 @@ interface Props {
    */
    schema?: object | object[];
    showGrid?: boolean;
+   /*
+      Bloquea selección/copiado del contenido de la página (2026-09-03, a
+      pedido explícito: "quiero que el usuario no pueda copiar la
+      información que se muestre en TODAS las apps (legales e ilegales)")
+      -- opt-in por página, igual que "showGrid". Solo protege el <slot />
+      (el contenido propio de cada página), NUNCA el <Footer /> -- ver el
+      <main> más abajo: el Footer vive fuera del div protegido a propósito,
+      porque no es "información de la app", es navegación/copyright
+      compartido de todo el sitio.
+   */
+   disableCopy?: boolean;
 }
-const { title, schema, showGrid = true } = Astro.props;
+const { title, schema, showGrid = true, disableCopy = false } = Astro.props;
 
 const siteConfig = getSiteConfig(Astro.request);
 
@@ -281,6 +292,35 @@ const schemaJson = JSON.stringify(Array.isArray(pageSchema) ? pageSchema : [page
             margin: 0;
          }
       </style>
+
+      <!--
+         .no-copy (ver prop "disableCopy" arriba): CSS propio, no Tailwind,
+         para que aplique con o sin JS -- "user-select: none" ya bloquea el
+         vector principal (arrastrar el mouse para seleccionar texto) sin
+         depender de que cargue ningún script. El bloqueo del evento
+         "copy"/menú contextual (defensa en profundidad, para el caso de
+         selección por teclado) vive en el <script> junto al <main>, porque
+         eso sí necesita JS.
+      -->
+      <style>
+         .no-copy,
+         .no-copy * {
+            -webkit-user-select: none;
+            user-select: none;
+         }
+         .no-copy img {
+            -webkit-user-drag: none;
+         }
+         /* Excepción: si algún día esta prop protege una página con un
+            campo de formulario, que se pueda seguir editando/seleccionando
+            texto ahí con normalidad -- "no copiar" es sobre el contenido
+            de la página, no sobre lo que el usuario escribe. */
+         .no-copy input,
+         .no-copy textarea {
+            -webkit-user-select: text;
+            user-select: text;
+         }
+      </style>
    </head>
 
    <!--
@@ -307,10 +347,34 @@ const schemaJson = JSON.stringify(Array.isArray(pageSchema) ? pageSchema : [page
       <main class="relative min-h-[100svh] isolate">
          {showGrid && <BackgroundGrid />}
          <div class="relative z-10">
-            <slot />
+            <div class:list={[disableCopy && 'no-copy']}>
+               <slot />
+            </div>
             <Footer />
          </div>
       </main>
+
+      <!--
+         Defensa en profundidad de ".no-copy" (ver prop "disableCopy" y el
+         CSS junto a </head>): el "user-select: none" ya bloquea seleccionar
+         con el mouse, pero no evita el menú contextual (clic derecho >
+         Copiar) ni una selección hecha por teclado/lector de pantalla --
+         acá se bloquean también los eventos "copy"/"cut"/"contextmenu"/
+         "dragstart" dentro del contenido protegido. Sin JS este script no
+         corre, pero el CSS de arriba (siempre inline) sigue aplicando.
+      -->
+      <script is:inline>
+         (function () {
+            function blockCopyEvents(el) {
+               ['copy', 'cut', 'contextmenu', 'dragstart'].forEach(function (evt) {
+                  el.addEventListener(evt, function (e) {
+                     e.preventDefault();
+                  });
+               });
+            }
+            document.querySelectorAll('.no-copy').forEach(blockCopyEvents);
+         })();
+      </script>
 
       <MobileBottomNav />
       <MobileSearchBackdrop />

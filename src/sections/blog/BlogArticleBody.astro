@@ -15,6 +15,14 @@
 // artículo "lista-montadeudas"): ese artículo intercala grids de íconos de
 // apps entre párrafos dentro de la misma sección/país, de ahí el tipo unión
 // 'paragraph' | 'appGrid' en vez de un simple array de strings.
+//
+// Texto justificado (2026-09-03, a pedido explícito: "justifica todo el
+// texto de la parte del blog. el contenido que se lee") -- "text-justify"
+// en el contenedor del cuerpo (párrafos y listas, por herencia de
+// text-align) y en el párrafo de bio del autor. Los títulos H2 y el nombre
+// del autor no se ven afectados visualmente: "justify" solo estira el
+// espaciado entre palabras en líneas que SÍ envuelven a una siguiente
+// línea, un texto de una sola línea se ve igual que con text-align normal.
 import ImagePlaceholder from '@components/ui/ImagePlaceholder.astro';
 import BlogArticleShare from '@sections/blog/BlogArticleShare.astro';
 import StarField from '@components/decorative/StarField.astro';
@@ -80,7 +88,7 @@ function renderInline(text: string) {
 <section class="relative mx-auto max-w-3xl px-4" data-aos="fade-up">
    <StarField id={`blog-article-body-${slug}`} ambientCount={40} />
 
-   <div class="relative z-10 space-y-6 text-base text-gray-700 dark:text-white/80 md:text-lg">
+   <div class="relative z-10 space-y-6 text-justify text-base text-gray-700 dark:text-white/80 md:text-lg">
       {
          sections.map((s) => (
             <div class="space-y-4">
@@ -167,7 +175,7 @@ function renderInline(text: string) {
       <span class="h-12 w-12 flex-shrink-0 rounded-full bg-purple_mv/15 dark:bg-white/10" aria-hidden="true"></span>
       <div>
          <h3 class="font-bold text-text_banner">{authorBio.name}</h3>
-         <p class="mt-1 text-sm italic text-gray-600 dark:text-white/60">{authorBio.text}</p>
+         <p class="mt-1 text-justify text-sm italic text-gray-600 dark:text-white/60">{authorBio.text}</p>
       </div>
    </div>
 </section>

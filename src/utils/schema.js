@@ -289,6 +289,59 @@ export function generateWebPageSchema({ name, path, description, type = 'WebPage
    });
 }
 
+// "Diciembre 10, 2025" (formato de BLOG_ARTICLES.publishDate, ver
+// blogArticles.ts) -> "2025-12-10" (ISO 8601, lo que pide datePublished).
+const SPANISH_MONTHS = {
+   enero: '01',
+   febrero: '02',
+   marzo: '03',
+   abril: '04',
+   mayo: '05',
+   junio: '06',
+   julio: '07',
+   agosto: '08',
+   septiembre: '09',
+   octubre: '10',
+   noviembre: '11',
+   diciembre: '12',
+};
+export function parseSpanishDate(text) {
+   const match = /^(\p{L}+)\s+(\d{1,2}),\s*(\d{4})$/u.exec(text?.trim() ?? '');
+   if (!match) return null;
+   const month = SPANISH_MONTHS[match[1].toLowerCase()];
+   if (!month) return null;
+   return `${match[3]}-${month}-${match[2].padStart(2, '0')}`;
+}
+
+/*
+   BlogPosting: un artículo de /blog/<slug> (ver src/pages/blog/[articulo].astro
+   y @constants/blogArticles.ts). Ruta dinámica, así que NO vive en
+   PAGE_SCHEMA como el resto -- cada página arma su propio array con esta
+   función y lo pasa por la prop `schema` del Layout (la escotilla de escape
+   documentada arriba, pensada justo para esto: el schema depende del
+   frontmatter de cada artículo, no de una ruta fija).
+*/
+export function generateBlogPostingSchema({ headline, description, path, publishDate, authorName }, request = null) {
+   const cfg = getSiteConfig(request);
+   const iso = parseSpanishDate(publishDate);
+   return prune({
+      '@context': CONTEXT,
+      '@type': 'BlogPosting',
+      headline,
+      description,
+      url: abs(path, cfg),
+      inLanguage: cfg.site.language,
+      datePublished: iso,
+      // Sin fecha de edición propia por artículo todavía (BLOG_ARTICLES no
+      // la trae) -- se usa la misma que datePublished en vez de inventar una
+      // fecha de modificación que no existe en el copy.
+      dateModified: iso,
+      author: { '@type': 'Person', name: authorName },
+      publisher: { '@type': 'Organization', name: cfg.site.name, url: cfg.canonicalUrl },
+      mainEntityOfPage: { '@type': 'WebPage', '@id': abs(path, cfg) },
+   });
+}
+
 /*
    HowTo: solo aplica si la página tiene una sección de pasos VISIBLE, y los
    pasos deben coincidir uno a uno con los de la página (por eso comparten
@@ -411,7 +464,7 @@ export const PAGE_SCHEMA = {
       // Review ni AggregateRating: no hay calificaciones estructuradas en la
       // página, solo video, y declararlas sería schema engañoso.
       type: 'CollectionPage',
-      name: 'Testimonios de personas ayudadas',
+      name: 'testimonios movapp',
       description:
          'Lee testimonios reales de personas que dejaron de ser acosadas por apps de préstamos montadeudas gracias a Movapp. Comparte tu experiencia también.',
       breadcrumb: 'Testimonios',
@@ -421,7 +474,7 @@ export const PAGE_SCHEMA = {
       // ContactPage: la guía la reserva justamente para páginas con
       // formulario de contacto real, como esta.
       type: 'ContactPage',
-      name: 'Contacto: ayuda contra apps de préstamos',
+      name: 'CONTÁCTANOS',
       description:
          '¿Necesitas ayuda con una app de préstamos que te acosa? Completa el formulario o síguenos en redes sociales. Movapp te responde y te asesora.',
       breadcrumb: 'Contáctanos',

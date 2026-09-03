@@ -23,6 +23,7 @@ import { Image } from 'astro:assets';
 import ButtonContact from '@components/ui/ButtonContact.astro';
 import StarField from '@components/decorative/StarField.astro';
 import Breadcrumbs from '@components/ui/Breadcrumbs.astro';
+import AppDisclaimerModal from '@components/ui/AppDisclaimerModal.astro';
 import { DIRECTORIO_ICONS } from '@constants/directorioApps.ts';
 
 interface Props {
@@ -83,6 +84,14 @@ const { id, breadcrumbLabel, h1, paragraph, paragraphMobile, whatsappMessage } =
       </div>
    </div>
 </section>
+
+<!--
+   Aviso de no afiliación (2026-09-03, a pedido explícito: "pon un modal
+   en TODAS las aplicaciones") -- se cuelga acá porque AppHero.astro ya lo
+   renderizan las 8 páginas de apps individuales, así queda garantizado en
+   todas sin depender de que cada página se acuerde de importarlo.
+-->
+<AppDisclaimerModal id={id} />
 
 <style>
    /*

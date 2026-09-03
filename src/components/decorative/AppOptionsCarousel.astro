@@ -18,6 +18,19 @@
 // ("una se va, otra llega"); el swipe táctil funciona gratis, por el mismo
 // mecanismo nativo. Sin JS, snap-x/overflow-x-auto no aplican (Tailwind
 // gateado) y las 3 apps quedan apiladas, completas, una debajo de otra.
+//
+// Card en 2 columnas (2026-09-03, a pedido explícito: "las cards con las
+// apps que están en carrusel DE TODAS LAS LANDINGS DONDE ESTÉN, mejor
+// aparezcan igual que con los heros de cada app. que es, la imagen a la
+// izquierda, y el texto a la derecha") -- antes: ícono arriba, texto
+// centrado debajo. Ahora, mismo criterio de layout que AppHero.astro:
+// grid-cols-1 en móvil (ícono arriba, texto abajo) -> md:grid-cols-2 en
+// escritorio (ícono a la izquierda, texto a la derecha, centrado
+// verticalmente con "items-center" en el grid). No se copió el "stretch"
+// de alto completo que usa AppHero para su imagen -- ahí tiene sentido
+// porque el texto vecino es un H1+párrafo+botón, alto y variable; acá el
+// texto es corto (nombre + estatus + link), así que el ícono se queda con
+// un tamaño fijo (24/28 en vez de estirarse a un rectángulo raro).
 import { Image } from 'astro:assets';
 import { DIRECTORIO_ICONS, type DirectorioApp } from '@constants/directorioApps.ts';
 import StarField from '@components/decorative/StarField.astro';
@@ -66,20 +79,22 @@ const statusClass = statusColor === 'green' ? 'text-green-500' : 'text-red-500';
          {
             apps.map((app) => (
                <li class="w-full flex-shrink-0 snap-center px-1">
-                  <div class="mx-auto flex max-w-xs flex-col items-center rounded-2xl border border-purple_mv/25 bg-gradient-to-b from-purple_mv/[0.06] to-transparent p-5 text-center shadow-card transition-colors duration-300 hover:border-purple_mv/50 hover:shadow-card-hover dark:border-white/10 dark:from-purple_mv/[0.1] dark:to-black/30">
+                  <div class="mx-auto grid max-w-sm grid-cols-1 items-center gap-4 rounded-2xl border border-purple_mv/25 bg-gradient-to-b from-purple_mv/[0.06] to-transparent p-5 shadow-card transition-colors duration-300 hover:border-purple_mv/50 hover:shadow-card-hover dark:border-white/10 dark:from-purple_mv/[0.1] dark:to-black/30 md:max-w-md md:grid-cols-2 md:gap-5">
                      {DIRECTORIO_ICONS[app.slug] && (
-                        <div class="mb-3 flex h-14 w-14 items-center justify-center overflow-hidden rounded-2xl border border-purple_mv/20 bg-purple_mv/5 dark:border-white/10 dark:bg-white/5">
-                           <Image src={DIRECTORIO_ICONS[app.slug]} alt="" width={112} class="h-full w-full object-contain p-2" loading="lazy" />
+                        <div class="mx-auto flex h-24 w-24 flex-shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-purple_mv/20 bg-purple_mv/5 dark:border-white/10 dark:bg-white/5 md:mx-0 md:h-28 md:w-28">
+                           <Image src={DIRECTORIO_ICONS[app.slug]} alt="" width={112} class="h-full w-full object-contain p-3" loading="lazy" />
                         </div>
                      )}
-                     <h3 class="text-lg font-bold text-text_banner">{app.name}</h3>
-                     <p class={`mt-2 text-sm font-semibold ${statusClass}`}>✓ {app.status}</p>
-                     <a
-                        href={`/aplicaciones-prestamo/${app.slug}`}
-                        class="mt-3 text-sm font-semibold text-text_banner underline-offset-4 hover:underline"
-                     >
-                        Ver información
-                     </a>
+                     <div class="text-center md:text-left">
+                        <h3 class="text-lg font-bold text-text_banner">{app.name}</h3>
+                        <p class={`mt-2 text-sm font-semibold ${statusClass}`}>✓ {app.status}</p>
+                        <a
+                           href={`/aplicaciones-prestamo/${app.slug}`}
+                           class="mt-3 inline-block text-sm font-semibold text-text_banner underline-offset-4 hover:underline"
+                        >
+                           Ver información
+                        </a>
+                     </div>
                   </div>
                </li>
             ))

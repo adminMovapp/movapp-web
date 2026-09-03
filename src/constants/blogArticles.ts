@@ -20,6 +20,19 @@ export interface BlogArticle {
    // este artículo. Se muestra en mayúsculas vía CSS ("uppercase"), así que
    // la capitalización de este string no importa visualmente para el H1.
    title: string;
+   // <title> del documento (2026-09-03, a pedido explícito de Santiago tras
+   // auditar las 42 URLs del sitio contra el brief maestro de SEO: el H1 de
+   // cada artículo se escribió como titular de lectura, no como meta title
+   // -- tal cual, tal cual pasaba por "${article.title} | Movapp", ninguno
+   // de los 27 artículos coincidía con el meta title planeado). Va completo,
+   // con el "| Movapp" ya incluido -- mismo criterio que el resto del sitio
+   // (src/pages/*.astro le pasan el string completo a Layout, no un sufijo
+   // aparte).
+   metaTitle: string;
+   // Meta description (mismo motivo que "metaTitle" -- antes se usaba el
+   // primer párrafo del cuerpo tal cual, que ronda 200-300 caracteres y no
+   // es copy pensado para SERP).
+   metaDescription: string;
    // Mismo título, pero tal cual debe verse en el breadcrumb (que NO fuerza
    // mayúsculas) -- acá sí importa la capitalización real.
    breadcrumbLabel: string;
@@ -61,6 +74,9 @@ export const BLOG_ARTICLES: BlogArticle[] = [
    {
       slug: 'apps-prestamos-confiables',
       title: 'Aplicaciones De Préstamos Confiables – Los Mejores Préstamos Confiables En Línea',
+      metaTitle: 'Apps de préstamos confiables en México 2025 | Movapp',
+      metaDescription:
+         'Descubre qué apps de préstamos en línea son confiables y no acosan a tus contactos. Lista curada por Movapp para que elijas con seguridad.',
       breadcrumbLabel: 'Aplicaciones de préstamos confiables – Los mejores préstamos confiables en línea',
       author: 'Equipo Movapp',
       publishDate: 'Diciembre 10, 2025',
@@ -103,6 +119,9 @@ export const BLOG_ARTICLES: BlogArticle[] = [
    {
       slug: 'prestamax-es-confiable',
       title: 'Montadeudas – ¿Prestamax Es Confiable?',
+      metaTitle: '¿Prestamax es confiable? Qué pasa si no pagas | Movapp',
+      metaDescription:
+         '224 personas preguntaron en diciembre si Prestamax es confiable. Te explicamos cómo opera, qué roba y qué hacer si no puedes pagar.',
       breadcrumbLabel: 'Montadeudas – ¿Prestamax es confiable?',
       author: 'Ricardo',
       publishDate: 'Enero 7, 2026',
@@ -147,6 +166,9 @@ export const BLOG_ARTICLES: BlogArticle[] = [
    {
       slug: 'lista-montadeudas',
       title: 'Lista De Montadeudas 2025 – Evita Caer Con Las Aplicaciones Más Peligrosas Del Año',
+      metaTitle: 'Lista de apps montadeudas 2025 en México | Movapp',
+      metaDescription:
+         'Conoce la lista de las aplicaciones de préstamos más peligrosas y reportadas de 2025 en México. Identifícalas antes de que te acosen.',
       // Breadcrumb más corto que el título completo -- tal cual lo trae el
       // wireframe (no es el título completo truncado por error).
       breadcrumbLabel: 'Lista de montadeudas 2025',
@@ -299,6 +321,9 @@ export const BLOG_ARTICLES: BlogArticle[] = [
    {
       slug: 'fast-efectivo-es-confiable',
       title: 'Montadeudas – ¿Fast Efectivo Es Confiable?',
+      metaTitle: '¿Fast Efectivo es confiable o montadeudas? | Movapp',
+      metaDescription:
+         'En noviembre recibimos más de 20 reportes de usuarios acosados por Fast Efectivo. Descubre si es montadeudas y qué hacer si ya la descargaste.',
       breadcrumbLabel: 'Montadeudas – ¿Fast Efectivo es confiable?',
       author: 'Ricardo',
       publishDate: 'Diciembre 31, 2025',
@@ -357,6 +382,9 @@ export const BLOG_ARTICLES: BlogArticle[] = [
    {
       slug: 'ok-dinero-condusef',
       title: 'Ok Dinero Ante CONDUSEF',
+      metaTitle: 'Ok Dinero ante CONDUSEF: ¿es confiable? | Movapp',
+      metaDescription:
+         'Ok Dinero presta de $1,000 a $20,000 MXN. Te explicamos su proceso, los reportes ante CONDUSEF y cómo verificar su permiso real en SIPRES.',
       breadcrumbLabel: 'Ok Dinero ante CONDUSEF',
       author: 'Dra. Dalia',
       publishDate: 'Noviembre 11, 2025',
@@ -440,6 +468,9 @@ export const BLOG_ARTICLES: BlogArticle[] = [
    {
       slug: 'que-paso-fortaprest',
       title: '¿Qué Pasó Con La Aplicación Fortaprest?',
+      metaTitle: '¿Qué pasó con Fortaprest? Reportes y tasas | Movapp',
+      metaDescription:
+         'Fortaprest reapareció tras dejar de operar. Conoce sus tasas de interés, los 484 reportes de acoso recibidos y si cuenta con permiso real.',
       breadcrumbLabel: '¿Qué pasó con la aplicación Fortaprest?',
       author: 'Ricardo',
       publishDate: 'Septiembre 25, 2025',
@@ -500,6 +531,9 @@ export const BLOG_ARTICLES: BlogArticle[] = [
    {
       slug: 'como-identificar-apps-montadeudas',
       title: '¡Ojo Con Las Aplicaciones Montadeudas!',
+      metaTitle: 'Apps montadeudas: cómo identificarlas y prevenir | Movapp',
+      metaDescription:
+         'Aprende a identificar una app montadeudas antes de caer: qué revisar en SIPRES y CNBV, señales de alerta y qué hacer si ya descargaste una.',
       breadcrumbLabel: '¡Ojo con las aplicaciones Montadeudas!',
       author: 'Dra. Dalia',
       publishDate: 'Octubre 31, 2025',
@@ -587,6 +621,9 @@ export const BLOG_ARTICLES: BlogArticle[] = [
    {
       slug: 'estrategias-montadeudas',
       title: 'Estrategias Más Comunes De Los Montadeudas Y Cómo Enfrentarlas',
+      metaTitle: 'Estrategias de apps montadeudas y cómo enfrentarlas | Movapp',
+      metaDescription:
+         'Conoce las tácticas de marketing engañoso que usan las apps montadeudas y las estrategias recomendadas por Movapp para protegerte y actuar.',
       breadcrumbLabel: 'Estrategias más comunes de los montadeudas y cómo enfrentarlas',
       author: 'Dra. Dalia',
       publishDate: 'Octubre 17, 2025',
@@ -679,6 +716,9 @@ export const BLOG_ARTICLES: BlogArticle[] = [
    {
       slug: 'mexdin-llama-contactos',
       title: '¿MexDin Llama A Tus Contactos?',
+      metaTitle: '¿MexDin llama a tus contactos? 975 reportes | Movapp',
+      metaDescription:
+         'MexDin acosa a contactos vía WhatsApp, SMS y llamadas. Solo en septiembre recibimos 975 reportes. Conoce cómo opera y qué hacer si te está pasando.',
       breadcrumbLabel: '¿MexDin llama a tus contactos?',
       author: 'Ricardo',
       publishDate: 'Octubre 3, 2025',
@@ -764,6 +804,9 @@ export const BLOG_ARTICLES: BlogArticle[] = [
    {
       slug: 'montadeudas-van-a-tu-casa',
       title: '¿Los Montadeudas Van A Tu Casa? – ¿Qué Puedes Hacer En Caso De Caer Con Montadeudas?',
+      metaTitle: '¿Los montadeudas van a tu casa? Qué debes saber | Movapp',
+      metaDescription:
+         'Las apps montadeudas amenazan con ir a tu domicilio, pero ¿realmente lo hacen? Te explicamos cómo obtienen tu ubicación y qué hacer al respecto.',
       breadcrumbLabel: '¿Los montadeudas van a tu casa? – ¿Qué puedes hacer en caso de caer con montadeudas?',
       author: 'Ricardo',
       publishDate: 'Diciembre 8, 2025',
@@ -822,6 +865,9 @@ export const BLOG_ARTICLES: BlogArticle[] = [
    {
       slug: 'kaby-es-montadeudas',
       title: 'Montadeudas – ¿Kaby Llama A Tus Contactos?',
+      metaTitle: '¿Kaby es montadeudas? Contactos y ubicación | Movapp',
+      metaDescription:
+         'Kaby tiene reportes en CONDUSEF, SIPRES y PROFECO. Descubre qué información roba esta app y cómo identificar si una app es montadeudas.',
       breadcrumbLabel: 'Montadeudas – ¿Kaby llama a tus contactos?',
       author: 'Dra. Dalia',
       publishDate: 'Noviembre 4, 2025',
@@ -903,6 +949,9 @@ export const BLOG_ARTICLES: BlogArticle[] = [
    {
       slug: 'montadeudas-redes-sociales',
       title: '¿Pueden Las Apps Montadeudas Publicar En Mis Redes Sociales?',
+      metaTitle: '¿Montadeudas pueden publicar en redes sociales? | Movapp',
+      metaDescription:
+         'Las apps montadeudas amenazan con publicar contenido denigrante en tus redes, pero ¿realmente pueden hackearlas? Te contamos la verdad y qué hacer.',
       breadcrumbLabel: '¿Pueden las apps montadeudas publicar en mis redes sociales?',
       author: 'Ricardo',
       publishDate: 'Septiembre 25, 2025',
@@ -957,6 +1006,9 @@ export const BLOG_ARTICLES: BlogArticle[] = [
    {
       slug: 'cobranza-starpresta',
       title: 'Montadeudas – La Cobranza De Starpresta',
+      metaTitle: 'Cobranza de Starpresta: ¿es montadeudas? | Movapp',
+      metaDescription:
+         'Starpresta tiene permiso CONDUSEF/SIPRES, pero ¿es suficiente para ser confiable? Conoce su modelo de cobranza y si califica como montadeudas.',
       breadcrumbLabel: 'Montadeudas – La cobranza de Starpresta',
       author: 'Dra. Dalia',
       publishDate: 'Octubre 29, 2025',
@@ -1023,6 +1075,9 @@ export const BLOG_ARTICLES: BlogArticle[] = [
    {
       slug: 'hicredito-es-confiable',
       title: '¿HiCrédito Te Está Cobrando?',
+      metaTitle: 'HiCrédito: ¿es confiable o montadeudas? | Movapp',
+      metaDescription:
+         'HiCrédito no cumple los criterios de una app de préstamos legítima. Descubre cómo verificarlo y qué hacer si ya te está cobrando de forma agresiva.',
       breadcrumbLabel: '¿HiCrédito te está cobrando?',
       author: 'Dra. Dalia',
       publishDate: 'Octubre 24, 2025',
@@ -1096,6 +1151,9 @@ export const BLOG_ARTICLES: BlogArticle[] = [
    {
       slug: 'que-pasa-si-no-pago-credmex',
       title: '¿Qué Pasa Si No Le Pago A Credmex?',
+      metaTitle: '¿Qué pasa si no pago Credmex? Consecuencias | Movapp',
+      metaDescription:
+         'Aproximadamente 1,200 casos de cobranza agresiva de Credmex fueron reportados en septiembre. Conoce las consecuencias de no pagar y qué puedes hacer.',
       breadcrumbLabel: '¿Qué pasa si no le pago a Credmex?',
       author: 'Ricardo',
       publishDate: 'Septiembre 30, 2025',
@@ -1169,6 +1227,9 @@ export const BLOG_ARTICLES: BlogArticle[] = [
    {
       slug: 'mexicash-es-montadeudas',
       title: '¿Mexicash Molesta A Tus Contactos?',
+      metaTitle: 'Mexicash: ¿es montadeudas? Reportes y qué hacer | Movapp',
+      metaDescription:
+         'Mexicash presta hasta $50,000 MXN pero sin regulación de CONDUSEF. Conoce su modelo de operación, quejas reales de usuarios y qué hacer.',
       breadcrumbLabel: '¿Mexicash molesta a tus contactos?',
       author: 'Ricardo',
       publishDate: 'Septiembre 25, 2025',
@@ -1233,6 +1294,9 @@ export const BLOG_ARTICLES: BlogArticle[] = [
    {
       slug: 'que-hacer-con-apps-montadeudas',
       title: 'Apps Montadeudas ¿Qué Hacer?',
+      metaTitle: 'Apps montadeudas: qué hacer si descargaste una | Movapp',
+      metaDescription:
+         '¿Ya descargaste una app montadeudas? Conoce por qué se llaman así y qué pasos seguir de inmediato para detener el acoso con ayuda de Movapp.',
       breadcrumbLabel: 'Apps montadeudas ¿qué hacer?',
       author: 'Dra. Dalia',
       publishDate: 'Noviembre 7, 2025',
@@ -1312,6 +1376,9 @@ export const BLOG_ARTICLES: BlogArticle[] = [
    {
       slug: 'que-hacer-si-descargaste-app-montadeudas',
       title: '¿Qué Hacer En Caso De Descargar Aplicaciones Montadeudas?',
+      metaTitle: 'Descargaste una app montadeudas: qué hacer | Movapp',
+      metaDescription:
+         'Si ya descargaste una app montadeudas, conoce qué información pueden haber robado y los pasos para buscar ayuda de Movapp y denunciar el caso.',
       breadcrumbLabel: '¿Qué hacer en caso de descargar aplicaciones montadeudas?',
       author: 'Dra. Dalia',
       publishDate: 'Octubre 16, 2025',
@@ -1398,6 +1465,9 @@ export const BLOG_ARTICLES: BlogArticle[] = [
    {
       slug: 'como-denunciar-montadeudas',
       title: '¿Cómo Denunciar A Los Montadeudas?',
+      metaTitle: 'Cómo denunciar apps montadeudas: 6 canales | Movapp',
+      metaDescription:
+         'Conoce los 6 canales oficiales para denunciar una app montadeudas en México: desde CONDUSEF y PROFECO hasta la Policía Cibernética y Movapp.',
       breadcrumbLabel: '¿Cómo denunciar a los montadeudas?',
       author: 'Dra. Dalia',
       publishDate: 'Octubre 6, 2025',
@@ -1484,6 +1554,9 @@ export const BLOG_ARTICLES: BlogArticle[] = [
    {
       slug: 'condusef-montadeudas',
       title: 'CONDUSEF Vs Los Montadeudas',
+      metaTitle: 'CONDUSEF vs montadeudas: qué puede hacer | Movapp',
+      metaDescription:
+         '¿CONDUSEF puede detener a las apps montadeudas? Te explicamos las funciones reales de CONDUSEF y la CNBV frente a este tipo de aplicaciones.',
       breadcrumbLabel: 'CONDUSEF vs los montadeudas',
       author: 'Dra. Dalia',
       publishDate: 'Noviembre 6, 2025',
@@ -1582,6 +1655,9 @@ export const BLOG_ARTICLES: BlogArticle[] = [
    {
       slug: 'que-pasa-si-no-pagas-montadeudas',
       title: '¿Cómo No Pagar A Montadeudas?',
+      metaTitle: 'Cómo no pagar a los montadeudas: guía | Movapp',
+      metaDescription:
+         '¿Debes pagarle a una app montadeudas? Te explicamos cómo funcionan, si es obligatorio pagar y cómo salir del problema con ayuda de Movapp.',
       breadcrumbLabel: '¿Cómo no pagar a montadeudas?',
       author: 'Dra. Dalia',
       publishDate: 'Octubre 27, 2025',
@@ -1675,6 +1751,9 @@ export const BLOG_ARTICLES: BlogArticle[] = [
    {
       slug: 'que-es-movapp',
       title: '¿Qué Es Movapp?',
+      metaTitle: '¿Qué es Movapp? Misión contra los montadeudas | Movapp',
+      metaDescription:
+         'Movapp es el movimiento que ayuda a víctimas de apps montadeudas con El Hack, asesoría y atención psicológica gratuita. Conoce nuestros servicios.',
       breadcrumbLabel: '¿Qué es Movapp?',
       author: 'Ricardo',
       publishDate: 'Noviembre 13, 2025',
@@ -1766,6 +1845,9 @@ export const BLOG_ARTICLES: BlogArticle[] = [
    {
       slug: 'historia-movapp',
       title: 'Erik Mann Y Movapp Contra Los Montadeudas – Conoce La Historia De Cómo Surgió Movapp',
+      metaTitle: 'Historia de Erik Mann y origen del proyecto | Movapp',
+      metaDescription:
+         'Erik Mann fue víctima de las apps montadeudas y convirtió su experiencia en El Hack. Conoce la historia real detrás del movimiento Movapp.',
       breadcrumbLabel: 'Erik Mann y Movapp contra los montadeudas',
       author: 'Ricardo',
       publishDate: 'Diciembre 30, 2025',
@@ -1834,6 +1916,9 @@ export const BLOG_ARTICLES: BlogArticle[] = [
    {
       slug: 'movapp-es-confiable',
       title: '¿Qué Tan Confiable Es Movapp?',
+      metaTitle: '¿Qué tan confiable es Movapp? Te lo explicamos | Movapp',
+      metaDescription:
+         '¿Movapp presta dinero o es una app montadeudas? Aclaramos las dudas más comunes sobre nuestra organización, permisos y forma de operar.',
       breadcrumbLabel: '¿Qué tan confiable es Movapp?',
       author: 'Dra. Dalia',
       publishDate: 'Septiembre 27, 2025',
@@ -1907,6 +1992,9 @@ export const BLOG_ARTICLES: BlogArticle[] = [
    {
       slug: 'hack-movapp-es-confiable',
       title: '¿El Hack De Movapp Funciona?',
+      metaTitle: '¿El Hack es confiable? Cómo funciona | Movapp',
+      metaDescription:
+         'El Hack fue creado por Erik Mann tras ser víctima de apps montadeudas. Conoce cómo funciona, su desarrollo de 4 años y por qué miles confían en él.',
       breadcrumbLabel: '¿El Hack de Movapp funciona?',
       author: 'Dra. Dalia',
       publishDate: 'Octubre 1, 2025',
@@ -1972,6 +2060,9 @@ export const BLOG_ARTICLES: BlogArticle[] = [
    {
       slug: 'hack-app-no-disponible',
       title: '¿Se Puede Realizar El Hack Si Ya No Se Encuentra En La Play O App Store?',
+      metaTitle: 'El Hack funciona aunque la app ya no esté | Movapp',
+      metaDescription:
+         '¿La app que te acosa ya no está disponible? El Hack de Movapp sigue funcionando. Descubre cómo, con más de 1,300 apps ya registradas.',
       breadcrumbLabel: '¿Se puede realizar El Hack si ya no se encuentra en la Play o App Store?',
       author: 'Dra. Dalia',
       publishDate: 'Octubre 6, 2025',
@@ -2024,6 +2115,9 @@ export const BLOG_ARTICLES: BlogArticle[] = [
    {
       slug: 'defensa-del-deudor-vs-movapp',
       title: 'Defensa Del Deudor Vs Movapp',
+      metaTitle: 'Defensa del Deudor vs Movapp: qué pasó | Movapp',
+      metaDescription:
+         'Movapp y la Defensa del Deudor se enfrentaron por una discrepancia sobre Credmex. Conoce la historia completa y cómo hoy existe respeto mutuo.',
       breadcrumbLabel: 'Defensa del deudor vs Movapp',
       author: 'Dra. Dalia',
       publishDate: 'Octubre 16, 2025',

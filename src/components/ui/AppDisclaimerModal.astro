@@ -1,0 +1,90 @@
+---
+// Aviso de no afiliación, en TODAS las páginas de apps (2026-09-03, a
+// pedido explícito: "agarra el diseño/animación [del modal de salir de
+// Movapp], y pon un modal en TODAS las aplicaciones con alguna leyenda
+// donde se aclare que Movapp no está afiliado a ninguna de las
+// aplicaciones mencionadas y que el uso o contratación de estas queda
+// bajo responsabilidad del usuario"). Reutiliza el mismo shell/animación
+// que ExternalLinkModal.astro (ver ThunderModal.astro) pero con un
+// disparador distinto: no intercepta un click, se abre solo al cargar la
+// página.
+//
+// Sin deduplicar entre páginas (2026-09-03, corrección explícita: "dije
+// que en todas. hasta en las legales. quiero que siempre que entren a una
+// app, les aparezca el modal" -- la primera versión lo recordaba con
+// sessionStorage y no lo repetía en la misma pestaña, lo que hacía parecer
+// que faltaba en algunas apps cuando en realidad ya se había cerrado en
+// otra antes). Ahora se abre SIEMPRE que se entra a cualquiera de las 8
+// páginas de apps, sin excepción ni memoria entre navegaciones.
+//
+// Se importa una sola vez, desde AppHero.astro (el componente compartido
+// que ya renderizan las 8 páginas de apps individuales), así queda
+// garantizado en todas sin tener que acordarse de agregarlo página por
+// página.
+//
+// Progresivo sin JS: el <dialog> nunca se abre sin JS (no hay click que
+// interceptar ni script que corra), así que el aviso real -- el texto
+// legal en sí -- se repite además como párrafo estático siempre visible,
+// oculto solo cuando JS sí está disponible (ahí el modal ya lo cubre).
+// Mismo mecanismo "html.js/html.no-js" que el resto del sitio (ver skill
+// Diseño): sin ese gate, un usuario sin JS nunca vería el aviso.
+import ThunderModal from './ThunderModal.astro';
+
+interface Props {
+   id: string;
+}
+
+const { id } = Astro.props;
+---
+
+<ThunderModal id={`${id}-disclaimer-modal`}>
+   <h2 class="text-lg font-bold text-gray-900 dark:text-white">Aviso importante</h2>
+   <p class="mt-2 text-sm text-gray-600 dark:text-white/70">
+      Movapp no está afiliado, asociado ni respaldado por ninguna de las aplicaciones mencionadas en este sitio. El uso,
+      registro o contratación de dichas aplicaciones es responsabilidad exclusiva del usuario.
+   </p>
+   <div class="mt-6 flex justify-end">
+      <button
+         type="button"
+         id={`${id}-disclaimer-ack`}
+         class="rounded-full bg-purple_mv px-5 py-2.5 text-sm font-bold text-white transition hover:bg-purple_mv/85"
+      >
+         Entendido
+      </button>
+   </div>
+</ThunderModal>
+
+<p class="app-disclaimer-static mx-auto mt-4 max-w-5xl px-4 text-center text-xs text-gray-500 dark:text-white/50">
+   Aviso: Movapp no está afiliado, asociado ni respaldado por ninguna de las aplicaciones mencionadas en este sitio. El uso,
+   registro o contratación de dichas aplicaciones es responsabilidad exclusiva del usuario.
+</p>
+
+<style>
+   :global(html.js) .app-disclaimer-static {
+      display: none;
+   }
+</style>
+
+<script>
+   function initAppDisclaimerModal(modal: HTMLDialogElement) {
+      if (modal.dataset.ready === 'true') return;
+      modal.dataset.ready = 'true';
+
+      const ackBtn = modal.querySelector<HTMLButtonElement>("[id$='-disclaimer-ack']");
+      if (!ackBtn) return;
+
+      ackBtn.addEventListener('click', () => modal.close());
+      modal.addEventListener('click', (e) => {
+         if (e.target === modal) modal.close();
+      });
+
+      modal.showModal();
+   }
+
+   const initAllAppDisclaimerModals = () => {
+      document.querySelectorAll<HTMLDialogElement>("dialog[id$='-disclaimer-modal']").forEach(initAppDisclaimerModal);
+   };
+
+   initAllAppDisclaimerModals();
+   document.addEventListener('astro:page-load', initAllAppDisclaimerModals);
+</script>

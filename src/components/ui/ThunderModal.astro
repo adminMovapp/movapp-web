@@ -1,0 +1,167 @@
+---
+// Shell reutilizable del modal "trueno" (2026-09-03) -- extraído de
+// ExternalLinkModal.astro para no duplicar la animación completa (rayo SVG
+// que cae al centro, destello del ::backdrop, card en glass tenue que
+// aparece recién después del impacto) al reutilizar exactamente el mismo
+// diseño en AppDisclaimerModal.astro, a pedido explícito: "agarra el
+// diseño/animación [del modal de salir de Movapp], y pon un modal en TODAS
+// las aplicaciones" (mismo criterio que RiskTimeline.astro/
+// AppOptionsCarousel.astro/SequentialTimeline.astro: una vez que el mismo
+// patrón se repite en un segundo archivo, se extrae).
+//
+// El caller solo pone el contenido (heading/texto/botones) vía <slot />;
+// este shell se encarga del <dialog>, el rayo, el ::backdrop y toda la
+// animación. Ver el historial de iteración de esta animación (tres vueltas
+// de feedback hasta llegar a "un rayo cae al centro, y DESPUÉS aparece el
+// modal") en el git blame de ExternalLinkModal.astro si hace falta tocarla
+// de nuevo.
+//
+// El rayo vive dentro de <dialog> (no como hermano suelto) porque los
+// diálogos abiertos con showModal() se pintan en el "top layer" del
+// navegador, por encima de todo lo demás incluyendo su propio ::backdrop --
+// un div fuera del <dialog> quedaría tapado por ese backdrop. Al ser
+// descendiente, "position: fixed" en el rayo sigue centrando contra el
+// viewport (el <dialog> no mete transform/filter que cree un nuevo
+// contenedor), no contra la card.
+//
+// Glass más tenue que el .glass-card estándar del sitio (ese es casi
+// opaco, pensado para FAQ/Contacto sobre fondo con StarField) -- acá se
+// baja la opacidad para que se note el blur/vidrio sin oscurecer tanto el
+// texto del propio modal.
+interface Props {
+   id: string;
+}
+
+const { id } = Astro.props;
+---
+
+<dialog id={id} class="thunder-modal">
+   <svg class="thunder-modal-bolt" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor">
+      <path
+         fill-rule="evenodd"
+         clip-rule="evenodd"
+         d="M14.615 1.595a.75.75 0 01.359.852L12.982 9.75h7.268a.75.75 0 01.548 1.262l-10.5 11.25a.75.75 0 01-1.272-.71l1.992-7.302H3.75a.75.75 0 01-.548-1.262l10.5-11.25a.75.75 0 01.913-.143z"
+      />
+   </svg>
+   <div class="thunder-modal-card rounded-2xl p-7">
+      <slot />
+   </div>
+</dialog>
+
+<style>
+   .thunder-modal {
+      max-width: 26rem;
+      width: calc(100% - 2rem);
+      border: none;
+      border-radius: 1rem;
+      padding: 0;
+      background: transparent;
+      overflow: visible;
+   }
+
+   /* Glass más tenue que el .glass-card estándar (global.css usa 0.85/0.9
+      de opacidad, pensado para ir sobre un fondo con StarField) -- acá se
+      baja para que el efecto vidrio se note sin restarle lectura al texto,
+      que va directo sobre el ::backdrop oscuro/claro. */
+   .thunder-modal-card {
+      background-color: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(124, 58, 237, 0.18);
+      -webkit-backdrop-filter: blur(14px);
+      backdrop-filter: blur(14px);
+      position: relative;
+      z-index: 0;
+      animation: thunder-modal-card-appear 0.35s ease-out 0.45s both;
+   }
+   html.dark .thunder-modal-card {
+      background-color: rgba(17, 17, 17, 0.6);
+      border-color: rgba(255, 255, 255, 0.12);
+   }
+
+   .thunder-modal::backdrop {
+      background: rgba(0, 0, 0, 0.6);
+      animation: thunder-modal-flash 0.6s ease-out 0.18s both;
+   }
+
+   /* El rayo: nace arriba del viewport, cae en línea recta hasta el centro
+      (0%-45%), "impacta" con un breve estallido de tamaño (45%-60%, mismo
+      instante en que el ::backdrop de abajo destella) y se apaga (60%-100%)
+      antes de que la card empiece a aparecer. */
+   .thunder-modal-bolt {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      z-index: 1;
+      width: 4rem;
+      height: 4rem;
+      color: #fff;
+      filter: drop-shadow(0 0 10px rgba(168, 85, 247, 0.9)) drop-shadow(0 0 22px rgba(255, 255, 255, 0.75));
+      opacity: 0;
+      pointer-events: none;
+      animation: thunder-modal-bolt-strike 0.5s cubic-bezier(0.55, 0, 0.85, 0.2) both;
+   }
+
+   @keyframes thunder-modal-bolt-strike {
+      0% {
+         opacity: 0;
+         transform: translate(-50%, calc(-50% - 65vh)) scaleY(1.5);
+      }
+      40% {
+         opacity: 1;
+         transform: translate(-50%, -50%) scaleY(1);
+      }
+      55% {
+         opacity: 1;
+         transform: translate(-50%, -50%) scale(1.4);
+      }
+      100% {
+         opacity: 0;
+         transform: translate(-50%, -50%) scale(0.5);
+      }
+   }
+
+   /* La card no cae ni parpadea -- solo aparece, y recién después de que
+      el rayo terminó de impactar (animation-delay 0.45s, ver arriba). */
+   @keyframes thunder-modal-card-appear {
+      0% {
+         opacity: 0;
+         transform: scale(0.92);
+      }
+      100% {
+         opacity: 1;
+         transform: scale(1);
+      }
+   }
+
+   @keyframes thunder-modal-flash {
+      0% {
+         background: rgba(255, 255, 255, 0);
+      }
+      8% {
+         background: rgba(255, 255, 255, 0.85);
+      }
+      16% {
+         background: rgba(255, 255, 255, 0.15);
+      }
+      24% {
+         background: rgba(255, 255, 255, 0.75);
+      }
+      45% {
+         background: rgba(0, 0, 0, 0.6);
+      }
+      100% {
+         background: rgba(0, 0, 0, 0.6);
+      }
+   }
+
+   @media (prefers-reduced-motion: reduce) {
+      .thunder-modal-card {
+         animation: none;
+      }
+      .thunder-modal::backdrop {
+         animation: none;
+      }
+      .thunder-modal-bolt {
+         display: none;
+      }
+   }
+</style>

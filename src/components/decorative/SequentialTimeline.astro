@@ -1,0 +1,346 @@
+---
+// Línea de tiempo con revelado secuencial (2026-09-03) -- extraída de la
+// primera implementación en DirectorioComoIdentificamos.astro para no
+// duplicar el mismo mecanismo (~200 líneas de CSS/JS) al aplicarlo también
+// en DirectorioSenalesAlerta.astro, a pedido explícito: "haz lo mismo en
+// señales de alerta de una app de préstamos" (mismo criterio que
+// RiskTimeline.astro/AppOptionsCarousel.astro: una vez que el mismo patrón
+// se repite en un segundo archivo, se extrae).
+//
+// Diseño: en escritorio horizontal, en móvil vertical (mobile-first, igual
+// que RiskTimeline.astro) -- pedido explícito: "en escritorio horizontal,
+// en celular vertical".
+//
+// Secuencia: "cada card aparezca, primero una, luego desaparece, y aparece
+// la otra, luego desaparece, y aparece otra, y así. y al final, cuando ya
+// hayan salido todas, ahora sí, ya aparecen todas, y se quedan fijas" -- es
+// una máquina de estados con <script> (no CSS puro), porque cada paso
+// depende de que termine el anterior:
+//   - data-card: "hidden" -> "visible" -> "hidden" -> ... -> "final"
+//     (la card individual: aparece, se apaga, y en la última vuelta TODAS
+//     pasan a "final" y ya no vuelven a "hidden").
+//   - data-line: "pending" -> "active" en el nodo (no vuelve atrás).
+//   - data-connector: "pending" -> "active" en cada conector, puesto por
+//     JS de forma EXPLÍCITA (no por cascada CSS desde el <li>, ver bug
+//     corregido más abajo).
+// Dispara una sola vez por IntersectionObserver y respeta "reducir
+// movimiento" (salta directo al estado final, todo visible y quieto).
+//
+// Nodo centrado sobre cada card (segunda vuelta de DirectorioComoIdentificamos,
+// mismo día: "quiero que los números queden arriba, en el centro de las
+// cards... y la línea del punto 4 ya no sale, y así no se ve simétrico"):
+// en escritorio el nodo va centrado solo (node-row a ancho automático,
+// centrado por "items-center" del <li>) y la línea horizontal es un
+// elemento aparte (".seq-tl-connector-desktop"), "absolute" con
+// "left: 50%; width: 100%" respecto al <li> -- como las columnas miden lo
+// mismo (flex-1), esa línea siempre alcanza exactamente el centro del
+// siguiente nodo, sin medir nada por JS.
+//
+// Cards del mismo tamaño (tercera vuelta, mismo día: "que todas las cards
+// tengan el mismo tamaño... porque no se ve simétrico" -- los labels miden
+// distinto ("Amenazas" vs "Solicitud de permisos"), así que cada card
+// tenía su propio alto de contenido y quedaban parejas). El <ol> ya no fija
+// "items-start" en escritorio -- al quedar en el "stretch" por default de
+// flexbox, cada <li> de la fila toma el alto del más alto (el que más
+// líneas de texto envuelve), y la card (que ya traía "flex-1" para el
+// layout de fila en móvil) crece para llenar ese <li> estirado, así que
+// termina con el mismo alto en las 4/6 columnas sin fijar un pixel a mano.
+// "md:justify-center" centra el ícono+texto dentro de ese alto extra en
+// las cards con labels más cortos, en vez de dejarlos pegados arriba.
+//
+// Cuarta vuelta, mismo día -- tres correcciones a la vez:
+// 1. "quiero que la nave vaya siguiendo la línea del timeline. no que la
+//    pongas adentro del círculo" -- el ícono de cohete NO va dentro de
+//    cada nodo (eso fue un malentendido de la petición anterior). Los
+//    nodos vuelven a ser puntos simples sin contenido (mismo criterio que
+//    ".riesgo-nodo" de RiskTimeline.astro), y se agrega UNA sola nave
+//    (".seq-tl-nave", mismo SVG que ".riesgo-nave") que viaja de nodo en
+//    nodo siguiendo la línea, sincronizada con la secuencia (no con el
+//    scroll, como en RiskTimeline -- acá no hay scroll que seguir, el
+//    "progreso" es el índice de la card activa). Se mueve con
+//    "getBoundingClientRect()" del nodo activo en cada paso -- no con
+//    porcentajes -- porque en móvil el alto de cada fila varía según
+//    cuánto envuelve el texto, así que no hay un "% fijo" que calcular a
+//    mano; en escritorio también funciona igual, sin necesitar dos
+//    fórmulas distintas. La rotación del SVG si es responsiva (vertical
+//    en móvil, horizontal en escritorio) vía variable CSS + media query,
+//    separada del translate que pone el JS, para no pisarse entre sí.
+// 2. "no prenden algunos círculos, hasta que pasan al siguiente" -- bug
+//    real: el conector (la línea hacia el siguiente nodo) se encendía en
+//    cascada CSS junto con SU PROPIO <li> (mismo "data-line" que el
+//    nodo), así que la línea "llegaba" al siguiente nodo ANTES de que ese
+//    nodo encendiera su propio color -- se veía como si el círculo
+//    "tardara" en prender. Fix: el conector ya no depende de
+//    "data-line" -- tiene su propio atributo "data-connector", puesto por
+//    JS en el mismo instante exacto en que el nodo AL QUE LLEGA se activa
+//    (no cuando el nodo del que sale se activa), así línea y círculo
+//    encienden siempre juntos.
+// 3. "en móviles no están unidas las líneas al círculo siguiente. está
+//    como cortado" -- el conector móvil usaba "flex-1" para llenar el
+//    <li>, pero el "gap-6" entre <li> (necesario para no amontonar las
+//    cards) dejaba un tramo sin línea entre el fin de una fila y el
+//    inicio de la siguiente. Fix: el conector pasa a "position: absolute"
+//    (como ya lo era el de escritorio) con "bottom: -1.5rem" -- exactamente
+//    el tamaño de ese "gap-6" -- así el trazo cruza el espacio entre
+//    filas y llega hasta el borde superior de la siguiente, sin depender
+//    de la altura (variable) de la card.
+import StarField from '@components/decorative/StarField.astro';
+
+interface Props {
+   id: string;
+   heading: string;
+   items: string[];
+   // Check verde opcional antes de cada label -- tiene sentido para
+   // "criterios verificados" (DirectorioComoIdentificamos.astro, ya lo
+   // traía desde la versión anterior a esta línea de tiempo) pero NO para
+   // "señales de alerta" (DirectorioSenalesAlerta.astro nunca tuvo ícono:
+   // un check ahí leería como "esto está bien", lo contrario de lo que
+   // dice la sección). Por eso es opt-in, no el default.
+   showCheckIcon?: boolean;
+}
+
+const { id, heading, items, showCheckIcon = false } = Astro.props;
+const lastIndex = items.length - 1;
+---
+
+<section id={id} class="relative mx-auto my-section w-full max-w-2xl scroll-mt-28 px-4" data-aos="fade-up">
+   <StarField id={`${id}-field`} ambientCount={35} />
+
+   <h2 class="text-center text-2xl md:text-4xl font-bold uppercase gradient-text-move bg-gradient-to-r from-gray-900 to-purple_mv bg-clip-text text-transparent dark:from-white dark:to-purple_mv">
+      {heading}
+   </h2>
+
+   <ol class="seq-tl-track relative mt-10 flex flex-col gap-6 md:mt-14 md:flex-row md:gap-2">
+      <div class="seq-tl-nave" aria-hidden="true">
+         <!-- Nariz hacia arriba en el dibujo original -- la rotación real
+              (hacia abajo en móvil, hacia la derecha en escritorio) se
+              aplica por CSS/media query, ver <style>. -->
+         <svg viewBox="0 0 24 24" width="22" height="22" xmlns="http://www.w3.org/2000/svg">
+            <path
+               d="M12 2 C9.2 5.3 7.6 9.1 7.6 12.8 C7.6 14.3 7.9 15.7 8.4 17 L15.6 17 C16.1 15.7 16.4 14.3 16.4 12.8 C16.4 9.1 14.8 5.3 12 2 Z"
+               fill="currentColor"
+            />
+            <circle cx="12" cy="10.5" r="1.6" fill="#130b1e" />
+            <path d="M8.4 15.5 L4.8 19.5 L6.3 21.3 L9.3 17.3 Z" fill="currentColor" />
+            <path d="M15.6 15.5 L19.2 19.5 L17.7 21.3 L14.7 17.3 Z" fill="currentColor" />
+            <path
+               d="M10.2 17.3 C10.7 17.7 11.3 17.9 12 17.9 C12.7 17.9 13.3 17.7 13.8 17.3 C14.1 18.7 13.3 20.8 12 22.2 C10.7 20.8 9.9 18.7 10.2 17.3 Z"
+               fill="#ffb84d"
+            />
+         </svg>
+      </div>
+
+      {
+         items.map((label, i) => (
+            <li class="seq-tl-item relative flex items-start gap-4 md:flex-1 md:flex-col md:items-center md:gap-0" data-card="hidden" data-line="pending">
+               <div class="seq-tl-node-row flex flex-col items-center md:w-auto md:justify-center">
+                  <span class="seq-tl-node relative z-10 h-3 w-3 flex-shrink-0 rounded-full" aria-hidden="true" />
+                  {i !== lastIndex && <span class="seq-tl-connector absolute left-1.5 top-3 -bottom-6 w-0.5 md:hidden" aria-hidden="true" />}
+                  {i !== lastIndex && <span class="seq-tl-connector-desktop pointer-events-none absolute left-1/2 top-1.5 hidden h-0.5 w-full md:block" aria-hidden="true" />}
+               </div>
+
+               <div class="seq-tl-card flex flex-1 items-center gap-3 rounded-2xl border border-purple_mv/25 bg-gradient-to-b from-purple_mv/[0.06] to-transparent px-5 py-3 shadow-card transition-colors duration-300 hover:border-purple_mv/50 hover:shadow-card-hover dark:border-white/10 dark:from-purple_mv/[0.1] dark:to-black/30 md:mt-4 md:w-full md:flex-col md:justify-center md:px-3 md:py-2.5 md:text-center">
+                  {showCheckIcon && (
+                     <svg class="h-5 w-5 flex-shrink-0 text-green-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M5 13l4 4L19 7" />
+                     </svg>
+                  )}
+                  <span class="font-semibold text-gray-900 dark:text-white md:text-sm">{label}</span>
+               </div>
+            </li>
+         ))
+      }
+   </ol>
+</section>
+
+<style>
+   :global(html.no-js) .seq-tl-node-row,
+   :global(html.no-js) .seq-tl-nave {
+      display: none;
+   }
+
+   /* Card: oculta por defecto SOLO con JS disponible (si no, el script que
+      la revela nunca corre, y sin este gate el contenido real quedaría
+      invisible para siempre -- ver comentario del frontmatter). */
+   :global(html.js) .seq-tl-card {
+      opacity: 0;
+      transform: translateY(14px) scale(0.92);
+      transition:
+         opacity 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+         transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+   }
+   :global(html.js) [data-card='visible'] .seq-tl-card,
+   :global(html.js) [data-card='final'] .seq-tl-card {
+      opacity: 1;
+      transform: none;
+   }
+
+   /* Nodo/conector: decoración pura, sin contenido real detrás -- puede
+      arrancar "apagada" sin condicionar a html.js (no-js ya la oculta
+      entera arriba). */
+   .seq-tl-node {
+      background: rgba(129, 73, 226, 0.3);
+      transition:
+         background 0.4s ease,
+         box-shadow 0.4s ease;
+   }
+   [data-line='active'] .seq-tl-node {
+      background: #8149e2;
+      box-shadow: 0 0 10px rgba(129, 73, 226, 0.7);
+   }
+
+   .seq-tl-connector,
+   .seq-tl-connector-desktop {
+      background: rgba(129, 73, 226, 0.2);
+      transition: background 0.5s ease;
+   }
+   /* "data-connector" (NO "data-line" del <li>) -- puesto por JS en el
+      instante exacto en que el nodo AL QUE LLEGA la línea se activa, ver
+      comentario del frontmatter (bug de sincronización). */
+   .seq-tl-connector[data-connector='active'] {
+      background: linear-gradient(180deg, #8149e2, #b794f6);
+   }
+   .seq-tl-connector-desktop[data-connector='active'] {
+      background: linear-gradient(90deg, #8149e2, #b794f6);
+   }
+
+   /* La nave: una sola, viaja de nodo en nodo (ver <script>). El div
+      exterior solo recibe top/left (en px, medidos con
+      getBoundingClientRect) del JS -- el translate(-50%,-50%) centra el
+      ícono sobre esa coordenada, y es estático, nunca lo toca el JS, así
+      que no compite con la transición de top/left. La rotación real vive
+      en el <svg> interior (variable CSS + media query), un elemento
+      distinto, para que tampoco compita con el translate del padre.
+      z-index 20 (2026-09-03, a pedido explícito: "quiero que la nave se
+      superponga de los círculos, porque queda abajo") > el z-10 de
+      ".seq-tl-node" -- si no, al pasar justo sobre un nodo, el círculo
+      (que sí tiene z-index propio) tapaba la nave en vez de al revés. */
+   .seq-tl-nave {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 20;
+      color: #e9d8ff;
+      filter: drop-shadow(0 0 6px rgba(129, 73, 226, 0.85));
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      transition:
+         top 0.5s ease,
+         left 0.5s ease,
+         opacity 0.3s ease;
+   }
+   .seq-tl-nave svg {
+      display: block;
+      transform: rotate(180deg); /* móvil: la línea es vertical, nariz hacia abajo */
+   }
+   @media (min-width: 768px) {
+      .seq-tl-nave svg {
+         transform: rotate(90deg); /* escritorio: la línea es horizontal, nariz a la derecha */
+      }
+   }
+
+   @media (prefers-reduced-motion: reduce) {
+      :global(html.js) .seq-tl-card {
+         transition: none;
+      }
+      .seq-tl-nave {
+         display: none;
+      }
+   }
+</style>
+
+<script>
+   // Secuencia "una aparece, se apaga, aparece la siguiente... al final
+   // todas quedan fijas". No es CSS puro (ver comentario del frontmatter):
+   // cada paso depende de que termine el anterior, así que es una máquina
+   // de estados simple con setTimeout, no keyframes en paralelo.
+   const STEP_VISIBLE_MS = 700; // cuánto dura cada card visible antes de apagarse
+   const STEP_GAP_MS = 300; // pausa "apagada" antes de que entre la siguiente
+   const FINAL_PAUSE_MS = 350; // pausa extra antes de que todas queden fijas
+
+   const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+   // Enciende el/los conector(es) que TERMINAN en este <li> (viven en el
+   // <li> anterior, apuntando hacia este) -- explícito por JS, no por
+   // cascada CSS, para que siempre encienda junto con el nodo al que
+   // llega (ver bug de sincronización en el comentario del frontmatter).
+   const activateIncomingConnectors = (item: HTMLLIElement) => {
+      const prev = item.previousElementSibling;
+      if (!prev) return;
+      prev.querySelectorAll<HTMLElement>('.seq-tl-connector, .seq-tl-connector-desktop').forEach((el) => {
+         el.dataset.connector = 'active';
+      });
+   };
+
+   const moveNaveTo = (nave: HTMLElement, track: HTMLElement, node: HTMLElement | null) => {
+      if (!node) return;
+      const trackRect = track.getBoundingClientRect();
+      const nodeRect = node.getBoundingClientRect();
+      nave.style.left = `${nodeRect.left + nodeRect.width / 2 - trackRect.left}px`;
+      nave.style.top = `${nodeRect.top + nodeRect.height / 2 - trackRect.top}px`;
+      nave.style.opacity = '1';
+   };
+
+   const runSequence = async (items: HTMLLIElement[], nave: HTMLElement | null, track: HTMLElement) => {
+      for (const item of items) {
+         item.dataset.line = 'active';
+         activateIncomingConnectors(item);
+         if (nave) moveNaveTo(nave, track, item.querySelector<HTMLElement>('.seq-tl-node'));
+         item.dataset.card = 'visible';
+         await wait(STEP_VISIBLE_MS);
+         item.dataset.card = 'hidden';
+         await wait(STEP_GAP_MS);
+      }
+      await wait(FINAL_PAUSE_MS);
+      items.forEach((item) => {
+         item.dataset.card = 'final';
+      });
+      // El "viaje" terminó y todas las cards ya quedaron fijas -- la nave
+      // se desvanece en vez de quedar estacionada junto a la última card.
+      if (nave) nave.style.opacity = '0';
+   };
+
+   const showAllImmediately = (items: HTMLLIElement[]) => {
+      items.forEach((item) => {
+         item.dataset.line = 'active';
+         item.dataset.card = 'final';
+         activateIncomingConnectors(item);
+      });
+   };
+
+   const initSequentialTimeline = (track: HTMLElement) => {
+      if (track.dataset.ready === 'true') return;
+      track.dataset.ready = 'true';
+
+      const items = Array.from(track.querySelectorAll<HTMLLIElement>('.seq-tl-item'));
+      if (!items.length) return;
+
+      const nave = track.querySelector<HTMLElement>('.seq-tl-nave');
+
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduceMotion || !('IntersectionObserver' in window)) {
+         showAllImmediately(items);
+         return;
+      }
+
+      const io = new IntersectionObserver(
+         (entries, observer) => {
+            entries.forEach((entry) => {
+               if (!entry.isIntersecting) return;
+               observer.disconnect();
+               runSequence(items, nave, track);
+            });
+         },
+         { threshold: 0.3 },
+      );
+      io.observe(track);
+   };
+
+   const initAllSequentialTimelines = () => {
+      document.querySelectorAll<HTMLElement>('.seq-tl-track').forEach(initSequentialTimeline);
+   };
+
+   initAllSequentialTimelines();
+   document.addEventListener('astro:page-load', initAllSequentialTimelines);
+</script>

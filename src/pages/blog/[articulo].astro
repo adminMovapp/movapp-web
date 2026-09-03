@@ -10,6 +10,16 @@
 // (blogCategoryPages.ts) son conjuntos disjuntos, y ambas rutas son
 // prerender=true -- cada getStaticPaths() resuelve a páginas estáticas
 // concretas distintas (verificado en dev y build, sin colisión).
+//
+// title/description del <Layout> vienen de "article.metaTitle"/
+// "article.metaDescription" (2026-09-03, a pedido explícito de Santiago
+// tras auditar las 42 URLs del sitio contra el brief maestro de SEO) --
+// ANTES se armaban solos a partir del H1 ("${article.title} | Movapp") y
+// del primer párrafo del cuerpo, y ninguno de los 27 artículos coincidía
+// con el meta title/description planeado (el H1 es un titular de lectura,
+// no un meta title de ≤60 caracteres; el primer párrafo es una intro de
+// 200-300 caracteres, no una meta description de SERP). Cada entrada de
+// BLOG_ARTICLES ahora trae su propio copy de SEO, independiente del H1.
 import Layout from '@layouts/Layout.astro';
 import BlogArticleHero from '@sections/blog/BlogArticleHero.astro';
 import BlogArticleBody from '@sections/blog/BlogArticleBody.astro';
@@ -17,6 +27,7 @@ import BlogRelatedArticles from '@sections/blog/BlogRelatedArticles.astro';
 import BlogArticleCTA from '@sections/blog/BlogArticleCTA.astro';
 import { BLOG_ARTICLES } from '@constants/blogArticles.ts';
 import { getSiteConfig } from '@utils/config.jsx';
+import { generateBlogPostingSchema, generateBreadcrumbSchema } from '@utils/schema.js';
 
 // Mismo motivo que [categoria].astro: el sitio corre en SSR (output:
 // 'server'), así que sin este flag "getStaticPaths" se ignora por completo.
@@ -33,12 +44,35 @@ const { article } = Astro.props;
 
 const shareUrl = `${getSiteConfig(Astro.request).siteUrl}/blog/${article.slug}`;
 
-// Primer párrafo del cuerpo, sin importar cuántos bloques "appGrid" haya
-// antes -- usado como meta description.
-const firstParagraph = article.sections[0].blocks.find((b) => b.type === 'paragraph')?.text ?? '';
+// Schema propio del artículo (BlogPosting + BreadcrumbList) -- pasado por la
+// prop "schema" del Layout, la escotilla de escape para páginas dinámicas de
+// pSEO (ver @utils/schema.js): esta ruta no puede vivir en PAGE_SCHEMA
+// porque no es una ruta fija, es una por cada slug de BLOG_ARTICLES.
+// 2026-09-03: hallazgo de la auditoría de schema -- ninguno de los 27
+// artículos tenía BlogPosting, solo el Organization del fallback genérico.
+const articlePath = `/blog/${article.slug}`;
+const articleSchema = [
+   generateBlogPostingSchema(
+      {
+         headline: article.metaTitle,
+         description: article.metaDescription,
+         path: articlePath,
+         publishDate: article.publishDate,
+         authorName: article.author,
+      },
+      Astro.request,
+   ),
+   generateBreadcrumbSchema(
+      [
+         { name: 'Blog', path: '/blog' },
+         { name: article.breadcrumbLabel, path: articlePath },
+      ],
+      Astro.request,
+   ),
+];
 ---
 
-<Layout title={`${article.title} | Movapp`} description={firstParagraph} type="article" showGrid={false}>
+<Layout title={article.metaTitle} description={article.metaDescription} type="article" showGrid={false} schema={articleSchema}>
    <BlogArticleHero
       slug={article.slug}
       title={article.title}
