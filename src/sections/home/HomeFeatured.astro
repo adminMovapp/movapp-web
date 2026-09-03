@@ -72,10 +72,18 @@ const EL_HACK_INDEX = 1;
       derecha. "vw" no tiene ese problema, así que ambos lados quedan iguales.
       Desktop (md:): grid estático de 3 columnas, sin scroll ni flechas -- las
       3 tarjetas siempre visibles y con más protagonismo (más grandes).
+
+      "pt-2" (bug reportado 2026-09-03): las tarjetas tienen ".float-anim"
+      (ver global.css), que las levanta hasta 6px vía translateY. En móvil
+      este contenedor tiene "overflow-x-auto" -- eso hace que "overflow-y"
+      compute a "auto" también (no "visible"), y sin padding-top el borde
+      de arriba de la tarjeta ya arrancaba pegado al límite del scroll: al
+      flotar hacia arriba, esos 6px se recortaban. pt-2 (8px) deja el aire
+      justo para que quepa el recorrido completo de la animación.
    -->
    <div
       id="featuredCarousel"
-      class="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-[11vw] pb-2 md:grid md:grid-cols-3 md:gap-8 md:overflow-visible md:px-0 md:pb-0"
+      class="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-[11vw] pb-2 pt-2 md:grid md:grid-cols-3 md:gap-8 md:overflow-visible md:px-0 md:pb-0 md:pt-0"
    >
       {
          hub.map((item, i) => (

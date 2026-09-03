@@ -50,11 +50,16 @@ const hasMultipleTrustPages = testimonials.length > TRUST_PAGE_SIZE;
       de "icono sobre grid punteado" que usa la primera tarjeta de esa
       sección, con un ícono de persona anónima.
    -->
-   <!-- Móvil: carrusel deslizable, igual que antes (todos los testimonios, scroll-snap). -->
+   <!-- Móvil: carrusel deslizable, igual que antes (todos los testimonios, scroll-snap).
+        "pt-2": mismo fix que "#featuredCarousel" en HomeFeatured.astro -- las
+        tarjetas usan ".float-anim" (translateY hasta -6px) y este contenedor
+        tiene "overflow-x-auto" (que vuelve "auto" también el overflow-y);
+        sin aire arriba, ese recorrido se recortaba contra el borde superior
+        del scroll. Ver el comentario completo en HomeFeatured.astro. -->
    <div class="md:hidden">
       <div
          id="trustCarousel"
-         class="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-[11vw] pb-2"
+         class="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-[11vw] pb-2 pt-2"
       >
          {
             testimonials.map((t, i) => (

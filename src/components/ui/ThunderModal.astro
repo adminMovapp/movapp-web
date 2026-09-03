@@ -36,7 +36,7 @@ const { id } = Astro.props;
 ---
 
 <dialog id={id} class="thunder-modal">
-   <svg class="thunder-modal-bolt" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor">
+   <svg class="thunder-modal-bolt" aria-hidden="true" viewBox="0 0 24 24" width="64" height="64" fill="currentColor">
       <path
          fill-rule="evenodd"
          clip-rule="evenodd"
@@ -85,7 +85,16 @@ const { id } = Astro.props;
    /* El rayo: nace arriba del viewport, cae en línea recta hasta el centro
       (0%-45%), "impacta" con un breve estallido de tamaño (45%-60%, mismo
       instante en que el ::backdrop de abajo destella) y se apaga (60%-100%)
-      antes de que la card empiece a aparecer. */
+      antes de que la card empiece a aparecer.
+
+      Bug reportado (2026-09-03): en algunos casos el SVG llegaba a
+      pintarse sin este CSS aplicado todavía -- sin el width/height de acá,
+      un <svg> con solo viewBox se estira a su tamaño por defecto del
+      navegador (mucho más grande que 4rem), tapando la pantalla con un
+      rayo negro gigante hasta que este bloque cargaba. El atributo
+      width/height="64" en el <svg> (ver arriba, 64px = 4rem) es la red de
+      seguridad: fija ese mismo tamaño chico de entrada, vía HTML en vez de
+      CSS, así que nunca depende de que este <style> ya haya cargado. */
    .thunder-modal-bolt {
       position: fixed;
       top: 50%;

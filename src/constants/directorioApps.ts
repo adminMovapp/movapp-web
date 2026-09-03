@@ -8,16 +8,16 @@
 // Los íconos ya llegaron (antes no existían en el repo, ver historial) --
 // migrados de public/img/directorio o public/img/iconos (según cuál trajo
 // cada uno) a src/assets siguiendo la skill de Rendimiento, con nombre
-// limpio en kebab-case (icono-crediseguro.webp en vez de
-// "icono_crediseguro_1.webp", icono-kueski.webp en vez de "kueski.webp").
-import ImgPrestafacil from '@assets/icono-prestafacil.webp';
-import ImgFortaprest from '@assets/icono-fortaprest.webp';
-import ImgMexicash from '@assets/icono-mexicash.webp';
-import ImgStarpresta from '@assets/icono-starpresta.webp';
-import ImgCrediseguro from '@assets/icono-crediseguro.webp';
-import ImgTala from '@assets/icono-tala.webp';
-import ImgKueski from '@assets/icono-kueski.webp';
-import ImgKlar from '@assets/icono-klar.webp';
+// limpio en kebab-case (icono-crediseguro.png en vez de
+// "icono_crediseguro_1.png", icono-kueski.png en vez de "kueski.png").
+import ImgPrestafacil from '@assets/icono-prestafacil.png';
+import ImgFortaprest from '@assets/icono-fortaprest.png';
+import ImgMexicash from '@assets/icono-mexicash.png';
+import ImgStarpresta from '@assets/icono-starpresta.png';
+import ImgCrediseguro from '@assets/icono-crediseguro.png';
+import ImgTala from '@assets/icono-tala.png';
+import ImgKueski from '@assets/icono-kueski.png';
+import ImgKlar from '@assets/icono-klar.png';
 
 export const DIRECTORIO_ICONS: Record<string, ImageMetadata> = {
    prestafacil: ImgPrestafacil,

@@ -66,6 +66,28 @@ const { id } = Astro.props;
 </style>
 
 <script>
+   /*
+      Bug reportado (2026-09-03): en conexiones lentas, este script corre
+      (DOM listo) MUCHO antes de que Tailwind termine de cargar (ver
+      mecanismo no-js/js en Layout.astro -- el flip a "js" espera al "load"
+      del <link>, que puede tardar segundos). Si "modal.showModal()" se
+      llamaba en ese momento, el modal se abría con el <html> TODAVÍA en
+      "no-js": ninguna clase de Tailwind de la card (rounded-2xl, p-7,
+      colores) aplicaba todavía, mostrando el aviso a medio vestir hasta
+      que el CSS real llegaba. Mismo criterio que HomeFeatured.astro/
+      HomeTrust.astro: en vez de abrir de inmediato, se espera a
+      "app:styles-ready" (evento que Layout.astro dispara justo cuando esa
+      carga termina o falla) -- salvo que ya haya disparado, en cuyo caso
+      "no-js" ya no está y se abre directo.
+   */
+   function openWhenStylesReady(modal: HTMLDialogElement) {
+      if (!document.documentElement.classList.contains('no-js')) {
+         modal.showModal();
+         return;
+      }
+      document.addEventListener('app:styles-ready', () => modal.showModal(), { once: true });
+   }
+
    function initAppDisclaimerModal(modal: HTMLDialogElement) {
       if (modal.dataset.ready === 'true') return;
       modal.dataset.ready = 'true';
@@ -78,7 +100,7 @@ const { id } = Astro.props;
          if (e.target === modal) modal.close();
       });
 
-      modal.showModal();
+      openWhenStylesReady(modal);
    }
 
    const initAllAppDisclaimerModals = () => {
