@@ -55,3 +55,377 @@
   from = "/blog/aplicaciones-de-prestamos-confiables"
   to = "/blog/apps-prestamos-confiables"
   status = 301
+
+# ============================================================
+# Migración desde el sitio WordPress anterior (movapp.org)
+# ============================================================
+
+[[redirects]]
+  from = "/nosotros/"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/que-tan-confiable-es-movapp/"
+  to = "/blog/movapp-es-confiable"
+  status = 301
+
+[[redirects]]
+  from = "/que-tan-confiable-es-movapp"
+  to = "/blog/movapp-es-confiable"
+  status = 301
+
+[[redirects]]
+  from = "/montadeudas-fast-efectivo-es-confiable/"
+  to = "/blog/fast-efectivo-es-confiable"
+  status = 301
+
+[[redirects]]
+  from = "/ok-dinero-ante-condusef/"
+  to = "/blog/ok-dinero-condusef"
+  status = 301
+
+[[redirects]]
+  from = "/erik-mann-y-movapp-contra-los-montadeudas/"
+  to = "/blog/historia-movapp"
+  status = 301
+
+[[redirects]]
+  from = "/los-montadeudas-van-a-tu-casa/"
+  to = "/blog/montadeudas-van-a-tu-casa"
+  status = 301
+
+[[redirects]]
+  from = "/apps-montadeudas-que-hacer/"
+  to = "/blog/que-hacer-con-apps-montadeudas"
+  status = 301
+
+[[redirects]]
+  from = "/aplicaciones-de-prestamos-confiables/"
+  to = "/blog/apps-prestamos-confiables"
+  status = 301
+
+[[redirects]]
+  from = "/lista-de-montadeudas-2025/"
+  to = "/blog/lista-montadeudas"
+  status = 301
+
+[[redirects]]
+  from = "/montadeudas-prestamax-es-confiable/"
+  to = "/blog/prestamax-es-confiable"
+  status = 301
+
+[[redirects]]
+  from = "/que-es-movapp/"
+  to = "/blog/que-es-movapp"
+  status = 301
+
+[[redirects]]
+  from = "/sacaste-prestamo-con-mastersol-y-ahora-te-molestan/"
+  to = "/blog"
+  status = 301
+
+[[redirects]]
+  from = "/que-pasa-si-no-le-pago-a-credmex/"
+  to = "/blog/que-pasa-si-no-pago-credmex"
+  status = 301
+
+[[redirects]]
+  from = "/el-hack-de-movapp-funciona/"
+  to = "/blog/hack-movapp-es-confiable"
+  status = 301
+
+[[redirects]]
+  from = "/montadeudas-la-cobranza-de-starpresta/"
+  to = "/blog/cobranza-starpresta"
+  status = 301
+
+[[redirects]]
+  from = "/montadeudas-kaby-llama-a-tus-contactos/"
+  to = "/blog/kaby-es-montadeudas"
+  status = 301
+
+[[redirects]]
+  from = "/mexicash-molesta-a-tus-contactos/"
+  to = "/blog/mexicash-es-montadeudas"
+  status = 301
+
+[[redirects]]
+  from = "/product-category/software/"
+  to = "/el-hack"
+  status = 301
+
+[[redirects]]
+  from = "/producto/hack/"
+  to = "/el-hack"
+  status = 301
+
+[[redirects]]
+  from = "/ojo-con-las-aplicaciones-montadeudas/"
+  to = "/blog/como-identificar-apps-montadeudas"
+  status = 301
+
+[[redirects]]
+  from = "/aplicaciones-usureras-gota-a-gota-digitales-o-llamadas-montadeudas/"
+  to = "/blog/como-identificar-apps-montadeudas"
+  status = 301
+
+[[redirects]]
+  from = "/prestamos-abusivos-montadeudas-chile/"
+  to = "/blog"
+  status = 301
+
+[[redirects]]
+  from = "/lecredi-es-confiable/"
+  to = "/blog"
+  status = 301
+
+[[redirects]]
+  from = "/peru-y-apps-maliciosas/"
+  to = "/blog"
+  status = 301
+
+[[redirects]]
+  from = "/estrategias-mas-comunes-de-los-montadeudas-y-como-enfrentarlas/"
+  to = "/blog/estrategias-montadeudas"
+  status = 301
+
+[[redirects]]
+  from = "/se-puede-realizar-el-hack-si-ya-no-se-encuentra-en-la-play-store-o-app-store/"
+  to = "/blog/hack-app-no-disponible"
+  status = 301
+
+[[redirects]]
+  from = "/como-denunciar-una-aplicacion-de-prestamos-fraudulentos/"
+  to = "/blog/como-denunciar-montadeudas"
+  status = 301
+
+[[redirects]]
+  from = "/defensa-del-deudor-vs-movapp/"
+  to = "/blog/defensa-del-deudor-vs-movapp"
+  status = 301
+
+[[redirects]]
+  from = "/condusef-y-los-montadeudas/"
+  to = "/blog/condusef-montadeudas"
+  status = 301
+
+[[redirects]]
+  from = "/que-hacer-en-caso-de-descargar-aplicaciones-montadeudas/"
+  to = "/blog/que-hacer-si-descargaste-app-montadeudas"
+  status = 301
+
+[[redirects]]
+  from = "/hicredito-te-esta-cobrando/"
+  to = "/blog/hicredito-es-confiable"
+  status = 301
+
+[[redirects]]
+  from = "/pueden-las-apps-montadeudas-publicar-en-mis-redes-sociales/"
+  to = "/blog/montadeudas-redes-sociales"
+  status = 301
+
+[[redirects]]
+  from = "/como-no-pagar-a-montadeudas/"
+  to = "/blog/que-pasa-si-no-pagas-montadeudas"
+  status = 301
+
+[[redirects]]
+  from = "/mexdin-llama-a-tus-contactos/"
+  to = "/blog/mexdin-llama-contactos"
+  status = 301
+
+[[redirects]]
+  from = "/que-paso-con-la-aplicacion-de-fortaprest/"
+  to = "/blog/que-paso-fortaprest"
+  status = 301
+
+[[redirects]]
+  from = "/nuestro-servicio/"
+  to = "/el-hack"
+  status = 301
+
+# La hoja de migración pide /politica-de-privacidad (sin traducir todavía) --
+# la página real vigente es src/pages/privacypolicy.astro.
+[[redirects]]
+  from = "/politica-de-privacidad/"
+  to = "/privacypolicy"
+  status = 301
+
+[[redirects]]
+  from = "/landing/"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/recupera-tu-estabilidad/"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/category/noticias/"
+  to = "/blog"
+  status = 301
+
+[[redirects]]
+  from = "/category/noticias/page/2/"
+  to = "/blog"
+  status = 301
+
+[[redirects]]
+  from = "/category/noticias/page/3/"
+  to = "/blog"
+  status = 301
+
+[[redirects]]
+  from = "/category/montadeudas-en-peru/"
+  to = "/blog"
+  status = 301
+
+# --- /tag/*, /category/*, /author/* individuales (mezcla 301/410 -- no se
+# pueden colapsar en un wildcard sin perder esa distinción) ---
+
+[[redirects]]
+  from = "/tag/el-hack/"
+  to = "/el-hack"
+  status = 301
+
+[[redirects]]
+  from = "/tag/el-hack-funciona/"
+  to = "/blog/hack-movapp-es-confiable"
+  status = 301
+
+[[redirects]]
+  from = "/tag/fortaprest/"
+  to = "/blog"
+  status = 301
+
+[[redirects]]
+  from = "/tag/molestan-contactos/"
+  to = "/blog"
+  status = 301
+
+[[redirects]]
+  from = "/tag/credmex/"
+  to = "/blog"
+  status = 301
+
+[[redirects]]
+  from = "/tag/prestamos-recomendados/"
+  to = "/blog/apps-prestamos-confiables"
+  status = 301
+
+[[redirects]]
+  from = "/tag/movapp/"
+  to = "/blog/que-es-movapp"
+  status = 301
+
+[[redirects]]
+  from = "/tag/montadeudas/"
+  to = "/blog/como-identificar-apps-montadeudas"
+  status = 301
+
+[[redirects]]
+  from = "/tag/cnbv/"
+  to = "/blog"
+  status = 301
+
+[[redirects]]
+  from = "/tag/cashmax/"
+  to = "/blog"
+  status = 301
+
+[[redirects]]
+  from = "/tag/condusef/"
+  to = "/blog/condusef-montadeudas"
+  status = 301
+
+# --- 410 Gone: taxonomías/autores retirados sin reemplazo ---
+
+[[redirects]]
+  from = "/category/chile/"
+  to = "/410"
+  status = 410
+
+[[redirects]]
+  from = "/category/bolivia/"
+  to = "/410"
+  status = 410
+
+[[redirects]]
+  from = "/author/dra-dalia/"
+  to = "/410"
+  status = 410
+
+[[redirects]]
+  from = "/author/dra-dalia/page/2/"
+  to = "/410"
+  status = 410
+
+[[redirects]]
+  from = "/author/ricardo-lombardini/"
+  to = "/410"
+  status = 410
+
+[[redirects]]
+  from = "/author/ricardo-lombardini/page/2/"
+  to = "/410"
+  status = 410
+
+[[redirects]]
+  from = "/tag/prestamos-confiables/"
+  to = "/410"
+  status = 410
+
+[[redirects]]
+  from = "/tag/erik-mann/"
+  to = "/410"
+  status = 410
+
+[[redirects]]
+  from = "/tag/mexdin/"
+  to = "/410"
+  status = 410
+
+[[redirects]]
+  from = "/tag/montadeudas-chile/"
+  to = "/410"
+  status = 410
+
+[[redirects]]
+  from = "/tag/sbs/"
+  to = "/410"
+  status = 410
+
+[[redirects]]
+  from = "/tag/montadeudas/page/2/"
+  to = "/410"
+  status = 410
+
+# --- 410 Gone: artefactos de WordPress sin ningún equivalente (adjuntos,
+# uploads, hooks del tema Astra) -- un wildcard por prefijo en vez de una
+# regla por cada una de las ~110 URLs individuales de la hoja de migración,
+# ya que dentro de cada prefijo el 100% de las filas es 410 sin excepción. ---
+
+[[redirects]]
+  from = "/media/*"
+  to = "/410"
+  status = 410
+
+[[redirects]]
+  from = "/wp-content/uploads/*"
+  to = "/410"
+  status = 410
+
+[[redirects]]
+  from = "/astra-advanced-hook/*"
+  to = "/410"
+  status = 410
+
+# Cloudflare suele interceptar /cdn-cgi/* antes de que llegue a Netlify (es
+# su propio artefacto de ofuscación de emails) -- esta regla es un respaldo,
+# no garantía de que aplique.
+[[redirects]]
+  from = "/cdn-cgi/l/email-protection"
+  to = "/410"
+  status = 410
