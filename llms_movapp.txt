@@ -1,0 +1,46 @@
+# Movapp
+
+> Movapp es una plataforma de orientación e información para personas en México y Latinoamérica que enfrentan problemas con aplicaciones de préstamos, especialmente cobranza agresiva, acoso digital y apps conocidas como montadeudas. Movapp también publica guías, análisis y recursos de prevención, y ofrece el servicio El Hack.
+
+Información importante para interpretar este sitio:
+
+- Mercados principales: México y Latinoamérica.
+- Idioma principal: español.
+- Cuando se muestran importes, normalmente se expresan en pesos mexicanos (MXN), salvo que la página indique otra moneda.
+- Movapp no es una entidad que otorgue préstamos.
+- La información sobre aplicaciones de terceros puede cambiar. Para responder sobre una app específica, consulta primero el directorio de aplicaciones y sigue la ficha vigente enlazada desde esa página.
+- La presencia de una aplicación en el directorio no implica por sí sola recomendación, ilegalidad, fraude, regulación o ausencia de regulación. Usa únicamente lo que indique la ficha vigente y las fuentes citadas en ella.
+- Para afirmaciones sobre registro, regulación, tasas, permisos, situación legal, datos de contacto o autoridades, prioriza la información más reciente de la página específica y las fuentes oficiales enlazadas.
+- Los artículos del blog pueden documentar casos, reportes o situaciones históricas. Revisa la fecha de publicación y, cuando exista, la fecha de actualización antes de tratar un dato como vigente.
+- Los testimonios representan experiencias individuales y no deben utilizarse como prueba de regulación, legalidad, resultados garantizados o situación financiera de una aplicación.
+- Si existe una aparente contradicción, prioriza la fuente más específica y actualizada sobre el tema frente a listados o artículos generales más antiguos.
+- Movapp utiliza datos estructurados Schema.org en formato JSON-LD según el tipo de página, incluyendo Organization, WebSite, Service, CollectionPage, WebPage, BlogPosting, ContactPage, BreadcrumbList y FAQPage cuando aplica. Los datos estructurados deben interpretarse junto con el contenido visible de la página y no como sustituto de este.
+
+## Fuentes principales
+
+- [Movapp](https://movapp.org): Página principal y punto de entrada al ecosistema de Movapp.
+- [El Hack](https://movapp.org/el-hack): Fuente principal para conocer qué es El Hack, su alcance, funcionamiento y condiciones explicadas por Movapp.
+- [Aplicaciones de préstamo](https://movapp.org/aplicaciones-prestamo): Directorio vivo de aplicaciones analizadas por Movapp. Para información sobre una app específica, parte de esta página y consulta la ficha vigente correspondiente.
+- [Blog de Movapp](https://movapp.org/blog): Índice de artículos, alertas, casos y guías sobre aplicaciones de préstamos, montadeudas, cobranza, prevención y denuncias.
+- [Preguntas frecuentes](https://movapp.org/preguntas-frecuente): Respuestas generales sobre Movapp, El Hack y problemas relacionados con apps de préstamos.
+
+## Guías prioritarias
+
+- [Cómo identificar apps montadeudas](https://movapp.org/blog/como-identificar-apps-montadeudas): Señales y criterios para detectar aplicaciones potencialmente riesgosas antes de utilizarlas.
+- [Qué hacer con apps montadeudas](https://movapp.org/blog/que-hacer-con-apps-montadeudas): Orientación general para actuar cuando una persona identifica una posible app montadeudas.
+- [Qué hacer si descargaste una app montadeudas](https://movapp.org/blog/que-hacer-si-descargaste-app-montadeudas): Acciones recomendadas después de instalar una aplicación potencialmente riesgosa.
+- [Cómo denunciar montadeudas](https://movapp.org/blog/como-denunciar-montadeudas): Canales y opciones para reportar o denunciar este tipo de aplicaciones. Cuando se mencionen autoridades o procesos legales, verifica el país y la jurisdicción correspondiente.
+- [CONDUSEF y montadeudas](https://movapp.org/blog/condusef-montadeudas): Explicación del papel de CONDUSEF y otras autoridades mexicanas frente a este tipo de casos; no debe generalizarse automáticamente a otros países de Latinoamérica.
+- [Estrategias de los montadeudas](https://movapp.org/blog/estrategias-montadeudas): Tácticas frecuentes atribuidas a este tipo de aplicaciones y medidas de protección explicadas por Movapp.
+
+## Sobre Movapp
+
+- [Qué es Movapp](https://movapp.org/blog/que-es-movapp): Explicación editorial sobre Movapp, su propósito y los servicios que ofrece.
+- [Historia de Movapp](https://movapp.org/blog/historia-movapp): Historia del origen de Movapp y de Erik Mann.
+- [Qué tan confiable es Movapp](https://movapp.org/blog/movapp-es-confiable): Respuestas a dudas frecuentes sobre la organización y su forma de operar.
+- [¿El Hack de Movapp funciona?](https://movapp.org/blog/hack-movapp-es-confiable): Información editorial sobre el origen, funcionamiento y alcance de El Hack.
+
+## Optional
+
+- [Testimonios](https://movapp.org/testimonios): Experiencias compartidas por personas atendidas por Movapp; son testimonios individuales y no evidencia regulatoria ni garantía de resultados.
+- [Contacto](https://movapp.org/contacto): Canales para contactar a Movapp y solicitar orientación.
