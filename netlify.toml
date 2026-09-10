@@ -246,10 +246,22 @@
   status = 301
 
 # La hoja de migración pide /politica-de-privacidad (sin traducir todavía) --
-# la página real vigente es src/pages/privacypolicy.astro.
+# la página real vigente es src/pages/aviso-de-privacidad.astro.
 [[redirects]]
   from = "/politica-de-privacidad/"
-  to = "/privacypolicy"
+  to = "/aviso-de-privacidad"
+  status = 301
+
+# URL anterior de esta misma página (auditoría go-live: naming final
+# aprobado por Legal es /aviso-de-privacidad).
+[[redirects]]
+  from = "/privacypolicy"
+  to = "/aviso-de-privacidad"
+  status = 301
+
+[[redirects]]
+  from = "/privacypolicy/"
+  to = "/aviso-de-privacidad"
   status = 301
 
 [[redirects]]

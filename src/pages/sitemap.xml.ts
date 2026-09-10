@@ -21,7 +21,7 @@ const pages = [
   { path: '/collaborations',        changefreq: 'monthly', priority: '0.7' },
   { path: '/preguntas-frecuente',   changefreq: 'monthly', priority: '0.7' },
   { path: '/mind',           changefreq: 'monthly', priority: '0.6' },
-  { path: '/privacypolicy',  changefreq: 'yearly',  priority: '0.3' },
+  { path: '/aviso-de-privacidad',  changefreq: 'yearly',  priority: '0.3' },
 ];
 
 export const GET: APIRoute = ({ request }) => {

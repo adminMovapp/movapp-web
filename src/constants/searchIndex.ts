@@ -239,7 +239,7 @@ export const SEARCH_INDEX: SearchEntry[] = [
    },
    {
       title: 'Aviso de privacidad',
-      href: '/privacypolicy',
+      href: '/aviso-de-privacidad',
       description: 'Política de privacidad y manejo de datos personales.',
       keywords: ['aviso de privacidad', 'politica de privacidad', 'datos personales', 'proteccion de datos', 'privacidad'],
    },
