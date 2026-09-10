@@ -62,7 +62,14 @@ const resolvedArticles = await Promise.all(
                   </div>
                )}
                <h3 class="mt-4 font-bold text-purple_mv">{a.title}</h3>
-               <a href={`/blog/${a.slug}`} class="mt-2 inline-block text-sm font-medium text-gray-900 dark:text-white underline">
+               <a
+                  href={`/blog/${a.slug}`}
+                  data-page-type="blog_article"
+                  data-section-name="articulos_relacionados"
+                  data-destination-type="internal_page"
+                  data-article-slug={a.slug}
+                  class="mt-2 inline-block text-sm font-medium text-gray-900 dark:text-white underline"
+               >
                   Ver noticia
                </a>
             </li>
@@ -117,7 +124,14 @@ const resolvedArticles = await Promise.all(
                         </svg>
                      </div>
                      <h3 class="related-title mt-4 font-bold text-purple_mv">{a?.title}</h3>
-                     <a class="related-link mt-2 inline-block text-sm font-medium text-gray-900 dark:text-white underline" href={a ? `/blog/${a.slug}` : undefined}>
+                     <a
+                        class="related-link mt-2 inline-block text-sm font-medium text-gray-900 dark:text-white underline"
+                        href={a ? `/blog/${a.slug}` : undefined}
+                        data-page-type="blog_article"
+                        data-section-name="articulos_relacionados"
+                        data-destination-type="internal_page"
+                        data-article-slug={a?.slug}
+                     >
                         Ver noticia
                      </a>
                   </li>
@@ -190,7 +204,10 @@ const resolvedArticles = await Promise.all(
          if (placeholder) placeholder.classList.toggle('hidden', !!item.image);
          if (placeholder) placeholder.classList.toggle('flex', !item.image);
          if (title) title.textContent = item.title;
-         if (link) link.href = `/blog/${item.slug}`;
+         if (link) {
+            link.href = `/blog/${item.slug}`;
+            link.dataset.articleSlug = item.slug;
+         }
       };
 
       const go = (delta: number) => {
