@@ -17,8 +17,14 @@ const topLinks = [
 // menú (2026-09-02, a pedido explícito) -- las páginas (/nosotros,
 // /collaborations, /mind, /red) siguen existiendo, solo dejan de ser
 // alcanzables desde acá.
+//
+// "Aplicaciones" quitado del menú (2026-09-10, a pedido explícito y de
+// momento): el hub /aplicaciones-prestamo y sus 8 landings de detalle
+// (crediseguro/tala/kueski/klar/prestafacil/fortapresta/mexicash/starpresta)
+// siguen existiendo, solo dejan de ser alcanzables desde acá ni desde
+// ningún otro punto del sitio (ver también HomeMontadeudas.astro,
+// HomeFeatured.astro, searchIndex.ts, sitemap.xml.ts, 404.astro, 410.astro).
 const contentLinks = [
-   { href: '/aplicaciones-prestamo', label: 'Aplicaciones' },
    { href: '/preguntas-frecuente', label: 'Preguntas frecuentes' },
    { href: '/testimonios', label: 'Testimonios' },
    { href: '/blog', label: 'Blog' },

@@ -6,10 +6,11 @@
 // modos llegar a "¿Qué hacer si tienes problemas...?", no solo a una
 // coincidencia de texto exacto.
 //
-// Los nombres de las apps se importan de directorioApps.ts (no se
-// duplican a mano) para que buscar el nombre de una app reportada o
-// regulada lleve directo a esa sub-sección.
-import { REPORTED_APPS, REGULATED_APPS } from './directorioApps';
+// El hub /aplicaciones-prestamo, sus 8 landings de apps y las 5
+// sub-secciones con anchor de esa página se quitaron de este índice
+// (2026-09-10, a pedido explícito y de momento) -- ya no son alcanzables
+// desde ningún punto del sitio, ver el comentario en
+// MenuMobilePanel.astro/MenuDesktopPanel.astro.
 
 export interface SearchEntry {
    title: string;
@@ -50,127 +51,6 @@ export const SEARCH_INDEX: SearchEntry[] = [
          'desinstalar apps',
          'montadeudas',
          'acoso',
-      ],
-   },
-   {
-      title: 'Aplicaciones',
-      href: '/aplicaciones-prestamo',
-      description: 'Listado del estatus legal de apps de préstamos en México.',
-      keywords: [
-         'aplicaciones',
-         'apps de prestamos',
-         'directorio de apps',
-         'lista negra',
-         'apps ilegales',
-         'apps confiables',
-         'apps seguras',
-         'montadeudas',
-         'apps fraudulentas',
-         'apps de credito',
-      ],
-   },
-   {
-      title: 'CrediSeguro',
-      href: '/aplicaciones-prestamo/crediseguro',
-      description: 'Información verificada, registro CONDUSEF y datos de contacto de CrediSeguro.',
-      keywords: ['crediseguro', 'condusef', 'registro', 'app regulada', 'es confiable'],
-   },
-   {
-      title: 'Tala',
-      href: '/aplicaciones-prestamo/tala',
-      description: 'Información verificada, registro CONDUSEF y datos de contacto de Tala.',
-      keywords: ['tala', 'condusef', 'registro', 'app regulada', 'es confiable'],
-   },
-   {
-      title: 'Kueski',
-      href: '/aplicaciones-prestamo/kueski',
-      description: 'Información verificada, registro CONDUSEF y datos de contacto de Kueski.',
-      keywords: ['kueski', 'condusef', 'registro', 'app regulada', 'es confiable'],
-   },
-   {
-      title: 'Klar',
-      href: '/aplicaciones-prestamo/klar',
-      description: 'Información verificada, registro CONDUSEF y datos de contacto de Klar.',
-      keywords: ['klar', 'condusef', 'registro', 'app regulada', 'es confiable'],
-   },
-   {
-      title: 'PrestaFácil',
-      href: '/aplicaciones-prestamo/prestafacil',
-      description: 'Reportes, señales de riesgo y pasos para protegerte de PrestaFácil.',
-      keywords: ['prestafacil', 'es confiable', 'es legal', 'reportes', 'denunciar', 'app ilegal'],
-   },
-   {
-      title: 'FortaPrest',
-      href: '/aplicaciones-prestamo/fortapresta',
-      description: 'Qué reportan los usuarios de FortaPrest y qué puedes hacer.',
-      keywords: ['fortaprest', 'fortapresta', 'es confiable', 'es legal', 'reportes', 'denunciar', 'app ilegal'],
-   },
-   {
-      title: 'Mexicash',
-      href: '/aplicaciones-prestamo/mexicash',
-      description: 'Qué hacer si Mexicash te depositó dinero que no solicitaste.',
-      keywords: ['mexicash', 'me depositaron', 'es confiable', 'es legal', 'reportes', 'denunciar', 'app ilegal'],
-   },
-   {
-      title: 'StarPresta',
-      href: '/aplicaciones-prestamo/starpresta',
-      description: 'Qué hacer si StarPresta creó un grupo de WhatsApp con tus contactos.',
-      keywords: ['starpresta', 'grupo de whatsapp', 'es confiable', 'es legal', 'reportes', 'denunciar', 'app ilegal'],
-   },
-   {
-      title: 'Apps de préstamos reportadas',
-      href: '/aplicaciones-prestamo#directorio-reportadas',
-      description: 'Historial de apps con reportes verificados por extorsión o cobros indebidos.',
-      keywords: [
-         'apps reportadas',
-         'lista negra',
-         'apps con fraude',
-         'extorsion',
-         'cobros indebidos',
-         'apps peligrosas',
-         ...REPORTED_APPS.map((app) => app.name),
-      ],
-   },
-   {
-      title: 'Apps de préstamos reguladas',
-      href: '/aplicaciones-prestamo#directorio-reguladas',
-      description: 'Catálogo de plataformas autorizadas por la Condusef y la CNBV.',
-      keywords: [
-         'apps reguladas',
-         'apps autorizadas',
-         'condusef',
-         'cnbv',
-         'apps seguras',
-         'apps confiables',
-         ...REGULATED_APPS.map((app) => app.name),
-      ],
-   },
-   {
-      title: '¿Cómo identificamos el estatus de una app?',
-      href: '/aplicaciones-prestamo#directorio-como-identificamos',
-      description: 'Criterios usados para clasificar el estatus de una app de préstamos.',
-      keywords: ['como identificamos', 'criterios', 'como saber si una app es segura', 'verificar app'],
-   },
-   {
-      title: 'Señales de alerta en una app de préstamos',
-      href: '/aplicaciones-prestamo#directorio-senales-alerta',
-      description: 'Señales para detectar fraudes o apps montadeudas.',
-      keywords: ['señales de alerta', 'como detectar fraude', 'permisos sospechosos', 'acceso a contactos', 'amenazas'],
-   },
-   {
-      title: '¿Qué hacer si tienes problemas con una app de préstamos?',
-      href: '/aplicaciones-prestamo#directorio-que-hacer',
-      description: 'Guía de pasos si estás siendo acosado por una app de préstamos.',
-      keywords: [
-         'que hacer',
-         'me estan acosando',
-         'como denunciar',
-         'proteger mis contactos',
-         'me amenazan',
-         'me estan hostigando',
-         'evidencia',
-         'permisos',
-         'proteger mis cuentas',
       ],
    },
    {
