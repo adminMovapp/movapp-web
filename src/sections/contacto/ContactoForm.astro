@@ -86,6 +86,9 @@ const fieldClass =
 </section>
 
 <script>
+   import { pushToDataLayer } from '@utils/dataLayer.js';
+   import { ERROR_TYPES } from '@constants/tracking.ts';
+
    // Sin backend todavía -- pendiente de confirmar el endpoint real que
    // reciba este formulario. Por ahora valida en el navegador (required +
    // type="email" nativos) y muestra un mensaje de confirmación local, sin
@@ -98,9 +101,42 @@ const fieldClass =
 
       const status = document.getElementById('contactoFormStatus');
 
+      // form_error: la validación nativa (required/type="email") bloquea el
+      // submit y dispara "invalid" en cada campo -- se colapsan a un solo
+      // push por intento de envío. No hay error_code (no hay backend que lo
+      // origine todavía).
+      let invalidPushed = false;
+      form.addEventListener(
+         'invalid',
+         () => {
+            if (invalidPushed) return;
+            invalidPushed = true;
+            pushToDataLayer('form_error', {
+               form_id: 'contactanos',
+               page_type: 'contactanos',
+               error_type: ERROR_TYPES.validationError,
+            });
+            queueMicrotask(() => {
+               invalidPushed = false;
+            });
+         },
+         true,
+      );
+
       form.addEventListener('submit', (e) => {
          e.preventDefault();
          status?.classList.remove('hidden');
+         // TEMPORAL: no hay backend real todavía -- este es el punto de
+         // "éxito" actual (mock). Cuando exista un fetch real, este push debe
+         // moverse al callback de éxito de esa respuesta (doc maestro hoja
+         // 04: generate_lead solo tras éxito confirmado del backend --
+         // QA-031 queda bloqueado hasta entonces).
+         pushToDataLayer('generate_lead', {
+            form_id: 'contactanos',
+            form_name: 'formulario_contacto',
+            lead_type: 'contacto_general',
+            page_type: 'contactanos',
+         });
          form.reset();
       });
    };

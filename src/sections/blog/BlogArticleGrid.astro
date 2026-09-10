@@ -44,7 +44,14 @@ const { id, title, articles } = Astro.props;
                   <ImagePlaceholder class="aspect-[16/9] w-full" />
                )}
                <h3 class="mt-4 font-bold text-purple_mv">{a.title}</h3>
-               <a href={`/blog/${a.slug}`} class="mt-2 inline-block text-sm font-medium text-gray-900 dark:text-white underline">
+               <a
+                  href={`/blog/${a.slug}`}
+                  data-page-type="blog"
+                  data-section-name="articulos"
+                  data-destination-type="internal_page"
+                  data-article-slug={a.slug}
+                  class="mt-2 inline-block text-sm font-medium text-gray-900 dark:text-white underline"
+               >
                   Ver noticia
                </a>
             </li>

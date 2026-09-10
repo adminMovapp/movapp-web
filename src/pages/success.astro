@@ -52,6 +52,18 @@ import Layout from '@layouts/Layout.astro';
    </section>
 
    <script>
+      import { pushToDataLayer, mapCartItemToGA4 } from '@utils/dataLayer.js';
+
+      // Snapshot del carrito ANTES de vaciarlo: currency/value/items del
+      // purchase de GA4 salen de acá (shape ya conocido). El GET
+      // .../stripe/intent/:pi no tiene su shape completo documentado en el
+      // repo más allá de payment.order_id, así que no se inventan otros
+      // campos de esa respuesta para value/currency/items.
+      let purchasedCart = [];
+      try {
+         purchasedCart = JSON.parse(localStorage.getItem('cart') || '[]');
+      } catch (e) {}
+
       // Vaciar el carrito tras un pago exitoso
       try {
          localStorage.removeItem('cart');
@@ -72,6 +84,23 @@ import Layout from '@layouts/Layout.astro';
             if (orderId) {
                const el = document.getElementById('order-folio');
                if (el) el.textContent = `Referencia de pago: ${pi}`;
+            }
+
+            // Anti-duplicado (QA-029): un refresh/back con el mismo
+            // payment_intent no debe reemitir purchase.
+            const dedupKey = `ga4_purchase_${pi}`;
+            if (purchasedCart.length > 0 && !localStorage.getItem(dedupKey)) {
+               const value = purchasedCart.reduce(
+                  (sum, it) => sum + (Number.parseFloat(it.precio) || 0) * (it.quantity ?? 1),
+                  0,
+               );
+               pushToDataLayer('purchase', {
+                  transaction_id: orderId || pi,
+                  currency: purchasedCart[0]?.moneda,
+                  value,
+                  items: purchasedCart.map((it) => mapCartItemToGA4(it)),
+               });
+               localStorage.setItem(dedupKey, '1');
             }
          } catch (e) {}
       })();

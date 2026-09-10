@@ -5,6 +5,7 @@ import { CartProvider, useCart } from '@context/CartContext.jsx';
 import useConfig from '@hooks/useConfig.jsx';
 import StripeCheckout from '@components/ui/StripeCheckout.jsx';
 import { useMetaPixel } from '@hooks/useMetaPixel.jsx';
+import { pushToDataLayer, mapCartItemToGA4 } from '@utils/dataLayer.js';
 
 const fmt = (n) => Number(n || 0).toFixed(2);
 
@@ -118,6 +119,19 @@ const CheckoutPanel = ({ open, onClose, pais }) => {
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [total]);
 
+   // view_cart: solo cuando el paso "carrito" se vuelve visible (no en cada
+   // cambio de cantidad dentro del mismo paso, para no duplicar el evento).
+   useEffect(() => {
+      if (open && step === 'cart' && cart.length > 0) {
+         pushToDataLayer('view_cart', {
+            currency: moneda,
+            value: total,
+            items: cart.map((item) => mapCartItemToGA4(item)),
+         });
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [open, step]);
+
    const handleChange = (e) => {
       const { name, value } = e.target;
       setForm((f) => ({ ...f, [name]: value }));
@@ -136,6 +150,11 @@ const CheckoutPanel = ({ open, onClose, pais }) => {
 
    const goToForm = () => {
       if (cart.length === 0) return;
+      pushToDataLayer('begin_checkout', {
+         currency: moneda,
+         value: total,
+         items: cart.map((item) => mapCartItemToGA4(item)),
+      });
       trackInitiateCheckout(total, moneda, cart.map((c) => c.nombre), {
          quantity: count,
          country: pais?.codigo_pais,
@@ -256,7 +275,14 @@ const CheckoutPanel = ({ open, onClose, pais }) => {
                                     <div className="flex items-start justify-between">
                                        <span className="font-semibold text-gray-900 dark:text-white">{item.nombre}</span>
                                        <button
-                                          onClick={() => removeFromCart(item.producto_id)}
+                                          onClick={() => {
+                                             pushToDataLayer('remove_from_cart', {
+                                                currency: item.moneda,
+                                                value: parseFloat(item.precio) * item.quantity,
+                                                items: [mapCartItemToGA4(item)],
+                                             });
+                                             removeFromCart(item.producto_id);
+                                          }}
                                           className="text-gray-400 transition hover:text-red-500"
                                           aria-label="Eliminar"
                                        >
@@ -268,7 +294,14 @@ const CheckoutPanel = ({ open, onClose, pais }) => {
                                     <div className="mt-2 flex items-center justify-between">
                                        <div className="flex items-center gap-3">
                                           <button
-                                             onClick={() => decreaseQuantity(item.producto_id)}
+                                             onClick={() => {
+                                                pushToDataLayer('remove_from_cart', {
+                                                   currency: item.moneda,
+                                                   value: parseFloat(item.precio) || 0,
+                                                   items: [mapCartItemToGA4(item, 1)],
+                                                });
+                                                decreaseQuantity(item.producto_id);
+                                             }}
                                              className="flex h-7 w-7 items-center justify-center rounded-full border border-gray-300 text-gray-900 transition hover:bg-gray-100 dark:border-white/20 dark:text-white dark:hover:bg-white/10"
                                              aria-label="Disminuir"
                                           >
@@ -276,7 +309,14 @@ const CheckoutPanel = ({ open, onClose, pais }) => {
                                           </button>
                                           <span className="w-5 text-center font-bold text-gray-900 dark:text-white">{item.quantity}</span>
                                           <button
-                                             onClick={() => addToCart(item)}
+                                             onClick={() => {
+                                                pushToDataLayer('add_to_cart', {
+                                                   currency: item.moneda,
+                                                   value: parseFloat(item.precio) || 0,
+                                                   items: [mapCartItemToGA4(item, 1)],
+                                                });
+                                                addToCart(item);
+                                             }}
                                              className="flex h-7 w-7 items-center justify-center rounded-full border border-gray-300 text-gray-900 transition hover:bg-gray-100 dark:border-white/20 dark:text-white dark:hover:bg-white/10"
                                              aria-label="Aumentar"
                                           >
@@ -375,6 +415,17 @@ const ShopContent = () => {
 
    const products = useMemo(() => prices || [], [prices]);
 
+   // view_item_list: una sola vez por set de productos real (no en cada
+   // re-render de ShopContent -- useEffect solo refire si cambia `products`).
+   useEffect(() => {
+      if (products.length === 0) return;
+      pushToDataLayer('view_item_list', {
+         item_list_id: 'tienda',
+         item_list_name: 'Tienda',
+         items: products.map((p) => mapCartItemToGA4(p, 1)),
+      });
+   }, [products]);
+
    // El ícono del header abre el drawer vía evento global
    useEffect(() => {
       const openDrawer = () => setDrawerOpen(true);
@@ -383,6 +434,14 @@ const ShopContent = () => {
    }, []);
 
    const handleAdd = (product) => {
+      // El catálogo no tiene ficha de producto separada (tarjeta -> carrito
+      // directo): select_item/view_item se sintetizan acá mismo, justo
+      // antes de add_to_cart (decisión confirmada, sin interacción visual
+      // propia para esos dos pasos).
+      const item = mapCartItemToGA4(product, 1);
+      pushToDataLayer('select_item', { item_list_id: 'tienda', item_list_name: 'Tienda', items: [item] });
+      pushToDataLayer('view_item', { currency: product.moneda, value: item.price, items: [item] });
+      pushToDataLayer('add_to_cart', { currency: product.moneda, value: item.price, items: [item] });
       addToCart(product);
       setDrawerOpen(true);
    };

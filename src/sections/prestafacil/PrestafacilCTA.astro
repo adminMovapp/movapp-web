@@ -3,6 +3,7 @@
 // que TalaCTA.astro.
 import ButtonContact from '@components/ui/ButtonContact.astro';
 import StarField from '@components/decorative/StarField.astro';
+import { APP_TYPE_BY_SLUG } from '@constants/tracking.ts';
 ---
 
 <section class="relative mx-auto my-section w-full max-w-2xl px-4" data-aos="fade-up">
@@ -32,6 +33,10 @@ import StarField from '@components/decorative/StarField.astro';
             id="whatsapp-prestafacil-cta"
             label="Solicitar orientación"
             message="¡Hola! Quiero orientación sobre PrestaFácil."
+            pageType="aplicaciones_prestamo_detalle"
+            sectionName="cta"
+            appName="prestafacil"
+            appType={APP_TYPE_BY_SLUG.prestafacil}
          />
       </div>
    </div>
