@@ -3,6 +3,7 @@
 // que TalaCTA.astro.
 import ButtonContact from '@components/ui/ButtonContact.astro';
 import StarField from '@components/decorative/StarField.astro';
+import { APP_TYPE_BY_SLUG } from '@constants/tracking.ts';
 ---
 
 <section class="relative mx-auto my-section w-full max-w-2xl px-4" data-aos="fade-up">
@@ -16,7 +17,15 @@ import StarField from '@components/decorative/StarField.astro';
          Si necesitas orientación antes de contratar o tienes preguntas sobre sus condiciones, podemos ayudarte.
       </p>
       <div class="mt-6 flex justify-center">
-         <ButtonContact id="whatsapp-klar-cta" label="Solicitar orientación" message="¡Hola! Quiero orientación sobre Klar." />
+         <ButtonContact
+            id="whatsapp-klar-cta"
+            label="Solicitar orientación"
+            message="¡Hola! Quiero orientación sobre Klar."
+            pageType="aplicaciones_prestamo_detalle"
+            sectionName="cta"
+            appName="klar"
+            appType={APP_TYPE_BY_SLUG.klar}
+         />
       </div>
    </div>
 </section>

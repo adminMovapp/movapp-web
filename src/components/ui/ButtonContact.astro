@@ -16,6 +16,15 @@ interface Props {
    // testimonios) puede pasar un mensaje propio sin tocar el diseño/estilo
    // del botón, que es siempre el mismo en todo el sitio.
    message?: string;
+   // Parámetros de tracking GA4 (cta_click, ver doc maestro hoja 05). Se
+   // exponen como data-* para que GTM los lea con triggers/variables de DOM
+   // -- este componente no hace dataLayer.push por su cuenta.
+   pageType?: string;
+   sectionName?: string;
+   // Solo cuando el CTA vive en la ficha de una app individual (hoja 02/05:
+   // "si vive en ficha de app, agregar app_name").
+   appName?: string;
+   appType?: 'legal' | 'ilegal';
 }
 
 const {
@@ -23,6 +32,10 @@ const {
    fullWidth = false,
    id,
    message = '¡Hola! Quiero más información sobre El Hack.',
+   pageType,
+   sectionName,
+   appName,
+   appType,
 } = Astro.props;
 
 const mensaje = message;
@@ -40,6 +53,11 @@ const widthClasses = fullWidth ? 'w-full md:w-auto' : '';
    class={`wa__stt keep-white inline-flex items-center justify-center gap-3 rounded-full bg-green-500 px-6 py-4 text-base font-bold text-white transition hover:bg-green-600 md:text-lg ${widthClasses}`}
    target="_blank"
    rel="noopener noreferrer"
+   data-page-type={pageType}
+   data-section-name={sectionName}
+   data-destination-type="whatsapp"
+   data-app-name={appName}
+   data-app-type={appType}
 >
    <!--
       SVG inline en vez de un <img> (o el <Picture> de astro:assets que había

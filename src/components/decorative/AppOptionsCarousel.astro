@@ -33,6 +33,7 @@
 // un tamaño fijo (24/28 en vez de estirarse a un rectángulo raro).
 import { Image } from 'astro:assets';
 import { DIRECTORIO_ICONS, type DirectorioApp } from '@constants/directorioApps.ts';
+import { APP_TYPE_BY_SLUG } from '@constants/tracking.ts';
 import StarField from '@components/decorative/StarField.astro';
 
 interface Props {
@@ -67,7 +68,9 @@ const statusClass = statusColor === 'green' ? 'text-green-500' : 'text-red-500';
    <div class="otras-apps-carousel mt-10 flex items-center gap-3 sm:gap-5">
       <button
          type="button"
+         id={`carousel-${id}-prev`}
          aria-label="Aplicación anterior"
+         data-source-section={id}
          class="otras-apps-prev flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full border border-purple_mv/40 text-purple_mv transition hover:bg-text_banner hover:text-white dark:border-white/20"
       >
          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
@@ -90,7 +93,11 @@ const statusClass = statusColor === 'green' ? 'text-green-500' : 'text-red-500';
                         <p class={`mt-2 text-sm font-semibold ${statusClass}`}>✓ {app.status}</p>
                         <a
                            href={`/aplicaciones-prestamo/${app.slug}`}
-                           class="mt-3 inline-block text-sm font-semibold text-text_banner underline-offset-4 hover:underline"
+                           class="app-select-link mt-3 inline-block text-sm font-semibold text-text_banner underline-offset-4 hover:underline"
+                           data-app-name={app.slug}
+                           data-app-type={APP_TYPE_BY_SLUG[app.slug]}
+                           data-source-section={id}
+                           data-destination-type="internal_page"
                         >
                            Ver información
                         </a>
@@ -103,7 +110,9 @@ const statusClass = statusColor === 'green' ? 'text-green-500' : 'text-red-500';
 
       <button
          type="button"
+         id={`carousel-${id}-next`}
          aria-label="Siguiente aplicación"
+         data-source-section={id}
          class="otras-apps-next flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full border border-purple_mv/40 text-purple_mv transition hover:bg-text_banner hover:text-white dark:border-white/20"
       >
          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">

@@ -3,6 +3,17 @@ import { loadStripe } from '@stripe/stripe-js';
 import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
 
 import { createStripeIntent } from '@api/api';
+import { pushToDataLayer, mapCartItemToGA4 } from '@utils/dataLayer.js';
+import { ERROR_TYPES, CHECKOUT_STEPS } from '@constants/tracking.ts';
+
+// Stripe no expone un "error_type" normalizado propio -- se mapea su
+// error.type al catálogo controlado de negocio (hoja 05/08) para no
+// registrar valores libres/alta cardinalidad en GA4.
+const mapStripeErrorType = (error) => {
+   if (error?.type === 'card_error') return ERROR_TYPES.paymentDeclined;
+   if (error?.type === 'validation_error') return ERROR_TYPES.validationError;
+   return ERROR_TYPES.backendError;
+};
 
 // Instancia única de Stripe (fuera del componente)
 const stripePromise = loadStripe(import.meta.env.PUBLIC_STRIPE_PUBLISHABLE_KEY);
@@ -22,13 +33,16 @@ const buildAppearance = () => ({
  * Formulario interno: renderiza el Payment Element (con clientSecret ya creado)
  * y confirma el pago. El clientSecret se crea UNA sola vez en el componente padre.
  */
-const CheckoutForm = ({ onCancel }) => {
+const CheckoutForm = ({ onCancel, cart, total, currency }) => {
    const stripe = useStripe();
    const elements = useElements();
 
    const [ready, setReady] = useState(false);
    const [submitting, setSubmitting] = useState(false);
    const [message, setMessage] = useState('');
+   // Evita reemitir add_payment_info en cada keystroke del Payment Element:
+   // solo la primera vez que queda "completo".
+   const paymentInfoTrackedRef = useRef(false);
 
    const handleSubmit = async (e) => {
       e.preventDefault();
@@ -46,6 +60,11 @@ const CheckoutForm = ({ onCancel }) => {
 
       // Solo se llega aquí si hay error inmediato; en éxito Stripe redirige.
       if (error) {
+         pushToDataLayer('checkout_error', {
+            checkout_step: CHECKOUT_STEPS.payment,
+            error_type: mapStripeErrorType(error),
+            ...(error.code ? { error_code: error.code } : {}),
+         });
          setMessage(error.message || 'Ocurrió un error al procesar el pago.');
          setSubmitting(false);
       }
@@ -59,6 +78,17 @@ const CheckoutForm = ({ onCancel }) => {
 
          <PaymentElement
             onReady={() => setReady(true)}
+            onChange={(e) => {
+               if (e.complete && !paymentInfoTrackedRef.current) {
+                  paymentInfoTrackedRef.current = true;
+                  pushToDataLayer('add_payment_info', {
+                     currency,
+                     value: total,
+                     payment_type: 'card',
+                     items: cart.map((item) => mapCartItemToGA4(item)),
+                  });
+               }
+            }}
             onLoadError={(e) => setMessage(e?.error?.message || 'No se pudo cargar el formulario de pago.')}
          />
 
@@ -99,7 +129,7 @@ const CheckoutForm = ({ onCancel }) => {
  *  - onIntentCreated:      callback(datos) al crear el intent (cachear clientSecret + tracking)
  *  - onCancel:             callback para volver
  */
-const StripeCheckout = ({ buildPayload, existingClientSecret = '', onIntentCreated, onCancel }) => {
+const StripeCheckout = ({ buildPayload, existingClientSecret = '', onIntentCreated, onCancel, cart = [], total = 0, currency }) => {
    const [clientSecret, setClientSecret] = useState(existingClientSecret);
    const [error, setError] = useState('');
    const startedRef = useRef(!!existingClientSecret);
@@ -123,9 +153,19 @@ const StripeCheckout = ({ buildPayload, existingClientSecret = '', onIntentCreat
                });
             } else {
                setError('No se pudo iniciar el pago. Intenta de nuevo.');
+               pushToDataLayer('checkout_error', {
+                  checkout_step: CHECKOUT_STEPS.checkout,
+                  error_type: ERROR_TYPES.backendError,
+               });
             }
          } catch (e) {
-            if (!cancelled) setError('No se pudo iniciar el pago. Intenta de nuevo.');
+            if (!cancelled) {
+               setError('No se pudo iniciar el pago. Intenta de nuevo.');
+               pushToDataLayer('checkout_error', {
+                  checkout_step: CHECKOUT_STEPS.checkout,
+                  error_type: ERROR_TYPES.backendError,
+               });
+            }
          }
       })();
 
@@ -164,7 +204,7 @@ const StripeCheckout = ({ buildPayload, existingClientSecret = '', onIntentCreat
 
    return (
       <Elements stripe={stripePromise} options={elementsOptions}>
-         <CheckoutForm onCancel={onCancel} />
+         <CheckoutForm onCancel={onCancel} cart={cart} total={total} currency={currency} />
       </Elements>
    );
 };

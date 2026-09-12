@@ -5,7 +5,13 @@ import ImgLogoRespBlanco from '@assets/logo_resp_blanco.webp';
 // width=480 (~2x retina para el hueco máximo de 240px, ver skill Rendimiento)
 // en vez del tamaño real del archivo fuente.
 import ImgAsesoria from '@assets/Asesoria-gratuita.webp';
-import ImgHeroCiudad from '@assets/foto-urbana-erik.webp';
+import ImgHeroCiudad from '@assets/Silencia-los-mensajes-amenazantes.webp';
+// Versión SOLO para móvil (2026-09-10, a pedido): mismo archivo con ~85px de
+// relleno negro sólido arriba/abajo (generado con sharp, tomando el color
+// real de las esquinas de la foto -- fondo ya era negro puro, no se nota la
+// costura). Ver el comentario junto a <picture> más abajo: el motivo es
+// puramente geométrico, no se puede resolver con clases de Tailwind.
+import ImgHeroCiudadMobile from '@assets/Silencia-los-mensajes-amenazantes-mobile.webp';
 import ButtonContact from '@components/ui/ButtonContact.astro';
 import StoreBadges from '@components/ui/StoreBadges.astro';
 ---
@@ -44,8 +50,10 @@ import StoreBadges from '@components/ui/StoreBadges.astro';
       >
       </div>
 
-      <!-- Estrellas: el contenedor solo define el color (currentColor); las estrellas las crea el script de más abajo -->
-      <div id="hero-stars" class="absolute inset-0 text-purple_mv/50 dark:text-white/90"></div>
+      <!-- Estrellas: el contenedor solo define el color (currentColor); las estrellas las crea el script de más abajo.
+           Ocultas en fondo claro (2026-09-10, a pedido, mismo criterio que StarField.astro) -- "hidden dark:block"
+           en vez de tocar el script: en oscuro quedan exactamente igual que antes. -->
+      <div id="hero-stars" class="absolute inset-0 hidden text-white/90 dark:block"></div>
 
       <!-- Estrellas fugaces: cruzan el hero de vez en cuando (mismo patrón que StarField.astro, que el hero no usa por tener su propio fondo) -->
       <div id="hero-shooting-stars" class="absolute inset-0 overflow-hidden text-purple_mv/70 dark:text-white"></div>
@@ -248,30 +256,64 @@ Frena el <span class="text-text_banner">acoso</span> de las <span class="text-te
    </div>
 
       <!--
-         Foto de portada (Erik en la calle): cubre el escenario por encima
-         del título+órbita (z-10) y se achica/desvanece por scroll -- ver
-         el <script> al final del archivo. Full-bleed dentro del escenario
-         con el mismo truco que el fondo espacial de arriba (left-1/2 +
-         w-screen + -translate-x-1/2), aunque el escenario herede el
-         max-w-5xl angosto del <section>. overflow-hidden sólo en ESTE div
-         (no en el escenario completo) para no arriesgar recortar el
-         título+órbita si llegan a medir más que 100vh (zoom/fuente grande).
+         Foto de portada: cubre el escenario por encima del título+órbita
+         (z-10) y se achica/desvanece por scroll -- ver el <script> al final
+         del archivo. Full-bleed dentro del escenario con el mismo truco que
+         el fondo espacial de arriba (left-1/2 + w-screen + -translate-x-1/2),
+         aunque el escenario herede el max-w-5xl angosto del <section>.
+         overflow-hidden sólo en ESTE div (no en el escenario completo) para
+         no arriesgar recortar el título+órbita si llegan a medir más que
+         100vh (zoom/fuente grande).
+
+         Imagen actual: sujeto (celular + burbujas de chat) ya centrado en la
+         foto original, así que "object-cover" con posición por defecto
+         (center) alcanza sin necesitar ningún "object-position" a la medida
+         (a diferencia de la foto anterior, de 2 personas a los lados).
+
+         Versión de imagen distinta SOLO para móvil (2026-09-10, a pedido: la
+         quería llenando toda la pantalla PERO sin verse "muy extendida").
+         Ambos pedidos chocan con "object-cover" puro: en un recorte tan
+         angosto y alto como un celular, "object-cover" ya muestra el alto
+         completo de la foto sin recortar (el ancho es lo que se recorta) --
+         no hay ningún ajuste de CSS que reduzca el "zoom" sin dejar de
+         cubrir la pantalla completa, porque el zoom lo define la proporción
+         ancho/alto real del archivo. La solución fue generar (con sharp,
+         ver el import de ImgHeroCiudadMobile) una segunda versión del MISMO
+         archivo con ~85px de relleno negro sólido arriba y abajo -- el
+         fondo de la foto ya era negro puro, así que no se nota ninguna
+         costura -- que achica el celular/las burbujas proporcionalmente
+         (menos "zoom" necesario para cubrir) sin dejar de llenar la
+         pantalla entera, porque "object-cover" sigue haciendo su trabajo
+         normal sobre el archivo ya modificado. En escritorio el recorte es
+         mucho menos angosto y no hace falta nada de esto, por eso ahí se
+         sigue usando el archivo original sin tocar.
       -->
       <div id="home-hero-image-cover" class="pointer-events-none absolute top-0 bottom-0 left-1/2 z-10 w-screen -translate-x-1/2 overflow-hidden">
          <Image
-            src={ImgHeroCiudad}
-            alt="Erik Mann, fundador de Movapp, en una calle de la ciudad"
-            widths={[640, 1024, 1536, 1920]}
+            src={ImgHeroCiudadMobile}
+            alt="Persona sosteniendo su teléfono mientras silencia mensajes de acoso de una app de préstamos"
+            widths={[640, 1024]}
             sizes="100vw"
-            width={1920}
-            height={1080}
+            width={1917}
+            height={1706}
             loading="eager"
             fetchpriority="high"
-            class="h-full w-full object-cover"
+            class="block h-full w-full object-cover md:hidden"
          />
-         <!-- Degradado hacia el fondo real de la página (gray-50 / #050505, ver <body> en Layout.astro) para que el corte con lo de abajo sea gradual -->
+         <Image
+            src={ImgHeroCiudad}
+            alt="Persona sosteniendo su teléfono mientras silencia mensajes de acoso de una app de préstamos"
+            widths={[1024, 1536, 1920]}
+            sizes="100vw"
+            width={1917}
+            height={1536}
+            loading="eager"
+            fetchpriority="high"
+            class="hidden h-full w-full object-cover md:block"
+         />
+         <!-- Degradado hacia el fondo real de la página (gray-300 / #050505, ver <body> en Layout.astro) para que el corte con lo de abajo sea gradual -->
          <div
-            class="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-gray-50 dark:to-[#050505]"
+            class="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-gray-300 dark:to-[#050505]"
             aria-hidden="true"
          >
          </div>
@@ -333,7 +375,7 @@ Frena el <span class="text-text_banner">acoso</span> de las <span class="text-te
             <strong class="font-bold text-text_banner">Un asesor real te acompaña paso a paso, sin costo.</strong>
          </p>
          <div class="mt-6">
-            <ButtonContact id="whatsapp-home-hero" label="Hablar con un asesor" fullWidth />
+            <ButtonContact id="whatsapp-home-hero" label="Hablar con un asesor" fullWidth pageType="home" sectionName="asesoria_gratuita" />
          </div>
 
          <!-- Íconos de tienda + contador de descargas: solo en móvil (ver

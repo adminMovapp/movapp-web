@@ -770,7 +770,7 @@ export const PAGE_SCHEMA = {
       breadcrumb: 'Redes',
    },
 
-   '/privacypolicy': {
+   '/aviso-de-privacidad': {
       name: 'Política de Privacidad',
       description:
          'Política de privacidad de Movapp: qué información recopilamos, cómo la usamos y cuáles son tus derechos.',

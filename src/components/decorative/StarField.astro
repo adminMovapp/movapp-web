@@ -44,14 +44,24 @@ const wrapperClass = fullBleed
 ---
 
 <div class={wrapperClass} data-field-id={id} data-ambient={ambientCount} aria-hidden="true">
-   <!-- Resplandor superior tenue, mismo tono que el del hero -->
+   <!-- Resplandor superior -- "aura" morada difusa, mismo criterio que el
+        shadow-card de las cards (0 0 25px rgba(129,73,226,0.12)) pero para
+        el fondo de toda la sección (a pedido, 2026-09-10: en fondo claro
+        antes era casi invisible -- /[0.06] -- luego /25, y se subió otra
+        vez a /35 para que se note más como aura real). -->
    <div
-      class="pointer-events-none absolute left-1/2 top-0 h-40 w-[70%] max-w-[900px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-purple_mv/[0.06] blur-[120px] dark:bg-purple_mv/[0.18]"
+      class="pointer-events-none absolute left-1/2 top-0 h-40 w-[70%] max-w-[900px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-purple_mv/35 blur-[120px] dark:bg-purple_mv/[0.18]"
    >
    </div>
 
-   <!-- Estrellas ambiente (pobladas por el script de abajo) -->
-   <div class="field-stars absolute inset-0 text-purple_mv/40 dark:text-white/70"></div>
+   <!-- Estrellas ambiente (pobladas por el script de abajo) -- quitadas del
+        fondo claro (2026-09-10, a pedido: con la aura morada de arriba ya
+        no hacían falta, se seguían viendo como manchitas). "hidden
+        dark:block" en vez de tocar el script: en oscuro siguen exactamente
+        igual que antes (text-white/70), y el toggle de tema (sin reload)
+        las oculta/muestra al vuelo sin depender de re-ejecutar el JS que
+        las genera. -->
+   <div class="field-stars absolute inset-0 hidden text-white/70 dark:block"></div>
 
    <!-- Estrellas fugaces: cruzan la sección de vez en cuando (JS más abajo) -->
    <div class="field-shooting-stars absolute inset-0 overflow-hidden text-purple_mv/70 dark:text-white"></div>

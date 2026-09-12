@@ -1,0 +1,50 @@
+---
+import Layout from '@layouts/Layout.astro';
+
+// Contenido retirado permanentemente (migración desde el sitio WordPress
+// anterior): a diferencia de un 404, un 410 le dice a los buscadores que la
+// URL fue removida a propósito y no va a volver, para que dejen de
+// rastrearla/indexarla más rápido que con un 404 genérico. Ver netlify.toml
+// -- todas las rutas heredadas de WordPress sin contenido equivalente en el
+// sitio nuevo (adjuntos /media/*, /wp-content/uploads/*, taxonomías
+// retiradas, artefactos del tema Astra) se reescriben acá.
+Astro.response.status = 410;
+Astro.response.statusText = 'Gone';
+
+const RECOVERY_LINKS = [
+   { href: '/', label: 'Inicio' },
+   { href: '/tienda', label: 'Tienda · El Hack' },
+   { href: '/aplicaciones-prestamo', label: 'Directorio de apps de préstamo' },
+   { href: '/blog', label: 'Blog' },
+   { href: '/preguntas-frecuente', label: 'Preguntas frecuentes' },
+   { href: '/contacto', label: 'Contacto' },
+];
+---
+
+<Layout title="Contenido retirado">
+   <section class="flex flex-col items-center justify-center min-h-[60vh] px-4 text-center">
+      <h1 class="text-5xl font-bold text-purple-700 mb-4">410</h1>
+      <h2 class="text-2xl font-semibold text-gray-700 mb-2">Este contenido ya no está disponible</h2>
+      <p class="text-gray-500 mb-6">
+         La página que buscas se retiró de forma permanente y no tiene un reemplazo directo.
+      </p>
+      <a href="/" class="bg-purple-600 text-white px-6 py-3 rounded-full font-medium hover:bg-purple-700 transition"
+         >Volver al inicio</a
+      >
+
+      <nav aria-label="Enlaces útiles" class="mt-10 w-full max-w-md text-left">
+         <p class="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-500">¿A dónde ir desde aquí?</p>
+         <ul class="flex flex-col gap-2">
+            {
+               RECOVERY_LINKS.map((link) => (
+                  <li>
+                     <a href={link.href} class="text-purple_mv underline decoration-purple_mv/40 underline-offset-2 hover:decoration-purple_mv">
+                        {link.label}
+                     </a>
+                  </li>
+               ))
+            }
+         </ul>
+      </nav>
+   </section>
+</Layout>

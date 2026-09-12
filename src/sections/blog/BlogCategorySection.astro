@@ -79,7 +79,14 @@ const resolvedArticles = isCarousel
                         <ImagePlaceholder class="aspect-[16/9] w-full" />
                      )}
                      <h3 class="mt-4 font-bold text-purple_mv">{a.title}</h3>
-                     <a href={`/blog/${a.slug}`} class="mt-2 inline-block text-sm font-medium text-gray-900 dark:text-white underline">
+                     <a
+                        href={`/blog/${a.slug}`}
+                        data-page-type="blog"
+                        data-section-name={id}
+                        data-destination-type="internal_page"
+                        data-article-slug={a.slug}
+                        class="mt-2 inline-block text-sm font-medium text-gray-900 dark:text-white underline"
+                     >
                         {linkLabel}
                      </a>
                   </li>
@@ -87,13 +94,13 @@ const resolvedArticles = isCarousel
             </ul>
 
             <div class="swipe-hint mx-auto mt-5 flex w-fit items-center gap-2 rounded-full border border-purple_mv/25 bg-purple_mv/5 px-4 py-1.5 text-[11px] font-medium text-gray-500 dark:border-white/10 dark:bg-white/5 dark:text-white/50 md:hidden">
-               <button type="button" data-swipe-prev aria-label="Ver artículo anterior" class="-m-1 flex items-center justify-center p-1">
+               <button type="button" data-swipe-prev data-page-type="blog" data-section-name={id} aria-label="Ver artículo anterior" class="-m-1 flex items-center justify-center p-1">
                   <svg class="swipe-hint-arrow h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
                      <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
                   </svg>
                </button>
                Desliza para ver más
-               <button type="button" data-swipe-next aria-label="Ver siguiente artículo" class="-m-1 flex items-center justify-center p-1">
+               <button type="button" data-swipe-next data-page-type="blog" data-section-name={id} aria-label="Ver siguiente artículo" class="-m-1 flex items-center justify-center p-1">
                   <svg class="swipe-hint-arrow h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
                      <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
                   </svg>
@@ -144,7 +151,14 @@ const resolvedArticles = isCarousel
                               </svg>
                            </div>
                            <h3 class="category-title mt-4 font-bold text-purple_mv">{a?.title}</h3>
-                           <a class="category-link mt-2 inline-block text-sm font-medium text-gray-900 dark:text-white underline" href={a ? `/blog/${a.slug}` : undefined}>
+                           <a
+                              class="category-link mt-2 inline-block text-sm font-medium text-gray-900 dark:text-white underline"
+                              href={a ? `/blog/${a.slug}` : undefined}
+                              data-page-type="blog"
+                              data-section-name={id}
+                              data-destination-type="internal_page"
+                              data-article-slug={a?.slug}
+                           >
                               {linkLabel}
                            </a>
                         </li>
@@ -183,7 +197,14 @@ const resolvedArticles = isCarousel
                <ImagePlaceholder class="aspect-[16/9] w-full" />
             )}
             <h3 class="mt-4 font-bold text-purple_mv">{articles[0].title}</h3>
-            <a href={`/blog/${articles[0].slug}`} class="mt-2 inline-block text-sm font-medium text-gray-900 dark:text-white underline">
+            <a
+               href={`/blog/${articles[0].slug}`}
+               data-page-type="blog"
+               data-section-name={id}
+               data-destination-type="internal_page"
+               data-article-slug={articles[0].slug}
+               class="mt-2 inline-block text-sm font-medium text-gray-900 dark:text-white underline"
+            >
                {linkLabel}
             </a>
          </div>
@@ -369,7 +390,10 @@ const resolvedArticles = isCarousel
             if (placeholder) placeholder.classList.toggle('hidden', !!item.image);
             if (placeholder) placeholder.classList.toggle('flex', !item.image);
             if (heading) heading.textContent = item.title;
-            if (link) link.href = `/blog/${item.slug}`;
+            if (link) {
+               link.href = `/blog/${item.slug}`;
+               link.dataset.articleSlug = item.slug;
+            }
          };
 
          const go = (delta: number) => {
