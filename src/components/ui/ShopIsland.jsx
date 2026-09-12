@@ -376,6 +376,9 @@ const CheckoutPanel = ({ open, onClose, pais }) => {
                      existingClientSecret={clientSecret}
                      onIntentCreated={onIntentCreated}
                      onCancel={() => setStep('form')}
+                     cart={cart}
+                     total={total}
+                     currency={moneda}
                   />
                )}
             </div>

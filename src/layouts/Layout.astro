@@ -249,7 +249,7 @@ const schemaJson = JSON.stringify(Array.isArray(pageSchema) ? pageSchema : [page
       <!-- Header meta-pixel  -->
       <meta name="facebook-domain-verification" content="uffghfhff1th1z040abwzgjgjto9mi" />
 
-      {!disableThirdPartyScripts && <GoogleTagManager isStaging={siteConfig.isStaging} />}
+      {!disableThirdPartyScripts && <GoogleTagManager />}
       {!disableThirdPartyScripts && <GoogleAnalytics />}
       <noscript>
          <style>

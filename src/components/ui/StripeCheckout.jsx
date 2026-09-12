@@ -3,7 +3,7 @@ import { loadStripe } from '@stripe/stripe-js';
 import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
 
 import { createStripeIntent } from '@api/api';
-import { pushToDataLayer } from '@utils/dataLayer.js';
+import { pushToDataLayer, mapCartItemToGA4 } from '@utils/dataLayer.js';
 import { ERROR_TYPES, CHECKOUT_STEPS } from '@constants/tracking.ts';
 
 // Stripe no expone un "error_type" normalizado propio -- se mapea su
@@ -33,7 +33,7 @@ const buildAppearance = () => ({
  * Formulario interno: renderiza el Payment Element (con clientSecret ya creado)
  * y confirma el pago. El clientSecret se crea UNA sola vez en el componente padre.
  */
-const CheckoutForm = ({ onCancel }) => {
+const CheckoutForm = ({ onCancel, cart, total, currency }) => {
    const stripe = useStripe();
    const elements = useElements();
 
@@ -81,7 +81,12 @@ const CheckoutForm = ({ onCancel }) => {
             onChange={(e) => {
                if (e.complete && !paymentInfoTrackedRef.current) {
                   paymentInfoTrackedRef.current = true;
-                  pushToDataLayer('add_payment_info', { payment_type: 'card' });
+                  pushToDataLayer('add_payment_info', {
+                     currency,
+                     value: total,
+                     payment_type: 'card',
+                     items: cart.map((item) => mapCartItemToGA4(item)),
+                  });
                }
             }}
             onLoadError={(e) => setMessage(e?.error?.message || 'No se pudo cargar el formulario de pago.')}
@@ -124,7 +129,7 @@ const CheckoutForm = ({ onCancel }) => {
  *  - onIntentCreated:      callback(datos) al crear el intent (cachear clientSecret + tracking)
  *  - onCancel:             callback para volver
  */
-const StripeCheckout = ({ buildPayload, existingClientSecret = '', onIntentCreated, onCancel }) => {
+const StripeCheckout = ({ buildPayload, existingClientSecret = '', onIntentCreated, onCancel, cart = [], total = 0, currency }) => {
    const [clientSecret, setClientSecret] = useState(existingClientSecret);
    const [error, setError] = useState('');
    const startedRef = useRef(!!existingClientSecret);
@@ -199,7 +204,7 @@ const StripeCheckout = ({ buildPayload, existingClientSecret = '', onIntentCreat
 
    return (
       <Elements stripe={stripePromise} options={elementsOptions}>
-         <CheckoutForm onCancel={onCancel} />
+         <CheckoutForm onCancel={onCancel} cart={cart} total={total} currency={currency} />
       </Elements>
    );
 };

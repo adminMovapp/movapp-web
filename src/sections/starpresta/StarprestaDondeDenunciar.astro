@@ -9,12 +9,19 @@ import StarField from '@components/decorative/StarField.astro';
 
 const REPORT_CHANNELS = [
    {
+      slug: 'policia-cibernetica',
       title: 'Policía Cibernética',
       text: 'Amenazas, extorsión, suplantación.',
       buttonLabel: 'Contactar',
       href: 'https://www.ssc.cdmx.gob.mx/organizacion-policial/subsecretaria-de-inteligencia-e-investigacion-policial/policia-cibernetica',
    },
-   { title: 'CONDUSEF', text: 'Queja contra institución identificada.', buttonLabel: 'Presentar queja', href: 'https://www.condusef.gob.mx/' },
+   {
+      slug: 'condusef',
+      title: 'CONDUSEF',
+      text: 'Queja contra institución identificada.',
+      buttonLabel: 'Presentar queja',
+      href: 'https://www.condusef.gob.mx/',
+   },
 ];
 ---
 
@@ -41,6 +48,7 @@ const REPORT_CHANNELS = [
                   <p class="mt-1 text-sm italic text-gray-600 dark:text-white/70">{channel.text}</p>
                </div>
                <a
+                  id={`cta-starpresta-${channel.slug}`}
                   href={channel.href}
                   data-external-warn
                   data-external-label={channel.title}

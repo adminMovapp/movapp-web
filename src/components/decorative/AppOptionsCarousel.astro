@@ -68,6 +68,7 @@ const statusClass = statusColor === 'green' ? 'text-green-500' : 'text-red-500';
    <div class="otras-apps-carousel mt-10 flex items-center gap-3 sm:gap-5">
       <button
          type="button"
+         id={`carousel-${id}-prev`}
          aria-label="Aplicación anterior"
          data-source-section={id}
          class="otras-apps-prev flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full border border-purple_mv/40 text-purple_mv transition hover:bg-text_banner hover:text-white dark:border-white/20"
@@ -109,6 +110,7 @@ const statusClass = statusColor === 'green' ? 'text-green-500' : 'text-red-500';
 
       <button
          type="button"
+         id={`carousel-${id}-next`}
          aria-label="Siguiente aplicación"
          data-source-section={id}
          class="otras-apps-next flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full border border-purple_mv/40 text-purple_mv transition hover:bg-text_banner hover:text-white dark:border-white/20"

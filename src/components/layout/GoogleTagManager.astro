@@ -1,27 +1,9 @@
 ---
-interface Props {
-   // Environment "Staging" del contenedor GTM (no es un contenedor distinto):
-   // https://support.google.com/tagmanager/answer/6311518
-   isStaging?: boolean;
-}
-
-const { isStaging = false } = Astro.props;
-
 const GTM_ID = import.meta.env.PUBLIC_GTM_ID;
-const GTM_AUTH_STAGING = import.meta.env.PUBLIC_GTM_AUTH_STAGING;
-const GTM_PREVIEW_STAGING = import.meta.env.PUBLIC_GTM_PREVIEW_STAGING;
-
-// Pendiente de Analytics/SEO (hoja 09): hasta que existan las credenciales
-// del Environment de Staging, en staging se sirve la misma versión publicada
-// que producción -- no hay contenedor "roto" mientras tanto.
-const useStagingEnv = isStaging && GTM_AUTH_STAGING && GTM_PREVIEW_STAGING;
-const envQuery = useStagingEnv
-   ? `&gtm_auth=${GTM_AUTH_STAGING}&gtm_preview=${GTM_PREVIEW_STAGING}&gtm_cookies_win=x`
-   : '';
 ---
 
 <!-- Google Tag Manager -->
-<script is:inline define:vars={{ GTM_ID, envQuery }}>
+<script is:inline define:vars={{ GTM_ID }}>
    (function (w, d, s, l, i) {
       w[l] = w[l] || [];
       w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
@@ -29,7 +11,7 @@ const envQuery = useStagingEnv
          j = d.createElement(s),
          dl = l != 'dataLayer' ? '&l=' + l : '';
       j.async = true;
-      j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl + envQuery;
+      j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
       f.parentNode.insertBefore(j, f);
    })(window, document, 'script', 'dataLayer', GTM_ID);
 </script>
@@ -37,7 +19,7 @@ const envQuery = useStagingEnv
 <!-- Google Tag Manager (noscript) -->
 <noscript>
    <iframe
-      src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}${envQuery}`}
+      src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`}
       height="0"
       width="0"
       style="display:none;visibility:hidden"></iframe>

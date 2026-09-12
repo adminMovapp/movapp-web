@@ -6,12 +6,6 @@
 // modos llegar a "¿Qué hacer si tienes problemas...?", no solo a una
 // coincidencia de texto exacto.
 //
-// El hub /aplicaciones-prestamo, sus 8 landings de apps y las 5
-// sub-secciones con anchor de esa página se quitaron de este índice
-// (2026-09-10, a pedido explícito y de momento) -- ya no son alcanzables
-// desde ningún punto del sitio, ver el comentario en
-// MenuMobilePanel.astro/MenuDesktopPanel.astro.
-
 export interface SearchEntry {
    title: string;
    href: string;
@@ -51,6 +45,51 @@ export const SEARCH_INDEX: SearchEntry[] = [
          'desinstalar apps',
          'montadeudas',
          'acoso',
+      ],
+   },
+   {
+      title: 'Aplicaciones',
+      href: '/aplicaciones-prestamo',
+      description: 'Listado del estatus legal de apps de préstamos en México.',
+      keywords: [
+         'aplicaciones',
+         'apps de prestamos',
+         'directorio de apps',
+         'lista negra',
+         'apps ilegales',
+         'apps confiables',
+         'apps seguras',
+         'montadeudas',
+         'apps fraudulentas',
+         'apps de credito',
+      ],
+   },
+   {
+      title: '¿Cómo identificamos el estatus de una app?',
+      href: '/aplicaciones-prestamo#directorio-como-identificamos',
+      description: 'Criterios usados para clasificar el estatus de una app de préstamos.',
+      keywords: ['como identificamos', 'criterios', 'como saber si una app es segura', 'verificar app'],
+   },
+   {
+      title: 'Señales de alerta en una app de préstamos',
+      href: '/aplicaciones-prestamo#directorio-senales-alerta',
+      description: 'Señales para detectar fraudes o apps montadeudas.',
+      keywords: ['señales de alerta', 'como detectar fraude', 'permisos sospechosos', 'acceso a contactos', 'amenazas'],
+   },
+   {
+      title: '¿Qué hacer si tienes problemas con una app de préstamos?',
+      href: '/aplicaciones-prestamo#directorio-que-hacer',
+      description: 'Guía de pasos si estás siendo acosado por una app de préstamos.',
+      keywords: [
+         'que hacer',
+         'me estan acosando',
+         'como denunciar',
+         'proteger mis contactos',
+         'me amenazan',
+         'me estan hostigando',
+         'evidencia',
+         'permisos',
+         'proteger mis cuentas',
       ],
    },
    {
