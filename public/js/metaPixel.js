@@ -89,6 +89,10 @@ async function sendServerEvent(eventName, customData = {}, userData = {}, eventI
 
 async function trackEvent(eventName, customData = {}, userData = {}) {
    if (typeof window === 'undefined') return;
+   // Sin pixel inicializado (stage/local sin PUBLIC_META_PIXEL_ID) no hay
+   // nada que medir: se evita también el POST a meta-conversion, que sin
+   // META_ACCESS_TOKEN respondería 500 en cada evento.
+   if (!pixelInitialized) return null;
 
    const eventId = generateEventId();
 
@@ -122,6 +126,7 @@ async function trackEvent(eventName, customData = {}, userData = {}) {
 
 async function trackPageView(customData = {}) {
    if (typeof window === 'undefined') return;
+   if (!pixelInitialized) return null; // ver trackEvent
 
    const eventId = generateEventId();
 

@@ -72,7 +72,7 @@ const emptyForm = { nombre: '', apellidos: '', email: '', telefono: '', codigoPo
 
 const CheckoutPanel = ({ open, onClose, pais }) => {
    const { cart, count, total, addToCart, decreaseQuantity, removeFromCart } = useCart();
-   const { trackInitiateCheckout, trackPurchase } = useMetaPixel(import.meta.env.PUBLIC_META_PIXEL_ID);
+   const { trackInitiateCheckout } = useMetaPixel();
 
    const [isClosing, setIsClosing] = useState(false);
    const [step, setStep] = useState('cart'); // 'cart' | 'form' | 'pay'
@@ -189,16 +189,34 @@ const CheckoutPanel = ({ open, onClose, pais }) => {
 
    const onIntentCreated = ({ clientSecret: cs }) => {
       if (cs) setClientSecret(cs); // cachear para reutilizar y no duplicar orden
-      trackPurchase(total, moneda, cart.map((c) => c.nombre), {
-         email: form.email,
-         phone: form.telefono,
-         name: `${form.nombre} ${form.apellidos}`,
-         postalCode: form.codigoPostal,
-         quantity: count,
-         country: pais?.codigo_pais,
-         paymentMethod: 'stripe',
-         customerType: 'new_customer',
-      });
+
+      // El "Purchase" de Meta NO se dispara aquí: en este punto el
+      // PaymentIntent apenas existe y el pago todavía no se confirmó, así
+      // que un checkout abandonado contaría como compra. Se deja un
+      // snapshot y /success lo emite una sola vez por payment_intent
+      // (mismo criterio que el purchase de GA4 en success.astro).
+      // sessionStorage y no localStorage: sobrevive el redirect same-tab de
+      // Stripe (return_url) pero no persiste PII más allá de la pestaña.
+      try {
+         sessionStorage.setItem(
+            'meta_pending_purchase',
+            JSON.stringify({
+               value: total,
+               currency: moneda,
+               contentIds: cart.map((c) => c.nombre),
+               email: form.email,
+               phone: form.telefono,
+               name: `${form.nombre} ${form.apellidos}`,
+               postalCode: form.codigoPostal,
+               quantity: count,
+               country: pais?.codigo_pais,
+               paymentMethod: 'stripe',
+               customerType: 'new_customer',
+            }),
+         );
+      } catch (e) {
+         // sessionStorage no disponible: se pierde solo el evento de Meta
+      }
    };
 
    if (!open || typeof document === 'undefined') return null;

@@ -80,8 +80,10 @@ const widthClasses = fullWidth ? 'w-full md:w-auto' : '';
 </a>
 
 <script type="module">
-   const { trackEvent } = window.metaPixelUtils;
-
+   // window.metaPixelUtils se lee de forma perezosa en el clic (abajo), NO
+   // aquí a nivel de módulo: cuando MetaPixelScript no se monta (stage/local
+   // sin PUBLIC_META_PIXEL_ID, o ?minimal=1) no existe, y un destructure
+   // aquí lanzaría TypeError y mataría el script completo del botón.
    document.addEventListener('DOMContentLoaded', () => {
       const buttons = document.querySelectorAll('.wa__stt');
 
@@ -103,7 +105,7 @@ const widthClasses = fullWidth ? 'w-full md:w-auto' : '';
                // Agregar más países según necesites
             }
 
-            await trackEvent(
+            await window.metaPixelUtils?.trackEvent?.(
                'Lead',
                {
                   // Información básica mejorada
@@ -174,22 +176,9 @@ const widthClasses = fullWidth ? 'w-full md:w-auto' : '';
             console.log('WhatsApp lead tracked with enhanced data');
          });
 
-         // Trackear también cuando el usuario hace hover (interés)
-         btn.addEventListener('mouseenter', async () => {
-            await trackEvent(
-               'Lead', // Usar un custom event si prefieres
-               {
-                  content_name: 'WhatsApp Contact Hover',
-                  content_category: 'user_engagement',
-                  lead_type: 'contact_interest',
-                  interaction_type: 'hover',
-                  page_url: window.location.href,
-                  value: 10, // Menor valor que el clic real
-                  currency: 'MXN',
-               },
-               {},
-            );
-         });
+         // Deliberadamente NO se trackea el hover: antes cada mouseenter
+         // mandaba un "Lead" (value 10) a cliente y servidor, inflando la
+         // conversión Lead con ruido de engagement. Lead = clic real.
       });
    });
 </script>

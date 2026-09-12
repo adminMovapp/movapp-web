@@ -90,6 +90,8 @@ Purchases and checkout steps are tracked through both a client-side Meta Pixel (
 
 Required at runtime/build time (see `movapp-web/.env`, gitignored): `PUBLIC_API_LINK`, `PUBLIC_IPAPI_LINK`, `PUBLIC_STRIPE_PUBLISHABLE_KEY`, `PUBLIC_KEY_MP`, `PUBLIC_META_PIXEL_ID`, `PUBLIC_GA`, `PUBLIC_GTM_ID`, `PUBLIC_SITE_ENV`, `PUBLIC_SHOW_HEADER_LAYER`, `PUBLIC_SHOW_HEADER_URL`, `PUBLIC_SHOW_PRELOADER`. Netlify function-only (server secrets, not `PUBLIC_`-prefixed so never exposed to the client): `META_ACCESS_TOKEN`, `META_PIXEL_ID`, `META_TEST_EVENT_CODE`.
 
+Meta Pixel vars (`PUBLIC_META_PIXEL_ID`, `META_PIXEL_ID`, `META_ACCESS_TOKEN`) are set **only in the Netlify production context** and left empty everywhere else — stage, branch deploys and local builds intentionally ship without the pixel so test traffic never reaches Meta. `Layout.astro` mounts `MetaPixelScript` only when `PUBLIC_META_PIXEL_ID` is truthy, and `metaPixel.js` no-ops `trackEvent`/`trackPageView` until the pixel is initialized. `PUBLIC_META_PIXEL_ID` is inlined at build time, so changing it in Netlify requires a redeploy; the two server vars are read at runtime by the function. The access token is generated in Events Manager → pixel → Settings → Conversions API → "Generate access token".
+
 ### Netlify
 
 `netlify.toml` maps `/api/*` requests to `netlify/functions/*` and sets `PUBLIC_SITE_ENV` per deploy context (`production`, `stage`, `branch-deploy`, `deploy-preview` all map to `staging` except the main production context).
