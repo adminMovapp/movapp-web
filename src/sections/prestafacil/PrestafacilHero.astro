@@ -1,0 +1,20 @@
+---
+// H1 (único H1 de la página). Plantilla distinta a la de las apps reguladas
+// (CrediSeguro/Tala/Kueski/Klar): acá el H1 es una pregunta directa sobre
+// confiabilidad, no un "X: información verificada..." -- primera página del
+// lado "app reportada" de la serie (ver skill Importaciones).
+// Hero de 2 columnas (2026-09-02, a pedido) -- ver AppHero.astro para el
+// mecanismo compartido por las 8 apps. "paragraphMobile" es el texto más
+// corto que va SOLO en móvil (a pedido explícito de Santiago, 2026-08-28) --
+// el de escritorio ("paragraph") no se toca.
+import AppHero from '@components/decorative/AppHero.astro';
+---
+
+<AppHero
+   id="prestafacil"
+   breadcrumbLabel="PrestaFácil"
+   h1="¿PrestaFácil es confiable? Reportes, riesgos y pasos para protegerte"
+   paragraph="Consulta la información disponible, las señales de riesgo identificadas y los pasos para proteger tus datos."
+   paragraphMobile="Consulta la información disponible y los pasos para proteger tus datos."
+   whatsappMessage="¡Hola! Quiero orientación sobre PrestaFácil."
+/>

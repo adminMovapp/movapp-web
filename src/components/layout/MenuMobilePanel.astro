@@ -1,0 +1,393 @@
+---
+import { Image } from 'astro:assets';
+import ImgLogo from '@assets/Logo.png';
+import ImgLogoBlanco from '@assets/Logo-Blanco.png';
+import { URLS } from '@/utils/config.jsx';
+import ArrowIcon from '@assets/ArrowIcon.astro';
+
+const topLinks = [
+   { href: '/', label: 'Inicio' },
+   { href: '/el-hack', label: 'Hack' },
+];
+
+// Mismo agrupamiento que el submenú "Contenido" del header de escritorio
+// (Header.astro) -- ver ese archivo para la fuente de verdad de estos enlaces.
+//
+// "Movapp"/"Colaboraciones"/"Mente digital"/"Nuestras redes" quitados del
+// menú (2026-09-02, a pedido explícito) -- las páginas (/nosotros,
+// /collaborations, /mind, /red) siguen existiendo, solo dejan de ser
+// alcanzables desde acá.
+const contentLinks = [
+   { href: '/aplicaciones-prestamo', label: 'Aplicaciones' },
+   { href: '/preguntas-frecuente', label: 'Preguntas frecuentes' },
+   { href: '/testimonios', label: 'Testimonios' },
+   { href: '/blog', label: 'Blog' },
+   { href: '/contacto', label: 'Contáctanos' },
+];
+
+const socials = [
+   { href: URLS.youtube, label: 'YouTube', icon: '/img/logo-youtube.webp' },
+   { href: URLS.tiktok, label: 'TikTok', icon: '/img/logo-tiktok.webp' },
+   { href: URLS.facebook, label: 'Facebook', icon: '/img/logo-facebook.webp' },
+   { href: URLS.instagram, label: 'Instagram', icon: '/img/logo-instagram.webp' },
+];
+---
+
+<!--
+   Vive FUERA de <MobileBottomNav> a propósito (se renderiza como hermano
+   suyo desde Layout.astro): ese nav tiene un "transform" inline permanente
+   (ver su propio script -- compensación de viewport en iOS) y en CSS,
+   cualquier transform en un ancestro convierte a ese ancestro en el
+   contenedor de referencia para sus descendientes "position: fixed", en
+   vez del viewport. Si este panel viviera anidado ahí adentro, dejaría de
+   cubrir toda la pantalla y quedaría encerrado en los ~60px de la barra
+   inferior (bug real, encontrado con un test de Playwright: el panel
+   medía 390x60 en vez de 390x844).
+
+   El panel YA NO usa "dark-section": debe verse claro en tema claro y
+   oscuro en tema oscuro (fondo bg-white/dark:bg-background_bottom más
+   abajo), así que se apoya en las variantes "dark:" normales de Tailwind
+   en vez del remapeo global de "Secciones que SIEMPRE son oscuras" (ver
+   src/styles/global.css) -- ese remapeo es para secciones que deben
+   IGNORAR el tema, que ya no es el caso acá.
+
+   Sin StarField de fondo (a pedido): este panel es de navegación, no una
+   sección visual de contenido -- solo debe quedar el cambio de tema
+   claro/oscuro, sin animación decorativa.
+
+   El panel entra deslizándose DESDE ABAJO (arranca en translateY(100%)) y
+   sale por el mismo lado: el botón que lo abre vive en la barra inferior
+   (MenuMobile.astro dentro de MobileBottomNav), así que el movimiento nace
+   de donde el dedo tocó. Es el equivalente móvil de la "cortina" lateral
+   del menú de escritorio (MenuDesktopPanel.astro). Ver el <style> y el
+   <script> de más abajo.
+-->
+<nav
+   id="menuNav"
+   class="menu-mobile-panel fixed inset-0 z-[999999999] hidden flex-col bg-white p-6 pt-[calc(1.5rem_+_env(safe-area-inset-top))] pb-[calc(1.5rem_+_env(safe-area-inset-bottom))] dark:bg-background_bottom"
+   style="transform: translateY(100%);"
+>
+   <!-- Encabezado: marca + cerrar (misma estructura que la referencia de diseño) -->
+   <div class="relative flex items-center justify-between">
+      <a href="/" class="flex items-center" aria-label="Movapp - Inicio" data-home-link>
+         <Image src={ImgLogo} alt="Movapp" height={100} class="menu-logo block h-7 w-auto dark:hidden" />
+         <Image src={ImgLogoBlanco} alt="Movapp" height={100} class="menu-logo hidden h-7 w-auto dark:block" />
+      </a>
+
+      <button
+         id="menuCloseButton"
+         aria-label="Cerrar menú"
+         class="flex h-11 w-11 items-center justify-center rounded-full text-gray-500 hover:bg-black/5 hover:text-text_banner dark:text-white/70 dark:hover:bg-white/5 dark:hover:text-white"
+      >
+         <svg class="h-7 w-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+         </svg>
+      </button>
+   </div>
+
+   <!--
+      "justify-start" (NO "justify-center") a propósito: con las filas más
+      altas de los botones, el contenido suele desbordar el alto disponible,
+      y centrar un contenedor flex que desborda dispara un bug real de
+      layout -- varios navegadores no implementan "safe center" para
+      flexbox, así que el sobrante de ARRIBA queda fuera de rango de scroll
+      (scrollTop no puede bajar de 0 para revelarlo). Con "justify-start" el
+      primer botón ("Inicio") siempre queda alcanzable, desborde o no.
+
+      "items-start" (a pedido, vuelve a la izquierda -- ya no centrado) +
+      "pt-10" (en vez de "py-6") para bajar un poco el bloque completo.
+   -->
+   <div class="menu-mobile-scroll relative flex min-h-0 flex-1 flex-col items-start justify-start gap-5 overflow-y-auto pb-6 pt-10">
+      {
+         topLinks.map((item) => (
+            <a
+               href={item.href}
+               class="text-lg font-bold uppercase text-gray-800 transition hover:text-text_banner dark:text-white"
+            >
+               {item.label}
+            </a>
+         ))
+      }
+
+      <!-- "Contenido": acordeón (mismo agrupamiento que el submenú de escritorio),
+           igual que la sección expandible de la referencia de diseño. -->
+      <button
+         id="menuContentToggle"
+         type="button"
+         aria-expanded="false"
+         aria-controls="menuContentSubmenu"
+         class="flex items-center gap-3 text-left text-lg font-bold uppercase text-gray-800 transition hover:text-text_banner dark:text-white"
+      >
+         <span>Contenido</span>
+         <span id="menuContentChevron" class="text-base transition-transform duration-200">
+            <ArrowIcon size={4} />
+         </span>
+      </button>
+      <div id="menuContentSubmenu" class="hidden flex-col items-start gap-3 pl-1">
+         {
+            contentLinks.map((item) => (
+               <a
+                  href={item.href}
+                  class="text-lg font-semibold text-gray-600 transition hover:text-text_banner dark:text-white/80"
+               >
+                  {item.label}
+               </a>
+            ))
+         }
+      </div>
+   </div>
+
+   <!-- Carrito y tema -->
+   <div class="relative flex flex-col items-start gap-4 border-t border-black/10 pt-4 dark:border-white/10">
+      <a
+         href="/tienda"
+         id="cartButtonMobile"
+         class="relative flex items-center gap-3 text-lg font-semibold text-gray-800 transition hover:text-text_banner dark:text-white"
+      >
+         <svg class="h-5 w-5 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path
+               stroke-linecap="round"
+               stroke-linejoin="round"
+               d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+            ></path>
+         </svg>
+         <span>Carrito</span>
+         <span
+            data-cart-count
+            class="hidden h-5 w-5 items-center justify-center rounded-full bg-text_banner text-[11px] font-bold text-white"
+         >0</span>
+      </a>
+
+      <button
+         id="themeToggleMobile"
+         type="button"
+         class="flex items-center gap-3 text-lg font-semibold text-gray-800 transition hover:text-text_banner dark:text-white"
+      >
+         <svg
+            class="block h-5 w-5 flex-shrink-0 dark:hidden"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+         >
+            <circle cx="12" cy="12" r="4"></circle>
+            <path
+               d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"
+            ></path>
+         </svg>
+         <svg
+            class="hidden h-5 w-5 flex-shrink-0 dark:block"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+         >
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+         </svg>
+         <span>Cambiar tema</span>
+      </button>
+   </div>
+
+   <!-- Redes sociales (misma fila inferior que la referencia de diseño) -->
+   <div class="relative flex items-center justify-center gap-4 border-t border-black/10 pt-4 mt-4 dark:border-white/10">
+      {
+         socials.map((s) => (
+            <a
+               href={s.href}
+               target="_blank"
+               rel="noopener noreferrer"
+               aria-label={s.label}
+               class="flex h-10 w-10 items-center justify-center transition hover:-translate-y-0.5"
+            >
+               <img src={s.icon} alt={s.label} width="40" height="40" class="h-10 w-10 rounded-full object-cover" />
+            </a>
+         ))
+      }
+   </div>
+</nav>
+
+<style>
+   /*
+      Tamaño real del logo fijado acá (no solo con "h-7" de Tailwind) --
+      este <style> con scope de componente se aplica siempre, con o sin JS.
+      Mientras Tailwind no ha cargado (ver mecanismo no-js/js en
+      Layout.astro), el <img> no tiene ninguna regla de tamaño y se pinta a
+      su dimensión real (height={100}, pensado para retina) -- más grande
+      que los 28px finales de "h-7", generando un salto de layout (CLS) al
+      cargar Tailwind. Debe coincidir con "h-7" si cambia.
+   */
+   .menu-logo {
+      height: 1.75rem;
+      width: auto;
+   }
+
+   /*
+      Deslizamiento del panel, al abrir y al cerrar. Se limita a "transform"
+      a propósito (no un "transition: all"): el panel cambia de
+      background-color con el tema, y si ese cambio entrara en la misma
+      transición, alternar tema con el menú abierto se vería raro.
+
+      "linear" y no una curva ease-in-out, por el mismo motivo documentado
+      en MenuDesktopPanel.astro: toda curva ease-in-out tiene pendiente cero
+      en ambos extremos, así que buena parte de la duración se percibe como
+      quietud y el resto como un salto. Con "linear" los 450ms se sienten
+      completos como movimiento.
+
+      450ms (menos que los 700ms del escritorio): el recorrido es la altura
+      de la pantalla y el gesto es táctil, donde una respuesta lenta se nota
+      mucho más. Debe coincidir con ANIM_MS en el <script>.
+   */
+   .menu-mobile-panel {
+      transition: transform 450ms linear;
+      will-change: transform;
+   }
+
+   /* Respeta la preferencia del sistema: sin movimiento, aparece directo.
+      El script también acorta su espera de cierre en ese caso (ver ANIM_MS). */
+   @media (prefers-reduced-motion: reduce) {
+      .menu-mobile-panel {
+         transition: none;
+      }
+   }
+
+   /*
+      Scrollbar morada (a pedido, "igual que en la versión de escritorio").
+      "scrollbar-color" se hereda, así que este contenedor ya tomaría el
+      morado global de "html" (ver global.css) sin necesitar su propia
+      regla -- pero se declara igual explícitamente acá, sin depender de
+      esa herencia, por si el navegador no la propaga a un contenedor con
+      su propio scroll interno.
+   */
+   .menu-mobile-scroll {
+      scrollbar-width: thin;
+      scrollbar-color: #8149e2 #050505;
+   }
+   :global(html:not(.dark)) .menu-mobile-scroll {
+      scrollbar-color: #8149e2 #ffffff;
+   }
+   .menu-mobile-scroll::-webkit-scrollbar {
+      width: 6px;
+   }
+   .menu-mobile-scroll::-webkit-scrollbar-track {
+      background-color: #050505;
+   }
+   :global(html:not(.dark)) .menu-mobile-scroll::-webkit-scrollbar-track {
+      background-color: #ffffff;
+   }
+   .menu-mobile-scroll::-webkit-scrollbar-thumb {
+      border-radius: 9999px;
+      background-color: #8149e2;
+   }
+</style>
+
+<script>
+   const menuButton = document.getElementById('menuButton');
+   const hamburgerIcon = document.getElementById('hamburgerIcon');
+   const menuButtonCloseIcon = document.getElementById('menuButtonCloseIcon');
+   const menuNav = document.getElementById('menuNav');
+   const contentToggle = document.getElementById('menuContentToggle');
+   const contentSubmenu = document.getElementById('menuContentSubmenu');
+   const contentChevron = document.getElementById('menuContentChevron');
+
+   // Debe coincidir con la duration de .menu-mobile-panel (450ms): al cerrar
+   // se espera a que termine el deslizamiento antes de volver a
+   // "display:none", si no el cierre sería un corte seco. Con
+   // "prefers-reduced-motion" la transición está anulada en CSS, así que
+   // esperar sería solo un retardo muerto antes de ocultar.
+   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+   const ANIM_MS = () => (prefersReducedMotion.matches ? 0 : 450);
+   let closeTimeoutId = null;
+
+   function openMenu() {
+      // Un cierre en curso deja el panel todavía visible esperando su
+      // timeout para ocultarse; si no se cancela acá, ese timeout pendiente
+      // ocultaría el menú que se acaba de abrir.
+      if (closeTimeoutId) {
+         clearTimeout(closeTimeoutId);
+         closeTimeoutId = null;
+      }
+      menuNav.classList.remove('hidden');
+      menuNav.classList.add('flex');
+
+      // Reflow forzado ANTES de mover el panel: viene de "display: none", y
+      // un cambio de transform en el mismo tick en que un elemento pasa a
+      // ser visible no genera transición (el navegador junta ambos cambios
+      // en un solo estilo calculado, sin estado inicial desde el cual
+      // interpolar) -- el menú aparecería de golpe. Leer offsetHeight fuerza
+      // el recálculo y deja asentado el estado "visible pero abajo" como
+      // punto de partida de la animación.
+      void menuNav.offsetHeight;
+
+      menuNav.style.transform = 'translateY(0)';
+
+      hamburgerIcon.classList.add('hidden');
+      menuButtonCloseIcon.classList.remove('hidden');
+      menuButton.setAttribute('aria-expanded', 'true');
+      document.body.classList.add('overflow-hidden');
+   }
+
+   function closeMenu() {
+      if (closeTimeoutId) return; // ya se está cerrando
+
+      menuNav.style.transform = 'translateY(100%)';
+
+      hamburgerIcon.classList.remove('hidden');
+      menuButtonCloseIcon.classList.add('hidden');
+      menuButton.setAttribute('aria-expanded', 'false');
+      document.body.classList.remove('overflow-hidden');
+
+      // El panel recién vuelve a "display: none" cuando terminó de bajar;
+      // hasta entonces sigue cubriendo la pantalla, por eso el click
+      // delegado y el botón consultan isMenuOpen() en vez de la clase
+      // "hidden".
+      closeTimeoutId = window.setTimeout(() => {
+         closeTimeoutId = null;
+         menuNav.classList.add('hidden');
+         menuNav.classList.remove('flex');
+         // Colapsar "Contenido" al cerrar, así el menú siempre abre desde el
+         // mismo estado la próxima vez. Se hace acá (y no al empezar a
+         // cerrar) para que el submenú no desaparezca a media bajada.
+         contentSubmenu.classList.add('hidden');
+         contentSubmenu.classList.remove('flex');
+         contentToggle.setAttribute('aria-expanded', 'false');
+         contentChevron.classList.remove('rotate-180');
+      }, ANIM_MS());
+   }
+
+   // "abierto" = visible y sin cierre en curso. No alcanza con mirar la clase
+   // "hidden": durante los 450ms del cierre el panel sigue en "flex".
+   function isMenuOpen() {
+      return !menuNav.classList.contains('hidden') && closeTimeoutId === null;
+   }
+
+   menuButton.addEventListener('click', () => {
+      if (isMenuOpen()) closeMenu();
+      else openMenu();
+   });
+
+   // Acordeón "Contenido": solo abre/cierra su submenú, no debe cerrar todo
+   // el panel (por eso se excluye explícitamente del cierre delegado de abajo).
+   contentToggle.addEventListener('click', () => {
+      const isOpen = contentSubmenu.classList.toggle('flex');
+      contentSubmenu.classList.toggle('hidden', !isOpen);
+      contentToggle.setAttribute('aria-expanded', String(isOpen));
+      contentChevron.classList.toggle('rotate-180', isOpen);
+   });
+
+   // Cerrar automáticamente al elegir cualquier opción del menú (enlaces,
+   // el botón de cerrar, carrito o cambio de tema) -- delegado en vez de
+   // un listener por item porque la lista puede crecer sin tener que
+   // acordarse de engancharla acá. El toggle de "Contenido" se excluye a
+   // propósito (ver arriba: abre/cierra su submenú, no debe cerrar el panel).
+   menuNav.addEventListener('click', (e) => {
+      if (!(e.target instanceof Element)) return;
+      if (e.target.closest('#menuContentToggle')) return;
+      if (e.target.closest('a, button')) closeMenu();
+   });
+</script>

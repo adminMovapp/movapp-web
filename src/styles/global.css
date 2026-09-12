@@ -11,6 +11,18 @@ body {
 }
 
 /* ============================================================
+   Evita que el rebote elástico (bounce) al llegar al tope/fondo de
+   la página en iOS/WebKit arrastre visualmente los elementos
+   position:fixed (Header en píldora, MobileBottomNav) -- se veía
+   como si "flotaran" al llegar al límite del scroll. No afecta el
+   scroll normal, solo el rebote en los extremos.
+   ============================================================ */
+html,
+body {
+   overscroll-behavior-y: none;
+}
+
+/* ============================================================
    TEMA LIGHT — overrides globales
    Todo el sitio usa text-white / bg-white/x hardcodeado sobre fondo
    oscuro. En light reinterpretamos esas utilidades para mantener
@@ -46,89 +58,118 @@ html:not(.dark) .dark-section [class*='bg-white\/'] {
 }
 
 /* ============================================================
-   GLASS CARD — glassfrost translúcido, idéntico comportamiento
-   en light y dark. No usa utilidades bg-white/x para evitar que
-   los overrides de tema lo pisen.
+   GLASS CARD — mismo glassfrost que usa el Header al volverse
+   píldora (bg-white/90 dark:bg-zinc-950/85 + backdrop-blur-md),
+   para que todas las secciones compartan un único lenguaje visual
+   de "vidrio". Color plano en vez de gradiente a propósito, y sin
+   usar las utilidades bg-white/x de Tailwind para evitar que los
+   overrides de tema (más arriba en este archivo) lo pisen.
    ============================================================ */
 .glass-card {
-   background: linear-gradient(135deg, rgba(129, 73, 226, 0.12), rgba(255, 255, 255, 0.04));
-   -webkit-backdrop-filter: blur(16px) saturate(140%);
-   backdrop-filter: blur(16px) saturate(140%);
+   background-color: rgba(9, 9, 11, 0.85);
+   -webkit-backdrop-filter: blur(12px);
+   backdrop-filter: blur(12px);
 }
 html:not(.dark) .glass-card {
-   background: linear-gradient(135deg, rgba(129, 73, 226, 0.1), rgba(255, 255, 255, 0.55));
-   border-color: rgba(129, 73, 226, 0.25);
+   background-color: rgba(255, 255, 255, 0.9);
 }
 
 
 /* ============================================================
    MARQUEE — carrusel horizontal infinito que se desplaza a la
-   izquierda. La pista lleva los logos duplicados (2 copias), por
-   eso desplazar -50% produce un bucle perfecto.
+   izquierda. La pista tiene 4 grupos idénticos (cada uno con su
+   propio gap interno + un padding-right que reproduce ese mismo
+   gap como "costura" entre grupos), así los 4 grupos miden
+   exactamente lo mismo y translateX(-25%) cae justo donde empieza
+   el segundo grupo -> bucle perfecto, sin salto/reinicio visible.
+   Son 4 copias (no 2) para que el contenedor visible -que es más
+   ancho que un solo grupo de logos- nunca se quede sin contenido
+   a la derecha mientras la pista avanza. No se pausa en hover:
+   debe verse siempre en movimiento.
    ============================================================ */
 @keyframes marqueeScroll {
    from {
       transform: translateX(0);
    }
    to {
-      transform: translateX(-50%);
+      transform: translateX(-25%);
    }
 }
 .marquee-track {
    animation: marqueeScroll 25s linear infinite;
 }
-.marquee:hover .marquee-track {
-   animation-play-state: paused;
+
+/* ============================================================
+   FLOAT — flotado ambiental sutil y reutilizable. Cada elemento
+   define su propio --float-dur / --float-delay inline para que no
+   todos floten exactamente igual (se ve más orgánico).
+   ============================================================ */
+@keyframes floatY {
+   0%,
+   100% {
+      transform: translateY(0);
+   }
+   50% {
+      transform: translateY(-6px);
+   }
+}
+.float-anim {
+   animation: floatY var(--float-dur, 6s) ease-in-out var(--float-delay, 0s) infinite;
 }
 
 /* ============================================================
-   REVEAL escalonado (independiente de AOS, funciona también en
-   móvil <768px donde AOS está deshabilitado). Se activa con la
-   clase .in-view añadida por IntersectionObserver.
+   REVEAL STAGGER — "timelapse": los hijos directos aparecen uno
+   tras otro (con transition-delay creciente) cuando el contenedor
+   entra en viewport. El toggle de la clase "in-view" ya lo hace un
+   IntersectionObserver en cada sección que usa este patrón
+   (HomeHowItWorks, NosotrosTimeline, el-hack).
    ============================================================ */
-@keyframes cardReveal {
-   from {
-      opacity: 0;
-      transform: translateY(20px);
-   }
-   to {
-      opacity: 1;
-      transform: none;
-   }
-}
-
 .reveal-stagger > * {
    opacity: 0;
+   transform: translateY(24px);
+   transition:
+      opacity 0.6s ease-out,
+      transform 0.6s ease-out;
 }
 .reveal-stagger.in-view > * {
-   animation: cardReveal 0.6s ease-out forwards;
+   opacity: 1;
+   transform: translateY(0);
 }
 .reveal-stagger.in-view > *:nth-child(1) {
-   animation-delay: 0.05s;
+   transition-delay: 0.05s;
 }
 .reveal-stagger.in-view > *:nth-child(2) {
-   animation-delay: 0.1s;
+   transition-delay: 0.25s;
 }
 .reveal-stagger.in-view > *:nth-child(3) {
-   animation-delay: 0.15s;
+   transition-delay: 0.45s;
 }
 .reveal-stagger.in-view > *:nth-child(4) {
-   animation-delay: 0.2s;
+   transition-delay: 0.65s;
 }
 .reveal-stagger.in-view > *:nth-child(5) {
-   animation-delay: 0.25s;
+   transition-delay: 0.85s;
 }
-.reveal-stagger.in-view > *:nth-child(6) {
-   animation-delay: 0.3s;
+
+/* ============================================================
+   GRADIENT TEXT MOVE — títulos de sección con degradado
+   blanco/morado (bg-clip-text + text-transparent): el fondo se
+   agranda al doble del ancho del texto (background-size 200%) y se
+   anima su background-position de lado a lado, para que el
+   degradado se sienta en movimiento en vez de quedarse estático.
+   ============================================================ */
+@keyframes gradientTextMove {
+   0%,
+   100% {
+      background-position: 0% 50%;
+   }
+   50% {
+      background-position: 100% 50%;
+   }
 }
-.reveal-stagger.in-view > *:nth-child(7) {
-   animation-delay: 0.35s;
-}
-.reveal-stagger.in-view > *:nth-child(8) {
-   animation-delay: 0.4s;
-}
-.reveal-stagger.in-view > *:nth-child(9) {
-   animation-delay: 0.45s;
+.gradient-text-move {
+   background-size: 200% auto;
+   animation: gradientTextMove 6s ease-in-out infinite;
 }
 
 /* ============================================================
@@ -143,7 +184,146 @@ html:not(.dark) .glass-card {
       transition-duration: 0.001ms !important;
       scroll-behavior: auto !important;
    }
-   .reveal-stagger > * {
-      opacity: 1;
+
+   /*
+      Excepciones puntuales: estos efectos son movimiento
+      mínimo/decorativo (un marquee lento, un flotado de pocos px,
+      un reveal de entrada, una estrella fugaz ocasional) que el
+      dueño del sitio pidió ver explícitamente, así que se restauran
+      aquí. El resto del sitio sigue respetando reduced-motion sin
+      cambios.
+   */
+   .marquee-track {
+      animation-duration: 25s !important;
+      animation-iteration-count: infinite !important;
    }
+   .float-anim {
+      animation-duration: var(--float-dur, 6s) !important;
+      animation-iteration-count: infinite !important;
+   }
+   .field-shooting-star,
+   .home-hero-shooting-star {
+      animation-duration: var(--shoot-dur, 1.1s) !important;
+      animation-iteration-count: 1 !important;
+   }
+   .hero-logo-wave {
+      animation-duration: 5.5s !important;
+      animation-iteration-count: infinite !important;
+   }
+   .reveal-stagger > * {
+      transition-duration: 0.6s !important;
+   }
+   /* Crossfade del carrusel de "Historias reales" en escritorio (HomeTrust.astro):
+      sin esta excepción, la regla de arriba deja la transition-duration en
+      ~0 y el cambio de página se ve como un corte instantáneo en vez de un
+      cruce de opacidades. */
+   .trust-layer,
+   .testimonial-card {
+      transition-duration: 0.4s !important;
+   }
+}
+
+/* ============================================================
+   [data-aos] -- reveal on scroll, en TODO tamaño de pantalla (móvil y
+   escritorio). Antes esto lo manejaba la librería AOS, inicializada
+   desde una isla de React (InitAOS, client:only="react"): esa isla
+   tenía que cargar e hidratar en el cliente para remover el atributo
+   data-aos (en móvil, donde AOS estaba desactivado) o para agregar la
+   clase que revela cada sección (en escritorio). Si esa hidratación
+   no llegaba a ocurrir -confirmado en producción, tanto en móvil como
+   en escritorio, nunca en localhost- las secciones se quedaban en
+   opacity:0 PARA SIEMPRE, porque esta misma hoja de estilos ya las
+   ocultaba desde antes de que hubiera oportunidad de correr JS. Se
+   reemplazó por CSS puro + un IntersectionObserver plano (ver
+   Layout.astro) que no depende de ningún framework para ejecutarse --
+   mismo lenguaje visual que tenía AOS (mismos valores de traslado),
+   pero sin ese punto de falla, y ahora activo también en móvil.
+   ============================================================ */
+[data-aos] {
+   opacity: 0;
+   transition:
+      opacity 0.8s ease,
+      transform 0.8s ease;
+   will-change: opacity, transform;
+}
+[data-aos='fade-up'] {
+   transform: translate3d(0, 100px, 0);
+}
+[data-aos='fade-down'] {
+   transform: translate3d(0, -100px, 0);
+}
+[data-aos='fade-right'] {
+   transform: translate3d(-100px, 0, 0);
+}
+[data-aos='fade-left'] {
+   transform: translate3d(100px, 0, 0);
+}
+[data-aos='zoom-in'] {
+   transform: scale(0.6);
+}
+[data-aos].aos-animate {
+   opacity: 1;
+   transform: none;
+}
+
+/* ============================================================
+   Scrollbar: el thumb se difumina de morado (purple_mv) al color
+   de fondo del sitio, y el track lleva el mismo patrón de
+   estrellitas tenues que StarField/el hero. Sin media query -- a
+   diferencia de lo que se pensaba antes, varios navegadores
+   móviles (Chrome/Firefox Android) sí respetan scrollbar-color y
+   ::-webkit-scrollbar en el scrollbar de la página; donde el
+   navegador no lo soporte (ej. Safari iOS, con su indicador nativo
+   no estilizable) estas reglas simplemente no tienen efecto, sin
+   romper nada.
+   ============================================================ */
+html {
+   scrollbar-width: thin;
+   scrollbar-color: #8149e2 #050505;
+}
+html:not(.dark) {
+   scrollbar-color: #8149e2 #f9fafb;
+}
+
+html::-webkit-scrollbar {
+   width: 12px;
+}
+
+html::-webkit-scrollbar-track {
+   background-color: #050505;
+   background-image:
+      radial-gradient(1px 1px at 20% 8%, rgba(255, 255, 255, 0.55), transparent 60%),
+      radial-gradient(1px 1px at 65% 22%, rgba(255, 255, 255, 0.35), transparent 60%),
+      radial-gradient(1.4px 1.4px at 35% 42%, rgba(255, 255, 255, 0.5), transparent 60%),
+      radial-gradient(1px 1px at 80% 58%, rgba(255, 255, 255, 0.3), transparent 60%),
+      radial-gradient(1px 1px at 15% 75%, rgba(255, 255, 255, 0.42), transparent 60%),
+      radial-gradient(1.2px 1.2px at 60% 90%, rgba(255, 255, 255, 0.32), transparent 60%);
+   background-repeat: repeat-y;
+   background-size: 100% 220px;
+}
+html:not(.dark)::-webkit-scrollbar-track {
+   background-color: #f9fafb;
+   background-image:
+      radial-gradient(1px 1px at 20% 8%, rgba(129, 73, 226, 0.4), transparent 60%),
+      radial-gradient(1px 1px at 65% 22%, rgba(129, 73, 226, 0.28), transparent 60%),
+      radial-gradient(1.4px 1.4px at 35% 42%, rgba(129, 73, 226, 0.35), transparent 60%),
+      radial-gradient(1px 1px at 80% 58%, rgba(129, 73, 226, 0.22), transparent 60%),
+      radial-gradient(1px 1px at 15% 75%, rgba(129, 73, 226, 0.3), transparent 60%),
+      radial-gradient(1.2px 1.2px at 60% 90%, rgba(129, 73, 226, 0.24), transparent 60%);
+}
+
+/* Morado arriba, fondo abajo, con una zona difuminada en medio */
+html::-webkit-scrollbar-thumb {
+   border-radius: 9999px;
+   background-image: linear-gradient(180deg, #8149e2 0%, #8149e2 35%, #050505 65%, #050505 100%);
+}
+html:not(.dark)::-webkit-scrollbar-thumb {
+   background-image: linear-gradient(180deg, #8149e2 0%, #8149e2 35%, #f9fafb 65%, #f9fafb 100%);
+}
+
+html::-webkit-scrollbar-thumb:hover {
+   background-image: linear-gradient(180deg, #9563e8 0%, #9563e8 35%, #101010 65%, #101010 100%);
+}
+html:not(.dark)::-webkit-scrollbar-thumb:hover {
+   background-image: linear-gradient(180deg, #9563e8 0%, #9563e8 35%, #eceef2 65%, #eceef2 100%);
 }

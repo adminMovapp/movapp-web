@@ -1,0 +1,171 @@
+---
+import { Image } from 'astro:assets';
+import StormField from '@components/decorative/StormField.astro';
+import Breadcrumbs from '@components/ui/Breadcrumbs.astro';
+import ImgElHackBlanco from '@assets/elhack-blanco.png';
+import ImgElHackNegro from '@assets/elhack-negro.png';
+---
+
+<!--
+   Sin pb-16 a propósito (mismo criterio que HomeHero.astro): este <section>
+   no usa "my-section" (el margen estándar de 4rem, ver tailwind.config.mjs,
+   que colapsa con el margin-top de la siguiente sección), sino padding para
+   el centrado vertical del contenido. Un pb-16 acá no colapsa con el
+   mt-section de ElHackWhatIs -- se suma encima (128px en vez de 64px), casi
+   el doble del espacio de cualquier otro par de secciones de la página.
+-->
+<section class="relative mx-auto flex max-w-4xl flex-col items-center justify-center px-4 pt-16 text-center">
+   <!--
+      Mismo fondo de tormenta (rayos + niebla) que el resto de las secciones
+      de El Hack -- antes el hero tenía sus propios truenos, más gruesos y
+      protagonistas, pero a pedido ahora usa el mismo StormField que
+      ElHackWhatIs/HowItWorks/Features/FAQ/CTA para que el fondo se sienta
+      consistente en toda la página. boltCount más alto (5): el hero es más
+      grande que el resto de las secciones (max-w-4xl + más padding vertical).
+   -->
+   <StormField id="el-hack-hero" boltCount={5} />
+
+   <Breadcrumbs />
+
+   <!--
+      Fondo negro + resplandor central: capa aparte del StormField de arriba
+      (que ya trae su propia niebla) -- este es el fondo sólido de la sección
+      y el resplandor original del hero, sin relación con los rayos.
+   -->
+   <div
+      class="pointer-events-none absolute -top-24 -bottom-24 left-1/2 -z-20 flex w-screen items-center justify-center -translate-x-1/2"
+      aria-hidden="true"
+   >
+      <div class="absolute inset-0 dark:bg-[#050505]"></div>
+      <div
+         class="absolute left-1/2 top-[-160px] h-[460px] w-[70%] max-w-[900px] -translate-x-1/2 rounded-full bg-purple_mv/[0.06] blur-[150px] dark:bg-purple_mv/[0.18]"
+      >
+      </div>
+   </div>
+
+   <!-- H1 (único H1 de la página) -->
+   <h1 class="max-w-3xl text-3xl font-bold uppercase leading-tight text-gray-900 dark:text-white md:text-5xl">
+      El Hack: <span class="text-text_banner">bloquea</span> el <span class="text-text_banner">acoso</span> de <span class="text-text_banner">las</span>
+      <span class="text-text_banner drop-shadow-[0_0_25px_rgba(129,73,226,0.35)]">apps de préstamo</span>
+      y <span class="text-text_banner">recupera</span> <span class="text-text_banner drop-shadow-[0_0_25px_rgba(129,73,226,0.35)]">tu paz</span>
+   </h1>
+
+   <!--
+      Logo de El Hack en el flujo del contenido (entre el título y el
+      párrafo que le sigue) -- ya no es capa de fondo, pero conserva las
+      mismas animaciones que tenía ahí (float + glitch).
+   -->
+   <div class="hero-logo-float relative z-10 my-6 w-[55%] max-w-[380px] aspect-[510/144]" aria-hidden="true">
+      <Image
+         src={ImgElHackNegro}
+         alt=""
+         class="hero-logo-glitch absolute inset-0 h-full w-full object-contain opacity-30 blur-[2px] dark:hidden"
+      />
+      <Image
+         src={ImgElHackBlanco}
+         alt=""
+         class="hero-logo-glitch absolute inset-0 hidden h-full w-full object-contain opacity-30 blur-[2px] dark:block"
+      />
+   </div>
+
+   <p class="relative z-10 mx-auto mt-8 max-w-2xl text-base md:text-lg text-gray-700 dark:text-white/80">
+      La herramienta de Movapp que detiene las llamadas y los mensajes de acoso, protege a tus contactos y te
+      acompaña con un asesor real.
+   </p>
+</section>
+
+<style>
+   /*
+      Flotado del logo: un bob vertical lento y continuo. Va en el wrapper
+      (no en cada <Image>) para no competir con el "transform" del glitch de
+      abajo -- cada uno anima una propiedad en un elemento distinto.
+   */
+   .hero-logo-float {
+      animation: heroLogoFloat 6.5s ease-in-out infinite;
+   }
+
+   @keyframes heroLogoFloat {
+      0%,
+      100% {
+         transform: translateY(0);
+      }
+      50% {
+         transform: translateY(-14px);
+      }
+   }
+
+   /*
+      Glitch del logo: casi todo el ciclo queda en reposo (sin offset, en la
+      opacidad base de 30%) y solo en una ventana corta salta con cortes de
+      clip-path + desplazamientos + un pico de opacidad (sube y baja de
+      golpe), como una señal que se corta un instante. Acá SÍ se anima
+      "opacity" (a diferencia de otros efectos del archivo) porque a 30% de
+      opacidad + blur, un offset de unos px es casi imperceptible -- el pico
+      de brillo es lo que realmente hace notar el glitch. 0%/100% quedan en
+      0.3 para no pisar el opacity-30 de Tailwind fuera de esa ventana.
+   */
+   .hero-logo-glitch {
+      animation: heroLogoGlitch 5.5s steps(1) infinite;
+   }
+
+   @keyframes heroLogoGlitch {
+      0%,
+      85%,
+      100% {
+         transform: translate(0, 0);
+         clip-path: inset(0 0 0 0);
+         opacity: 0.3;
+      }
+      86% {
+         transform: translate(-6px, 2px);
+         clip-path: inset(15% 0 55% 0);
+         opacity: 0.75;
+      }
+      87.5% {
+         transform: translate(5px, -2px);
+         clip-path: inset(58% 0 8% 0);
+         opacity: 0.12;
+      }
+      89% {
+         transform: translate(-4px, 0);
+         clip-path: inset(30% 0 42% 0);
+         opacity: 0.85;
+      }
+      90.5%,
+      94% {
+         transform: translate(0, 0);
+         clip-path: inset(0 0 0 0);
+         opacity: 0.3;
+      }
+      95.5% {
+         transform: translate(6px, -1px);
+         clip-path: inset(62% 0 4% 0);
+         opacity: 0.7;
+      }
+      97% {
+         transform: translate(0, 0);
+         clip-path: inset(0 0 0 0);
+         opacity: 0.3;
+      }
+   }
+
+   /*
+      El sitio tiene una regla global (src/styles/global.css) que fuerza
+      animation-duration a ~0 bajo prefers-reduced-motion -- eso dejaría el
+      flotado y el glitch siempre en su estado final (quietos). Igual que la
+      excepción ya documentada para la órbita de HomeHero.astro, se
+      restauran acá a propósito: son puramente decorativas, no bloquean ni
+      compiten con contenido real. Los rayos/niebla de fondo son ahora
+      StormField.astro, que trae su propia excepción equivalente.
+   */
+   @media (prefers-reduced-motion: reduce) {
+      .hero-logo-float {
+         animation-duration: 6.5s !important;
+         animation-iteration-count: infinite !important;
+      }
+      .hero-logo-glitch {
+         animation-duration: 5.5s !important;
+         animation-iteration-count: infinite !important;
+      }
+   }
+</style>

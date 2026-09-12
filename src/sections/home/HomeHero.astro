@@ -1,0 +1,840 @@
+---
+import { Image } from 'astro:assets';
+import ImgLogoResp from '@assets/logo_resp.webp';
+import ImgLogoRespBlanco from '@assets/logo_resp_blanco.webp';
+// width=480 (~2x retina para el hueco máximo de 240px, ver skill Rendimiento)
+// en vez del tamaño real del archivo fuente.
+import ImgAsesoria from '@assets/Asesoria-gratuita.webp';
+import ImgHeroCiudad from '@assets/silencia-los-mensajes-amenazantes.webp';
+// Versión SOLO para móvil (2026-09-10, a pedido): mismo archivo con ~85px de
+// relleno negro sólido arriba/abajo (generado con sharp, tomando el color
+// real de las esquinas de la foto -- fondo ya era negro puro, no se nota la
+// costura). Ver el comentario junto a <picture> más abajo: el motivo es
+// puramente geométrico, no se puede resolver con clases de Tailwind.
+import ImgHeroCiudadMobile from '@assets/Silencia-los-mensajes-amenazantes-mobile.webp';
+import ButtonContact from '@components/ui/ButtonContact.astro';
+import StoreBadges from '@components/ui/StoreBadges.astro';
+---
+
+<!--
+   Sin pt-*/pb-* a propósito: a diferencia del resto del sitio, este
+   <section> no usa "my-section" (margen, que colapsa con el margin-top de la
+   siguiente sección y da el espaciado estándar de 4rem, ver
+   tailwind.config.mjs) sino min-h+flex para el centrado vertical. El
+   pt-16/md:pt-8 que tenía antes (espacio bajo el header, para cuando el H1
+   era lo primero del Hero) se quitó (2026-09-02) al pasar la foto de
+   portada a ser lo primero -- esa foto debe quedar pegada al borde de la
+   pantalla en móvil, y justo debajo del header en escritorio (ya resuelto
+   por ".header-spacer", ver Header.astro), sin un padding de más encima
+   dejando un hueco. Tampoco se agrega pb-* por la razón de siempre: no
+   colapsa con el mt-section de HomeSymptoms, se sumaría encima.
+-->
+<section class="relative mx-auto flex min-h-[85vh] max-w-5xl flex-col items-center justify-center px-4 text-center md:min-h-[70vh]">
+   <!--
+      Fondo espacial: full-bleed (ignora el max-w del section con el truco
+      left-1/2 + w-screen + -translate-x-1/2) para que llene todo el ancho
+      de la pantalla y no se vea como un recuadro morado aparte. La base es
+      del mismo tono que el fondo del body; el morado queda solo como un
+      resplandor superior tenue, y las estrellas se crean por JS más abajo.
+   -->
+   <div
+      class="pointer-events-none absolute -top-24 -bottom-24 left-1/2 -z-20 w-screen -translate-x-1/2"
+      aria-hidden="true"
+   >
+      <!-- Base: mismo tono que el fondo del body -->
+      <div class="absolute inset-0 dark:bg-[#050505]"></div>
+
+      <!-- Resplandor superior: el "toque morado", tenue -->
+      <div
+         class="absolute left-1/2 top-[-160px] h-[460px] w-[70%] max-w-[900px] -translate-x-1/2 rounded-full bg-purple_mv/[0.06] blur-[150px] dark:bg-purple_mv/[0.18]"
+      >
+      </div>
+
+      <!-- Estrellas: el contenedor solo define el color (currentColor); las estrellas las crea el script de más abajo.
+           Ocultas en fondo claro (2026-09-10, a pedido, mismo criterio que StarField.astro) -- "hidden dark:block"
+           en vez de tocar el script: en oscuro quedan exactamente igual que antes. -->
+      <div id="hero-stars" class="absolute inset-0 hidden text-white/90 dark:block"></div>
+
+      <!-- Estrellas fugaces: cruzan el hero de vez en cuando (mismo patrón que StarField.astro, que el hero no usa por tener su propio fondo) -->
+      <div id="hero-shooting-stars" class="absolute inset-0 overflow-hidden text-purple_mv/70 dark:text-white"></div>
+   </div>
+
+   <!--
+      Bloque del título + animación: en móvil, el título va solo, sin la
+      órbita de escudos de fondo (removida a pedido -- ver más abajo). En
+      escritorio (md+) se abre a 2 columnas: el texto queda a la izquierda y
+      la órbita (intacta, sin cambios) es el elemento visual de la columna
+      derecha.
+
+      Escenario de scroll (2026-09-02): este bloque queda "clavado" en
+      pantalla (position: sticky) mientras la foto de portada (Erik en la
+      calle) se le encima, se achica y se desvanece -- mismo criterio de
+      solo-lectura de scroll que .riesgo-track en RiskTimeline.astro (nunca
+      preventDefault()/scrollTo()). El wrapper mide más que la pantalla
+      (h-[170vh]) para darle "recorrido" al efecto mientras el escenario
+      queda pegado arriba; al terminar ese alto extra, se despega y sigue
+      el flujo normal (la card de "Asesoría gratuita" de más abajo). Al
+      vivir título+órbita y foto en el MISMO punto de pantalla (no uno
+      después del otro en la página), quedan a la vista en el instante en
+      que la foto se vuelve transparente -- a pedido explícito: "quiero que
+      el texto que sigue después de la imagen, prácticamente aparezca al
+      desvanecerse la imagen".
+
+      "items-end" en móvil (en vez de centrado): con el título solo (sin
+      órbita) centrado en una caja de 100vh, quedaba mucho aire debajo de
+      él -- ese aire, al despegarse el escenario, es lo que había que
+      scrollear de más antes de llegar a la card de "Asesoría gratuita"
+      (a pedido: "el título del hero deja otro espacio... con la card").
+      Pegando el título abajo, ese aire queda ARRIBA (invisible mientras
+      el escenario está clavado, tapado por la foto) y no después. El
+      pb-16 deja lugar justo sobre MobileBottomNav (aunque no es "fixed",
+      sigue siendo "sticky bottom-0" -- confirmado que igual queda
+      encimado sobre el contenido de abajo durante todo el scroll, no solo
+      al final de la página; medido en 45px de alto, este padding le deja
+      margen de sobra sin volver a abrir el hueco grande de antes). En
+      escritorio se mantiene centrado (md:items-center) -- ahí la órbita sí
+      llena ese espacio, así que no hay hueco que corregir.
+   -->
+   <div id="home-hero-stage-wrapper" class="relative w-full h-[170vh]">
+      <div class="sticky top-0 flex h-screen w-full items-end justify-center pb-16 md:items-center md:pb-0">
+   <div class="relative z-0 w-full md:grid md:grid-cols-2 md:items-center md:gap-10 lg:gap-16">
+      <div class="relative">
+         <!--
+            H1 (único H1 de la página). Todo el texto (el "eyebrow" +
+            el título) vive dentro de este mismo H1, en escritorio Y en
+            móvil (a pedido) -- ya no hay un <p> suelto aparte, así no hay
+            texto duplicado ni riesgo de dos encabezados. En escritorio,
+            además, todo va en mayúsculas ("md:uppercase": text-transform se
+            hereda, alcanza con ponerlo una vez acá) -- en móvil se queda en
+            el case normal, como siempre.
+
+            "acoso" y "Movapp" en morado (text_banner); "apps de préstamo"
+            además lleva el mismo drop-shadow que ya usaba la frase
+            equivalente en el título anterior -- a pedido (2026-08-27).
+         -->
+         <h1
+            class="hero-float-combo mx-auto mt-4 max-w-4xl text-4xl font-bold leading-tight text-gray-900 dark:text-white md:mx-0 md:text-left md:text-6xl md:uppercase"
+            style="--float-dur: 6.5s; --float-delay: 0.3s; animation: heroFadeIn 0.7s ease-out both, heroFloat 6.5s ease-in-out 0.3s infinite;"
+         >
+Frena el <span class="text-text_banner">acoso</span> de las <span class="text-text_banner drop-shadow-[0_0_25px_rgba(129,73,226,0.35)]">apps de préstamo</span> con <span class="text-text_banner">Movapp</span>
+         </h1>
+      </div>
+
+      <!-- Animación de Órbita de Protección -- versión escritorio: columna derecha, protagonista (ya no es fondo de toda la sección) -->
+      <div class="relative hidden md:flex md:items-center md:justify-center" aria-hidden="true">
+         <!--
+            Mismo patrón que la versión móvil de arriba: el grupo es un
+            contenedor flex centrado, y los círculos son hijos "absolute" con
+            solo ancho/alto (sin translate) -- el navegador los centra en el
+            punto medio del grupo por las reglas de alineación de flex para
+            hijos posicionados. No se puede centrar con translate-x/y aquí
+            porque el script de más abajo reemplaza por completo el transform
+            de .hero-orbit-inner/outer en cada frame (solo para rotar), y lo
+            pisaría.
+
+            A diferencia de sus hijos (todos "absolute", sin tamaño propio),
+            ESTE contenedor sí lleva ancho/alto explícitos (círculo exterior +
+            el sobresaliente de los escudos en cada punto): así aporta una
+            altura real a esta columna del grid, en vez de colapsar a 0 y
+            dejar que la fila se dimensione solo por el título de la
+            izquierda. Eso causaba dos síntomas opuestos según cuántas líneas
+            ocupara el H1: con el título corto (pantallas anchas), la fila
+            quedaba más baja que el diámetro real del círculo y este se salía
+            por debajo, superponiéndose con la card de "Asesoría gratuita"
+            de más abajo; con el título largo (3 líneas), un min-height fijo
+            que se probó para lo anterior sumaba espacio de más siempre, sin
+            importar si hacía falta, y el bloque completo quedaba con mucho
+            aire arriba (toda la sección se centra con justify-center en el
+            <section> exterior). Con tamaño real aquí, la fila mide
+            max(alto del título, alto del círculo) -- ni más ni menos -- y
+            "items-center" en el grid centra ambas columnas dentro de esa
+            altura correcta en todos los casos.
+         -->
+         <div class="hero-orbit-group pointer-events-none relative z-[-10] flex h-[304px] w-[304px] items-center justify-center opacity-30 dark:opacity-40 lg:h-[396px] lg:w-[396px] xl:h-[484px] xl:w-[484px]">
+            <!-- Círculo interior (decorativo) -->
+            <div class="hero-orbit-inner absolute h-[170px] w-[170px] rounded-full border-[1.5px] border-purple_mv/20 border-dashed lg:h-[230px] lg:w-[230px] xl:h-[280px] xl:w-[280px]"></div>
+
+            <!-- Círculo Exterior (Órbita de Escudos) -->
+            <div class="hero-orbit-outer absolute h-[260px] w-[260px] rounded-full border border-purple_mv/30 lg:h-[340px] lg:w-[340px] xl:h-[420px] xl:w-[420px]">
+
+               <!-- Escudo 1 (Arriba: 0 grados) -->
+               <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-11 h-11 text-purple_mv lg:w-14 lg:h-14 xl:w-16 xl:h-16">
+                  <div class="w-full h-full hero-orbit-item">
+                     <svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full drop-shadow-[0_0_8px_rgba(129,73,226,0.6)]">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill-opacity="0.15" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+                     </svg>
+                  </div>
+               </div>
+
+               <!-- Escudo 2 (Abajo Izquierda: 120 grados) -->
+               <div class="absolute top-[75%] left-[6.7%] -translate-x-1/2 -translate-y-1/2 w-11 h-11 text-purple_mv lg:w-14 lg:h-14 xl:w-16 xl:h-16">
+                  <div class="w-full h-full hero-orbit-item">
+                     <svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full drop-shadow-[0_0_8px_rgba(129,73,226,0.6)]">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill-opacity="0.15" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+                     </svg>
+                  </div>
+               </div>
+
+               <!-- Escudo 3 (Abajo Derecha: 240 grados) -->
+               <div class="absolute top-[75%] left-[93.3%] -translate-x-1/2 -translate-y-1/2 w-11 h-11 text-purple_mv lg:w-14 lg:h-14 xl:w-16 xl:h-16">
+                  <div class="w-full h-full hero-orbit-item">
+                     <svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full drop-shadow-[0_0_8px_rgba(129,73,226,0.6)]">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill-opacity="0.15" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+                     </svg>
+                  </div>
+               </div>
+
+            </div>
+         </div>
+
+         <!--
+            Logo Movapp + ondas, flotando en el centro de la órbita. Solo en escritorio
+            (a pedido: en móvil se queda como antes, sin logo). El wrap se centra igual
+            que .hero-orbit-group: "absolute" sin left/top/translate, el navegador lo
+            centra por las reglas de alineación de flex para hijos posicionados del
+            contenedor padre.
+
+            Las ondas (mucho más grandes que el wrap, ver más abajo) usan ESE MISMO
+            truco puertas adentro -- el wrap ahora es "flex items-center
+            justify-center" y las ondas son "absolute" sin ningún inset, para que
+            valga la regla de alineación de flex para hijos posicionados. Antes usaban
+            "inset-0 + margin:auto", que en teoría también centra elementos más
+            grandes que su contenedor, pero en la práctica Chromium repartía el
+            margen negativo de forma asimétrica en el eje horizontal (margin-left:0,
+            margin-right:-292px en vez de -146px cada uno) y la onda quedaba corrida
+            hacia la derecha -- confirmado con los estilos computados. El truco de
+            flex sí es simétrico porque es el mismo que ya funciona bien para los
+            anillos de la órbita.
+
+            La imagen del logo sigue con "inset-0 + margin:auto" porque ahí sí funciona
+            (su tamaño no excede el del wrap en ningún eje).
+         -->
+         <div
+            class="hero-logo-wrap pointer-events-none absolute z-[-5] flex h-20 w-20 items-center justify-center lg:h-28 lg:w-28 xl:h-32 xl:w-32"
+            aria-hidden="true"
+         >
+            <!--
+               Tamaño base = el mismo que .hero-orbit-outer (260/340/420px, ver arriba),
+               para que la onda termine su recorrido justo en el círculo donde orbitan
+               los escudos. La animación arranca en scale(0.3) -- aprox. el tamaño del
+               propio logo relativo a ese círculo -- y crece hasta scale(1) (tamaño
+               completo del círculo), en vez de crecer un poco y desvanecerse cerca del
+               logo como antes.
+            -->
+            <span
+               class="hero-logo-wave absolute h-[260px] w-[260px] rounded-full border-2 border-purple_mv/60 dark:border-white/50 lg:h-[340px] lg:w-[340px] xl:h-[420px] xl:w-[420px]"
+               style="animation-delay: 0s;"
+            ></span>
+            <span
+               class="hero-logo-wave absolute h-[260px] w-[260px] rounded-full border-2 border-purple_mv/60 dark:border-white/50 lg:h-[340px] lg:w-[340px] xl:h-[420px] xl:w-[420px]"
+               style="animation-delay: 1.83s;"
+            ></span>
+            <span
+               class="hero-logo-wave absolute h-[260px] w-[260px] rounded-full border-2 border-purple_mv/60 dark:border-white/50 lg:h-[340px] lg:w-[340px] xl:h-[420px] xl:w-[420px]"
+               style="animation-delay: 3.67s;"
+            ></span>
+
+            <Image
+               src={ImgLogoResp}
+               alt="Movapp"
+               height={260}
+               class="absolute inset-0 m-auto h-auto w-full opacity-45 dark:hidden dark:opacity-60"
+               style="animation: heroFloat 5.5s ease-in-out 0.45s infinite;"
+            />
+            <Image
+               src={ImgLogoRespBlanco}
+               alt="Movapp"
+               height={260}
+               class="absolute inset-0 m-auto hidden h-auto w-full opacity-45 dark:block dark:opacity-60"
+               style="animation: heroFloat 5.5s ease-in-out 0.45s infinite;"
+            />
+         </div>
+      </div>
+   </div>
+
+      <!--
+         Foto de portada: cubre el escenario por encima del título+órbita
+         (z-10) y se achica/desvanece por scroll -- ver el <script> al final
+         del archivo. Full-bleed dentro del escenario con el mismo truco que
+         el fondo espacial de arriba (left-1/2 + w-screen + -translate-x-1/2),
+         aunque el escenario herede el max-w-5xl angosto del <section>.
+         overflow-hidden sólo en ESTE div (no en el escenario completo) para
+         no arriesgar recortar el título+órbita si llegan a medir más que
+         100vh (zoom/fuente grande).
+
+         Imagen actual: sujeto (celular + burbujas de chat) ya centrado en la
+         foto original, así que "object-cover" con posición por defecto
+         (center) alcanza sin necesitar ningún "object-position" a la medida
+         (a diferencia de la foto anterior, de 2 personas a los lados).
+
+         Versión de imagen distinta SOLO para móvil (2026-09-10, a pedido: la
+         quería llenando toda la pantalla PERO sin verse "muy extendida").
+         Ambos pedidos chocan con "object-cover" puro: en un recorte tan
+         angosto y alto como un celular, "object-cover" ya muestra el alto
+         completo de la foto sin recortar (el ancho es lo que se recorta) --
+         no hay ningún ajuste de CSS que reduzca el "zoom" sin dejar de
+         cubrir la pantalla completa, porque el zoom lo define la proporción
+         ancho/alto real del archivo. La solución fue generar (con sharp,
+         ver el import de ImgHeroCiudadMobile) una segunda versión del MISMO
+         archivo con ~85px de relleno negro sólido arriba y abajo -- el
+         fondo de la foto ya era negro puro, así que no se nota ninguna
+         costura -- que achica el celular/las burbujas proporcionalmente
+         (menos "zoom" necesario para cubrir) sin dejar de llenar la
+         pantalla entera, porque "object-cover" sigue haciendo su trabajo
+         normal sobre el archivo ya modificado. En escritorio el recorte es
+         mucho menos angosto y no hace falta nada de esto, por eso ahí se
+         sigue usando el archivo original sin tocar.
+      -->
+      <div id="home-hero-image-cover" class="pointer-events-none absolute top-0 bottom-0 left-1/2 z-10 w-screen -translate-x-1/2 overflow-hidden">
+         <Image
+            src={ImgHeroCiudadMobile}
+            alt="Persona sosteniendo su teléfono mientras silencia mensajes de acoso de una app de préstamos"
+            widths={[640, 1024]}
+            sizes="100vw"
+            width={1917}
+            height={1706}
+            loading="eager"
+            fetchpriority="high"
+            class="block h-full w-full object-cover md:hidden"
+         />
+         <Image
+            src={ImgHeroCiudad}
+            alt="Persona sosteniendo su teléfono mientras silencia mensajes de acoso de una app de préstamos"
+            widths={[1024, 1536, 1920]}
+            sizes="100vw"
+            width={1917}
+            height={1536}
+            loading="eager"
+            fetchpriority="high"
+            class="hidden h-full w-full object-cover md:block"
+         />
+         <!-- Degradado hacia el fondo real de la página (gray-300 / #050505, ver <body> en Layout.astro) para que el corte con lo de abajo sea gradual -->
+         <div
+            class="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-gray-300 dark:to-[#050505]"
+            aria-hidden="true"
+         >
+         </div>
+      </div>
+      </div>
+   </div>
+
+   <!--
+      Indicador de scroll (mismo pedido: "un indicador de scroll... para que
+      el usuario no sepa que debe hacer scroll") -- ícono de mouse + flecha,
+      centrado abajo de la pantalla. "fixed" respecto al viewport real, NO
+      "absolute" adentro de #home-hero-image-cover como el breadcrumb de
+      arriba: ese contenedor mide h-screen pero arranca a la altura del
+      header (74px de "header-spacer" en escritorio), así que su propio
+      "bottom" queda esos mismos 74px por debajo del viewport visible en la
+      carga inicial -- cualquier cosa anclada a SU borde inferior (como el
+      breadcrumb, que está anclado arriba, no sufre esto) nace ya tapada por
+      el borde de la pantalla. "fixed" evita el problema por completo
+      (ignora esa caja, se ancla al viewport de verdad) -- funciona porque
+      esta sección no tiene transform/filter propio, así que ningún
+      ancestro convierte el "fixed" en "absolute" (eso sí le pasaría si
+      viviera dentro de #home-hero-image-cover, que sí tiene transform vía
+      JS). Solo lectura de scroll, igual que el resto del efecto de esta
+      sección (ver script "initHeroStage" más abajo, que también controla su
+      opacidad): se desvanece apenas el usuario empieza a scrollear, no
+      hace falta que siga ahí una vez que ya entendió que hay más contenido
+      debajo -- por eso "fixed" no es un problema pese a persistir en el DOM
+      mientras el usuario sigue bajando por el resto de la página.
+   -->
+   <div
+      id="home-hero-scroll-cue"
+      class="pointer-events-none fixed inset-x-0 bottom-16 z-20 flex flex-col items-center gap-2 text-white md:bottom-10"
+      aria-hidden="true"
+   >
+      <span class="scroll-cue-mouse flex h-9 w-6 items-start justify-center rounded-full border-2 border-white/70 p-1.5">
+         <span class="scroll-cue-dot h-1.5 w-1.5 rounded-full bg-white"></span>
+      </span>
+      <svg class="scroll-cue-chevron h-3.5 w-3.5 drop-shadow-[0_1px_3px_rgba(0,0,0,0.6)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+         <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+      </svg>
+   </div>
+
+   <!-- Asesoría gratuita -->
+   <div
+      class="hero-float-solo mt-10 grid w-full grid-cols-1 items-center gap-6 overflow-hidden rounded-3xl border border-purple_mv/25 bg-gradient-to-b from-purple_mv/[0.06] to-transparent p-6 text-left shadow-card dark:border-white/10 dark:from-purple_mv/[0.1] dark:to-black/30 md:mt-14 md:grid-cols-2 md:gap-10 md:p-10"
+      style="--float-dur: 6.2s; --float-delay: 0.6s; animation: heroFloat 6.2s ease-in-out 0.6s infinite;"
+   >
+      <!-- order-2/md:order-1 + order-1/md:order-2 en este div y el de la imagen
+           (a pedido, 2026-08-27): en móvil (grid-cols-1, todo apilado) el orden
+           visual pasa a ser imagen -> título -> texto/botón/badges; en
+           escritorio (md:grid-cols-2) vuelve al diseño original -- este bloque
+           en la columna izquierda, imagen en la derecha -- sin tocar el DOM. -->
+      <div class="order-2 md:order-1">
+         <h2 class="text-2xl font-bold uppercase gradient-text-move bg-gradient-to-r from-gray-900 to-purple_mv bg-clip-text text-transparent dark:from-white dark:to-purple_mv md:text-3xl">
+            Asesoría gratuita
+         </h2>
+         <p class="mt-3 text-gray-700 dark:text-white/80">
+            Detén las llamadas, los mensajes de acoso a ti, así como a tus contactos.
+            <strong class="font-bold text-text_banner">Un asesor real te acompaña paso a paso, sin costo.</strong>
+         </p>
+         <div class="mt-6">
+            <ButtonContact id="whatsapp-home-hero" label="Hablar con un asesor" fullWidth pageType="home" sectionName="asesoria_gratuita" />
+         </div>
+
+         <!-- Íconos de tienda + contador de descargas: solo en móvil (ver
+              wireframe de estructura móvil), debajo del botón de WhatsApp. -->
+         <div class="mt-6 flex flex-col items-center gap-3 md:hidden">
+            <StoreBadges size="sm" order="app-first" />
+            <p class="text-sm font-bold text-text_banner">5000+ Descargas</p>
+         </div>
+      </div>
+
+      <!-- Con tope de ancho + mx-auto para que no ocupe toda la columna: se veía
+           demasiado grande frente al texto. Ahora también visible en móvil
+           (a pedido, 2026-08-27) -- ver el comentario de "order" arriba. -->
+      <div class="order-1 mx-auto flex aspect-[4/3] w-full max-w-[220px] items-center justify-center overflow-hidden rounded-2xl border border-purple_mv/20 bg-purple_mv/5 dark:border-white/10 dark:bg-white/5 md:order-2 md:aspect-square md:max-w-[240px]">
+         <Image
+            src={ImgAsesoria}
+            alt="Asesor de Movapp ayudando a frenar el acoso de apps montadeudas"
+            width={480}
+            class="h-full w-full object-cover"
+            loading="lazy"
+         />
+      </div>
+   </div>
+</section>
+
+<style>
+   /*
+      Las estrellas las crea el script de más abajo (posiciones/tamaños random),
+      así que el keyframe/clase debe quedar sin scope de Astro: si no, el hash
+      de scoping no llega a nodos insertados por JS después del render inicial.
+   */
+   /*
+      box-shadow FIJO (no animado): en las ~150 estrellas de esta sección
+      (y las ~300 de StarField.astro repartidas por el resto del Home),
+      animar el radio del box-shadow fuerza un repintado por elemento en
+      cada frame -- confirmado con un diagnóstico en el propio sitio como
+      causa real de que la barra inferior (MobileBottomNav) pareciera
+      "flotar" en móvil (la carga agregada de repintado disparaba una
+      desincronización de innerHeight). Solo opacity/transform animan acá
+      (el compositor los mueve sin tocar el hilo principal); el halo queda
+      del tamaño de su punto más brillante todo el tiempo, y su intensidad
+      sube/baja igual gracias a que "opacity" afecta el elemento completo,
+      box-shadow incluido.
+   */
+   :global(.home-hero-star) {
+      position: absolute;
+      border-radius: 9999px;
+      background-color: currentColor;
+      box-shadow: 0 0 var(--star-glow, 2px) currentColor;
+      animation-name: homeHeroTwinkle;
+      animation-timing-function: ease-in-out;
+      animation-iteration-count: infinite;
+      will-change: opacity, transform;
+   }
+
+   @keyframes homeHeroTwinkle {
+      0%,
+      100% {
+         opacity: var(--star-min, 0.15);
+         transform: scale(0.8);
+      }
+      50% {
+         opacity: var(--star-max, 0.9);
+         transform: scale(1.3);
+      }
+   }
+
+   /*
+      Estrella fugaz (mismo diseño/curvas que .field-shooting-star en
+      StarField.astro): un punto con una estela detrás (::after, gradiente
+      que se desvanece) que cruza en diagonal y se disuelve. Nodos creados
+      por JS, así que sin scope de Astro por la misma razón que .home-hero-star.
+   */
+   :global(.home-hero-shooting-star) {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 3px;
+      height: 3px;
+      border-radius: 9999px;
+      background-color: currentColor;
+      box-shadow: 0 0 10px 2px currentColor;
+      opacity: 0;
+      animation-name: homeHeroShootingStar;
+      animation-duration: var(--shoot-dur, 1.1s);
+      animation-timing-function: cubic-bezier(0.2, 0.6, 0.3, 1);
+      animation-fill-mode: forwards;
+   }
+   :global(.home-hero-shooting-star::after) {
+      content: '';
+      position: absolute;
+      top: 50%;
+      right: 100%;
+      width: var(--trail-length, 90px);
+      height: 1px;
+      background: linear-gradient(90deg, transparent, currentColor);
+      transform: translateY(-50%);
+   }
+
+   @keyframes homeHeroShootingStar {
+      0% {
+         opacity: 0;
+         transform: rotate(var(--angle, 25deg)) translateX(0);
+      }
+      8% {
+         opacity: 1;
+      }
+      70% {
+         opacity: 1;
+      }
+      100% {
+         opacity: 0;
+         transform: rotate(var(--angle, 25deg)) translateX(var(--distance, 180px));
+      }
+   }
+
+   /*
+      Animaciones del contenido del hero (aplicadas vía atributo style en cada
+      elemento, no como utilidad de Tailwind): así evitamos que choquen con
+      otras reglas de "animation" y que dependan de motion-safe, que en
+      algunos navegadores/SO no llega a activarse.
+   */
+   @keyframes heroFadeIn {
+      0% {
+         opacity: 0;
+         transform: translateY(12px);
+      }
+      100% {
+         opacity: 1;
+         transform: translateY(0);
+      }
+   }
+
+   @keyframes heroFloat {
+      0%,
+      100% {
+         transform: translateY(0);
+      }
+      50% {
+         transform: translateY(-6px);
+      }
+   }
+
+   /*
+      Efecto de onda (tipo sonar) que sale del logo y crece hasta alcanzar el
+      círculo de la órbita de escudos: el tamaño base del <span> (en el markup)
+      es igual al de .hero-orbit-outer, y acá solo se anima el "scale" de 0.3
+      (cerca del tamaño del logo) a 1 (tamaño completo del círculo). 3 copias
+      desfasadas (animation-delay distinto en cada <span>, a un tercio de la
+      duración cada una) para que siempre haya una onda en camino. Usa
+      transform:scale (no width/height) para no pelear con layout -- el
+      centrado del propio span viene de ser hijo "absolute" sin insets de un
+      contenedor "flex" (ver el comentario junto al markup), así "transform"
+      queda libre solo para el crecimiento.
+   */
+   .hero-logo-wave {
+      opacity: 0;
+      animation-name: heroLogoWave;
+      animation-duration: 5.5s;
+      animation-timing-function: cubic-bezier(0.15, 0.5, 0.3, 1);
+      animation-iteration-count: infinite;
+   }
+
+   @keyframes heroLogoWave {
+      0% {
+         transform: scale(0.3);
+         opacity: 0.6;
+      }
+      60% {
+         opacity: 0.15;
+      }
+      100% {
+         transform: scale(1);
+         opacity: 0;
+      }
+   }
+
+   /*
+      Órbita de escudos: antes un loop requestAnimationFrame en JS que
+      reescribía "transform" en outer/inner/cada escudo en TODOS los
+      frames -- incluidas las dos instancias móvil/escritorio aunque una
+      estuviera oculta por CSS (md:hidden / hidden md:flex). Ese trabajo
+      constante por frame resultó ser la causa confirmada de que la barra
+      inferior (MobileBottomNav) pareciera "flotar" en móvil (aislado con
+      un diagnóstico: desactivar solo esta órbita eliminaba el síntoma).
+      Como es una simple rotación continua a velocidad constante, se
+      reproduce igual de exacto con @keyframes puro -- el navegador la
+      corre en el compositor sin tocar el hilo principal en cada frame, y
+      de paso ya no importa que la instancia oculta siga "animándose"
+      (no cuesta nada si no se pinta).
+
+      Mismo cálculo que tenía el JS (25°/s = 360° cada 14.4s):
+      - outer: rotate() normal, 14.4s.
+      - inner: -1.3x la velocidad de outer -> 14.4/1.3 ≈ 11.077s, en reversa.
+      - cada escudo (.hero-orbit-item): -1x outer -> misma duración, en
+        reversa, para contra-rotar y quedar siempre derecho.
+   */
+   @keyframes heroOrbitSpin {
+      from {
+         transform: rotate(0deg);
+      }
+      to {
+         transform: rotate(360deg);
+      }
+   }
+   .hero-orbit-outer {
+      animation: heroOrbitSpin 14.4s linear infinite;
+   }
+   .hero-orbit-inner {
+      animation: heroOrbitSpin 11.077s linear infinite reverse;
+   }
+   .hero-orbit-item {
+      animation: heroOrbitSpin 14.4s linear infinite reverse;
+   }
+   /*
+      El bloque sigue en el DOM en móvil (solo la versión de escritorio,
+      "hidden md:flex", usa estas clases) -- por debajo de 768px ese "hidden"
+      de Tailwind lo pone en display:none y el navegador no le calcula estilo
+      ni pintado, así que su animación no tiene costo alguno ahí. OJO: eso
+      depende de que Tailwind haya cargado. Sin JS (no-js) esa clase no hace
+      nada y el bloque queda visible+animándose en cualquier ancho -- ver el
+      "display:none" dedicado en no-js.css (busca ".hero-orbit-group").
+   */
+
+   /*
+      El sitio tiene una regla global (src/styles/global.css) que, para
+      accesibilidad, fuerza animation-duration a ~0 cuando el sistema pide
+      "reducir movimiento" — eso apaga el flotado del hero por completo en
+      cualquier navegador/SO con esa preferencia activada. Este flotado es
+      un efecto ambiental muy leve (pocos px, lento), así que lo restauramos
+      explícitamente aquí: es una excepción puntual a esa regla, no un
+      cambio a la política de accesibilidad del resto del sitio. La órbita
+      ya se comportaba así de antes (el JS que reemplaza no respetaba
+      prefers-reduced-motion), así que se mantiene la misma excepción acá
+      para no cambiar el comportamiento existente.
+   */
+   @media (prefers-reduced-motion: reduce) {
+      :global(.hero-float-combo) {
+         animation-duration: 0.7s, var(--float-dur, 6s) !important;
+         animation-iteration-count: 1, infinite !important;
+      }
+      :global(.hero-float-solo) {
+         animation-duration: var(--float-dur, 6s) !important;
+         animation-iteration-count: infinite !important;
+      }
+   }
+
+   /*
+      La restauración de la órbita bajo prefers-reduced-motion (excepción
+      documentada arriba) solo aplica en escritorio -- es la única
+      instancia que existe (la de móvil fue removida del DOM), así que el
+      min-width es solo para dejar la intención explícita.
+   */
+   @media (prefers-reduced-motion: reduce) and (min-width: 768px) {
+      .hero-orbit-outer,
+      .hero-orbit-item {
+         animation-duration: 14.4s !important;
+         animation-iteration-count: infinite !important;
+      }
+      .hero-orbit-inner {
+         animation-duration: 11.077s !important;
+         animation-iteration-count: infinite !important;
+      }
+   }
+
+   #home-hero-image-cover {
+      will-change: transform, opacity;
+      transform-origin: center center;
+   }
+
+   /*
+      Indicador de scroll: el punto "cae" dentro del mouse y se desvanece, la
+      flecha rebota debajo -- mismo lenguaje visual que cualquier cue de
+      "scroll down" (mouse + chevron), en blanco fijo (no depende de tema
+      claro/oscuro) porque vive siempre sobre la foto, nunca sobre el fondo
+      de la página.
+   */
+   #home-hero-scroll-cue {
+      transition: opacity 0.25s ease;
+   }
+   @keyframes scrollCueDot {
+      0% {
+         transform: translateY(0);
+         opacity: 1;
+      }
+      70%,
+      100% {
+         transform: translateY(10px);
+         opacity: 0;
+      }
+   }
+   .scroll-cue-dot {
+      animation: scrollCueDot 1.6s ease-in-out infinite;
+   }
+   @keyframes scrollCueChevron {
+      0%,
+      100% {
+         transform: translateY(0);
+         opacity: 0.6;
+      }
+      50% {
+         transform: translateY(4px);
+         opacity: 1;
+      }
+   }
+   .scroll-cue-chevron {
+      animation: scrollCueChevron 1.6s ease-in-out infinite;
+   }
+</style>
+
+<script>
+   // DIAGNÓSTICO TEMPORAL -- borrar junto con el resto del diagnóstico de
+   // "navdebug". ?nostars=1 desactiva las estrellas propias del hero
+   // (mismo flag que usa StarField.astro).
+   const params = new URLSearchParams(location.search);
+   const starsDisabled = params.get('nostars') === '1';
+
+   // Cantidad de estrellas y rango de tamaño/opacidad (puntitos pequeños y tenues)
+   const STAR_COUNT = 150;
+   const STAR_MIN_SIZE = 1;
+   const STAR_MAX_SIZE = 2.5;
+
+   const initStars = () => {
+      if (starsDisabled) return;
+      const container = document.getElementById('hero-stars');
+      if (!container) return;
+
+      // Evitar duplicar estrellas si Astro re-ejecuta el script (ViewTransitions)
+      if (container.dataset.populated === 'true') return;
+      container.dataset.populated = 'true';
+
+      const fragment = document.createDocumentFragment();
+
+      for (let i = 0; i < STAR_COUNT; i++) {
+         const star = document.createElement('span');
+         star.className = 'home-hero-star';
+
+         const size = STAR_MIN_SIZE + Math.random() * (STAR_MAX_SIZE - STAR_MIN_SIZE);
+         const duration = 2 + Math.random() * 3; // 2s a 5s por parpadeo
+         const delay = Math.random() * 5;
+         const minOpacity = 0.08 + Math.random() * 0.12;
+         const maxOpacity = 0.6 + Math.random() * 0.4;
+         // Halo del "destello" proporcional al tamaño, siempre tenue (2 a 6px)
+         const glow = size * 2.2;
+
+         star.style.top = `${Math.random() * 100}%`;
+         star.style.left = `${Math.random() * 100}%`;
+         star.style.width = `${size}px`;
+         star.style.height = `${size}px`;
+         star.style.animationDuration = `${duration}s`;
+         star.style.animationDelay = `${delay}s`;
+         star.style.setProperty('--star-min', minOpacity.toFixed(2));
+         star.style.setProperty('--star-max', maxOpacity.toFixed(2));
+         star.style.setProperty('--star-glow', `${glow.toFixed(2)}px`);
+
+         fragment.appendChild(star);
+      }
+
+      container.appendChild(fragment);
+   };
+
+   // Estrella fugaz: intervalo aleatorio entre disparos (más seguido que StarField.astro
+   // para que se note apenas se carga el hero, en vez de tener que esperar varios segundos)
+   const SHOOT_MIN_INTERVAL_MS = 1800;
+   const SHOOT_MAX_INTERVAL_MS = 4000;
+
+   const spawnShootingStar = (container) => {
+      const star = document.createElement('span');
+      star.className = 'home-hero-shooting-star';
+
+      const startTop = Math.random() * 55;
+      const startLeft = Math.random() * 70;
+      const angle = 15 + Math.random() * 25;
+      const distance = 140 + Math.random() * 140;
+      const duration = 0.9 + Math.random() * 0.6;
+      const trailLength = distance * 0.6;
+
+      star.style.top = `${startTop}%`;
+      star.style.left = `${startLeft}%`;
+      star.style.setProperty('--shoot-dur', `${duration}s`);
+      star.style.setProperty('--angle', `${angle}deg`);
+      star.style.setProperty('--distance', `${distance}px`);
+      star.style.setProperty('--trail-length', `${trailLength}px`);
+
+      star.addEventListener('animationend', () => star.remove());
+      container.appendChild(star);
+   };
+
+   const initShootingStars = () => {
+      if (starsDisabled) return;
+      const container = document.getElementById('hero-shooting-stars');
+      if (!container) return;
+
+      // Evitar múltiples bucles si Astro recarga la página con ViewTransitions
+      if (container.dataset.populated === 'true') return;
+      container.dataset.populated = 'true';
+
+      const loop = () => {
+         spawnShootingStar(container);
+         const next = SHOOT_MIN_INTERVAL_MS + Math.random() * (SHOOT_MAX_INTERVAL_MS - SHOOT_MIN_INTERVAL_MS);
+         setTimeout(loop, next);
+      };
+      setTimeout(loop, 300 + Math.random() * 500);
+   };
+
+   // Iniciar inmediatamente
+   initStars();
+   initShootingStars();
+   // Escuchar el evento de Astro para navegaciones internas
+   document.addEventListener('astro:page-load', initStars);
+   document.addEventListener('astro:page-load', initShootingStars);
+</script>
+
+<script>
+   // Efecto de scroll (2026-09-02): la foto de portada, ya "clavada" en el
+   // mismo punto de pantalla que el título+órbita (ver "home-hero-stage-
+   // wrapper" en el markup de arriba), se achica y se desvanece a medida
+   // que se hace scroll -- solo LEE la posición del wrapper para calcular
+   // escala/opacidad, nunca preventDefault()/scrollTo() (mismo criterio de
+   // .riesgo-track en RiskTimeline.astro, no es scroll-jacking).
+   const initHeroStage = () => {
+      const wrapper = document.getElementById('home-hero-stage-wrapper');
+      const cover = document.getElementById('home-hero-image-cover');
+      const scrollCue = document.getElementById('home-hero-scroll-cue');
+      if (!wrapper || !cover || wrapper.dataset.ready === 'true') return;
+      wrapper.dataset.ready = 'true';
+
+      let ticking = false;
+
+      const apply = () => {
+         ticking = false;
+         const rect = wrapper.getBoundingClientRect();
+         const scrollable = rect.height - window.innerHeight;
+         const ratio = scrollable > 0 ? Math.min(1, Math.max(0, -rect.top / scrollable)) : 0;
+
+         // translateX(-50%) primero: es lo que centra el full-bleed
+         // (clase "-translate-x-1/2" en el markup) -- si se pisa el
+         // "transform" completo con solo el scale(), se pierde ese
+         // centrado y la foto queda corrida a la derecha.
+         cover.style.transform = `translateX(-50%) scale(${1 - ratio * 0.15})`;
+         cover.style.opacity = String(1 - ratio);
+
+         // El cue de scroll ya cumplió su función apenas el usuario mueve la
+         // página un poco -- se apaga mucho más rápido que la foto (x6) para
+         // no competir con el título, que empieza a asomar bajo la foto.
+         if (scrollCue) scrollCue.style.opacity = String(Math.max(0, 1 - ratio * 6));
+      };
+
+      const onScroll = () => {
+         if (ticking) return;
+         ticking = true;
+         requestAnimationFrame(apply);
+      };
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', apply);
+      apply();
+   };
+
+   initHeroStage();
+   document.addEventListener('astro:page-load', initHeroStage);
+</script>

@@ -1,0 +1,195 @@
+---
+import { URLS } from '@utils/config.jsx';
+
+interface Props {
+   label?: string;
+   // A todo el ancho de su contenedor en móvil (útil cuando el label es largo:
+   // si no, el botón queda angosto -ajustado al contenido- y el texto se
+   // parte en 2 líneas apretadas contra un ícono chico). En md+ vuelve a su
+   // ancho natural (ajustado al contenido).
+   fullWidth?: boolean;
+   // ID de tracking para GA4 (medir clic + ubicación del CTA en la página).
+   // Opcional: los usos existentes del componente no lo necesitan.
+   id?: string;
+   // Mensaje precargado del WhatsApp -- opcional, default es el genérico de
+   // "más información sobre El Hack". Un CTA en un contexto distinto (p. ej.
+   // testimonios) puede pasar un mensaje propio sin tocar el diseño/estilo
+   // del botón, que es siempre el mismo en todo el sitio.
+   message?: string;
+   // Parámetros de tracking GA4 (cta_click, ver doc maestro hoja 05). Se
+   // exponen como data-* para que GTM los lea con triggers/variables de DOM
+   // -- este componente no hace dataLayer.push por su cuenta.
+   pageType?: string;
+   sectionName?: string;
+   // Solo cuando el CTA vive en la ficha de una app individual (hoja 02/05:
+   // "si vive en ficha de app, agregar app_name").
+   appName?: string;
+   appType?: 'legal' | 'ilegal';
+}
+
+const {
+   label = 'Contáctanos',
+   fullWidth = false,
+   id,
+   message = '¡Hola! Quiero más información sobre El Hack.',
+   pageType,
+   sectionName,
+   appName,
+   appType,
+} = Astro.props;
+
+const mensaje = message;
+
+// Un solo tamaño estandarizado para TODOS los usos del botón en el sitio
+// (antes había una variante "sm"/"lg" que hacía que se viera distinto según
+// la página). No se expone como prop a propósito -- si se necesitara otro
+// tamaño en el futuro, mejor un componente nuevo que reabrir esta variación.
+const widthClasses = fullWidth ? 'w-full md:w-auto' : '';
+---
+
+<a
+   id={id}
+   href={`https://api.whatsapp.com/send/?phone=${URLS.whatsapp.principal.replace('+', '')}&text=${encodeURIComponent(mensaje)}&type=phone_number&app_absent=0`}
+   class={`wa__stt keep-white inline-flex items-center justify-center gap-3 rounded-full bg-green-500 px-6 py-4 text-base font-bold text-white transition hover:bg-green-600 md:text-lg ${widthClasses}`}
+   target="_blank"
+   rel="noopener noreferrer"
+   data-page-type={pageType}
+   data-section-name={sectionName}
+   data-destination-type="whatsapp"
+   data-app-name={appName}
+   data-app-type={appType}
+>
+   <!--
+      SVG inline en vez de un <img> (o el <Picture> de astro:assets que había
+      antes): <Picture> envuelve el <img> real en un <picture>, y ese
+      <picture> -no el <img>- es el hijo directo del flex container, así que
+      las clases de tamaño/flex-shrink-0 que se le ponían al <img> no
+      importaban: quien de verdad se angostaba en flex era el <picture> (sin
+      ninguna clase encima), y el <img> quedaba comprimido por su propio
+      max-width:100% (preflight de Tailwind) siguiendo ese ancho angosto --
+      de ahí el óvalo aplastado. Con un solo elemento <svg> como hijo directo
+      del flex container, flex-shrink-0 sí aplica donde debe.
+   -->
+   <svg class="h-8 w-8 flex-shrink-0" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true">
+      <path
+         d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.2 10.3 77.6 29.8 111.4L1.9 480l117.4-30.8c32.5 17.8 69.1 27.1 106.5 27.1h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-69.1-157.2zM223.9 438.1c-33.2 0-65.7-8.9-93.9-25.8l-6.7-4-69.8 18.3 18.6-68-4.4-7C50.1 320.9 40.9 289.3 40.9 254c0-100.9 82.1-183 183.1-183 48.9 0 94.8 19.1 129.4 53.7 34.6 34.6 56.8 80.5 56.7 129.4 0 100.9-84.2 183-186.2 183zm101.2-135.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.7-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-53.9-29.1-75.3-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.6-9.7-1.5-2.8-13.4-32.3-18.3-44.2-4.8-11.6-9.7-10-13.3-10.2-3.4-.2-7.3-.2-11.3-.2-4 0-10.5 1.5-16 7.4-5.5 5.9-21 20.5-21 50 0 29.5 21.5 58 24.5 62 3 4 41.6 63.5 100.9 86.5 50.4 19.6 60.7 15.7 71.7 14.7 11-.9 35.5-14.5 40.5-28.6 5-14 5-26 3.5-28.6-1.5-2.6-5.5-4.1-11-6.9z"
+      ></path>
+   </svg>
+   <span class="h-8 w-px flex-shrink-0 self-stretch bg-white/30" aria-hidden="true"></span>
+   <span>{label}</span>
+</a>
+
+<script type="module">
+   const { trackEvent } = window.metaPixelUtils;
+
+   document.addEventListener('DOMContentLoaded', () => {
+      const buttons = document.querySelectorAll('.wa__stt');
+
+      buttons.forEach((btn) => {
+         btn.addEventListener('click', async () => {
+            // Detectar información adicional del contexto
+            const userAgent = navigator.userAgent;
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
+            const referrer = document.referrer || 'direct';
+            const timestamp = Date.now();
+
+            // Detectar país/región del usuario si está disponible
+            let userCountry = 'MX'; // Default
+            if (navigator.language) {
+               const locale = navigator.language.toLowerCase();
+               if (locale.includes('mx') || locale.includes('es-mx')) userCountry = 'MX';
+               else if (locale.includes('co')) userCountry = 'CO';
+               else if (locale.includes('ar')) userCountry = 'AR';
+               // Agregar más países según necesites
+            }
+
+            await trackEvent(
+               'Lead',
+               {
+                  // Información básica mejorada
+                  content_name: 'WhatsApp Contact Button',
+                  content_category: 'lead_generation',
+                  content_type: 'contact_cta',
+
+                  // Detalles del lead
+                  lead_type: 'whatsapp_contact',
+                  lead_source: 'website_button',
+                  lead_quality: 'high_intent', // Usuario activamente buscó contacto
+
+                  // Información contextual
+                  page_url: window.location.href,
+                  page_title: document.title,
+                  referrer_url: referrer,
+
+                  // Datos del dispositivo/sesión
+                  device_type: isMobile ? 'mobile' : 'desktop',
+                  user_agent: userAgent,
+                  timestamp: timestamp,
+
+                  // Valor estimado del lead
+                  value: 50, // Valor estimado de un lead de WhatsApp
+                  currency: 'MXN',
+
+                  // Información geográfica
+                  country: userCountry,
+
+                  // Parámetros de campaña (si existen en URL)
+                  campaign_source: new URLSearchParams(window.location.search).get('utm_source') || 'organic',
+                  campaign_medium: new URLSearchParams(window.location.search).get('utm_medium') || 'website',
+                  campaign_name: new URLSearchParams(window.location.search).get('utm_campaign') || 'whatsapp_contact',
+
+                  // Información de la sesión
+                  session_id: sessionStorage.getItem('session_id') || `session-${timestamp}`,
+                  page_load_time: performance.now(),
+
+                  // Custom properties específicas de WhatsApp
+                  whatsapp_message_preview: mensaje.substring(0, 50), // Primeros 50 caracteres
+                  contact_method: 'whatsapp',
+                  contact_intent: 'product_inquiry',
+               },
+               {
+                  // Datos del usuario hasheados (si están disponibles en contexto)
+                  country: [userCountry],
+                  // Si tienes datos del usuario de cookies/localStorage, agrégalos aquí
+               },
+            );
+
+            // Opcional: Guardar el evento localmente para análisis
+            try {
+               const leadData = {
+                  timestamp: timestamp,
+                  page: window.location.pathname,
+                  referrer: referrer,
+                  device: isMobile ? 'mobile' : 'desktop',
+                  country: userCountry,
+               };
+               localStorage.setItem(`whatsapp_lead_${timestamp}`, JSON.stringify(leadData));
+            } catch (e) {
+               // Silently fail if localStorage is not available
+            }
+
+            // Opcional: Delay mínimo para asegurar que el evento se envíe antes de redireccionar
+            await new Promise((resolve) => setTimeout(resolve, 100));
+
+            console.log('WhatsApp lead tracked with enhanced data');
+         });
+
+         // Trackear también cuando el usuario hace hover (interés)
+         btn.addEventListener('mouseenter', async () => {
+            await trackEvent(
+               'Lead', // Usar un custom event si prefieres
+               {
+                  content_name: 'WhatsApp Contact Hover',
+                  content_category: 'user_engagement',
+                  lead_type: 'contact_interest',
+                  interaction_type: 'hover',
+                  page_url: window.location.href,
+                  value: 10, // Menor valor que el clic real
+                  currency: 'MXN',
+               },
+               {},
+            );
+         });
+      });
+   });
+</script>

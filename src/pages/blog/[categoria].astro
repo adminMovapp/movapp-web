@@ -1,0 +1,36 @@
+---
+// Página de detalle de una categoría del blog -- plantilla única (ver skill
+// Importaciones) para las varias categorías que va a tener el blog. Agregar
+// una categoría nueva es agregar una entrada a
+// @constants/blogCategoryPages.ts; nada que tocar acá.
+import Layout from '@layouts/Layout.astro';
+import BlogCategoryHero from '@sections/blog/BlogCategoryHero.astro';
+import BlogArticleGrid from '@sections/blog/BlogArticleGrid.astro';
+import BlogCategoryCTA from '@sections/blog/BlogCategoryCTA.astro';
+import { BLOG_CATEGORY_PAGES } from '@constants/blogCategoryPages.ts';
+
+// El sitio corre en SSR (output: 'server', ver astro.config.mjs) -- sin este
+// flag, Astro atiende esta ruta dinámica bajo demanda en cada request y
+// "getStaticPaths" se ignora por completo (Astro.props llega vacío,
+// "Cannot read properties of undefined" al leer `cat.h1`). El contenido de
+// cada categoría ya se conoce completo en build time (viene de
+// @constants/blogCategoryPages.ts, no de un request), así que tiene sentido
+// pre-renderizar esta ruta como página estática en vez de dejarla en SSR.
+export const prerender = true;
+
+export function getStaticPaths() {
+   return BLOG_CATEGORY_PAGES.map((cat) => ({
+      params: { categoria: cat.categorySlug },
+      props: { cat },
+   }));
+}
+
+const { cat } = Astro.props;
+---
+
+<Layout title={`${cat.h1} | Movapp`} description={cat.intro} type="website" showGrid={false}>
+   <BlogCategoryHero h1={cat.h1} intro={cat.intro} categorySlug={cat.categorySlug} />
+   <BlogArticleGrid id={`${cat.categorySlug}-recientes`} title="Noticias recientes" articles={cat.recentArticles} />
+   <BlogArticleGrid id={`${cat.categorySlug}-antiguas`} title="Noticias antiguas" articles={cat.oldArticles} />
+   <BlogCategoryCTA categorySlug={cat.categorySlug} />
+</Layout>

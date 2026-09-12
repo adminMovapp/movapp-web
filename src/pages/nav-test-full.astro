@@ -1,0 +1,26 @@
+---
+// PÁGINA DE DIAGNÓSTICO TEMPORAL -- borrar junto con nav-test.astro y el
+// resto del diagnóstico de "navdebug". A diferencia de nav-test.astro (100%
+// aislada, sin nada del sitio), esta SÍ usa el Layout.astro real -- Header,
+// Footer, BackgroundGrid, todos los scripts base (no-js/js, tema, AOS
+// island) -- pero sin ninguna sección de contenido propia de una página.
+// Objetivo: aislar si el flote lo dispara algo del Layout compartido por
+// todo el sitio, o si hace falta bajar a nivel de sección específica.
+// Combinar con los mismos query params que ya existen: ?navdebug=1,
+// ?minimal=1, ?nochat=1, y ?grid=0 (propio de esta página) para probar sin
+// BackgroundGrid.
+import Layout from '@/layouts/Layout.astro';
+
+const showGrid = Astro.url.searchParams.get('grid') !== '0';
+---
+
+<Layout title="nav-test-full" showGrid={showGrid}>
+   <div style="padding: 40px 20px; color: #eee;">
+      <p>showGrid = {String(showGrid)} -- agrega ?grid=0 para probar sin BackgroundGrid.</p>
+      {
+         Array.from({ length: 50 }).map((_, i) => (
+            <p style="padding:20px 0;border-bottom:1px solid #333;">Relleno #{i + 1} -- lorem ipsum para poder scrollear.</p>
+         ))
+      }
+   </div>
+</Layout>

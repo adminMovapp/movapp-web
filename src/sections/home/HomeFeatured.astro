@@ -1,0 +1,408 @@
+---
+import { Image } from 'astro:assets';
+import ImgElHackBlanco from '@assets/elhack-blanco.png';
+import ImgDirectorioDeApps from '@assets/Directorio-de-Apps.webp';
+import ImgFotoErik from '@assets/Foto-Erik.webp';
+import StarField from '@components/decorative/StarField.astro';
+
+// Orden (a pedido): Directorio de apps - El Hack - Recursos y guías, de
+// izquierda a derecha, tanto en el grid de escritorio como en el carrusel
+// móvil -- El Hack queda físicamente en medio del DOM. Como "en medio" ya
+// no es "primero" en el orden de scroll, el carrusel móvil arranca
+// posicionado sobre esa tarjeta en vez de en la 0 (ver data-initial-card
+// más abajo y el script inline que lo aplica).
+const hub = [
+   {
+      title: 'Directorio de apps',
+      desc: 'Consulta si una app de préstamo es legal o tiene reportes antes de usarla.',
+      linkLabel: 'Ver el directorio',
+      href: '/aplicaciones-prestamo',
+      photo: ImgDirectorioDeApps,
+      // 340 (no 1000): la tarjeta nunca se muestra a más de ~310px de ancho
+      // (grid de 3 columnas dentro de max-w-5xl en desktop, ~78vw en el
+      // carrusel móvil) -- "densities" abajo cubre retina sin pedir el
+      // archivo a tamaño completo como antes (Lighthouse lo marcaba: imagen
+      // de 1000px servida para un hueco de ~560px).
+      photoWidth: 340,
+      alt: 'Persona revisando en su teléfono si una app de préstamo es confiable',
+   },
+   {
+      title: 'El Hack',
+      desc: 'La herramienta que bloquea el acoso y protege tu teléfono.',
+      linkLabel: 'Conocer El Hack',
+      href: '/el-hack',
+      photo: ImgElHackBlanco,
+      photoWidth: 560,
+      alt: 'El Hack',
+   },
+   {
+      title: 'Recursos y guías',
+      desc: 'Aprende a defenderte de las apps montadeudas y a cuidar tu salud financiera.',
+      linkLabel: 'Ir a recursos',
+      href: '/recursos',
+      photo: ImgFotoErik,
+      // Mismo criterio que arriba, escalado a esta tarjeta (~220px reales).
+      photoWidth: 220,
+      alt: 'Persona aprendiendo a cuidar su bienestar frente al acoso digital',
+   },
+];
+// El Hack es la tarjeta que debe verse primero al cargar (a pedido) aunque
+// ahora esté en medio del orden -- se identifica por índice en vez de por
+// texto para no volver a desalinearse si el array cambia de orden otra vez.
+const EL_HACK_INDEX = 1;
+---
+
+<section class="relative mx-auto my-section w-full max-w-5xl px-4" data-aos="fade-up">
+   <StarField id="featured" ambientCount={40} />
+
+   <div class="mb-8 text-center md:mb-10">
+      <h2 class="text-2xl md:text-4xl font-bold uppercase gradient-text-move bg-gradient-to-r from-gray-900 to-purple_mv bg-clip-text text-transparent dark:from-white dark:to-purple_mv">¿Cómo te ayuda Movapp?</h2>
+      <!-- Solo en escritorio, a pedido. -->
+      <p class="mt-3 hidden text-gray-600 dark:text-white/70 md:block">
+         Estés donde estés en tu situación, aquí encuentras una solución real para detener el problema con apps
+         montadeudas.
+      </p>
+   </div>
+
+   <!--
+      Mobile: carrusel deslizable (scroll-snap nativo, funciona sin JS). El
+      ancho de tarjeta/padding usa "vw" (no "%") a propósito: el % de un hijo
+      flex se calcula contra el content-box del contenedor (excluye el propio
+      padding del contenedor), lo que rompía la simetría del peek izquierda/
+      derecha. "vw" no tiene ese problema, así que ambos lados quedan iguales.
+      Desktop (md:): grid estático de 3 columnas, sin scroll ni flechas -- las
+      3 tarjetas siempre visibles y con más protagonismo (más grandes).
+
+      "pt-2" (bug reportado 2026-09-03): las tarjetas tienen ".float-anim"
+      (ver global.css), que las levanta hasta 6px vía translateY. En móvil
+      este contenedor tiene "overflow-x-auto" -- eso hace que "overflow-y"
+      compute a "auto" también (no "visible"), y sin padding-top el borde
+      de arriba de la tarjeta ya arrancaba pegado al límite del scroll: al
+      flotar hacia arriba, esos 6px se recortaban. pt-2 (8px) deja el aire
+      justo para que quepa el recorrido completo de la animación.
+   -->
+   <div
+      id="featuredCarousel"
+      class="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-[11vw] pb-2 pt-2 md:grid md:grid-cols-3 md:gap-8 md:overflow-visible md:px-0 md:pb-0 md:pt-0"
+   >
+      {
+         hub.map((item, i) => (
+            <a
+               href={item.href}
+               data-initial-card={i === EL_HACK_INDEX ? 'true' : undefined}
+               class="featured-card float-anim group w-[78vw] flex-shrink-0 snap-center overflow-hidden rounded-3xl border border-purple_mv/25 shadow-card transition-colors duration-300 hover:border-purple_mv/50 hover:shadow-card-hover dark:border-white/10 md:w-full"
+               style={`--float-dur: ${5.8 + i * 0.3}s; --float-delay: ${i * 0.2}s;`}
+            >
+               <div class="relative aspect-[4/3] w-full overflow-hidden md:aspect-square md:grayscale md:transition-[filter] md:duration-500 md:group-hover:grayscale-0">
+                  {i === EL_HACK_INDEX ? (
+                     <div class="featured-grid flex h-full w-full items-center justify-center bg-[#0b0614]">
+                        <Image
+                           src={item.photo}
+                           width={item.photoWidth}
+                           alt={item.alt || item.title}
+                           class="relative z-10 w-1/2 drop-shadow-[0_0_18px_rgba(129,73,226,0.55)]"
+                        />
+                     </div>
+                  ) : i === 2 ? (
+                     <div class="flex h-full w-full items-center justify-center bg-[#0b0614]">
+                        <Image
+                           src={item.photo}
+                           width={item.photoWidth}
+                           densities={[1, 2]}
+                           alt={item.alt || item.title}
+                           class="h-full w-full object-contain"
+                           loading="lazy"
+                        />
+                     </div>
+                  ) : (
+                     <Image
+                        src={item.photo}
+                        width={item.photoWidth}
+                        densities={[1, 2]}
+                        alt={item.alt || item.title}
+                        class="h-full w-full object-cover"
+                        loading="lazy"
+                     />
+                  )}
+               </div>
+
+               <!-- Cada tarjeta conserva su propio título (móvil y escritorio); la
+                    descripción y el enlace de cada una solo se muestran desde md+
+                    (a pedido: en móvil la tarjeta debe quedar solo con el título).
+                    "El Hack" (EL_HACK_INDEX) también aparece fijo debajo de las 3
+                    imágenes, con su propio texto y enlace, sin importar cuál
+                    tarjeta esté centrada en el carrusel móvil (ver bloque más
+                    abajo) -- eso no cambió. -->
+               <div class="bg-gradient-to-b from-purple_mv/[0.06] to-transparent p-5 text-center dark:from-purple_mv/[0.1] dark:to-black/30 md:p-7">
+                  <h3 class="text-lg font-bold uppercase text-gray-900 dark:text-white md:text-2xl">
+                     {item.title}
+                  </h3>
+                  <p class="mt-2 hidden text-xs text-gray-600 dark:text-white/60 md:block md:text-base">{item.desc}</p>
+                  <span class="mt-4 hidden items-center gap-1 text-xs font-semibold uppercase tracking-wide text-text_banner md:inline-flex md:text-sm">
+                     {item.linkLabel}
+                     <svg
+                        class="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1 md:h-4 md:w-4"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        stroke-width="2.5"
+                     >
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                     </svg>
+                  </span>
+               </div>
+            </a>
+         ))
+      }
+   </div>
+
+   <!--
+      Posiciona el carrusel móvil sobre "El Hack" (a pedido: debe ser lo
+      primero que se ve, aunque quedó en medio del orden) ANTES de que el
+      navegador pinte esta sección -- por eso es "is:inline" y va justo acá
+      (no dentro del <script> de más abajo, que Astro procesa como módulo y
+      se ejecuta después de parsear todo el documento, ya con la tarjeta 0
+      visible: se vería un salto). En desktop (grid, sin scroll) esto no
+      tiene efecto, así que no hace falta ningún guard de breakpoint.
+   -->
+   <script is:inline>
+      (function () {
+         var track = document.getElementById('featuredCarousel');
+         var initial = track && track.querySelector('[data-initial-card]');
+         if (!track || !initial) return;
+
+         // El CSS de Tailwind (que da el "flex" del carrusel móvil) se carga
+         // por JS de forma asíncrona (ver mecanismo no-js/js en Layout.astro)
+         // -- hasta que termine de aplicarse, "display" no es "flex" todavía
+         // y offsetLeft/clientWidth no reflejan el layout real. En vez de
+         // sondear con rAF + getComputedStyle en cada frame (Lighthouse lo
+         // marcaba como reprocesamiento forzado: ese sondeo puede correr
+         // decenas de veces mientras Tailwind no llega), se espera una única
+         // vez al evento "app:styles-ready" que Layout.astro dispara justo
+         // cuando esa carga termina (o falla). En desktop es "grid" (sin
+         // scroll): ahí no hay nada que posicionar, así que se corta antes.
+         function checkAndPosition() {
+            var display = getComputedStyle(track).display;
+            if (display === 'grid') return;
+            if (display === 'flex') {
+               track.scrollLeft = initial.offsetLeft - (track.clientWidth - initial.offsetWidth) / 2;
+               return;
+            }
+            // Doble rAF (mismo patrón que el resto del sitio, ver skill
+            // Rendimiento): "app:styles-ready" se dispara sincrónicamente
+            // justo cuando la hoja de Tailwind termina de aplicarse, lo que
+            // invalida el estilo de casi toda la página -- leer geometría en
+            // ese mismo tick fuerza un reprocesamiento síncrono. Diferir dos
+            // frames deja que el navegador recalcule antes de volver a leer.
+            document.addEventListener(
+               'app:styles-ready',
+               function () {
+                  requestAnimationFrame(function () {
+                     requestAnimationFrame(checkAndPosition);
+                  });
+               },
+               { once: true },
+            );
+         }
+         checkAndPosition();
+      })();
+   </script>
+
+   <!-- Pista de swipe: solo en móvil, siempre visible en el HTML (no depende de JS).
+        Las flechas son botones reales (ver script) que llevan a la tarjeta
+        anterior/siguiente -- el swipe manual sigue funcionando igual, esto
+        solo agrega una forma alterna de navegar con un tap. Va antes del
+        texto fijo de "El Hack" (ver wireframe de estructura móvil). -->
+   <div class="swipe-hint mx-auto mt-5 flex w-fit items-center gap-2 rounded-full border border-purple_mv/25 bg-purple_mv/5 px-4 py-1.5 text-[11px] font-medium text-gray-500 dark:border-white/10 dark:bg-white/5 dark:text-white/50 md:hidden">
+      <button id="featuredSwipePrev" type="button" aria-label="Ver tarjeta anterior" class="-m-1 flex items-center justify-center p-1">
+         <svg class="swipe-hint-arrow h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+         </svg>
+      </button>
+      Desliza para ver más
+      <button id="featuredSwipeNext" type="button" aria-label="Ver siguiente tarjeta" class="-m-1 flex items-center justify-center p-1">
+         <svg class="swipe-hint-arrow h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+         </svg>
+      </button>
+   </div>
+
+   <!-- Texto fijo de "El Hack": solo en móvil, siempre visible debajo de las 3
+        imágenes sin importar cuál tarjeta esté centrada en el carrusel (ver
+        wireframe de estructura móvil). Usa hub[EL_HACK_INDEX] directamente en
+        vez de duplicar el copy, para no desalinearse si ese contenido cambia. -->
+   <a href={hub[EL_HACK_INDEX].href} class="mt-5 block text-center md:hidden">
+      <h3 class="text-lg font-bold uppercase text-gray-900 dark:text-white">{hub[EL_HACK_INDEX].title}</h3>
+      <p class="mt-1 text-xs text-gray-600 dark:text-white/60">{hub[EL_HACK_INDEX].desc}</p>
+      <span class="mt-3 inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wide text-text_banner">
+         {hub[EL_HACK_INDEX].linkLabel || 'Ver más'}
+         <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+         </svg>
+      </span>
+   </a>
+</section>
+
+<style>
+   .no-scrollbar::-webkit-scrollbar {
+      display: none;
+   }
+   .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+   }
+
+   .featured-grid {
+      background-image:
+         linear-gradient(rgba(129, 73, 226, 0.35) 1px, transparent 1px),
+         linear-gradient(90deg, rgba(129, 73, 226, 0.35) 1px, transparent 1px);
+      background-size: 28px 28px;
+   }
+
+   /* La tarjeta activa (centrada, solo aplica en el carrusel móvil) siempre
+      se ve al 100% -- el atenuado de las demás es un realce que solo agrega
+      el JS de abajo, y solo cuando hay algo que deslizar. Así, si JS no
+      corre (o en desktop, donde ya no hay scroll), las tarjetas quedan
+      siempre perfectamente legibles. */
+   .featured-card {
+      transition:
+         transform 0.4s ease,
+         opacity 0.4s ease,
+         filter 0.4s ease;
+   }
+   .featured-card.is-dimmed {
+      opacity: 0.5;
+      transform: scale(0.94);
+      filter: saturate(0.7);
+   }
+
+   @keyframes swipeNudge {
+      0%,
+      100% {
+         transform: translateX(0);
+      }
+      50% {
+         transform: translateX(3px);
+      }
+   }
+   .swipe-hint-arrow {
+      animation: swipeNudge 1.6s ease-in-out infinite;
+   }
+   .swipe-hint-arrow:first-child {
+      animation-direction: reverse;
+   }
+</style>
+
+<script>
+   const initFeaturedCarousel = () => {
+      const track = document.getElementById('featuredCarousel');
+      if (!track || track.getAttribute('data-carousel-ready') === 'true') return;
+      track.setAttribute('data-carousel-ready', 'true');
+
+      const cards = Array.from(track.querySelectorAll('.featured-card'));
+      // Sin nada que deslizar (p. ej. el grid estático de escritorio, donde
+      // las 3 tarjetas ya caben completas) no tiene sentido atenuar ninguna.
+      if (!cards.length || track.scrollWidth <= track.clientWidth + 1) return;
+
+      const setActive = (activeEl: Element) => {
+         cards.forEach((c) => c.classList.toggle('is-dimmed', c !== activeEl));
+      };
+
+      if ('IntersectionObserver' in window) {
+         const io = new IntersectionObserver(
+            (entries) => {
+               let best: IntersectionObserverEntry | null = null;
+               entries.forEach((entry) => {
+                  if (entry.isIntersecting && (!best || entry.intersectionRatio > best.intersectionRatio)) {
+                     best = entry;
+                  }
+               });
+               if (best) setActive(best.target);
+            },
+            { root: track, threshold: [0.5, 0.6, 0.7, 0.8, 0.9, 1] },
+         );
+         cards.forEach((c) => io.observe(c));
+      }
+
+      // Flechas de la pista de swipe: llevan a la tarjeta anterior/siguiente
+      // sin reemplazar el swipe manual (scroll-snap nativo sigue intacto).
+      // El índice activo se recalcula por posición de scroll en cada click
+      // en vez de depender del IntersectionObserver de arriba, así funciona
+      // incluso si ese observer no está disponible.
+      const getActiveIndex = () => {
+         const center = track.scrollLeft + track.clientWidth / 2;
+         let closest = 0;
+         let minDist = Infinity;
+         cards.forEach((c, i) => {
+            const cardEl = c as HTMLElement;
+            const dist = Math.abs(cardEl.offsetLeft + cardEl.offsetWidth / 2 - center);
+            if (dist < minDist) {
+               minDist = dist;
+               closest = i;
+            }
+         });
+         return closest;
+      };
+
+      const scrollToIndex = (i: number) => {
+         const clamped = Math.max(0, Math.min(cards.length - 1, i));
+         cards[clamped].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      };
+
+      const prevBtn = document.getElementById('featuredSwipePrev');
+      const nextBtn = document.getElementById('featuredSwipeNext');
+
+      // El widget de chat (LeadConnector) puede mostrar un globo de saludo
+      // que es un overlay real: position:fixed y z-index gigantesco (~1e8),
+      // por encima de TODO el contenido de <main> -- <main> tiene "isolate"
+      // en Layout.astro, así que nada adentro puede ganarle por z-index sin
+      // importar qué tan alto se ponga. Cuando ese globo cae encima de estas
+      // flechas, el navegador entrega el click al widget, no al botón, aun
+      // viéndose éste "por encima". Se intercepta en fase de captura en
+      // window (que siempre se dispara, sin importar cuál haya sido el
+      // target real) y se decide por coordenadas del click en vez de
+      // depender de a quién el navegador se lo haya asignado.
+      const isInside = (el: Element, x: number, y: number) => {
+         const r = el.getBoundingClientRect();
+         return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
+      };
+      // Doble rAF antes de leer offsetLeft/offsetWidth (dentro de
+      // getActiveIndex): Lighthouse marcaba estas lecturas como
+      // reprocesamiento forzado -- si el click llega justo después de un
+      // cambio de estilo (p.ej. el IntersectionObserver de arriba alternando
+      // "is-dimmed"), leer geometría en el mismo tick obliga al navegador a
+      // recalcular layout de forma síncrona. Diferir dos frames deja que
+      // cualquier cambio pendiente se pinte primero; el desplazamiento sigue
+      // siendo "smooth" y el retraso (~30ms) es imperceptible.
+      const goToRelativeCard = (delta: number) => {
+         requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+               scrollToIndex(getActiveIndex() + delta);
+            });
+         });
+      };
+
+      window.addEventListener(
+         'click',
+         (e) => {
+            if (prevBtn && isInside(prevBtn, e.clientX, e.clientY)) {
+               e.stopPropagation();
+               goToRelativeCard(-1);
+            } else if (nextBtn && isInside(nextBtn, e.clientX, e.clientY)) {
+               e.stopPropagation();
+               goToRelativeCard(1);
+            }
+         },
+         { capture: true },
+      );
+
+      // Fallback para activación por teclado (Enter/Espacio con foco en el
+      // botón): ahí no hay coordenadas de puntero reales, así que el chequeo
+      // de arriba no aplica y hace falta este listener normal.
+      prevBtn?.addEventListener('click', () => goToRelativeCard(-1));
+      nextBtn?.addEventListener('click', () => goToRelativeCard(1));
+   };
+
+   initFeaturedCarousel();
+   document.addEventListener('astro:page-load', initFeaturedCarousel);
+</script>

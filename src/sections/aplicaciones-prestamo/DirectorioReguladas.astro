@@ -1,0 +1,19 @@
+---
+// Carrusel de apps reguladas/autorizadas (2026-09-02, a pedido: "todas las
+// secciones donde se muestran las 'opciones' de las apps, se muestren en
+// forma de carrusel"... "ese carrusel ponlo también en la landing de
+// aplicaciones, donde está el buscador") -- antes un grid de 4 columnas,
+// ahora usa el mismo AppOptionsCarousel.astro que ya tienen las 8 páginas
+// de apps individuales en su sección "Otras apps".
+import { REGULATED_APPS } from '@constants/directorioApps.ts';
+import AppOptionsCarousel from '@components/decorative/AppOptionsCarousel.astro';
+---
+
+<AppOptionsCarousel
+   id="directorio-reguladas"
+   sectionId="directorio-reguladas"
+   heading="Apps de préstamos reguladas"
+   description="Consulta el catálogo de plataformas financieras autorizadas por la Condusef y la CNBV en México. Verifica su estatus oficial, compara opciones seguras y solicita tu crédito con total transparencia y protección a tus datos."
+   apps={REGULATED_APPS}
+   statusColor="green"
+/>

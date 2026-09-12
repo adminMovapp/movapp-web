@@ -1,0 +1,25 @@
+---
+// El wireframe de móviles (2026-08-28) completó esta lista de 2 a 7 señales
+// -- contenido aditivo, se agrega igual en ambos breakpoints. Su comentario
+// explícito ("de las secciones más fuertes, usar <ul><li>, no párrafos
+// independientes") ya se cumplía a nivel de markup (esto siempre fue un
+// <ul>/<li>), pero con 7 ítems se pasa a una sola columna -- una lista
+// vertical se lee como una lista de evidencia real, no como una grilla de
+// tarjetas decorativas.
+//
+// Línea de tiempo de scroll (2026-09-01, extendida desde StarPresta a las 4
+// apps "montadeudas") -- ver <RiskTimeline /> para el mecanismo completo.
+import RiskTimeline from '@components/decorative/RiskTimeline.astro';
+
+const RISK_SIGNS = [
+   { text: 'Nos llegaron 484 reportes en un solo mes.' },
+   { text: 'Las tasas llegan hasta 372.41%. No es un caso aislado: es un patrón.' },
+   { text: 'Amenazas, acoso y cobranza abusiva.' },
+   { text: 'Usan tu propio teléfono en tu contra.' },
+   { text: 'Amenazan con ir a tu casa o a tu trabajo.' },
+   { text: 'Mandan mensajes a tus contactos, a tu familia y hasta tu jefe.' },
+   { text: 'Difunden fotos tomadas de tu galería.' },
+];
+---
+
+<RiskTimeline id="fortapresta" heading="Señales de riesgo relacionadas con FortaPrest" items={RISK_SIGNS} />

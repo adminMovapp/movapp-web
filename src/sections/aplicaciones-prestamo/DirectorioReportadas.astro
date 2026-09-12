@@ -1,0 +1,19 @@
+---
+// Carrusel de apps con reportes verificados (2026-09-02, a pedido: "todas
+// las secciones donde se muestran las 'opciones' de las apps, se muestren
+// en forma de carrusel"... "ese carrusel ponlo también en la landing de
+// aplicaciones, donde está el buscador") -- antes un grid de 4 columnas,
+// ahora usa el mismo AppOptionsCarousel.astro que ya tienen las 8 páginas
+// de apps individuales en su sección "Otras apps".
+import { REPORTED_APPS } from '@constants/directorioApps.ts';
+import AppOptionsCarousel from '@components/decorative/AppOptionsCarousel.astro';
+---
+
+<AppOptionsCarousel
+   id="directorio-reportadas"
+   sectionId="directorio-reportadas"
+   heading="Apps de préstamos reportadas"
+   description="Revisa el historial de apps con reportes verificados por extorsión o cobros indebidos. Detecta señales de riesgo al instante y aprende qué hacer para bloquear el acoso, resguardar tus contactos y presentar tu denuncia ante las autoridades."
+   apps={REPORTED_APPS}
+   statusColor="red"
+/>

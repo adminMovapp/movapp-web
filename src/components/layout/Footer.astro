@@ -1,0 +1,130 @@
+---
+import { Image } from 'astro:assets';
+import ImgLogo from '@assets/Logo.png';
+import ImgLogoBlanco from '@assets/Logo-Blanco.png';
+import { URLS } from '@/utils/config.jsx';
+
+const socials = [
+   { href: URLS.youtube, label: 'YouTube', icon: '/img/logo-youtube.webp' },
+   { href: URLS.tiktok, label: 'TikTok', icon: '/img/logo-tiktok.webp' },
+   { href: URLS.facebook, label: 'Facebook', icon: '/img/logo-facebook.webp' },
+   { href: URLS.instagram, label: 'Instagram', icon: '/img/logo-instagram.webp' },
+];
+
+const year = new Date().getFullYear();
+---
+
+<!-- Footer -->
+<footer
+   class="mt-10 w-full border-t border-black/10 bg-gray-100 text-gray-700 transition-colors duration-300 dark:border-white/10 dark:bg-zinc-950 dark:text-white/80 md:mt-16"
+>
+   <div class="mx-auto max-w-7xl px-6 py-8 md:px-10 md:py-12">
+      <!-- Marca + descripción -- a pedido, el footer de escritorio ya no
+           lleva columnas de Navegación/Contenido (esas solo vivían ahí; en
+           móvil ya se habían quitado antes), y esta sección va centrada
+           tanto en móvil como en escritorio. -->
+      <div class="flex flex-col items-center text-center md:mx-auto md:max-w-md">
+         <a href="/" class="inline-block" aria-label="Movapp - Inicio" data-home-link>
+            <Image src={ImgLogo} alt="Movapp" height={100} class="footer-logo block h-10 w-auto dark:hidden" />
+            <Image src={ImgLogoBlanco} alt="Movapp" height={100} class="footer-logo hidden h-10 w-auto dark:block" />
+         </a>
+         <p class="mt-3 text-sm leading-relaxed text-gray-600 dark:text-white/70 md:mt-4">
+            Movapp es una organización que ayuda a personas víctimas de las aplicaciones de préstamo no reguladas
+            mediante apoyo psicológico, asesoría personalizada y la aplicación de El Hack.
+         </p>
+
+         <!-- Redes sociales -->
+         <div class="mt-4 flex gap-3 md:mt-6">
+            {
+               socials.map((s) => (
+                  <a
+                     href={s.href}
+                     target="_blank"
+                     rel="noopener noreferrer"
+                     aria-label={s.label}
+                     class="flex h-10 w-10 items-center justify-center transition hover:-translate-y-0.5"
+                  >
+                     <img src={s.icon} alt={s.label} width="40" height="40" class="h-10 w-10 rounded-full object-cover" />
+                  </a>
+               ))
+            }
+         </div>
+
+         <!-- Volver al inicio -->
+         <a
+            href="/"
+            class="mt-4 flex items-center gap-2 rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-medium text-gray-600 transition hover:-translate-y-0.5 hover:border-purple_mv/50 hover:text-text_banner dark:border-white/10 dark:bg-white/5 dark:text-white/70 dark:hover:text-text_banner md:mt-6"
+         >
+            <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+               <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M3 12l9-9 9 9M5 10v10a1 1 0 001 1h4v-6h4v6h4a1 1 0 001-1V10"
+               />
+            </svg>
+            Volver al inicio
+         </a>
+      </div>
+
+      <!-- Barra inferior: MÓVIL (a pedido, solo aviso de privacidad + términos
+           en la misma línea, y el crédito debajo) -->
+      <div class="mt-6 flex flex-col items-center gap-2 border-t border-black/10 pt-4 text-sm text-gray-500 dark:border-white/10 dark:text-white/60 md:hidden">
+         <div class="flex items-center gap-4">
+            <a href="/aviso-de-privacidad" class="transition-colors hover:text-text_banner">Aviso de privacidad</a>
+            <a href="/contacto" class="transition-colors hover:text-text_banner">Contáctanos</a>
+            <a href="/terminos-y-condiciones" class="transition-colors hover:text-text_banner">Términos y condiciones</a>
+         </div>
+         <p>Movappbyerikmann © - Todos Los Derechos Reservados - {year}</p>
+      </div>
+
+      <!-- Barra inferior: ESCRITORIO -- mismas opciones que la barra de
+           móviles (aviso de privacidad + términos), a pedido. -->
+      <div
+         class="mt-6 hidden items-center justify-between gap-4 border-t border-black/10 pt-4 text-sm text-gray-500 dark:border-white/10 dark:text-white/60 md:mt-10 md:flex md:pt-6"
+      >
+         <p>Movappbyerikmann © - Todos Los Derechos Reservados - {year}</p>
+         <div class="flex items-center gap-4">
+            <a href="/aviso-de-privacidad" class="transition-colors hover:text-text_banner">Aviso de privacidad</a>
+            <a href="/contacto" class="transition-colors hover:text-text_banner">Contáctanos</a>
+            <a href="/terminos-y-condiciones" class="transition-colors hover:text-text_banner">Términos y condiciones</a>
+         </div>
+      </div>
+
+      <!-- Volver arriba -->
+      <div class="mt-6 flex justify-center md:mt-8">
+         <button
+            id="backToTopButton"
+            type="button"
+            class="flex items-center gap-2 rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-medium text-gray-600 transition hover:-translate-y-0.5 hover:border-purple_mv/50 hover:text-text_banner dark:border-white/10 dark:bg-white/5 dark:text-white/70 dark:hover:text-text_banner"
+         >
+            <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+               <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
+            </svg>
+            Volver arriba
+         </button>
+      </div>
+   </div>
+</footer>
+
+<style>
+   /*
+      Tamaño real del logo fijado acá (no solo con "h-10" de Tailwind) --
+      este <style> con scope de componente se aplica siempre, con o sin JS.
+      Mientras Tailwind no ha cargado (ver mecanismo no-js/js en
+      Layout.astro), el <img> no tiene ninguna regla de tamaño y se pinta a
+      su dimensión real (height={100}, pensado para retina) -- mucho más
+      grande que los 40px finales de "h-10". Eso generaba el mayor causante
+      de CLS reportado por Lighthouse. Debe coincidir con "h-10" si cambia.
+   */
+   .footer-logo {
+      height: 2.5rem;
+      width: auto;
+   }
+</style>
+
+<script>
+   const backToTopButton = document.getElementById('backToTopButton');
+   backToTopButton?.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+   });
+</script>

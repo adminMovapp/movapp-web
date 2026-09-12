@@ -1,0 +1,362 @@
+---
+import { Image } from 'astro:assets';
+import ImgLogo from '@assets/Logo.png';
+import ImgLogoBlanco from '@assets/Logo-Blanco.png';
+import HeaderSearch from '@components/layout/HeaderSearch.astro';
+---
+
+<header
+   id="siteHeader"
+   class="fixed top-0 inset-x-0 z-50 bg-gradient-to-b from-purple_mv/[0.06] to-white/90 dark:from-purple_mv/[0.08] dark:to-zinc-950/85 backdrop-blur-md px-6 md:px-10 lg:px-16 py-4 hidden lg:flex justify-between items-center transition-colors duration-300"
+>
+   <!-- Logo con su diseño/color original (sin recolorear vía mask-image) --
+        mismo criterio que Footer.astro y MenuMobilePanel.astro: en light se
+        usa el PNG tal cual, en dark el PNG blanco. -->
+   <a href="/" class="flex items-center" aria-label="Movapp - Inicio" data-home-link>
+      <Image src={ImgLogo} alt="Movapp" height={100} class="site-logo block h-9 w-auto dark:hidden md:h-10" />
+      <Image src={ImgLogoBlanco} alt="Movapp" height={100} class="site-logo hidden h-9 w-auto dark:block md:h-10" />
+   </a>
+
+   <!--
+      Desktop: ya no lleva los enlaces de navegación inline (Inicio/Movapp/
+      Hack/Contenido) -- a pedido, esos viven ahora dentro del menú
+      hamburguesa (ver MenuDesktopPanel.astro). Lo único que queda visible
+      en la barra, además del logo, es tienda/carrito y el toggle de tema
+      (explícitamente pedido que se queden afuera del menú) y el botón de
+      hamburguesa que abre ese panel.
+   -->
+   <div class="hidden lg:flex items-center gap-2">
+      <!--
+         Buscador (desktop): se despliega dentro de la propia navbar (ver
+         HeaderSearch.astro) -- a pedido explícito, NO es el mismo modal
+         centrado que usa el botón flotante de móvil (SearchPanel.astro).
+      -->
+      <HeaderSearch />
+
+      <!-- Tienda / Carrito (desktop): por defecto se muestra el ícono de
+         tienda (igual al de la barra inferior en móvil); solo se cambia
+         por el ícono de carrito (con su badge) cuando hay algo dentro --
+         ver el toggle de data-cart-empty-icon/data-cart-filled-icon en el
+         script de abajo, que corre junto al resto de la lógica del badge.
+      -->
+      <a
+         href="/tienda"
+         id="storeButton"
+         data-cart-empty-icon
+         aria-label="Tienda"
+         class="flex h-9 w-9 items-center justify-center rounded-full icon-tone hover:bg-black/5 dark:hover:bg-white/10 transition"
+      >
+         <span aria-hidden="true" class="icon-mask-store h-5 w-5"></span>
+      </a>
+      <a
+         href="/tienda"
+         id="cartButton"
+         data-cart-filled-icon
+         aria-label="Carrito"
+         class="relative hidden h-9 w-9 items-center justify-center rounded-full icon-tone hover:bg-black/5 dark:hover:bg-white/10 transition"
+      >
+         <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+         </svg>
+         <span
+            data-cart-count
+            class="absolute -right-1 -top-1 hidden h-5 w-5 items-center justify-center rounded-full bg-text_banner text-[11px] font-bold text-white"
+         >0</span>
+      </a>
+
+      <!-- Toggle de tema -->
+      <button
+         id="themeToggle"
+         type="button"
+         aria-label="Cambiar tema"
+         class="flex h-9 w-9 items-center justify-center rounded-full icon-tone hover:bg-black/5 dark:hover:bg-white/10 transition"
+      >
+         <!-- Sol (visible en light) -->
+         <svg
+            class="block h-5 w-5 dark:hidden"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+         >
+            <circle cx="12" cy="12" r="4"></circle>
+            <path
+               d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"
+            ></path>
+         </svg>
+         <!-- Luna (visible en dark) -->
+         <svg
+            class="hidden h-5 w-5 dark:block"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+         >
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+         </svg>
+      </button>
+
+      <!-- Menú hamburguesa: abre MenuDesktopPanel.astro (ver ese archivo para
+           el panel y la animación de "cortinas"). Mismo ícono enmascarado
+           (/img/menu.webp) que MenuMobile.astro, para que ambos hamburguesas
+           del sitio se vean iguales. -->
+      <button
+         id="menuDesktopButton"
+         aria-label="Abrir menú"
+         aria-controls="menuDesktopNav"
+         aria-expanded="false"
+         class="flex h-9 w-9 items-center justify-center rounded-full icon-tone hover:bg-black/5 dark:hover:bg-white/10 transition"
+      >
+         <div id="hamburgerIconDesktop">
+            <span class="menu-icon-desktop block h-5 w-5 bg-current" aria-hidden="true"></span>
+         </div>
+         <div id="menuDesktopCloseIcon" class="hidden">
+            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+               <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+         </div>
+      </button>
+   </div>
+</header>
+
+<!--
+   Spacer: el header es position:fixed (no sticky), así que no reserva su
+   propio espacio en el documento. Este div compensa esa altura para que el
+   contenido de abajo no quede tapado. Solo aplica en lg+ (mismo breakpoint
+   en el que el header se muestra). 74px = altura medida del header sin
+   scroll (py-4 + logo h-10).
+-->
+<div class="header-spacer hidden lg:block" style="height: 74px;" aria-hidden="true"></div>
+
+<style>
+   /*
+      La transformación a píldora está ligada 1:1 al scroll (scroll-scrubbed),
+      no es una transición por tiempo: el script de abajo escribe la variable
+      --pill (0 a 1) en cada frame según window.scrollY, y todo lo demás sale
+      de esa única variable vía calc(). Así nunca "se adelanta" a tu scroll —
+      si scrolleas rápido, la ves pasar rápido por los estados intermedios; si
+      scrolleas lento, la ves moverse lento. No hay salto porque no depende de
+      un temporizador independiente del gesto.
+
+      El header usa position:fixed (no sticky): un elemento sticky no permite
+      leer una posición "a medio camino" de forma confiable para este cálculo.
+
+      --pill-target-width lo fija el script en píxeles (min(100vw - 4rem,
+      72rem)), así el ancho final de la píldora queda igual que antes
+      (antes: width: calc(100% - 4rem); max-width: 72rem).
+   */
+   #siteHeader {
+      --pill: 0;
+      --pill-target-width: 100%;
+      --pill-border-alpha: 0.25;
+      --pill-shadow-alpha: 0.25;
+      margin-top: calc(var(--pill) * 0.75rem);
+      margin-inline: auto;
+      width: calc(100% - (var(--pill) * (100% - var(--pill-target-width))));
+      border-radius: calc(var(--pill) * 2.5rem);
+      border: 1px solid rgb(129 73 226 / calc(var(--pill) * var(--pill-border-alpha)));
+      padding-top: calc(1rem - (var(--pill) * 0.35rem));
+      padding-bottom: calc(1rem - (var(--pill) * 0.35rem));
+      box-shadow:
+         0 calc(var(--pill) * 10px) calc(var(--pill) * 30px) calc(var(--pill) * -10px) rgb(129 73 226 /
+               calc(var(--pill) * var(--pill-shadow-alpha)));
+      transition:
+         background-color 0.3s ease,
+         color 0.3s ease;
+      /* Ver mismo comentario que #mobileBottomNav en MobileBottomNav.astro:
+         fuerza su propia capa de composición para que WebKit repinte este
+         fixed en cada frame de scroll en vez de rezagarlo/snap al parar. */
+      transform: translateZ(0);
+      -webkit-transform: translateZ(0);
+      will-change: transform;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+   }
+
+   :global(html.dark) #siteHeader {
+      --pill-border-alpha: 0.1;
+      --pill-shadow-alpha: 0.45;
+      border-color: rgb(255 255 255 / calc(var(--pill) * var(--pill-border-alpha)));
+   }
+
+   /*
+      Ícono de tienda: PNG negro-sobre-transparente (no SVG), así que no
+      acepta "currentColor" como un <svg stroke="currentColor">. Se usa como
+      máscara (mask-image) en vez de imagen: el PNG solo define qué parte es
+      visible, y el color real sale de background-color, que se deja en
+      "currentColor" para heredar la clase de texto del elemento
+      (icon-tone) -- mismo mecanismo con el que ya funcionan los <svg> de al
+      lado. El logo YA NO usa esta técnica (ver el <img> del markup arriba):
+      debe verse con su diseño/color original, no recoloreado.
+   */
+   /*
+      Tamaño real del logo fijado acá (no solo con "h-9"/"md:h-10" de
+      Tailwind) -- este <style> con scope de componente se aplica siempre,
+      con o sin JS. Las clases de Tailwind dependen de que global.css haya
+      cargado (ver mecanismo no-js/js en Layout.astro); mientras no cargó, el
+      <img> no tiene ninguna regla de tamaño y el navegador lo pinta a su
+      dimensión real (height={100} más ancho proporcional, pensado para
+      retina) -- mucho más grande que los 36-40px finales. Eso generaba un
+      salto de layout grande apenas Tailwind aplicaba "h-9"/"md:h-10"
+      (Lighthouse lo marcó como el mayor causante de CLS del sitio). Debe
+      coincidir con esos valores si cambian.
+   */
+   .site-logo {
+      height: 2.25rem; /* h-9 */
+      width: auto;
+   }
+   @media (min-width: 768px) {
+      .site-logo {
+         height: 2.5rem; /* md:h-10 */
+      }
+   }
+
+   .icon-mask-store {
+      background-color: currentColor;
+      -webkit-mask-repeat: no-repeat;
+      mask-repeat: no-repeat;
+      -webkit-mask-size: contain;
+      mask-size: contain;
+      -webkit-mask-position: center;
+      mask-position: center;
+      -webkit-mask-image: url('/img/tienda.webp');
+      mask-image: url('/img/tienda.webp');
+   }
+
+   /*
+      NO se usa la utilidad Tailwind "dark:text-white/70" acá a propósito.
+      global.css tiene un override para todo el sitio que reescribe en modo
+      claro cualquier elemento cuyo atributo class contenga el substring
+      "text-white/" (pensado para las utilidades "text-white/x" usadas como
+      color fijo en el diseño oscuro) -- pero ese selector hace matching por
+      substring, no entiende el prefijo "dark:", así que también atrapaba
+      "dark:text-white/70" y lo forzaba a gris oscuro incluso en light. Una
+      clase propia (sin ese substring) evita el conflicto.
+   */
+   .icon-tone {
+      color: #8149e2;
+   }
+   :global(html.dark) .icon-tone {
+      color: rgba(255, 255, 255, 0.7);
+   }
+
+   /*
+      Ícono de hamburguesa: mismo PNG/técnica que .menu-icon en
+      MenuMobile.astro (máscara + background-color: currentColor), pero con
+      su propio nombre de clase porque los estilos de Astro son locales a
+      cada componente y no se comparten entre archivos.
+   */
+   .menu-icon-desktop {
+      -webkit-mask-image: url('/img/menu.webp');
+      mask-image: url('/img/menu.webp');
+      -webkit-mask-repeat: no-repeat;
+      mask-repeat: no-repeat;
+      -webkit-mask-position: center;
+      mask-position: center;
+      -webkit-mask-size: contain;
+      mask-size: contain;
+   }
+</style>
+
+<script is:inline>
+   (function () {
+      var header = document.getElementById('siteHeader');
+      if (!header) return;
+
+      // Cuántos px de scroll toma completar la transformación a píldora.
+      var RANGE = 120;
+
+      function computeTargetWidth() {
+         var target = Math.min(window.innerWidth - 64, 1152);
+         header.style.setProperty('--pill-target-width', target + 'px');
+      }
+
+      var ticking = false;
+      function update() {
+         var progress = Math.min(Math.max(window.scrollY / RANGE, 0), 1);
+         header.style.setProperty('--pill', progress.toFixed(4));
+         ticking = false;
+      }
+      function onScroll() {
+         if (!ticking) {
+            requestAnimationFrame(update);
+            ticking = true;
+         }
+      }
+
+      computeTargetWidth();
+      update();
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', computeTargetWidth, { passive: true });
+   })();
+</script>
+
+<script is:inline>
+   document.addEventListener('click', function (e) {
+      // Toggle de tema (desktop y móvil comparten este handler)
+      if (
+         e.target.closest('#themeToggle') ||
+         e.target.closest('#themeToggleMobile') ||
+         e.target.closest('#themeToggleMobileTop')
+      ) {
+         const isDark = document.documentElement.classList.toggle('dark');
+         try {
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+         } catch (err) {}
+      }
+
+      // Carrito: en /tienda abre el drawer; en otras páginas navega a /tienda
+      const cartTrigger = e.target.closest('#cartButton, #cartButtonMobile');
+      if (cartTrigger) {
+         if (window.location.pathname.startsWith('/tienda')) {
+            e.preventDefault();
+            window.dispatchEvent(new CustomEvent('cart:open'));
+         }
+         // en otras rutas se sigue el href a /tienda
+      }
+
+      // Logo (Home): si ya estás en home, solo hace scroll arriba en vez de recargar
+      const homeLink = e.target.closest('[data-home-link]');
+      if (homeLink && window.location.pathname === '/') {
+         e.preventDefault();
+         window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+   });
+
+   // Badge del carrito: refleja la cantidad guardada en localStorage
+   (function () {
+      function cartCount() {
+         try {
+            const c = JSON.parse(localStorage.getItem('cart') || '[]');
+            return Array.isArray(c) ? c.reduce((a, it) => a + (it.quantity || 0), 0) : 0;
+         } catch (e) {
+            return 0;
+         }
+      }
+      function render() {
+         const n = cartCount();
+         document.querySelectorAll('[data-cart-count]').forEach((el) => {
+            el.textContent = n;
+            el.classList.toggle('hidden', n === 0);
+            el.classList.toggle('flex', n > 0);
+         });
+         document.querySelectorAll('[data-cart-empty-icon]').forEach((el) => {
+            el.classList.toggle('hidden', n > 0);
+            el.classList.toggle('flex', n === 0);
+         });
+         document.querySelectorAll('[data-cart-filled-icon]').forEach((el) => {
+            el.classList.toggle('hidden', n === 0);
+            el.classList.toggle('flex', n > 0);
+         });
+      }
+      render();
+      window.addEventListener('cart:updated', render);
+      window.addEventListener('storage', render);
+   })();
+</script>

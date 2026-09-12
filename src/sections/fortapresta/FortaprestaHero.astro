@@ -1,0 +1,24 @@
+---
+// H1 (único H1 de la página). Plantilla "app reportada" (ver
+// PrestafacilHero.astro), pero acá el H1 usa formato "X: qué nos reportan
+// los usuarios..." en vez de la pregunta de confiabilidad de PrestaFácil --
+// se sigue el wireframe verbatim, cada app de este lado de la serie puede
+// traer su propia variante de H1.
+// Slug de ruta "fortapresta" (no "fortaprest") -- ver comentario en
+// directorioApps.ts: es el slug canónico del documento maestro de SEO. El
+// nombre visible de la app sigue siendo "FortaPrest".
+// Hero de 2 columnas (2026-09-02, a pedido) -- ver AppHero.astro para el
+// mecanismo compartido por las 8 apps. "paragraphMobile" es el texto
+// distinto (más largo, en primera persona) que va SOLO en móvil (a pedido
+// explícito, 2026-08-28) -- el de escritorio ("paragraph") no se toca.
+import AppHero from '@components/decorative/AppHero.astro';
+---
+
+<AppHero
+   id="fortapresta"
+   breadcrumbLabel="FortaPrest"
+   h1="FortaPrest: qué nos reportan los usuarios y qué puedes hacer"
+   paragraph="FortaPrest se presenta como una app de préstamos rápidos. Estuvo un tiempo fuera de las tiendas de aplicaciones y volvió a aparecer, que es algo que solemos ver en este tipo de plataformas."
+   paragraphMobile="Si llegaste aquí porque no dejan de llegarte mensajes de Fortaprest, respira un momento. Vamos por partes, sin adornos y sin asustarte de más: esto es todo lo que sabemos de esta aplicación, por qué está en nuestra lista de apps reportadas y qué puedes hacer hoy mismo."
+   whatsappMessage="¡Hola! Quiero orientación sobre FortaPrest."
+/>

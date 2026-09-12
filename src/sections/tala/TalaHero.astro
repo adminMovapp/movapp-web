@@ -1,0 +1,16 @@
+---
+// H1 (único H1 de la página). Breadcrumb de 2 niveles ("Inicio | Aplicaciones
+// | Tala") -- mismo criterio que CrediseguroHero.astro, ver
+// PAGE_SCHEMA['/aplicaciones-prestamo/tala'] en schema.js.
+// Hero de 2 columnas (2026-09-02, a pedido) -- ver AppHero.astro para el
+// mecanismo compartido por las 8 apps.
+import AppHero from '@components/decorative/AppHero.astro';
+---
+
+<AppHero
+   id="tala"
+   breadcrumbLabel="Tala"
+   h1="Tala: información verificada, registro y datos de contacto"
+   paragraph="Consulta los datos disponibles sobre Tala, su registro ante la autoridad correspondiente y la información de contacto verificada."
+   whatsappMessage="¡Hola! Quiero orientación sobre Tala."
+/>

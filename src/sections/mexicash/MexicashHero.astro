@@ -1,0 +1,16 @@
+---
+// H1 (único H1 de la página). Plantilla "app reportada" -- este H1 usa el
+// formato "X: [situación específica] y qué puedes hacer", como
+// FortaprestaHero.astro, no la pregunta de confiabilidad de PrestaFácil.
+// Hero de 2 columnas (2026-09-02, a pedido) -- ver AppHero.astro para el
+// mecanismo compartido por las 8 apps.
+import AppHero from '@components/decorative/AppHero.astro';
+---
+
+<AppHero
+   id="mexicash"
+   breadcrumbLabel="Mexicash"
+   h1="Mexicash: el depósito que nunca pediste y qué puedes hacer"
+   paragraph={`Hay una pregunta que nos llega mucho: "me llegó un dinero de Mexicash yo no solicité, ¿ahora qué hago?" Si es tu caso, o si ya empezaron a llamar a tus contactos, quédate. Aquí está lo que sabemos de esta aplicación, por qué está en nuestra lista de apps reportadas y qué puedes hacer hoy mismo.`}
+   whatsappMessage="¡Hola! Quiero orientación sobre Mexicash."
+/>

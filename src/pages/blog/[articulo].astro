@@ -1,0 +1,95 @@
+---
+// Página de detalle de UN artículo del blog -- un nivel más adentro que
+// [categoria].astro (esa es el listado de una categoría; ésta es el
+// artículo en sí, con cuerpo completo). Mismo criterio de plantilla única:
+// agregar un artículo nuevo es agregar una entrada a
+// @constants/blogArticles.ts, nada que tocar acá.
+//
+// Convive con [categoria].astro bajo el mismo "/blog/[x]" sin generar rutas
+// duplicadas: los slugs de artículo (blogArticles.ts) y de categoría
+// (blogCategoryPages.ts) son conjuntos disjuntos, y ambas rutas son
+// prerender=true -- cada getStaticPaths() resuelve a páginas estáticas
+// concretas distintas (verificado en dev y build, sin colisión).
+//
+// title/description del <Layout> vienen de "article.metaTitle"/
+// "article.metaDescription" (2026-09-03, a pedido explícito de Santiago
+// tras auditar las 42 URLs del sitio contra el brief maestro de SEO) --
+// ANTES se armaban solos a partir del H1 ("${article.title} | Movapp") y
+// del primer párrafo del cuerpo, y ninguno de los 27 artículos coincidía
+// con el meta title/description planeado (el H1 es un titular de lectura,
+// no un meta title de ≤60 caracteres; el primer párrafo es una intro de
+// 200-300 caracteres, no una meta description de SERP). Cada entrada de
+// BLOG_ARTICLES ahora trae su propio copy de SEO, independiente del H1.
+import Layout from '@layouts/Layout.astro';
+import BlogArticleHero from '@sections/blog/BlogArticleHero.astro';
+import BlogArticleBody from '@sections/blog/BlogArticleBody.astro';
+import BlogRelatedArticles from '@sections/blog/BlogRelatedArticles.astro';
+import BlogArticleCTA from '@sections/blog/BlogArticleCTA.astro';
+import { BLOG_ARTICLES } from '@constants/blogArticles.ts';
+import { getSiteConfig } from '@utils/config.jsx';
+import { generateBlogPostingSchema, generateBreadcrumbSchema } from '@utils/schema.js';
+
+// Mismo motivo que [categoria].astro: el sitio corre en SSR (output:
+// 'server'), así que sin este flag "getStaticPaths" se ignora por completo.
+export const prerender = true;
+
+export function getStaticPaths() {
+   return BLOG_ARTICLES.map((article) => ({
+      params: { articulo: article.slug },
+      props: { article },
+   }));
+}
+
+const { article } = Astro.props;
+
+const shareUrl = `${getSiteConfig(Astro.request).siteUrl}/blog/${article.slug}`;
+
+// Schema propio del artículo (BlogPosting + BreadcrumbList) -- pasado por la
+// prop "schema" del Layout, la escotilla de escape para páginas dinámicas de
+// pSEO (ver @utils/schema.js): esta ruta no puede vivir en PAGE_SCHEMA
+// porque no es una ruta fija, es una por cada slug de BLOG_ARTICLES.
+// 2026-09-03: hallazgo de la auditoría de schema -- ninguno de los 27
+// artículos tenía BlogPosting, solo el Organization del fallback genérico.
+const articlePath = `/blog/${article.slug}`;
+const articleSchema = [
+   generateBlogPostingSchema(
+      {
+         headline: article.metaTitle,
+         description: article.metaDescription,
+         path: articlePath,
+         publishDate: article.publishDate,
+         authorName: article.author,
+      },
+      Astro.request,
+   ),
+   generateBreadcrumbSchema(
+      [
+         { name: 'Blog', path: '/blog' },
+         { name: article.breadcrumbLabel, path: articlePath },
+      ],
+      Astro.request,
+   ),
+];
+---
+
+<Layout title={article.metaTitle} description={article.metaDescription} type="article" showGrid={false} schema={articleSchema}>
+   <BlogArticleHero
+      slug={article.slug}
+      title={article.title}
+      breadcrumbLabel={article.breadcrumbLabel}
+      author={article.author}
+      publishDate={article.publishDate}
+      readingMinutes={article.readingMinutes}
+      mobileAuthor={article.mobileAuthor}
+      mobileReadingMinutes={article.mobileReadingMinutes}
+   />
+   <BlogArticleBody
+      slug={article.slug}
+      sections={article.sections}
+      authorBio={article.authorBio}
+      shareUrl={shareUrl}
+      shareTitle={article.title}
+   />
+   <BlogRelatedArticles id={`articulo-${article.slug}-relacionados`} articles={article.relatedArticles} />
+   <BlogArticleCTA slug={article.slug} />
+</Layout>

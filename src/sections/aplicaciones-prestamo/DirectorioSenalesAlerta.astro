@@ -1,0 +1,13 @@
+---
+// Línea de tiempo con revelado secuencial (2026-09-03, a pedido explícito:
+// "haz lo mismo en señales de alerta de una app de préstamos" -- mismo
+// diseño que DirectorioComoIdentificamos.astro, ver SequentialTimeline.astro
+// para el mecanismo completo). Reemplaza el giro 3D simultáneo anterior
+// (alertaCardFlip, las 6 cards giraban a la vez con cascada de delay
+// corto). Sin check verde: acá cada ítem es una señal de alerta, no un
+// criterio verificado (comparar con DirectorioComoIdentificamos.astro).
+import { WARNING_SIGNS } from '@constants/directorioApps.ts';
+import SequentialTimeline from '@components/decorative/SequentialTimeline.astro';
+---
+
+<SequentialTimeline id="directorio-senales-alerta" heading="Señales de alerta en una app de préstamos" items={WARNING_SIGNS} />

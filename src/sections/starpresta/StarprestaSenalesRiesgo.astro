@@ -1,0 +1,30 @@
+---
+// El wireframe de móviles (2026-08-28) completó esta lista de 2 a 7 señales
+// -- contenido aditivo, igual en ambos breakpoints (mismo caso que
+// Fortaprest/MexicashSenalesRiesgo.astro). Mismo comentario explícito en el
+// wireframe ("de las secciones más fuertes, usar <ul><li>, no párrafos
+// independientes") -- se pasa a una sola columna en vez de la grilla de 2
+// columnas, mismo criterio ya aplicado en esas dos páginas.
+//
+// Línea de tiempo de scroll (2026-09-01, a pedido: "haz una versión
+// idéntica" a la sección "Evaluación preclínica" de bioaltaris.netlify.app,
+// luego extendida a las 4 apps "montadeudas") -- ver
+// <RiskTimeline /> para el mecanismo completo.
+import RiskTimeline from '@components/decorative/RiskTimeline.astro';
+
+const RISK_SIGNS = [
+   { text: 'Crean grupos de WhatsApp con tus contactos.' },
+   {
+      text: 'Toman los números de tu agenda, arman un grupo y ahí te reclaman la deuda delante de todos. El objetivo es humillarte para que pagues por vergüenza.',
+   },
+   {
+      text: 'Publicaciones y mensajes en los que te señalan como estafador o moroso, muchas veces acompañados de tus fotos y tus datos.',
+   },
+   { text: 'Te difaman en redes sociales.' },
+   { text: 'Cobran de forma agresiva y hostil.' },
+   { text: 'Llamadas a todas horas, insultos y amenazas sostenidas en el tiempo. No es un cobrador insistente: es acoso.' },
+   { text: 'Te amenazan con el buró de crédito.' },
+];
+---
+
+<RiskTimeline id="starpresta" heading="Señales de riesgo relacionadas con StarPresta" items={RISK_SIGNS} />

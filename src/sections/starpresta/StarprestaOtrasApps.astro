@@ -1,0 +1,17 @@
+---
+// Cross-sell de otras apps REPORTADAS -- mismo criterio que el resto de la
+// serie. Excluye StarPresta, muestra MexiCash/FortaPrest/PrestaFácil.
+// Carrusel de 1 tarjeta por vez (2026-09-02, a pedido) -- ver
+// AppOptionsCarousel.astro para el mecanismo compartido por las 8 apps.
+import { REPORTED_APPS } from '@constants/directorioApps.ts';
+import AppOptionsCarousel from '@components/decorative/AppOptionsCarousel.astro';
+
+const OTHER_APPS = REPORTED_APPS.filter((app) => ['mexicash', 'fortapresta', 'prestafacil'].includes(app.slug));
+---
+
+<AppOptionsCarousel
+   id="starpresta"
+   heading="Otras aplicaciones ilegales que podrías consultar"
+   apps={OTHER_APPS}
+   statusColor="red"
+/>

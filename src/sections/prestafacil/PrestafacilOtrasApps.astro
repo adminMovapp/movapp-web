@@ -1,0 +1,20 @@
+---
+// Cross-sell de otras apps REPORTADAS (ilegales) -- a diferencia de las
+// páginas de apps reguladas (CrediSeguro/Tala/Kueski/Klar), acá el título
+// "ilegales" del wireframe SÍ es correcto: PrestaFácil misma es una app
+// reportada, así que tiene sentido mostrar otras apps del mismo tipo
+// (REPORTED_APPS), no las legales.
+// Carrusel de 1 tarjeta por vez (2026-09-02, a pedido) -- ver
+// AppOptionsCarousel.astro para el mecanismo compartido por las 8 apps.
+import { REPORTED_APPS } from '@constants/directorioApps.ts';
+import AppOptionsCarousel from '@components/decorative/AppOptionsCarousel.astro';
+
+const OTHER_APPS = REPORTED_APPS.filter((app) => ['fortapresta', 'mexicash', 'starpresta'].includes(app.slug));
+---
+
+<AppOptionsCarousel
+   id="prestafacil"
+   heading="Otras aplicaciones ilegales que podrías consultar"
+   apps={OTHER_APPS}
+   statusColor="red"
+/>

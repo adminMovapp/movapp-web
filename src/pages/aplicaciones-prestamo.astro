@@ -1,0 +1,25 @@
+---
+import Layout from '@layouts/Layout.astro';
+import DirectorioHero from '@sections/aplicaciones-prestamo/DirectorioHero.astro';
+import DirectorioReportadas from '@sections/aplicaciones-prestamo/DirectorioReportadas.astro';
+import DirectorioReguladas from '@sections/aplicaciones-prestamo/DirectorioReguladas.astro';
+import DirectorioComoIdentificamos from '@sections/aplicaciones-prestamo/DirectorioComoIdentificamos.astro';
+import DirectorioSenalesAlerta from '@sections/aplicaciones-prestamo/DirectorioSenalesAlerta.astro';
+import DirectorioQueHacer from '@sections/aplicaciones-prestamo/DirectorioQueHacer.astro';
+import DirectorioMasDudas from '@sections/aplicaciones-prestamo/DirectorioMasDudas.astro';
+---
+
+<Layout
+   title="Apps de préstamos legales e ilegales en México | Movapp"
+   description="Descubre qué apps de préstamos son legales y cuáles son montadeudas. Aprende a identificar señales de alerta y qué hacer si ya tienes problemas."
+   type="website"
+   showGrid={false}
+>
+   <DirectorioHero />
+   <DirectorioReportadas />
+   <DirectorioReguladas />
+   <DirectorioComoIdentificamos />
+   <DirectorioSenalesAlerta />
+   <DirectorioQueHacer />
+   <DirectorioMasDudas />
+</Layout>

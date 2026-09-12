@@ -1,46 +1,171 @@
 ---
-import '@styles/global.css';
-import Header from '@components/Header.astro';
-import Footer from '@components/Footer.astro';
-import HeaderLayer from '@/components/HeaderLayer.astro';
-import BackgroundGrid from '@components/BackgroundGrid.astro';
-import InitAOS from '@/utils/InitAOS.jsx';
+// Importado como URL (no como hoja de estilos auto-inyectada): así el <link>
+// se agrega a mano vía JS más abajo y solo se descarga cuando hay JavaScript.
+// Sin JS, el sitio se sirve como HTML semántico sin CSS de Tailwind: mismo
+// texto, sin el peso del diseño.
+import stylesheetHref from '@styles/global.css?url';
+// Este sí se importa normal (siempre se carga, con o sin JS): es una hoja de
+// estilos mínima y liviana que le da estructura al HTML cuando Tailwind no
+// está disponible. Ver src/styles/no-js.css.
+import '@styles/no-js.css';
+// Solo lo usa la isla de React de la tienda (bandera de país); sin JS esa
+// isla ni siquiera se hidrata, así que también se difiere a este script.
+const flagIconsHref = 'https://cdn.jsdelivr.net/npm/flag-icons/css/flag-icons.min.css';
+import Header from '@components/layout/Header.astro';
+import MobileBottomNav from '@components/layout/MobileBottomNav.astro';
+import MenuMobilePanel from '@components/layout/MenuMobilePanel.astro';
+import MenuDesktopPanel from '@components/layout/MenuDesktopPanel.astro';
+import MobileSearchBackdrop from '@components/layout/MobileSearchBackdrop.astro';
+import Footer from '@components/layout/Footer.astro';
+import HeaderLayer from '@/components/layout/HeaderLayer.astro';
+import Preloader from '@/components/layout/Preloader.astro';
+import BackgroundGrid from '@components/layout/BackgroundGrid.astro';
 
-import { getSiteConfig } from '@/utils/config.jsx';
-import { generateSEOTags, generateOrganizationSchema } from '@/utils/seo.jsx';
+import { getSiteConfig, generateSEOTags } from '@/utils/config.jsx';
+// Toda la funcionalidad de Schema.org está centralizada en ese archivo:
+// datos de las entidades, generadores y qué schema le toca a cada ruta.
+import { getPageSchema, getPageEntry } from '@/utils/schema.js';
 
-import GoogleTagManager from '@components/GoogleTagManager.astro';
-import GoogleAnalytics from '@components/GoogleAnalytics.astro';
+import GoogleTagManager from '@components/layout/GoogleTagManager.astro';
+import GoogleAnalytics from '@components/layout/GoogleAnalytics.astro';
 
-import MetaPixelScript from '@components/MetaPixelScript.astro';
+import MetaPixelScript from '@components/layout/MetaPixelScript.astro';
 
 const showHeaderLayer = import.meta.env.PUBLIC_SHOW_HEADER_LAYER === 'true';
+const showPreloader = import.meta.env.PUBLIC_SHOW_PRELOADER === 'true';
+// DIAGNÓSTICO TEMPORAL -- borrar junto con el resto del diagnóstico de
+// "navdebug" una vez resuelto el flote de la barra inferior. ?nochat=1 ya
+// descartó al widget de LeadConnector como causa (mismo bug con o sin él).
+// ?minimal=1 apaga TAMBIÉN GTM/GA4/Meta Pixel de una sola vez -- GTM en
+// particular puede estar inyectando tags de terceros (heatmaps, session
+// recording, etc.) que no se ven en este código porque viven en la
+// configuración del contenedor de GTM, no en el repo.
+const disableChatWidget = Astro.url.searchParams.get('nochat') === '1' || Astro.url.searchParams.get('minimal') === '1';
+const disableThirdPartyScripts = Astro.url.searchParams.get('minimal') === '1';
 
 interface Props {
    title?: string;
    description?: string;
-   keywords?: string;
    image?: string;
    type?: string;
    noIndex?: boolean;
-   schema?: object;
+   /*
+      Escotilla de escape para el JSON-LD: normalmente NO hace falta pasarla.
+      El schema se resuelve solo a partir de la ruta (ver PAGE_SCHEMA en
+      @/utils/schema.js, que es el único archivo que hay que mantener). Esta
+      prop existe para las páginas dinámicas de pSEO que vienen -- fichas de
+      app y artículos, cuyo schema depende del frontmatter de cada entrada y
+      no de una ruta fija.
+   */
+   schema?: object | object[];
    showGrid?: boolean;
+   /*
+      Bloquea selección/copiado del contenido de la página (2026-09-03, a
+      pedido explícito: "quiero que el usuario no pueda copiar la
+      información que se muestre en TODAS las apps (legales e ilegales)")
+      -- opt-in por página, igual que "showGrid". Solo protege el <slot />
+      (el contenido propio de cada página), NUNCA el <Footer /> -- ver el
+      <main> más abajo: el Footer vive fuera del div protegido a propósito,
+      porque no es "información de la app", es navegación/copyright
+      compartido de todo el sitio.
+   */
+   disableCopy?: boolean;
 }
-const { title, showGrid = true } = Astro.props;
+const { title, schema, showGrid = true, disableCopy = false } = Astro.props;
 
 const siteConfig = getSiteConfig(Astro.request);
 
+/*
+   Meta description: la de la prop manda; si la página no pasa ninguna, se usa
+   la declarada para esa ruta en PAGE_SCHEMA (misma que va en el schema, así
+   el texto no se escribe dos veces); y si tampoco hay, la del sitio.
+*/
+const pageEntry = getPageEntry(Astro.url.pathname);
+
 // Generar tags SEO
-const seoTags = generateSEOTags({
-   ...Astro.props,
-   url: new URL(Astro.url.pathname, siteConfig.canonicalUrl).href,
-}, Astro.request);
-const organizationSchema = generateOrganizationSchema(Astro.request);
+const seoTags = generateSEOTags(
+   {
+      ...Astro.props,
+      description: Astro.props.description ?? pageEntry?.description ?? undefined,
+      url: new URL(Astro.url.pathname, siteConfig.canonicalUrl).href,
+   },
+   Astro.request,
+);
+/*
+   El JSON-LD se serializa aquí, en el frontmatter del layout, para que salga
+   en el HTML inicial de la respuesta SSR: tiene que ser verificable con
+   `curl` / View Source, nunca generado post-hidratación. Ojo también con la
+   mejora progresiva: este bloque no depende de que el navegador ejecute
+   JavaScript, así que el schema sigue presente en la versión sin JS.
+*/
+const pageSchema = schema ?? getPageSchema(Astro.url.pathname, Astro.request);
+const schemaJson = JSON.stringify(Array.isArray(pageSchema) ? pageSchema : [pageSchema]);
 ---
 
 <!doctype html>
-<html lang={siteConfig.site.language} class="dark">
+<html lang={siteConfig.site.language} class="no-js dark">
    <head>
+      <!--
+         Preconnect a jsDelivr: flag-icons.min.css (usado por la isla de
+         tienda) solo se pide con JS, vía el script de más abajo -- pero la
+         conexión (DNS/TLS) puede empezar antes, en paralelo al resto del
+         <head>, sin esperar a que ese script corra. No renderiza nada ni
+         depende de JS, así que no compromete el modo no-js.
+      -->
+      <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+
+      <!--
+         Carga del CSS condicionada a JavaScript: si el navegador (o el bot)
+         no ejecuta este script, la hoja de estilos de Tailwind nunca se pide
+         y la página se sirve como HTML plano, mucho más ligero. Con
+         JavaScript, se agrega el <link> y la página luce con el diseño
+         completo (colores, animaciones, etc.).
+
+         El flip de clase "no-js" -> "js" espera al "load" de ese <link> (no
+         es inmediato) -- a propósito, y solo confirmado con Playwright bajo
+         throttling real: si se quita "no-js" de una (como antes), el
+         navegador pierde el fallback de no-js.css en el mismo instante en
+         que se pide global.css, pero ese archivo puede tardar varios
+         segundos en conexiones lentas. Durante toda esa ventana no hay
+         NINGUNA regla de tamaño/layout activa (ni no-js.css, que ya dejó de
+         aplicar, ni Tailwind, que aún no llegó), así que clases como
+         "hidden"/"flex" no hacen nada y se ven a la vez las variantes mobile
+         Y desktop de header/nav -- confirmado un header de 566px (contra
+         ~64px final) que después se derrumba de golpe al llegar el CSS, un
+         salto medido como CLS de ~0.8 con la Layout Instability API. Al
+         esperar el "load", esa ventana de carga lenta se ve con el fallback
+         de no-js.css (que sí está pensado para verse presentable) en vez de
+         HTML totalmente crudo y duplicado. onerror también flipea la clase:
+         si la hoja nunca carga (bloqueada, sin red), preferible quedar en el
+         estado actual del sitio (sin este fix) a quedar trabado en no-js
+         para siempre.
+      -->
+      <script is:inline define:vars={{ stylesheetHref, flagIconsHref }}>
+         (function () {
+            var flip = function () {
+               document.documentElement.classList.remove('no-js');
+               document.documentElement.classList.add('js');
+               // Señal para scripts que necesitan saber cuándo Tailwind ya
+               // terminó de cargar (o falló) en vez de sondear con rAF +
+               // getComputedStyle en cada frame -- ver HomeFeatured.astro/
+               // HomeTrust.astro (posicionamiento inicial del carrusel móvil).
+               document.dispatchEvent(new Event('app:styles-ready'));
+            };
+
+            var globalLink = document.createElement('link');
+            globalLink.rel = 'stylesheet';
+            globalLink.href = stylesheetHref;
+            globalLink.onload = flip;
+            globalLink.onerror = flip;
+            document.head.appendChild(globalLink);
+
+            var flagLink = document.createElement('link');
+            flagLink.rel = 'stylesheet';
+            flagLink.href = flagIconsHref;
+            document.head.appendChild(flagLink);
+         })();
+      </script>
+
       <!-- Tema: aplicar antes del paint para evitar flash (default DARK) -->
       <script is:inline>
          (function () {
@@ -53,6 +178,20 @@ const organizationSchema = generateOrganizationSchema(Astro.request);
             }
          })();
       </script>
+      {showPreloader && (
+         <script is:inline>
+            (function () {
+               try {
+                  var navEntry = performance.getEntriesByType("navigation")[0];
+                  var isReload = navEntry && navEntry.type === 'reload';
+                  var isFirstVisit = !sessionStorage.getItem('movapp_preloader_seen');
+                  if (!isReload && !isFirstVisit) {
+                     document.documentElement.classList.add('skip-preloader');
+                  }
+               } catch(e) {}
+            })();
+         </script>
+      )}
 
       <!-- Charset y viewport -->
       <meta charset="UTF-8" />
@@ -63,7 +202,6 @@ const organizationSchema = generateOrganizationSchema(Astro.request);
       <!-- SEO básico -->
       <title>{seoTags.title}</title>
       <meta name="description" content={seoTags.description} />
-      <meta name="keywords" content={seoTags.keywords} />
       <meta name="author" content={seoTags.author} />
       {!siteConfig.isProduction && <meta name="robots" content={seoTags.robots} />}
 
@@ -105,43 +243,476 @@ const organizationSchema = generateOrganizationSchema(Astro.request);
       <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
       <meta name="generator" content={Astro.generator} />
 
-      <!-- Fuentes extenas -->
-      <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
-      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons/css/flag-icons.min.css" />
-
-      <!-- SDK de MercadoPago -->
-      <script is:inline src="https://sdk.mercadopago.com/js/v2"></script>
-
       <!-- Schema.org JSON-LD -->
-      <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
+      <script type="application/ld+json" set:html={schemaJson} />
 
       <!-- Header meta-pixel  -->
       <meta name="facebook-domain-verification" content="uffghfhff1th1z040abwzgjgjto9mi" />
 
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+      {!disableThirdPartyScripts && <GoogleTagManager />}
+      {!disableThirdPartyScripts && <GoogleAnalytics />}
+      <noscript>
+         <style>
+            [data-aos] {
+               opacity: 1 !important;
+               transform: none !important;
+            }
+            #global-preloader {
+               display: none !important;
+            }
+            /*
+               HomeHowItWorks.astro (timeline de "¿Cómo funciona El Hack?"):
+               cada paso (.hiw-step, con el título+texto real) arranca en
+               opacity:0 y solo se revela cuando un IntersectionObserver le
+               agrega "hiw-active" al hacer scroll -- sin JS ese observer
+               nunca corre, así que el contenido real quedaba invisible para
+               siempre (no solo sin animar, sino permanentemente oculto).
+               Mismo criterio que [data-aos] arriba.
+            */
+            .hiw-step {
+               opacity: 1 !important;
+               transform: none !important;
+            }
+         </style>
+      </noscript>
 
-      <GoogleTagManager />
-      <GoogleAnalytics />
-      <title>{title}</title>
+      <!--
+         Margen 0 en <body> siempre activo (con o sin JS, cargue o no
+         Tailwind): mientras el preflight de Tailwind no llega (carga async,
+         ver mecanismo no-js/js), el navegador aplica su margen por defecto
+         de 8px -- un salto de 8px en los 4 lados de TODO el viewport apenas
+         Tailwind carga se medía como un CLS de ~0.79 (confirmado con la
+         Layout Instability API: única fuente del shift era <body>, de
+         x:7,y:8 a x:0,y:0). No es una regla de diseño (no revela color ni
+         tipografía), es normalización de caja -- coincide con el valor
+         final de Tailwind, así que no cambia nada visualmente.
+      -->
+      <style>
+         body {
+            margin: 0;
+         }
+      </style>
+
+      <!--
+         .no-copy (ver prop "disableCopy" arriba): CSS propio, no Tailwind,
+         para que aplique con o sin JS -- "user-select: none" ya bloquea el
+         vector principal (arrastrar el mouse para seleccionar texto) sin
+         depender de que cargue ningún script. El bloqueo del evento
+         "copy"/menú contextual (defensa en profundidad, para el caso de
+         selección por teclado) vive en el <script> junto al <main>, porque
+         eso sí necesita JS.
+      -->
+      <style>
+         .no-copy,
+         .no-copy * {
+            -webkit-user-select: none;
+            user-select: none;
+         }
+         .no-copy img {
+            -webkit-user-drag: none;
+         }
+         /* Excepción: si algún día esta prop protege una página con un
+            campo de formulario, que se pueda seguir editando/seleccionando
+            texto ahí con normalidad -- "no copiar" es sobre el contenido
+            de la página, no sobre lo que el usuario escribe. */
+         .no-copy input,
+         .no-copy textarea {
+            -webkit-user-select: text;
+            user-select: text;
+         }
+      </style>
    </head>
 
+   <!--
+      min-h-[100svh], NO min-h-screen (100vh) ni min-h-[100dvh]: evita que el
+      body cambie de tamaño cada vez que el navegador anima su barra de
+      direcciones/gestos al hacer scroll -- "100vh" es un valor fijo (el
+      tamaño máximo, barra oculta) que no se recalcula con el scroll;
+      "100dvh" sí se recalcularía en cada frame de esa animación, generando
+      reflow. Nótese que MobileBottomNav ya NO es "fixed" (ver ese
+      componente) así que no necesita padding-bottom en el body para
+      reservarle espacio -- al ser "sticky" reserva su propio espacio en el
+      flujo normal.
+   -->
    <body
-      class="bg-gray-50 text-gray-900 dark:bg-[#050505] dark:text-white min-h-screen flex flex-col transition-colors duration-300"
+      class="bg-gray-300 text-gray-900 dark:bg-[#050505] dark:text-white min-h-[100svh] flex flex-col overflow-x-hidden transition-colors duration-300"
    >
-      <MetaPixelScript pixelId={import.meta.env.PUBLIC_META_PIXEL_ID} />
-
-      <InitAOS client:load />
+      {showPreloader && <Preloader />}
+      {!disableThirdPartyScripts && <MetaPixelScript pixelId={import.meta.env.PUBLIC_META_PIXEL_ID} />}
 
       {showHeaderLayer ? <HeaderLayer /> : null}
 
       <Header />
 
-      <main class="relative min-h-screen isolate">
+      <main class="relative min-h-[100svh] isolate">
          {showGrid && <BackgroundGrid />}
          <div class="relative z-10">
-            <slot />
+            <div class:list={[disableCopy && 'no-copy']}>
+               <slot />
+            </div>
             <Footer />
          </div>
       </main>
+
+      <!--
+         Defensa en profundidad de ".no-copy" (ver prop "disableCopy" y el
+         CSS junto a </head>): el "user-select: none" ya bloquea seleccionar
+         con el mouse, pero no evita el menú contextual (clic derecho >
+         Copiar) ni una selección hecha por teclado/lector de pantalla --
+         acá se bloquean también los eventos "copy"/"cut"/"contextmenu"/
+         "dragstart" dentro del contenido protegido. Sin JS este script no
+         corre, pero el CSS de arriba (siempre inline) sigue aplicando.
+      -->
+      <script is:inline>
+         (function () {
+            function blockCopyEvents(el) {
+               ['copy', 'cut', 'contextmenu', 'dragstart'].forEach(function (evt) {
+                  el.addEventListener(evt, function (e) {
+                     e.preventDefault();
+                  });
+               });
+            }
+            document.querySelectorAll('.no-copy').forEach(blockCopyEvents);
+         })();
+      </script>
+
+      <MobileBottomNav />
+      <MobileSearchBackdrop />
+      <MenuMobilePanel />
+      <MenuDesktopPanel />
+
+      <!--
+         DIAGNÓSTICO TEMPORAL (v2) -- borrar una vez resuelto. Solo se activa
+         con ?navdebug=1 en la URL. A diferencia de la v1, esta vez también
+         registra el "transform" que el script de compensación de
+         MobileBottomNav.astro le está aplicando en cada momento, para
+         confirmar si esa corrección realmente se está aplicando y aun así
+         no alcanza, o si nunca llega a aplicarse.
+      -->
+      <script is:inline>
+         (function () {
+            if (!/[?&]navdebug=1(&|$)/.test(location.search)) return;
+
+            var nav = document.getElementById('mobileBottomNav');
+            if (!nav) return;
+
+            // Duración fija de la prueba -- al terminar, muestra un resumen
+            // con números (no "a simple vista") para poder comparar
+            // condiciones distintas de forma objetiva. Se puede ajustar con
+            // ?navdebugsec=60 en la URL.
+            var TEST_SECONDS = parseInt(new URLSearchParams(location.search).get('navdebugsec') || '45', 10);
+
+            var log = document.createElement('div');
+            log.style.cssText =
+               'position:fixed;top:0;left:0;right:0;z-index:2147483647;max-height:55vh;overflow:auto;' +
+               'background:rgba(0,0,0,0.88);color:#0f0;font:10px/1.4 monospace;padding:6px;white-space:pre-wrap;';
+            document.body.appendChild(log);
+
+            var startTime = performance.now();
+            function line(msg, color) {
+               var t = ((performance.now() - startTime) / 1000).toFixed(2);
+               var p = document.createElement('div');
+               if (color) p.style.color = color;
+               p.textContent = '[' + t + 's] ' + msg;
+               log.insertBefore(p, log.firstChild);
+               while (log.childNodes.length > 80) log.removeChild(log.lastChild);
+            }
+
+            var jumpCount = 0;
+            var longtaskCount = 0;
+            var longtaskTotalMs = 0;
+            var maxJumpPx = 0;
+
+            line('nav debug v3 activo. prueba de ' + TEST_SECONDS + 's. rect inicial top=' + nav.getBoundingClientRect().top.toFixed(2));
+
+            if (window.PerformanceObserver) {
+               try {
+                  new PerformanceObserver(function (list) {
+                     list.getEntries().forEach(function (entry) {
+                        longtaskCount++;
+                        longtaskTotalMs += entry.duration;
+                        line('LONGTASK duración=' + entry.duration.toFixed(0) + 'ms (total: ' + longtaskCount + ')');
+                     });
+                  }).observe({ type: 'longtask', buffered: true });
+               } catch (e) {
+                  line('PerformanceObserver longtask no soportado: ' + e.message);
+               }
+            }
+
+            var lastTop = nav.getBoundingClientRect().top;
+            var finished = false;
+            function tick() {
+               if (finished) return;
+               var rect = nav.getBoundingClientRect();
+               var delta = Math.abs(rect.top - lastTop);
+               if (delta > 0.5) {
+                  jumpCount++;
+                  if (delta > maxJumpPx) maxJumpPx = delta;
+                  line(
+                     'POSICION #' +
+                        jumpCount +
+                        ' top ' +
+                        lastTop.toFixed(1) +
+                        ' -> ' +
+                        rect.top.toFixed(1) +
+                        ' (Δ' +
+                        delta.toFixed(1) +
+                        'px) | innerH=' +
+                        window.innerHeight +
+                        ' | vvH=' +
+                        (window.visualViewport ? window.visualViewport.height.toFixed(1) : 'n/a'),
+                  );
+                  lastTop = rect.top;
+               }
+
+               var elapsedSec = (performance.now() - startTime) / 1000;
+               if (elapsedSec >= TEST_SECONDS) {
+                  finished = true;
+                  line(
+                     '===== RESULTADO (' +
+                        TEST_SECONDS +
+                        's): ' +
+                        jumpCount +
+                        ' saltos de posición (máx ' +
+                        maxJumpPx.toFixed(0) +
+                        'px), ' +
+                        longtaskCount +
+                        ' longtasks (' +
+                        longtaskTotalMs.toFixed(0) +
+                        'ms totales) =====',
+                     '#ff0',
+                  );
+                  return;
+               }
+               requestAnimationFrame(tick);
+            }
+            requestAnimationFrame(tick);
+         })();
+      </script>
+
+      <!--
+         Widget de chat LeadConnector -- DESACTIVADO TEMPORALMENTE a pedido.
+         Para reactivarlo, descomentar este bloque.
+      -->
+      <!--
+      {!disableChatWidget && (
+         <script
+            is:inline
+            src="https://widgets.leadconnectorhq.com/loader.js"
+            data-resources-url="https://widgets.leadconnectorhq.com/chat-widget/loader.js"
+            data-widget-id="6a629fdd6f3b01a586db9391"></script>
+      )}
+      -->
+
+      <!--
+         El widget de LeadConnector se posiciona a sí mismo dentro de su
+         propio shadow DOM (no llega el CSS normal) fijando "right: 20px"
+         inline UNA SOLA VEZ al montar. En móvil lo reubicamos por JS -- y,
+         a pedido, también lo pasamos de la derecha a la izquierda. Ojo con
+         esto: si al volver a escritorio simplemente LIMPIÁBAMOS ese
+         left/right (pensando que así "vuelve al default"), no vuelve solo
+         -- el widget no lo recalcula en resize, así que queda pegado a la
+         izquierda para siempre (confirmado). Por eso, al volver a
+         escritorio, hay que RESTAURAR explícitamente "right: 20px" en vez
+         de solo limpiar.
+      -->
+      <script is:inline>
+         (function () {
+            function repositionChatWidget() {
+               var host = document.querySelector('chat-widget');
+               var root = host && host.shadowRoot;
+               var box = root && root.getElementById('lc_text-widget');
+               var btn = root && root.getElementById('lc_text-widget--btn');
+               if (!box || !btn) return false;
+               var isMobile = window.matchMedia('(max-width: 1023px)').matches;
+               var bottomOffset = isMobile ? 'calc(4.5rem + env(safe-area-inset-bottom))' : '20px';
+               var leftOffset = 'calc(20px + env(safe-area-inset-left))';
+               [box, btn].forEach(function (el) {
+                  // El widget trae su propia transición CSS (para su
+                  // animación de apertura/cierre) que no controlamos desde
+                  // afuera (vive en su shadow DOM). Si la dejamos activa
+                  // mientras reescribimos bottom/left/right en cada resize,
+                  // cualquier cambio -aunque sea mínimo, por redondeo de
+                  // env(safe-area-inset-*) al mostrarse/ocultarse la barra
+                  // del navegador- se anima como un salto visible justo al
+                  // lado de la barra inferior (el "flote" reportado). La
+                  // apagamos solo para este cambio de posición puntual y la
+                  // restauramos un par de frames después para no romper la
+                  // animación propia de apertura/cierre del widget.
+                  //
+                  // Doble requestAnimationFrame en vez de "void el.offsetWidth"
+                  // (que forzaba un reflow síncrono, medido en ~44ms en
+                  // auditorías de rendimiento): el primer rAF espera a que el
+                  // navegador ya haya pintado "transition:none" antes de
+                  // tocar bottom/left/right en el segundo, así el cambio de
+                  // posición no queda animado sin necesitar ninguna lectura
+                  // de layout forzada. Mismo patrón que ya usa
+                  // MenuDesktopPanel.astro para su animación de apertura.
+                  var prevTransition = el.style.transitionProperty;
+                  el.style.transitionProperty = 'none';
+
+                  requestAnimationFrame(function () {
+                     requestAnimationFrame(function () {
+                        el.style.bottom = bottomOffset;
+                        if (isMobile) {
+                           el.style.right = 'auto';
+                           el.style.left = leftOffset;
+                           el.dataset.lcForcedLeft = '1';
+                        } else if (el.dataset.lcForcedLeft) {
+                           // Volvimos de móvil a escritorio sin recargar: restauramos
+                           // el default real del widget (right:20px), no lo dejamos
+                           // "sin setear" -- eso no alcanza, ver comentario arriba.
+                           el.style.left = '';
+                           el.style.right = '20px';
+                           delete el.dataset.lcForcedLeft;
+                        }
+
+                        requestAnimationFrame(function () {
+                           el.style.transitionProperty = prevTransition;
+                        });
+                     });
+                  });
+               });
+               return true;
+            }
+
+            // Los eventos resize en móvil pueden dispararse varias veces
+            // seguidas (barra de direcciones animándose, rotación, etc.) --
+            // los agrupamos en uno por frame en vez de reposicionar en cada
+            // uno, para no reescribir el estilo del widget de más.
+            var repositionScheduled = false;
+            function scheduleReposition() {
+               if (repositionScheduled) return;
+               repositionScheduled = true;
+               requestAnimationFrame(function () {
+                  repositionScheduled = false;
+                  repositionChatWidget();
+               });
+            }
+
+            window.addEventListener('resize', scheduleReposition);
+            if (window.visualViewport) {
+               window.visualViewport.addEventListener('resize', scheduleReposition);
+            }
+
+            var attempts = 0;
+            var poll = setInterval(function () {
+               attempts++;
+               if (repositionChatWidget() || attempts > 30) clearInterval(poll);
+            }, 300);
+
+            /*
+               Al ABRIR el chat (tocar la burbuja), el panel expandido usa su
+               propio "bottom" (fijado por la hoja de estilos del widget, no
+               por nuestro estilo inline) para calcular su alto -- y ese
+               "bottom" propio no deja espacio para MobileBottomNav, así que
+               el panel se extiende por debajo de la barra y el cuadro de
+               texto para escribir queda tapado. Además, abrir/cerrar el
+               widget reescribe el atributo "style" del panel desde su propio
+               código, lo que BORRA el bottomOffset que le habíamos puesto --
+               por eso no basta con fijarlo una sola vez al cargar la página.
+               Un MutationObserver sobre ese atributo permite reaplicar el
+               offset cada vez que el widget lo pisa (incluida la apertura),
+               sin depender de ningún evento propio del widget (no expone
+               ninguno). Se relee "isMobile" en cada corrección para no
+               tocar nada en escritorio.
+            */
+            var observedBox = null;
+            function watchChatWidgetBox() {
+               var host = document.querySelector('chat-widget');
+               var root = host && host.shadowRoot;
+               var box = root && root.getElementById('lc_text-widget');
+               if (!box || box === observedBox) return;
+               observedBox = box;
+
+               var enforcing = false;
+               new MutationObserver(function () {
+                  if (enforcing) return;
+                  var isMobile = window.matchMedia('(max-width: 1023px)').matches;
+                  if (!isMobile) return;
+                  var desired = 'calc(4.5rem + env(safe-area-inset-bottom))';
+                  if (box.style.bottom === desired) return;
+                  enforcing = true;
+                  box.style.bottom = desired;
+                  enforcing = false;
+               }).observe(box, { attributes: true, attributeFilter: ['style'] });
+            }
+            var watchAttempts = 0;
+            var watchPoll = setInterval(function () {
+               watchAttempts++;
+               watchChatWidgetBox();
+               if (observedBox || watchAttempts > 30) clearInterval(watchPoll);
+            }, 300);
+         })();
+      </script>
+
+      <!--
+         Reveal on scroll para [data-aos] (todas las secciones marcadas con
+         ese atributo, en toda la página): reemplaza a la librería AOS, que
+         antes se inicializaba desde una isla de React (InitAOS,
+         client:only="react"). Ese enfoque tenía un punto de falla real: si
+         la isla no llegaba a hidratar (confirmado en producción, tanto en
+         móvil como en escritorio, nunca en localhost), las secciones se
+         quedaban en opacity:0 para siempre -- la hoja de estilos ya las
+         ocultaba desde antes de que hubiera oportunidad de correr ese JS.
+         Este script es plano (is:inline, sin framework ni build de por
+         medio) y corre siempre que el navegador ejecute JavaScript en
+         absoluto, igual que el resto de los scripts de este layout. Mismos
+         valores de traslado que tenía AOS (ver [data-aos] en global.css),
+         ahora también activo en móvil (antes AOS venía desactivado ahí).
+      -->
+      <script is:inline>
+         (function () {
+            function initAosReveal() {
+               var items = Array.prototype.filter.call(document.querySelectorAll('[data-aos]'), function (el) {
+                  return !el.hasAttribute('data-aos-observed');
+               });
+               if (!items.length) return;
+               items.forEach(function (el) {
+                  el.setAttribute('data-aos-observed', '');
+               });
+
+               var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+               if (reduce || !('IntersectionObserver' in window)) {
+                  items.forEach(function (el) {
+                     el.classList.add('aos-animate');
+                  });
+                  return;
+               }
+
+               // threshold:0 + rootMargin negativo abajo (en vez de threshold:0.15 +
+               // -40px): con threshold:0.15 el punto de disparo dependía del ALTO
+               // de cada elemento (15% de su propio alto), así que dos elementos
+               // vecinos de distinta altura disparaban en momentos muy distintos
+               // entre sí -- a veces casi juntos, a veces muy separados, sin
+               // relación con cuánto se había scrolleado realmente. Con
+               // threshold:0 el disparo es "tocar el borde", así que la
+               // separación entre disparos de elementos vecinos queda ligada
+               // directamente a la distancia real entre ellos en la página. El
+               // -30% de rootMargin (en vez de -40px, que era casi nada) obliga a
+               // scrollear un tramo perceptible antes de revelar cada uno, en vez
+               // de que se revele con solo un asomo de 40px desde abajo.
+               var io = new IntersectionObserver(
+                  function (entries) {
+                     entries.forEach(function (entry) {
+                        if (entry.isIntersecting) {
+                           entry.target.classList.add('aos-animate');
+                           io.unobserve(entry.target);
+                        }
+                     });
+                  },
+                  { threshold: 0, rootMargin: '0px 0px -30% 0px' },
+               );
+               items.forEach(function (el) {
+                  io.observe(el);
+               });
+            }
+
+            initAosReveal();
+            document.addEventListener('astro:page-load', initAosReveal);
+         })();
+      </script>
    </body>
 </html>
+
+<!-- bust cache -->

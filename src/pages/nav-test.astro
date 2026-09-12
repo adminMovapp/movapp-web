@@ -1,0 +1,141 @@
+---
+// PÁGINA DE DIAGNÓSTICO TEMPORAL -- borrar junto con el resto del
+// diagnóstico de "navdebug" una vez resuelto el flote de la barra
+// inferior. NO usa Layout.astro a propósito: nada de Header, Footer,
+// BackgroundGrid, StarField, GTM/GA/Meta Pixel, widget de chat, ni
+// siquiera Tailwind -- solo HTML/CSS plano y una barra "sticky" al fondo,
+// para ver si la oscilación de innerHeight ocurre incluso en total
+// aislamiento (en cuyo caso es el navegador/dispositivo, no nuestro
+// código) o si solo aparece cuando el resto del sitio está presente.
+//
+// Probar con ?mode=sticky o ?mode=fixed para comparar ambos esquemas de
+// posicionamiento en el mismo aislamiento.
+const mode = Astro.url.searchParams.get('mode') === 'fixed' ? 'fixed' : 'sticky';
+---
+
+<!doctype html>
+<html lang="es">
+   <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>nav-test ({mode})</title>
+      <style>
+         * {
+            box-sizing: border-box;
+         }
+         html,
+         body {
+            margin: 0;
+            padding: 0;
+            background: #0a0a0a;
+            color: #eee;
+            font-family: sans-serif;
+         }
+         .filler {
+            padding: 24px;
+            border-bottom: 1px solid #333;
+            font-size: 14px;
+         }
+         nav {
+            position: sticky;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: #8149e2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            z-index: 999999;
+         }
+         nav.is-fixed {
+            position: fixed;
+         }
+         #log {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 2147483647;
+            max-height: 55vh;
+            overflow: auto;
+            background: rgba(0, 0, 0, 0.88);
+            color: #0f0;
+            font: 10px/1.4 monospace;
+            padding: 6px;
+            white-space: pre-wrap;
+         }
+      </style>
+   </head>
+   <body>
+      <div id="log"></div>
+
+      <p style="padding:16px;">
+         Modo actual: <strong>{mode}</strong> -- cambiar con <code>?mode=fixed</code> o <code>?mode=sticky</code>. Deja el
+         celular quieto 20-30s y observa el recuadro verde arriba.
+      </p>
+
+      {Array.from({ length: 60 }).map((_, i) => <div class="filler">Relleno #{i + 1} -- lorem ipsum para poder scrollear.</div>)}
+
+      <nav id="testNav" class={mode === 'fixed' ? 'is-fixed' : ''}>NAV DE PRUEBA ({mode})</nav>
+
+      <script define:vars={{ mode }}>
+         (function () {
+            var nav = document.getElementById('testNav');
+            var log = document.getElementById('log');
+
+            var startTime = performance.now();
+            function line(msg) {
+               var t = ((performance.now() - startTime) / 1000).toFixed(2);
+               var p = document.createElement('div');
+               p.textContent = '[' + t + 's] ' + msg;
+               log.insertBefore(p, log.firstChild);
+               while (log.childNodes.length > 60) log.removeChild(log.lastChild);
+            }
+
+            line('nav-test activo, modo=' + mode + ', rect inicial top=' + nav.getBoundingClientRect().top.toFixed(2));
+
+            if (window.PerformanceObserver) {
+               try {
+                  new PerformanceObserver(function (list) {
+                     list.getEntries().forEach(function (entry) {
+                        line('LONGTASK duración=' + entry.duration.toFixed(0) + 'ms');
+                     });
+                  }).observe({ type: 'longtask', buffered: true });
+               } catch (e) {}
+            }
+
+            var lastTop = nav.getBoundingClientRect().top;
+            var lastVVH = window.visualViewport ? window.visualViewport.height : null;
+            function tick() {
+               var rect = nav.getBoundingClientRect();
+               if (Math.abs(rect.top - lastTop) > 0.5) {
+                  line(
+                     'POSICION top ' +
+                        lastTop.toFixed(2) +
+                        ' -> ' +
+                        rect.top.toFixed(2) +
+                        ' | scrollY=' +
+                        window.scrollY +
+                        ' | innerH=' +
+                        window.innerHeight +
+                        ' | clientH=' +
+                        document.documentElement.clientHeight +
+                        ' | vvH=' +
+                        (window.visualViewport ? window.visualViewport.height.toFixed(1) : 'n/a'),
+                  );
+                  lastTop = rect.top;
+               }
+               if (window.visualViewport && Math.abs(window.visualViewport.height - lastVVH) > 0.5) {
+                  line('VISUALVIEWPORT height ' + lastVVH.toFixed(1) + ' -> ' + window.visualViewport.height.toFixed(1));
+                  lastVVH = window.visualViewport.height;
+               }
+               requestAnimationFrame(tick);
+            }
+            requestAnimationFrame(tick);
+         })();
+      </script>
+   </body>
+</html>

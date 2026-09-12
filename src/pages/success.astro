@@ -25,16 +25,19 @@ import Layout from '@layouts/Layout.astro';
       <h1 class="text-3xl sm:text-4xl font-bold text-green-500 mb-2">¡Pago realizado con éxito!</h1>
 
       <!-- Mensaje -->
-      <p class="text-lg text-white max-w-2xl mb-6">
+      <p class="text-lg text-gray-700 dark:text-white max-w-2xl mb-2">
          Gracias por tu compra. Hemos recibido tu pago correctamente. En breve recibirás un correo electrónico con la
          confirmación y los detalles.
       </p>
+
+      <!-- Folio (si Stripe redirige con payment_intent) -->
+      <p id="order-folio" class="text-sm text-text_banner font-semibold mb-6"></p>
 
       <!-- Botones -->
       <div class="flex flex-col sm:flex-row gap-4">
          <a
             href="/"
-            class="px-6 py-3 bg-background_bottom text-white rounded-lg font-semibold shadow hover:bg-background_bottom/80 transition"
+            class="px-6 py-3 bg-background_bottom text-white rounded-full font-semibold shadow hover:bg-background_bottom/80 transition"
          >
             Volver al inicio
          </a>
@@ -47,4 +50,59 @@ import Layout from '@layouts/Layout.astro';
       </a> -->
       </div>
    </section>
+
+   <script>
+      import { pushToDataLayer, mapCartItemToGA4 } from '@utils/dataLayer.js';
+
+      // Snapshot del carrito ANTES de vaciarlo: currency/value/items del
+      // purchase de GA4 salen de acá (shape ya conocido). El GET
+      // .../stripe/intent/:pi no tiene su shape completo documentado en el
+      // repo más allá de payment.order_id, así que no se inventan otros
+      // campos de esa respuesta para value/currency/items.
+      let purchasedCart = [];
+      try {
+         purchasedCart = JSON.parse(localStorage.getItem('cart') || '[]');
+      } catch (e) {}
+
+      // Vaciar el carrito tras un pago exitoso
+      try {
+         localStorage.removeItem('cart');
+         window.dispatchEvent(new CustomEvent('cart:updated', { detail: { cart: [] } }));
+      } catch (e) {}
+
+      // Mostrar folio consultando el pago por payment_intent (si viene en la URL)
+      (async function () {
+         try {
+            const params = new URLSearchParams(window.location.search);
+            const pi = params.get('payment_intent');
+            if (!pi) return;
+            const api = import.meta.env.PUBLIC_API_LINK;
+            const res = await fetch(`${api}/payments/web/stripe/intent/${pi}`);
+            if (!res.ok) return;
+            const data = await res.json();
+            const orderId = data?.payment?.order_id;
+            if (orderId) {
+               const el = document.getElementById('order-folio');
+               if (el) el.textContent = `Referencia de pago: ${pi}`;
+            }
+
+            // Anti-duplicado (QA-029): un refresh/back con el mismo
+            // payment_intent no debe reemitir purchase.
+            const dedupKey = `ga4_purchase_${pi}`;
+            if (purchasedCart.length > 0 && !localStorage.getItem(dedupKey)) {
+               const value = purchasedCart.reduce(
+                  (sum, it) => sum + (Number.parseFloat(it.precio) || 0) * (it.quantity ?? 1),
+                  0,
+               );
+               pushToDataLayer('purchase', {
+                  transaction_id: orderId || pi,
+                  currency: purchasedCart[0]?.moneda,
+                  value,
+                  items: purchasedCart.map((it) => mapCartItemToGA4(it)),
+               });
+               localStorage.setItem(dedupKey, '1');
+            }
+         } catch (e) {}
+      })();
+   </script>
 </Layout>

@@ -1,0 +1,19 @@
+---
+// H1 (único H1 de la página). Breadcrumb de 2 niveles ("Inicio | Aplicaciones
+// | CrediSeguro") -- primer caso del sitio que necesita el prop "items" de
+// Breadcrumbs.astro en vez de resolverse solo desde PAGE_SCHEMA (ver ese
+// componente: por defecto arma un solo nivel intermedio, éste necesita dos).
+// Mismo criterio de BreadcrumbList invisible en schema.js, ver
+// PAGE_SCHEMA['/aplicaciones-prestamo/crediseguro'].
+// Hero de 2 columnas (2026-09-02, a pedido) -- ver AppHero.astro para el
+// mecanismo compartido por las 8 apps.
+import AppHero from '@components/decorative/AppHero.astro';
+---
+
+<AppHero
+   id="crediseguro"
+   breadcrumbLabel="CrediSeguro"
+   h1="CrediSeguro: información verificada, registro y datos de contacto"
+   paragraph="Consulta los datos disponibles sobre CrediSeguro, su registro ante la autoridad correspondiente y la información de contacto verificada."
+   whatsappMessage="¡Hola! Quiero orientación sobre CrediSeguro."
+/>

@@ -1,0 +1,118 @@
+---
+// ARCHIVO DE RESPALDO -- no se usa en ningún lado actualmente.
+//
+// Este era el efecto de fondo original de ElHackHero.astro (truenos gruesos
+// y protagonistas, con fade lento) antes de reemplazarlo por StormField.astro
+// (rayos más delgados/realistas + niebla), a pedido, para que el hero
+// compartiera el mismo fondo que el resto de las secciones de El Hack.
+// Se deja acá tal cual estaba, por si más adelante se quiere retomar este
+// look en vez del de StormField -- para reactivarlo, importar este
+// componente y reemplazar <StormField id="el-hack-hero" ... /> por
+// <HeroStorm /> en ElHackHero.astro (este componente no incluye el fondo
+// negro ni el resplandor central, que viven aparte en el propio hero).
+
+// Truenos en parejas: un lado izquierdo (left 3%-38%) y un lado derecho
+// (left 62%-97%) por cada pareja, con el MISMO retraso y duración -- así
+// destellan sincronizados, uno de cada lado a la vez, en vez de parpadeos
+// independientes al azar. Pocas parejas a propósito (4 = 8 truenos en
+// total) para que no se sienta saturado de rayos en pantalla.
+const PAIR_COUNT = 4;
+const bolts = Array.from({ length: PAIR_COUNT }, () => {
+   const delay = Math.random() * 6;
+   const duration = 2 + Math.random() * 1.8;
+   return [
+      {
+         top: 4 + Math.random() * 88,
+         left: 3 + Math.random() * 35,
+         rotate: -35 + Math.random() * 70,
+         scale: 0.6 + Math.random() * 0.9,
+         delay,
+         duration,
+      },
+      {
+         top: 4 + Math.random() * 88,
+         left: 62 + Math.random() * 35,
+         rotate: -35 + Math.random() * 70,
+         scale: 0.6 + Math.random() * 0.9,
+         delay,
+         duration,
+      },
+   ];
+}).flat();
+---
+
+<!--
+   Truenos: forma real de rayo (path zigzag, no una barra), repartidos en
+   posiciones al azar por todo el fondo -- cada uno destella (parpadeo tipo
+   relámpago) en un ciclo propio, no todos juntos.
+-->
+{
+   bolts.map((b) => (
+      <span
+         class="hero-bolt"
+         style={`top: ${b.top}%; left: ${b.left}%; --rotate: ${b.rotate}deg; --scale: ${b.scale}; --delay: ${b.delay}s; --dur: ${b.duration}s;`}
+      >
+         <svg viewBox="0 0 40 100" fill="currentColor" width="100%" height="100%">
+            <path d="M22 0 9 42h9L4 100 31 46h-10L36 6z" />
+            <path d="M19 44 33 55l-8 2 4 14-9-13z" />
+         </svg>
+      </span>
+   ))
+}
+
+<style>
+   /*
+      Trueno: un ícono de rayo (SVG con path en zigzag, no una barra recta)
+      en morado, con glow vía drop-shadow (funciona sobre la forma real del
+      SVG, no sobre un rectángulo -- por eso drop-shadow y no box-shadow
+      acá). Solo opacity anima en el keyframe -- posición/rotación/tamaño
+      quedan fijos por trueno (via variables --rotate/--scale en el propio
+      elemento), así el compositor solo mueve opacidad sin recalcular layout
+      ni el filtro en cada frame.
+   */
+   .hero-bolt {
+      position: absolute;
+      width: 22px;
+      height: 55px;
+      color: rgb(196, 156, 255);
+      filter: blur(1px) drop-shadow(0 0 5px rgba(168, 85, 247, 0.9)) drop-shadow(0 0 12px rgba(129, 73, 226, 0.55));
+      transform: translate(-50%, -50%) rotate(var(--rotate, 0deg)) scale(var(--scale, 1));
+      opacity: 0;
+      animation-name: heroBoltFlash;
+      animation-duration: var(--dur, 3s);
+      animation-timing-function: ease-in-out;
+      animation-iteration-count: infinite;
+      animation-delay: var(--delay, 0s);
+   }
+
+   /* Fade lento en ambos sentidos: aparece gradual, se sostiene un momento cerca del pico, y se apaga igual de gradual (nada de flash instantáneo). */
+   @keyframes heroBoltFlash {
+      0% {
+         opacity: 0;
+      }
+      40% {
+         opacity: 1;
+      }
+      55% {
+         opacity: 0.85;
+      }
+      100% {
+         opacity: 0;
+      }
+   }
+
+   /*
+      El sitio tiene una regla global (src/styles/global.css) que fuerza
+      animation-duration a ~0 bajo prefers-reduced-motion -- eso dejaría a
+      los truenos siempre en su estado final (invisibles). Igual que la
+      excepción ya documentada para la órbita de HomeHero.astro, se
+      restaura acá a propósito: es puramente decorativo de fondo, no
+      bloquea ni compite con contenido real.
+   */
+   @media (prefers-reduced-motion: reduce) {
+      .hero-bolt {
+         animation-duration: var(--dur, 3s) !important;
+         animation-iteration-count: infinite !important;
+      }
+   }
+</style>

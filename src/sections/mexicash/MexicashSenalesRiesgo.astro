@@ -1,0 +1,24 @@
+---
+// El wireframe de móviles (2026-08-28) completó esta lista de 2 a 7 señales
+// -- contenido aditivo, igual en ambos breakpoints (mismo caso que
+// FortaprestaSenalesRiesgo.astro). Mismo comentario explícito en el
+// wireframe ("de las secciones más fuertes, usar <ul><li>, no párrafos
+// independientes") -- con 7 ítems se pasa a una sola columna en vez de la
+// grilla de 2 columnas, mismo criterio ya aplicado en FortaPrest.
+//
+// Línea de tiempo de scroll (2026-09-01, extendida desde StarPresta a las 4
+// apps "montadeudas") -- ver <RiskTimeline /> para el mecanismo completo.
+import RiskTimeline from '@components/decorative/RiskTimeline.astro';
+
+const RISK_SIGNS = [
+   { text: 'Te depositan sin que lo hayas pedido.' },
+   { text: 'Terminas pagando casi el doble.' },
+   { text: 'No aparece regulada por CONDUSEF ni por la CNBV.' },
+   { text: 'El plazo se encoge.' },
+   { text: 'Los plazos reales son mucho más cortos y están pensados para que no alcances a pagar y entres en cargos por atraso.' },
+   { text: 'Te hablan a tus contactos por una deuda que no existe.' },
+   { text: 'Empiezan los mensajes y las llamadas a tu agenda para exigir el pago de una deuda que muchas veces ni siquiera aceptaste.' },
+];
+---
+
+<RiskTimeline id="mexicash" heading="Señales de riesgo relacionadas con Mexicash" items={RISK_SIGNS} />

@@ -6,7 +6,7 @@ export default {
          // fontFamily: {
          //    montserrat: ['Montserrat', 'sans-serif'],
          // },
-
+         //
          colors: {
             debug: '#00ffff',
             gray_mv: '#4A4A4A',
@@ -19,6 +19,24 @@ export default {
             background_bottom: '#050505',
             text_banner: '#8149E2',
             line_cards: '#ffffff',
+         },
+         // Espacio vertical estándar entre secciones de una página (el
+         // <section> de cada bloque usa "my-section" en vez de un my-N fijo)
+         // -- un solo lugar para ajustar el ritmo vertical de todo el sitio,
+         // igual para escritorio y móvil (ninguna sección lo variaba por
+         // breakpoint antes de este cambio). Antes de estandarizar, la
+         // mayoría ya usaba my-16 (4rem); algunas quedaban en my-8/12/20/24
+         // sin una razón de diseño documentada -- se unificaron todas acá.
+         spacing: {
+            section: '4rem',
+         },
+         // Tratamiento estándar de "card" (glow morado), tomado como referencia
+         // de HomeFeatured.astro (sección "¿Cómo te ayuda Movapp?"). Reunido
+         // acá para poder ajustar el color/intensidad del glow desde un solo
+         // lugar sin tener que tocar cada sección.
+         boxShadow: {
+            card: '0 0 25px rgba(129, 73, 226, 0.12)',
+            'card-hover': '0 0 35px rgba(129, 73, 226, 0.22)',
          },
          keyframes: {
             slideUp: {
@@ -37,12 +55,27 @@ export default {
                '0%, 100%': { transform: 'translateY(0)' },
                '50%': { transform: 'translateY(-20px)' },
             },
+            slideInRight: {
+               '0%': { transform: 'translateX(100%)' },
+               '100%': { transform: 'translateX(0)' },
+            },
+            slideOutRight: {
+               '0%': { transform: 'translateX(0)' },
+               '100%': { transform: 'translateX(100%)' },
+            },
+            overlayIn: {
+               '0%': { opacity: '0' },
+               '100%': { opacity: '1' },
+            },
          },
          animation: {
             slideUp: 'slideUp 0.3s ease-out forwards',
             slideDown: 'slideDown 0.3s ease-in forwards',
-            fadeIn: 'fadeIn 0.7s ease-out forwards',
+            fadeIn: 'fadeIn 0.7s ease-out both',
             floatSlow: 'floatSlow 8s ease-in-out infinite',
+            slideInRight: 'slideInRight 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+            slideOutRight: 'slideOutRight 0.3s ease-in forwards',
+            overlayIn: 'overlayIn 0.3s ease-out forwards',
          },
       },
    },

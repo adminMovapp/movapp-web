@@ -1,0 +1,576 @@
+---
+// Debe coincidir con PAGE_SIZE del <script> de más abajo (páginas de
+// escritorio). Si hay 3 o menos testimonios, una sola página los muestra
+// todos y no hay nada entre qué navegar -- a pedido, las flechas ni
+// siquiera se renderizan en ese caso (no solo se deshabilitan).
+const TRUST_PAGE_SIZE = 3;
+
+// Orden (a pedido): Rubi - Diego - Sandra, de izquierda a derecha en el
+// carrusel móvil (mismo orden que ya se ve en escritorio). Diego es el que
+// debe verse primero al cargar en móvil, aunque quede en medio -- se
+// identifica por índice, igual que EL_HACK_INDEX en HomeFeatured.astro (ver
+// data-initial-card más abajo y el script inline que lo aplica).
+const testimonials = [
+   {
+      name: 'Rubi',
+      text: 'Estoy muy agradecida con ustedes y con Dios porque desde que me dieron el apoyo ya no me han mandado mensajes. Les agradezco el apoyo, Dios me los bendiga.',
+   },
+   {
+      name: 'Diego',
+      text: 'Estoy muy agradecido que me ayudaron a salir de ese círculo del que nunca iba a salir.',
+   },
+   {
+      name: 'Sandra',
+      text: 'Ya las llamadas son menos y ya no me mandan mensajes, tenían razón. Ya no molestan a mis contactos. Son lo máximo, gracias por ayudarme, sin duda los recomendaría.',
+   },
+];
+const DIEGO_INDEX = 1;
+
+import StarField from '@components/decorative/StarField.astro';
+
+const hasMultipleTrustPages = testimonials.length > TRUST_PAGE_SIZE;
+---
+
+<section class="relative mx-auto my-section w-full max-w-6xl px-4" data-aos="fade-up">
+   <StarField id="trust" ambientCount={50} />
+
+   <div class="mb-10 text-center">
+      <h2 class="text-2xl md:text-4xl font-bold uppercase gradient-text-move bg-gradient-to-r from-gray-900 to-purple_mv bg-clip-text text-transparent dark:from-white dark:to-purple_mv">¿Por qué confiar en Movapp?</h2>
+      <p class="mt-3 text-sm md:text-base text-gray-600 dark:text-white/70">
+         Más de <strong class="font-bold text-text_banner">1,000,000</strong> de personas han confiado en <strong
+            class="font-bold text-text_banner">Movapp</strong>.
+      </p>
+   </div>
+
+   <!--
+      Historias reales -- mismo lenguaje visual que "¿Cómo te ayuda Movapp?"
+      (HomeFeatured.astro): carrusel deslizable en móvil (scroll-snap nativo,
+      funciona sin JS) y grid estático de 3 columnas en escritorio. En vez de
+      foto (son testimonios anónimos) cada tarjeta lleva el mismo tratamiento
+      de "icono sobre grid punteado" que usa la primera tarjeta de esa
+      sección, con un ícono de persona anónima.
+   -->
+   <!-- Móvil: carrusel deslizable, igual que antes (todos los testimonios, scroll-snap).
+        "pt-2": mismo fix que "#featuredCarousel" en HomeFeatured.astro -- las
+        tarjetas usan ".float-anim" (translateY hasta -6px) y este contenedor
+        tiene "overflow-x-auto" (que vuelve "auto" también el overflow-y);
+        sin aire arriba, ese recorrido se recortaba contra el borde superior
+        del scroll. Ver el comentario completo en HomeFeatured.astro. -->
+   <div class="md:hidden">
+      <div
+         id="trustCarousel"
+         class="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-[11vw] pb-2 pt-2"
+      >
+         {
+            testimonials.map((t, i) => (
+               <div
+                  data-initial-card={i === DIEGO_INDEX ? 'true' : undefined}
+                  class="testimonial-card float-anim w-[78vw] flex-shrink-0 snap-center overflow-hidden rounded-3xl border border-purple_mv/25 shadow-card transition-colors duration-300 hover:border-purple_mv/50 hover:shadow-card-hover dark:border-white/10"
+                  style={`--float-dur: ${5.6 + i * 0.3}s; --float-delay: ${i * 0.2}s;`}
+               >
+                  <!-- flex column + h-full (a pedido): el nombre siempre queda
+                       pegado abajo, sin importar cuánto más corto sea un
+                       testimonio que otro -- .testimonial-card ya recibe una
+                       altura real e igual entre las 3 tarjetas (stretch por
+                       defecto del flex del carrusel), este div solo la llena. -->
+                  <div class="relative flex h-full flex-col bg-gradient-to-b from-purple_mv/[0.06] to-transparent p-5 text-left dark:from-purple_mv/[0.1] dark:to-black/30">
+                     <span class="pointer-events-none absolute -top-2 left-4 select-none text-6xl font-serif text-purple_mv/30">
+                        “
+                     </span>
+                     <p class="relative z-10 mt-5 flex-1 text-sm text-gray-700 dark:text-white/90">{t.text}</p>
+                     <p class="relative z-10 mt-4 text-right font-bold uppercase text-text_banner">— {t.name}</p>
+                  </div>
+               </div>
+            ))
+         }
+      </div>
+
+      <!--
+         Posiciona el carrusel móvil sobre el testimonio de Diego (a pedido:
+         debe ser lo primero que se ve, aunque quedó en medio del orden) --
+         mismo mecanismo que "El Hack" en HomeFeatured.astro, ver los
+         comentarios de ese archivo para el detalle completo de por qué es
+         "is:inline", por qué espera al evento "app:styles-ready" (el CSS de
+         Tailwind, que da el "flex" del carrusel, carga por JS de forma
+         asíncrona) en vez de sondear con rAF en cada frame, y por qué la
+         reacción a ese evento va detrás de un doble rAF (reprocesamiento
+         forzado: leer geometría en el mismo tick en que Tailwind invalida
+         el estilo de la página).
+      -->
+      <script is:inline>
+         (function () {
+            var track = document.getElementById('trustCarousel');
+            var initial = track && track.querySelector('[data-initial-card]');
+            if (!track || !initial) return;
+
+            function checkAndPosition() {
+               var display = getComputedStyle(track).display;
+               if (display !== 'flex') {
+                  document.addEventListener(
+                     'app:styles-ready',
+                     function () {
+                        requestAnimationFrame(function () {
+                           requestAnimationFrame(checkAndPosition);
+                        });
+                     },
+                     { once: true },
+                  );
+                  return;
+               }
+               track.scrollLeft = initial.offsetLeft - (track.clientWidth - initial.offsetWidth) / 2;
+            }
+            checkAndPosition();
+         })();
+      </script>
+
+      <!-- Pista de swipe: siempre visible en el HTML (no depende de JS).
+           Las flechas son botones reales (ver script) que llevan a la
+           tarjeta anterior/siguiente -- el swipe manual sigue funcionando
+           igual, esto solo agrega una forma alterna de navegar con un tap. -->
+      <div class="swipe-hint mx-auto mt-5 flex w-fit items-center gap-2 rounded-full border border-purple_mv/25 bg-purple_mv/5 px-4 py-1.5 text-[11px] font-medium text-gray-500 dark:border-white/10 dark:bg-white/5 dark:text-white/50">
+         <button id="trustSwipePrev" type="button" aria-label="Ver testimonio anterior" class="-m-1 flex items-center justify-center p-1">
+            <svg class="swipe-hint-arrow h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+               <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+         </button>
+         Desliza para ver más
+         <button id="trustSwipeNext" type="button" aria-label="Ver siguiente testimonio" class="-m-1 flex items-center justify-center p-1">
+            <svg class="swipe-hint-arrow h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+               <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+         </button>
+      </div>
+   </div>
+
+   <!--
+      Escritorio: PÁGINAS de 3 testimonios distintos (no una ventana
+      deslizante) -- cada testimonio aparece en una sola página, nunca se
+      repite entre un click y el siguiente. Si el total no es múltiplo de 3,
+      la última página simplemente trae menos tarjetas en vez de completar
+      con repetidos. Las flechas ciclan entre páginas (de la última vuelve
+      a la primera).
+
+      Cada tarjeta tiene DOS capas de texto superpuestas en la misma celda de
+      grid (grid-area 1/1 -- así se apilan sin necesitar position:absolute ni
+      una altura fija). En reposo, la capa "a" está visible (opacity 1) y ya
+      trae el testimonio real en el HTML; la "b" está oculta (opacity 0) y
+      vacía. Al cambiar de página:
+      - Si el puesto sigue teniendo testimonio en ambas páginas: se cruzan las
+        opacidades de las dos capas de texto al mismo tiempo (transition-
+        opacity en las dos) -- "las de ahora se desvanecen mientras las
+        nuevas van apareciendo", no un fade-out seguido de un fade-in.
+      - Si el puesto se queda sin testimonio (última página más corta): toda
+        la tarjeta se desvanece (clase .trust-card-hidden, reutiliza la
+        transition de .testimonial-card) y al terminar se saca del flujo con
+        "hidden" -- así no deja un hueco con borde vacío.
+      - Si el puesto reaparece (al volver de la página corta a una completa):
+        se reincorpora al flujo y hace fade-in desde 0.
+      El ícono (igual para todos) queda fuera de las capas: no hace falta
+      cruzarlo.
+
+      El "min-h" en .trust-stack (más abajo) es a propósito: sin un mínimo
+      fijo, la fila entera (grid) crecería/encogería de golpe si un
+      testimonio más largo entra o sale de pantalla al cambiar de página
+      (hoy son solo 3 testimonios -- sin paginación real -- pero el mínimo
+      se deja para cuando se agreguen más). El valor se midió con Playwright
+      (altura real del contenido, sin el mínimo, en cada breakpoint) y se
+      ajustó apenas por encima de eso -- a pedido, más chico que antes
+      porque con el texto actual las tarjetas se veían con demasiado aire.
+   -->
+   <div class="hidden md:flex md:items-center md:justify-center md:gap-4 lg:gap-6">
+      {
+         hasMultipleTrustPages && (
+            <button
+               id="trustPrev"
+               type="button"
+               aria-label="Testimonio anterior"
+               class="trust-arrow flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full border border-purple_mv/40 text-purple_mv transition hover:bg-text_banner hover:text-white dark:border-white/20"
+            >
+               <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+               </svg>
+            </button>
+         )
+      }
+
+      <div id="trustSlots" class="grid w-full grid-cols-3 gap-5 md:max-w-3xl lg:max-w-4xl lg:gap-6">
+         {
+            [0, 1, 2].map((slot) => (
+               <div
+                  class:list={[
+                     'testimonial-card float-anim overflow-hidden rounded-3xl border border-purple_mv/25 shadow-card transition-colors duration-300 hover:border-purple_mv/50 hover:shadow-card-hover dark:border-white/10',
+                     slot >= testimonials.length ? 'trust-card-hidden hidden' : '',
+                  ]}
+                  style={`--float-dur: ${5.6 + slot * 0.3}s; --float-delay: ${slot * 0.2}s;`}
+               >
+                  <div class="trust-stack relative min-h-[260px] bg-gradient-to-b from-purple_mv/[0.06] to-transparent p-4 text-left dark:from-purple_mv/[0.1] dark:to-black/30 lg:min-h-[250px] lg:p-5">
+                     <div class="trust-layer trust-layer-a" data-role="a">
+                        <span class="pointer-events-none select-none text-5xl font-serif text-purple_mv/30">“</span>
+                        <p class="trust-slot-text relative z-10 mt-3 text-sm text-gray-700 dark:text-white/90">
+                           {testimonials[slot]?.text}
+                        </p>
+                        <p class="trust-slot-name relative z-10 mt-3 text-right font-bold uppercase text-text_banner">
+                           {testimonials[slot] && `— ${testimonials[slot].name}`}
+                        </p>
+                     </div>
+                     <div class="trust-layer trust-layer-b" data-role="b">
+                        <span class="pointer-events-none select-none text-5xl font-serif text-purple_mv/30">“</span>
+                        <p class="trust-slot-text relative z-10 mt-3 text-sm text-gray-700 dark:text-white/90" />
+                        <p class="trust-slot-name relative z-10 mt-3 text-right font-bold uppercase text-text_banner" />
+                     </div>
+                  </div>
+               </div>
+            ))
+         }
+      </div>
+
+      {
+         hasMultipleTrustPages && (
+            <button
+               id="trustNext"
+               type="button"
+               aria-label="Siguiente testimonio"
+               class="trust-arrow flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full border border-purple_mv/40 text-purple_mv transition hover:bg-text_banner hover:text-white dark:border-white/20"
+            >
+               <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+               </svg>
+            </button>
+         )
+      }
+   </div>
+
+   <!-- Botón "Conocer más testimonios": únicamente en escritorio (a pedido,
+        2026-08-27) -- en móvil el carrusel ya deja ver que hay más deslizando. -->
+   <div class="mt-8 hidden justify-center md:flex">
+      <a
+         id="cta-home-testimonios"
+         href="/testimonios"
+         data-page-type="home"
+         data-section-name="testimonios"
+         data-destination-type="internal_page"
+         class="inline-flex items-center justify-center rounded-full bg-purple_mv px-6 py-4 text-base font-bold text-white transition hover:bg-purple_mv/85 md:text-lg"
+      >
+         Conocer más testimonios
+      </a>
+   </div>
+
+   <!-- Datos completos de los testimonios para el script del carrusel de escritorio (las 3 tarjetas de arriba solo pintan los índices 0, 1 y 2 al cargar). -->
+   <script type="application/json" id="trust-data" is:inline set:html={JSON.stringify(testimonials)} />
+</section>
+
+<style>
+   .no-scrollbar::-webkit-scrollbar {
+      display: none;
+   }
+   .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+   }
+
+   /* La tarjeta activa (centrada, solo aplica en el carrusel móvil) siempre
+      se ve al 100% -- el atenuado de las demás es un realce que solo agrega
+      el JS de abajo, y solo cuando hay algo que deslizar. Así, si JS no
+      corre (o en desktop, donde ya no hay scroll), las tarjetas quedan
+      siempre perfectamente legibles. */
+   .testimonial-card {
+      transition:
+         transform 0.4s ease,
+         opacity 0.4s ease,
+         filter 0.4s ease;
+   }
+   .testimonial-card.is-dimmed {
+      opacity: 0.5;
+      transform: scale(0.94);
+      filter: saturate(0.7);
+   }
+
+   @keyframes swipeNudge {
+      0%,
+      100% {
+         transform: translateX(0);
+      }
+      50% {
+         transform: translateX(3px);
+      }
+   }
+   .swipe-hint-arrow {
+      animation: swipeNudge 1.6s ease-in-out infinite;
+   }
+   .swipe-hint-arrow:first-child {
+      animation-direction: reverse;
+   }
+
+   /*
+      Crossfade de escritorio: las dos capas de texto ocupan la MISMA celda
+      de grid ("grid-area: 1 / 1"), así se apilan una sobre otra sin
+      position:absolute ni una altura fija -- el contenedor mide lo que mida
+      la capa más alta de las dos en cada momento. Se cruzan las opacidades
+      (una baja a 0 mientras la otra sube a 1) con la misma duración/curva,
+      así el efecto es un verdadero cruce, no un fundido a negro seguido de
+      una aparición.
+
+      Cada capa además es flex-column + height:100% (a pedido: el nombre
+      siempre pegado abajo, sin importar cuán corto sea un testimonio frente
+      a otro) -- por el "stretch" default de CSS Grid, la capa ya recibe la
+      altura real de .trust-stack (el "min-h" de más arriba); ".trust-slot-
+      text" con flex:1 crece para ocupar el espacio libre y empuja el
+      nombre al final.
+   */
+   .trust-stack {
+      display: grid;
+   }
+   .trust-layer {
+      grid-area: 1 / 1;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+   }
+   .trust-layer-a {
+      opacity: 1;
+   }
+   .trust-slot-text {
+      flex: 1 1 auto;
+   }
+
+   /* Tarjeta sin testimonio en la página actual (última página incompleta):
+      se desvanece con la misma transition de .testimonial-card, en vez de un
+      corte seco a "display:none". El "hidden" real se agrega recién cuando
+      termina la transición (ver script). */
+   .trust-card-hidden {
+      opacity: 0;
+      pointer-events: none;
+   }
+
+   .trust-arrow:disabled {
+      opacity: 0.35;
+      pointer-events: none;
+   }
+</style>
+
+<script>
+   const initTrustCarousel = () => {
+      const track = document.getElementById('trustCarousel');
+      if (!track || track.getAttribute('data-carousel-ready') === 'true') return;
+      track.setAttribute('data-carousel-ready', 'true');
+
+      const cards = Array.from(track.querySelectorAll('.testimonial-card'));
+      // Sin nada que deslizar (p. ej. el grid estático de escritorio, donde
+      // las tarjetas ya caben completas) no tiene sentido atenuar ninguna.
+      if (!cards.length || track.scrollWidth <= track.clientWidth + 1) return;
+
+      const setActive = (activeEl: Element) => {
+         cards.forEach((c) => c.classList.toggle('is-dimmed', c !== activeEl));
+      };
+
+      if ('IntersectionObserver' in window) {
+         const io = new IntersectionObserver(
+            (entries) => {
+               let best: IntersectionObserverEntry | null = null;
+               entries.forEach((entry) => {
+                  if (entry.isIntersecting && (!best || entry.intersectionRatio > best.intersectionRatio)) {
+                     best = entry;
+                  }
+               });
+               if (best) setActive(best.target);
+            },
+            { root: track, threshold: [0.5, 0.6, 0.7, 0.8, 0.9, 1] },
+         );
+         cards.forEach((c) => io.observe(c));
+      }
+
+      // Flechas de la pista de swipe: llevan a la tarjeta anterior/siguiente
+      // sin reemplazar el swipe manual (scroll-snap nativo sigue intacto).
+      // El índice activo se recalcula por posición de scroll en cada click
+      // en vez de depender del IntersectionObserver de arriba, así funciona
+      // incluso si ese observer no está disponible.
+      const getActiveIndex = () => {
+         const center = track.scrollLeft + track.clientWidth / 2;
+         let closest = 0;
+         let minDist = Infinity;
+         cards.forEach((c, i) => {
+            const cardEl = c as HTMLElement;
+            const dist = Math.abs(cardEl.offsetLeft + cardEl.offsetWidth / 2 - center);
+            if (dist < minDist) {
+               minDist = dist;
+               closest = i;
+            }
+         });
+         return closest;
+      };
+
+      const scrollToIndex = (i: number) => {
+         const clamped = Math.max(0, Math.min(cards.length - 1, i));
+         cards[clamped].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      };
+
+      const prevBtn = document.getElementById('trustSwipePrev');
+      const nextBtn = document.getElementById('trustSwipeNext');
+
+      // El widget de chat (LeadConnector) puede mostrar un globo de saludo
+      // que es un overlay real: position:fixed y z-index gigantesco (~1e8),
+      // por encima de TODO el contenido de <main> -- <main> tiene "isolate"
+      // en Layout.astro, así que nada adentro puede ganarle por z-index sin
+      // importar qué tan alto se ponga. Cuando ese globo cae encima de estas
+      // flechas, el navegador entrega el click al widget, no al botón, aun
+      // viéndose éste "por encima". Se intercepta en fase de captura en
+      // window (que siempre se dispara, sin importar cuál haya sido el
+      // target real) y se decide por coordenadas del click en vez de
+      // depender de a quién el navegador se lo haya asignado.
+      const isInside = (el: Element, x: number, y: number) => {
+         const r = el.getBoundingClientRect();
+         return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
+      };
+      // Doble rAF antes de leer offsetLeft/offsetWidth (dentro de
+      // getActiveIndex): Lighthouse marcaba estas lecturas como
+      // reprocesamiento forzado -- si el click llega justo después de un
+      // cambio de estilo (p.ej. el IntersectionObserver de arriba alternando
+      // "is-dimmed"), leer geometría en el mismo tick obliga al navegador a
+      // recalcular layout de forma síncrona. Diferir dos frames deja que
+      // cualquier cambio pendiente se pinte primero; el desplazamiento sigue
+      // siendo "smooth" y el retraso (~30ms) es imperceptible.
+      const goToRelativeCard = (delta: number) => {
+         requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+               scrollToIndex(getActiveIndex() + delta);
+            });
+         });
+      };
+
+      window.addEventListener(
+         'click',
+         (e) => {
+            if (prevBtn && isInside(prevBtn, e.clientX, e.clientY)) {
+               e.stopPropagation();
+               goToRelativeCard(-1);
+            } else if (nextBtn && isInside(nextBtn, e.clientX, e.clientY)) {
+               e.stopPropagation();
+               goToRelativeCard(1);
+            }
+         },
+         { capture: true },
+      );
+
+      // Fallback para activación por teclado (Enter/Espacio con foco en el
+      // botón): ahí no hay coordenadas de puntero reales, así que el chequeo
+      // de arriba no aplica y hace falta este listener normal.
+      prevBtn?.addEventListener('click', () => goToRelativeCard(-1));
+      nextBtn?.addEventListener('click', () => goToRelativeCard(1));
+   };
+
+   initTrustCarousel();
+   document.addEventListener('astro:page-load', initTrustCarousel);
+
+   // Carrusel de escritorio: páginas de 3 testimonios distintos (sin
+   // repetir), flechas izq/der, crossfade de texto (ver comentario junto al
+   // markup y a .trust-stack/.trust-card-hidden en el <style>).
+   const FADE_MS = 400;
+   const PAGE_SIZE = 3;
+
+   const initTrustDesktop = () => {
+      const slotsContainer = document.getElementById('trustSlots');
+      const dataScript = document.getElementById('trust-data');
+      if (!slotsContainer || !dataScript || slotsContainer.dataset.ready === 'true') return;
+      slotsContainer.dataset.ready = 'true';
+
+      const testimonialsData = JSON.parse(dataScript.textContent || '[]');
+      if (!testimonialsData.length) return;
+
+      const totalPages = Math.max(1, Math.ceil(testimonialsData.length / PAGE_SIZE));
+
+      type TestimonialItem = { text: string; name: string };
+      const itemFor = (p: number, i: number): TestimonialItem | undefined => testimonialsData[p * PAGE_SIZE + i];
+
+      const slots = Array.from(slotsContainer.querySelectorAll(':scope > .testimonial-card')).map((card) => ({
+         card,
+         front: card.querySelector('.trust-layer-a'),
+         back: card.querySelector('.trust-layer-b'),
+      }));
+
+      let page = 0;
+      let animating = false;
+
+      const fillLayer = (layer: Element | null | undefined, item: TestimonialItem) => {
+         if (!layer) return;
+         const text = layer.querySelector('.trust-slot-text');
+         const name = layer.querySelector('.trust-slot-name');
+         if (text) text.textContent = item.text;
+         if (name) name.textContent = `— ${item.name}`;
+      };
+
+      const go = (delta: number) => {
+         if (animating || totalPages <= 1) return;
+         const nextPage = (page + delta + totalPages) % totalPages;
+         if (nextPage === page) return;
+         animating = true;
+
+         // Un plan por puesto: sigue habiendo testimonio en ambas páginas
+         // ("crossfade" de texto), ya no hay en la nueva página
+         // ("disappear", última página incompleta) o aparece uno donde antes
+         // no había ("appear", al volver de esa página incompleta).
+         const plans = slots.map((slot, i) => {
+            const currentItem = itemFor(page, i);
+            const nextItem = itemFor(nextPage, i);
+            if (currentItem && nextItem) return { slot, kind: 'crossfade' as const, nextItem };
+            if (currentItem && !nextItem) return { slot, kind: 'disappear' as const };
+            if (!currentItem && nextItem) return { slot, kind: 'appear' as const, nextItem };
+            return { slot, kind: 'none' as const };
+         });
+
+         plans.forEach(({ slot, kind, nextItem }) => {
+            if (kind === 'crossfade' && nextItem) fillLayer(slot.back, nextItem);
+            if (kind === 'disappear') slot.card.classList.add('trust-card-hidden');
+            if (kind === 'appear' && nextItem) {
+               slot.card.classList.remove('hidden');
+               fillLayer(slot.front, nextItem);
+            }
+         });
+
+         // Forzar reflow antes de cruzar las opacidades: si no, el navegador
+         // puede fusionar el cambio de contenido de arriba con el toggle de
+         // clases de abajo en un mismo frame y saltarse la transición.
+         //
+         // Nota: a diferencia del reflow forzado que sí se reemplazó por
+         // doble rAF en Layout.astro (repositionChatWidget) y en
+         // Preloader.astro (triggerPulse), este se deja como está a
+         // propósito -- el setTimeout(FADE_MS) de más abajo asume que la
+         // transición arranca en este mismo tick; diferir el cambio de
+         // clases 2 frames desincronizaría esa cuenta (~32ms de un fade de
+         // 400ms) por una ganancia de rendimiento nula (es un reflow de una
+         // sola vez, disparado por click del usuario, no un loop/resize).
+         void slotsContainer.offsetHeight;
+
+         plans.forEach(({ slot, kind }) => {
+            if (kind === 'crossfade') {
+               slot.front?.classList.remove('trust-layer-a');
+               slot.front?.classList.add('trust-layer-b');
+               slot.back?.classList.remove('trust-layer-b');
+               slot.back?.classList.add('trust-layer-a');
+            }
+            if (kind === 'appear') slot.card.classList.remove('trust-card-hidden');
+         });
+
+         setTimeout(() => {
+            plans.forEach(({ slot, kind }) => {
+               if (kind === 'crossfade') {
+                  const tmp = slot.front;
+                  slot.front = slot.back;
+                  slot.back = tmp;
+               }
+               if (kind === 'disappear') slot.card.classList.add('hidden');
+            });
+            page = nextPage;
+            animating = false;
+         }, FADE_MS);
+      };
+
+      document.getElementById('trustPrev')?.addEventListener('click', () => go(-1));
+      document.getElementById('trustNext')?.addEventListener('click', () => go(1));
+   };
+
+   initTrustDesktop();
+   document.addEventListener('astro:page-load', initTrustDesktop);
+</script>
+

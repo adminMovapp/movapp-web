@@ -1,0 +1,17 @@
+---
+// H1 (único H1 de la página). Breadcrumb de 2 niveles ("Inicio | Aplicaciones
+// | Klar") -- mismo criterio que CrediseguroHero.astro/TalaHero.astro/
+// KueskiHero.astro, ver PAGE_SCHEMA['/aplicaciones-prestamo/klar'] en
+// schema.js.
+// Hero de 2 columnas (2026-09-02, a pedido) -- ver AppHero.astro para el
+// mecanismo compartido por las 8 apps.
+import AppHero from '@components/decorative/AppHero.astro';
+---
+
+<AppHero
+   id="klar"
+   breadcrumbLabel="Klar"
+   h1="Klar: información verificada, registro y datos de contacto"
+   paragraph="Consulta los datos disponibles sobre Klar, su registro ante la autoridad correspondiente y la información de contacto verificada."
+   whatsappMessage="¡Hola! Quiero orientación sobre Klar."
+/>

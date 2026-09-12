@@ -1,0 +1,99 @@
+---
+import { Image } from 'astro:assets';
+import ImgLogoResp from '@assets/logo_resp.webp';
+import ImgLogoRespBlanco from '@assets/logo_resp_blanco.webp';
+import MenuMobile from '@components/layout/MenuMobile.astro';
+import MobileSearch from '@components/layout/MobileSearch.astro';
+---
+
+<!--
+   "sticky bottom-0", NO "fixed bottom-0" (lo que había antes, y varios
+   intentos de compensarlo por JS que no terminaron de resolverlo -- ver
+   historial). "position: fixed" en móvil se ancla al *layout viewport*, que
+   en iOS/Android se desincroniza brevemente del área realmente visible
+   cada vez que el navegador anima su barra de direcciones/gestos --como
+   ese desfase lo genera el navegador, cualquier corrección por JS siempre
+   llega un frame tarde (confirmado con un diagnóstico en el propio sitio:
+   window.innerHeight oscilaba solo, con el celular quieto, sin que ningún
+   script propio ni de terceros -incluido el widget de chat- estuviera
+   corriendo). "position: sticky" calcula su posición como parte del scroll
+   normal del documento, que sí está sincronizado con lo que se ve, así que
+   no sufre ese desfase. Como es el último elemento del body y no hay nada
+   después, se queda pegado al fondo del viewport en todo el rango de
+   scroll, igual que "fixed" pero sin el bug.
+-->
+<nav
+   id="mobileBottomNav"
+   class="sticky bottom-0 z-[999999999] flex items-stretch justify-around bg-gradient-to-t from-purple_mv/[0.06] to-white/90 dark:from-purple_mv/[0.08] dark:to-zinc-950/85 backdrop-blur-md border-t border-purple_mv/25 dark:border-white/10 shadow-[0_-8px_25px_-10px_rgba(129,73,226,0.15)] pb-[env(safe-area-inset-bottom)] lg:hidden"
+>
+   <!-- Logo / Home -->
+   <a
+      href="/"
+      class="flex flex-1 flex-col items-center justify-center gap-1 py-2 text-gray-500 hover:text-text_banner dark:text-white/60 dark:hover:text-white"
+      aria-label="Movapp - Inicio"
+      data-home-link
+   >
+      <span class="sr-only">Home</span>
+      <!-- height=84 (no 260): se muestra a h-7 (28px) -- 84 da 3x retina de
+           margen sin servir un archivo ~5x más grande de lo necesario
+           (Lighthouse lo marcaba: 335x260 real para 63x49 de visualización). -->
+      <Image src={ImgLogoResp} alt="" height={84} class="bottomnav-logo block h-7 w-auto dark:hidden" aria-hidden="true" />
+      <Image src={ImgLogoRespBlanco} alt="" height={84} class="bottomnav-logo hidden h-7 w-auto dark:block" aria-hidden="true" />
+   </a>
+
+   <!-- Tienda -->
+   <a href="/tienda" class="flex flex-1 flex-col items-center justify-center py-2" aria-label="Tienda">
+      <span class="tienda-icon block h-7 w-7 bg-purple_mv dark:bg-white" aria-hidden="true"></span>
+   </a>
+
+   <!-- Menú (hamburguesa con el resto de opciones) -->
+   <MenuMobile />
+
+   <!-- Buscador (móvil): se despliega in-place (ver MobileSearch.astro),
+        mismo patrón que HeaderSearch.astro en escritorio. Su backdrop
+        (bloquea scroll/toques de la página de atrás mientras está abierto)
+        vive aparte, como hermano de este <nav> (MobileSearchBackdrop.astro,
+        ver ese componente para el porqué). -->
+   <MobileSearch />
+</nav>
+
+<style>
+   #mobileBottomNav {
+      will-change: transform;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+   }
+
+   /*
+      Tamaño real del logo fijado acá (no solo con "h-7" de Tailwind) --
+      este <style> con scope de componente se aplica siempre, con o sin JS.
+      Mientras Tailwind no ha cargado (ver mecanismo no-js/js en
+      Layout.astro), el <img> no tiene ninguna regla de tamaño y se pinta a
+      su dimensión real (height={84}, pensado para retina) -- más grande
+      que los 28px finales de "h-7", generando un salto de layout (CLS) al
+      cargar Tailwind. Debe coincidir con "h-7" si cambia.
+   */
+   .bottomnav-logo {
+      height: 1.75rem;
+      width: auto;
+   }
+
+   /*
+      /img/tienda.webp es una silueta negra sobre transparente (por eso antes
+      llevaba "dark:invert" para volverse blanca en dark). Con mask-image en
+      vez de <img> podemos pintarla de CUALQUIER color (morado en claro,
+      blanco en dark) usando bg-purple_mv/dark:bg-white -- currentColor +
+      dark:invert no alcanzaba para llegar a un morado exacto en modo claro.
+   */
+   .tienda-icon {
+      -webkit-mask-image: url('/img/tienda.webp');
+      mask-image: url('/img/tienda.webp');
+      -webkit-mask-repeat: no-repeat;
+      mask-repeat: no-repeat;
+      -webkit-mask-position: center;
+      mask-position: center;
+      -webkit-mask-size: contain;
+      mask-size: contain;
+   }
+
+</style>

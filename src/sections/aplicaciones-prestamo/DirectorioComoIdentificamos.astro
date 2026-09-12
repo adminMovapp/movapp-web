@@ -1,0 +1,17 @@
+---
+// Línea de tiempo con revelado secuencial (ver SequentialTimeline.astro
+// para el mecanismo completo: horizontal en escritorio, vertical en
+// móvil, "una card aparece, se apaga, aparece la siguiente... al final
+// todas quedan fijas"). El check verde sí aplica acá: cada ítem es un
+// criterio verificado, no una señal de alerta (comparar con
+// DirectorioSenalesAlerta.astro, que usa el mismo componente sin ícono).
+import { IDENTIFICATION_CRITERIA } from '@constants/directorioApps.ts';
+import SequentialTimeline from '@components/decorative/SequentialTimeline.astro';
+---
+
+<SequentialTimeline
+   id="directorio-como-identificamos"
+   heading="¿Cómo identificamos el estatus de una app?"
+   items={IDENTIFICATION_CRITERIA}
+   showCheckIcon
+/>

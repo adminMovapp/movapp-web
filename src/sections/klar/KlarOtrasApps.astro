@@ -1,0 +1,17 @@
+---
+// Cross-sell de otras apps LEGALES (REGULATED_APPS), excluyendo la app de
+// esta misma página (CrediSeguro/Tala/Kueski).
+// Carrusel de 1 tarjeta por vez (2026-09-02, a pedido) -- ver
+// AppOptionsCarousel.astro para el mecanismo compartido por las 8 apps.
+import { REGULATED_APPS } from '@constants/directorioApps.ts';
+import AppOptionsCarousel from '@components/decorative/AppOptionsCarousel.astro';
+
+const OTHER_APPS = REGULATED_APPS.filter((app) => ['crediseguro', 'tala', 'kueski'].includes(app.slug));
+---
+
+<AppOptionsCarousel
+   id="klar"
+   heading="Otras aplicaciones legales que podrías consultar"
+   apps={OTHER_APPS}
+   statusColor="green"
+/>
