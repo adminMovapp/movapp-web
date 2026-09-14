@@ -725,6 +725,98 @@ const schemaJson = JSON.stringify(Array.isArray(pageSchema) ? pageSchema : [page
             document.addEventListener('astro:page-load', initAosReveal);
          })();
       </script>
+
+      <!--
+         Tracking del evento "Lead" en botones WhatsApp (.wa__stt). Vive acá,
+         una sola vez, y no en ButtonContact.astro: ese componente se repite
+         2-3 veces en varias páginas, y un listener por instancia hacía que
+         el mismo clic disparara el evento 2-3 veces. Un solo listener
+         delegado en document cubre todos los botones (incluso los que se
+         agreguen después) sin duplicarse.
+      -->
+      <script is:inline>
+         (function () {
+            document.addEventListener('click', async function (e) {
+               var btn = e.target.closest('.wa__stt');
+               if (!btn) return;
+
+               // window.metaPixelUtils no existe cuando MetaPixelScript no se
+               // monta (stage/local sin PUBLIC_META_PIXEL_ID, o ?minimal=1) --
+               // se lee de forma perezosa y opcional, nunca a nivel de módulo.
+               var userAgent = navigator.userAgent;
+               var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
+               var referrer = document.referrer || 'direct';
+               var timestamp = Date.now();
+               var mensaje = btn.dataset.message || '';
+
+               var userCountry = 'MX'; // Default
+               if (navigator.language) {
+                  var locale = navigator.language.toLowerCase();
+                  if (locale.includes('mx') || locale.includes('es-mx')) userCountry = 'MX';
+                  else if (locale.includes('co')) userCountry = 'CO';
+                  else if (locale.includes('ar')) userCountry = 'AR';
+               }
+
+               await window.metaPixelUtils?.trackEvent?.(
+                  'Lead',
+                  {
+                     content_name: 'WhatsApp Contact Button',
+                     content_category: 'lead_generation',
+                     content_type: 'contact_cta',
+
+                     lead_type: 'whatsapp_contact',
+                     lead_source: 'website_button',
+                     lead_quality: 'high_intent', // Usuario activamente buscó contacto
+
+                     page_url: window.location.href,
+                     page_title: document.title,
+                     referrer_url: referrer,
+
+                     device_type: isMobile ? 'mobile' : 'desktop',
+                     user_agent: userAgent,
+                     timestamp: timestamp,
+
+                     value: 50, // Valor estimado de un lead de WhatsApp
+                     currency: 'MXN',
+
+                     country: userCountry,
+
+                     campaign_source: new URLSearchParams(window.location.search).get('utm_source') || 'organic',
+                     campaign_medium: new URLSearchParams(window.location.search).get('utm_medium') || 'website',
+                     campaign_name: new URLSearchParams(window.location.search).get('utm_campaign') || 'whatsapp_contact',
+
+                     session_id: sessionStorage.getItem('session_id') || `session-${timestamp}`,
+                     page_load_time: performance.now(),
+
+                     whatsapp_message_preview: mensaje.substring(0, 50),
+                     contact_method: 'whatsapp',
+                     contact_intent: 'product_inquiry',
+                  },
+                  {
+                     country: [userCountry],
+                  },
+               );
+
+               try {
+                  var leadData = {
+                     timestamp: timestamp,
+                     page: window.location.pathname,
+                     referrer: referrer,
+                     device: isMobile ? 'mobile' : 'desktop',
+                     country: userCountry,
+                  };
+                  localStorage.setItem('whatsapp_lead_' + timestamp, JSON.stringify(leadData));
+               } catch (err) {
+                  // Silently fail if localStorage is not available
+               }
+
+               // Deliberadamente NO se trackea el hover: antes cada
+               // mouseenter mandaba un "Lead" (value 10) a cliente y
+               // servidor, inflando la conversión Lead con ruido de
+               // engagement. Lead = clic real.
+            });
+         })();
+      </script>
    </body>
 </html>
 
