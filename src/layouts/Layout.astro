@@ -26,7 +26,6 @@ import { getSiteConfig, generateSEOTags } from '@/utils/config.jsx';
 // datos de las entidades, generadores y qué schema le toca a cada ruta.
 import { getPageSchema, getPageEntry } from '@/utils/schema.js';
 
-import GoogleTagManager from '@components/layout/GoogleTagManager.astro';
 import GoogleAnalytics from '@components/layout/GoogleAnalytics.astro';
 
 import MetaPixelScript from '@components/layout/MetaPixelScript.astro';
@@ -36,10 +35,11 @@ const showPreloader = import.meta.env.PUBLIC_SHOW_PRELOADER === 'true';
 // DIAGNÓSTICO TEMPORAL -- borrar junto con el resto del diagnóstico de
 // "navdebug" una vez resuelto el flote de la barra inferior. ?nochat=1 ya
 // descartó al widget de LeadConnector como causa (mismo bug con o sin él).
-// ?minimal=1 apaga TAMBIÉN GTM/GA4/Meta Pixel de una sola vez -- GTM en
-// particular puede estar inyectando tags de terceros (heatmaps, session
-// recording, etc.) que no se ven en este código porque viven en la
-// configuración del contenedor de GTM, no en el repo.
+// ?minimal=1 apaga TAMBIÉN GA4 y Meta Pixel de una sola vez, para poder
+// probar la página sin ningún script de terceros. (Ya no hay Google Tag
+// Manager: el contenedor GT-M6XFBNNJ nunca tuvo etiquetas propias -- era el
+// alias interno de la etiqueta de Google -- y cargarlo junto a gtag/js
+// duplicaba la misma etiqueta dos veces y las instancias se pisaban.)
 const disableChatWidget = Astro.url.searchParams.get('nochat') === '1' || Astro.url.searchParams.get('minimal') === '1';
 const disableThirdPartyScripts = Astro.url.searchParams.get('minimal') === '1';
 
@@ -249,8 +249,18 @@ const schemaJson = JSON.stringify(Array.isArray(pageSchema) ? pageSchema : [page
       <!-- Header meta-pixel  -->
       <meta name="facebook-domain-verification" content="uffghfhff1th1z040abwzgjgjto9mi" />
 
-      {!disableThirdPartyScripts && <GoogleTagManager />}
-      {!disableThirdPartyScripts && <GoogleAnalytics />}
+      {
+         /*
+            GA4 solo se monta si hay PUBLIC_GA4_ID (mismo criterio que
+            PUBLIC_META_PIXEL_ID más abajo): sin ID no se pide
+            gtag/js?id=undefined. Es build-time: el ID de staging va en los
+            contextos stage/branch-deploy/deploy-preview de Netlify y el de
+            producción solo en production -- stage.movapp.org y movapp.org
+            comparten las cookies del dominio raíz, así que un mismo ID en
+            los dos mezclaría los datos.
+         */
+      }
+      {!disableThirdPartyScripts && import.meta.env.PUBLIC_GA4_ID && <GoogleAnalytics />}
       <noscript>
          <style>
             [data-aos] {
@@ -814,6 +824,123 @@ const schemaJson = JSON.stringify(Array.isArray(pageSchema) ? pageSchema : [page
                // mouseenter mandaba un "Lead" (value 10) a cliente y
                // servidor, inflando la conversión Lead con ruido de
                // engagement. Lead = clic real.
+            });
+         })();
+      </script>
+
+      <!--
+         Tracking GA4 de CTAs de navegación ("Plan de eventos GA4 · Movapp",
+         fase 2): UN solo listener delegado en document para todos los
+         enlaces/botones medibles -- los atributos data-* que ya llevaban
+         (ButtonContact.astro, CTAs de cada sección, tarjetas del carrusel
+         de apps) estaban pensados para triggers DOM de Google Tag Manager,
+         pero el sitio nunca tuvo un contenedor con reglas, así que se leen
+         acá y se emiten con gtag directo. Agregar un CTA medible = ponerle
+         los data-*; no hace falta JS por evento.
+
+         Tres familias de evento:
+         - whatsapp_click: cualquier <a> a wa.me / api.whatsapp.com (canal
+           principal; params button_id, button_text, placement,
+           destination_url, page_location). NO se mezcla con cta_click.
+           OJO con el orden: un data-ga-event explícito gana SIEMPRE, y por
+           eso se comprueba primero. El bloque "¡Comparte esta nota!" del
+           blog tiene un enlace de compartir por WhatsApp
+           (api.whatsapp.com/send?text=...) que, sin esa precedencia, caería
+           acá y contaría como un contacto por WhatsApp -- inflando con
+           shares la conversión principal del negocio.
+         - cta_click: el resto de elementos con data-cta o
+           data-destination-type (params cta_name, placement,
+           destination_type, destination_url, page_location).
+         - data-ga-event sobreescribe el nombre (p.ej. "app_select" en las
+           tarjetas de apps, con app_id/app_name/app_type/list_name).
+
+         "placement" se limita al catálogo corto del plan (header, hero,
+         footer, sticky, contenido): sale de data-placement, o "hero" si la
+         sección es el hero, o "contenido" por defecto.
+
+         Se mantiene separado del listener de Meta "Lead" de arriba a
+         propósito: aquel es async y solo WhatsApp; este es síncrono y
+         dispara-y-olvida (en un clic de WhatsApp corren los dos, uno por
+         plataforma). Nunca preventDefault ni retrasar la navegación: gtag
+         manda el hit con sendBeacon y target=_blank ni siquiera descarga la
+         página; retrasar rompería clic medio/modificadores y pelearía con
+         ExternalLinkModal.astro (que hace preventDefault sin
+         stopPropagation: el clic original al enlace externo sí llega acá y
+         se mide la intención; su botón de confirmar no lleva data-* y por
+         eso no duplica).
+
+         Sin datos personales en ningún parámetro: destination_url va sin
+         query string (el href de WhatsApp lleva el mensaje precargado) y
+         nunca se reenvían data-message ni data-external-label.
+      -->
+      <script is:inline>
+         (function () {
+            var PLACEMENTS = ['header', 'hero', 'footer', 'sticky', 'contenido'];
+
+            function placementOf(el) {
+               var ds = el.dataset;
+               if (ds.placement && PLACEMENTS.indexOf(ds.placement) !== -1) return ds.placement;
+               if (ds.sectionName === 'hero') return 'hero';
+               return 'contenido';
+            }
+
+            function withApp(params, ds) {
+               if (ds.appId || ds.appName) {
+                  params.app_id = ds.appId || ds.appName;
+                  params.app_name = ds.appName || ds.appId;
+               }
+               if (ds.appType) params.app_type = ds.appType;
+               return params;
+            }
+
+            document.addEventListener('click', function (e) {
+               // window.gtag no existe sin PUBLIC_GA4_ID ni con ?minimal=1
+               // (ver GoogleAnalytics.astro): no se emite nada.
+               if (typeof window.gtag !== 'function') return;
+               var el = e.target.closest('a, button');
+               if (!el) return;
+
+               var ds = el.dataset;
+               var href = el.tagName === 'A' ? el.href || '' : '';
+               var destinationUrl = href ? href.split('?')[0] : undefined;
+
+               if (!ds.gaEvent && (/wa\.me|api\.whatsapp\.com/.test(href) || ds.destinationType === 'whatsapp')) {
+                  window.gtag(
+                     'event',
+                     'whatsapp_click',
+                     withApp(
+                        {
+                           button_id: ds.trackId || el.id || 'wa_sin_id',
+                           button_text: (el.innerText || '').trim().slice(0, 60),
+                           placement: placementOf(el),
+                           destination_url: destinationUrl,
+                           page_location: location.href,
+                        },
+                        ds,
+                     ),
+                  );
+                  return;
+               }
+
+               if (!ds.cta && !ds.destinationType && !ds.gaEvent) return;
+
+               var eventName = ds.gaEvent || 'cta_click';
+               var params = withApp({ placement: placementOf(el), page_location: location.href }, ds);
+               // cta_name solo tiene sentido en cta_click (o si el elemento
+               // trae data-cta explícito); app_select y similares no lo llevan.
+               if (eventName === 'cta_click' || ds.cta) params.cta_name = ds.cta || el.id || 'sin_nombre';
+               if (ds.destinationType) params.destination_type = ds.destinationType;
+               if (destinationUrl) params.destination_url = destinationUrl;
+               if (ds.sourceSection) params.list_name = ds.sourceSection;
+               // Parámetros de "share" (bloque de compartir del blog). El
+               // botón nativo NO pasa por acá: su método depende de si el
+               // navegador soporta la Web Share API, así que lo emite el
+               // propio BlogArticleShare.astro.
+               if (ds.shareMethod) params.method = ds.shareMethod;
+               if (ds.contentType) params.content_type = ds.contentType;
+               if (ds.itemId) params.item_id = ds.itemId;
+
+               window.gtag('event', eventName, params);
             });
          })();
       </script>

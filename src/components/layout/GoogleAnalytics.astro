@@ -8,6 +8,11 @@ const GA4_ID = import.meta.env.PUBLIC_GA4_ID;
    function gtag() {
       dataLayer.push(arguments);
    }
+   // Astro envuelve los <script is:inline define:vars> en una IIFE, así que
+   // esta función NO queda en window por sí sola. Se expone a propósito: es
+   // la única vía por la que el resto del sitio emite eventos a GA4 (ver
+   // src/utils/dataLayer.js y el listener de CTAs en Layout.astro).
+   window.gtag = gtag;
    gtag('js', new Date());
    gtag('config', GA4_ID);
 </script>

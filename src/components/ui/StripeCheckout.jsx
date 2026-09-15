@@ -3,7 +3,7 @@ import { loadStripe } from '@stripe/stripe-js';
 import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
 
 import { createStripeIntent } from '@api/api';
-import { pushToDataLayer, mapCartItemToGA4 } from '@utils/dataLayer.js';
+import { pushToDataLayer } from '@utils/dataLayer.js';
 import { ERROR_TYPES, CHECKOUT_STEPS } from '@constants/tracking.ts';
 
 // Stripe no expone un "error_type" normalizado propio -- se mapea su
@@ -33,16 +33,13 @@ const buildAppearance = () => ({
  * Formulario interno: renderiza el Payment Element (con clientSecret ya creado)
  * y confirma el pago. El clientSecret se crea UNA sola vez en el componente padre.
  */
-const CheckoutForm = ({ onCancel, cart, total, currency }) => {
+const CheckoutForm = ({ onCancel, onPaymentInfoComplete }) => {
    const stripe = useStripe();
    const elements = useElements();
 
    const [ready, setReady] = useState(false);
    const [submitting, setSubmitting] = useState(false);
    const [message, setMessage] = useState('');
-   // Evita reemitir add_payment_info en cada keystroke del Payment Element:
-   // solo la primera vez que queda "completo".
-   const paymentInfoTrackedRef = useRef(false);
 
    const handleSubmit = async (e) => {
       e.preventDefault();
@@ -79,15 +76,11 @@ const CheckoutForm = ({ onCancel, cart, total, currency }) => {
          <PaymentElement
             onReady={() => setReady(true)}
             onChange={(e) => {
-               if (e.complete && !paymentInfoTrackedRef.current) {
-                  paymentInfoTrackedRef.current = true;
-                  pushToDataLayer('add_payment_info', {
-                     currency,
-                     value: total,
-                     payment_type: 'card',
-                     items: cart.map((item) => mapCartItemToGA4(item)),
-                  });
-               }
+               // add_payment_info lo emite (y deduplica) el padre: este
+               // formulario se desmonta al "Volver" y un ref local se
+               // perdería. onChange dispara en cada keystroke, así que el
+               // padre es quien decide si ya lo mandó para este intent.
+               if (e.complete) onPaymentInfoComplete?.();
             }}
             onLoadError={(e) => setMessage(e?.error?.message || 'No se pudo cargar el formulario de pago.')}
          />
@@ -127,9 +120,10 @@ const CheckoutForm = ({ onCancel, cart, total, currency }) => {
  *  - buildPayload:         () => payload para /payments/web/stripe/create-intent
  *  - existingClientSecret: clientSecret ya creado (para reutilizar y no duplicar orden)
  *  - onIntentCreated:      callback(datos) al crear el intent (cachear clientSecret + tracking)
+ *  - onPaymentInfoComplete: callback cuando el Payment Element queda completo (add_payment_info)
  *  - onCancel:             callback para volver
  */
-const StripeCheckout = ({ buildPayload, existingClientSecret = '', onIntentCreated, onCancel, cart = [], total = 0, currency }) => {
+const StripeCheckout = ({ buildPayload, existingClientSecret = '', onIntentCreated, onPaymentInfoComplete, onCancel }) => {
    const [clientSecret, setClientSecret] = useState(existingClientSecret);
    const [error, setError] = useState('');
    const startedRef = useRef(!!existingClientSecret);
@@ -204,7 +198,7 @@ const StripeCheckout = ({ buildPayload, existingClientSecret = '', onIntentCreat
 
    return (
       <Elements stripe={stripePromise} options={elementsOptions}>
-         <CheckoutForm onCancel={onCancel} cart={cart} total={total} currency={currency} />
+         <CheckoutForm onCancel={onCancel} onPaymentInfoComplete={onPaymentInfoComplete} />
       </Elements>
    );
 };

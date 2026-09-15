@@ -5,10 +5,10 @@
 //   <label for="..."> asociado al id de su <input>/<textarea>, con name,
 //   autocomplete y required (los 4 campos son obligatorios).
 // - "Enviar" es <button type="submit"> (no <a>, envía el formulario), con
-//   id="contacto-formulario-enviar" para medición en GA4 (mismo criterio que
-//   el id de ButtonContact.astro: el trigger de GTM/GA4 se configura del
-//   lado de Analytics apuntando a este id, no hace falta un dataLayer.push
-//   manual acá).
+//   id="contacto-formulario-enviar" como identificador estable para medición
+//   (mismo criterio que el id de ButtonContact.astro). Los eventos GA4 de
+//   este formulario (form_error / generate_lead) se emiten en el <script>
+//   de abajo vía pushToDataLayer.
 import StarField from '@components/decorative/StarField.astro';
 
 const fieldClass =
@@ -100,25 +100,35 @@ const fieldClass =
       form.setAttribute('data-ready', 'true');
 
       const status = document.getElementById('contactoFormStatus');
+      const FORM_ID = 'contactanos';
+      const FORM_NAME = 'formulario_contacto';
 
-      // form_error: la validación nativa (required/type="email") bloquea el
-      // submit y dispara "invalid" en cada campo -- se colapsan a un solo
-      // push por intento de envío. No hay error_code (no hay backend que lo
-      // origine todavía).
-      let invalidPushed = false;
+      // form_error: UN solo evento por intento de envío con todos los campos
+      // inválidos (plan de eventos GA4, fase 1). La validación nativa
+      // (required/type="email") bloquea el submit sin disparar "submit" --
+      // lo único que dispara es "invalid", una vez por campo y de forma
+      // síncrona en el mismo tick, así que se juntan los nombres y se emite
+      // al vaciarse la pila. error_message lleva nombres de campo, nunca
+      // valores escritos por el usuario.
+      let invalidFields: string[] = [];
       form.addEventListener(
          'invalid',
-         () => {
-            if (invalidPushed) return;
-            invalidPushed = true;
-            pushToDataLayer('form_error', {
-               form_id: 'contactanos',
-               page_type: 'contactanos',
-               error_type: ERROR_TYPES.validationError,
-            });
-            queueMicrotask(() => {
-               invalidPushed = false;
-            });
+         (e) => {
+            const field = e.target as HTMLInputElement | HTMLTextAreaElement | null;
+            const name = field?.name || field?.id || 'desconocido';
+            if (invalidFields.length === 0) {
+               queueMicrotask(() => {
+                  pushToDataLayer('form_error', {
+                     form_id: FORM_ID,
+                     form_name: FORM_NAME,
+                     error_type: ERROR_TYPES.validationError,
+                     error_message: invalidFields.join(','),
+                     page_location: location.href,
+                  });
+                  invalidFields = [];
+               });
+            }
+            invalidFields.push(name);
          },
          true,
       );
@@ -126,16 +136,25 @@ const fieldClass =
       form.addEventListener('submit', (e) => {
          e.preventDefault();
          status?.classList.remove('hidden');
+         // form_submit a mano: el automático de la medición mejorada de GA4
+         // no llega en este formulario (preventDefault + reset inmediato,
+         // comprobado en staging por el plan de eventos, fase 1).
+         pushToDataLayer('form_submit', {
+            form_id: FORM_ID,
+            form_name: FORM_NAME,
+            form_submit_text: 'Enviar',
+            page_location: location.href,
+         });
          // TEMPORAL: no hay backend real todavía -- este es el punto de
          // "éxito" actual (mock). Cuando exista un fetch real, este push debe
          // moverse al callback de éxito de esa respuesta (doc maestro hoja
          // 04: generate_lead solo tras éxito confirmado del backend --
          // QA-031 queda bloqueado hasta entonces).
          pushToDataLayer('generate_lead', {
-            form_id: 'contactanos',
-            form_name: 'formulario_contacto',
+            form_id: FORM_ID,
+            form_name: FORM_NAME,
             lead_type: 'contacto_general',
-            page_type: 'contactanos',
+            page_location: location.href,
          });
          form.reset();
       });

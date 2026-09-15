@@ -3,6 +3,12 @@
 // aviso de salida (data-external-warn + <ExternalLinkModal />).
 import ExternalLinkModal from '@components/ui/ExternalLinkModal.astro';
 import StarField from '@components/decorative/StarField.astro';
+import { APP_NAME_BY_SLUG, APP_TYPE_BY_SLUG } from '@constants/tracking.ts';
+
+// Identidad de la app para GA4: el slug identifica y el nombre visible es el
+// que se lee en los informes -- los dos salen del catálogo, nunca escritos a
+// mano acá (ver APP_NAME_BY_SLUG).
+const APP_SLUG = 'mexicash';
 
 const REPORT_CHANNELS = [
    {
@@ -51,7 +57,9 @@ const REPORT_CHANNELS = [
                   data-page-type="aplicaciones_prestamo_detalle"
                   data-section-name="donde_denunciar"
                   data-destination-type="external"
-                  data-app-name="mexicash"
+                  data-app-id={APP_SLUG}
+                  data-app-name={APP_NAME_BY_SLUG[APP_SLUG]}
+                  data-app-type={APP_TYPE_BY_SLUG[APP_SLUG]}
                   class="inline-flex flex-shrink-0 items-center justify-center rounded-full bg-purple_mv px-5 py-2.5 text-sm font-bold text-white transition hover:bg-purple_mv/85"
                >
                   {channel.buttonLabel}

@@ -25,7 +25,7 @@ import StarField from '@components/decorative/StarField.astro';
 import Breadcrumbs from '@components/ui/Breadcrumbs.astro';
 import AppDisclaimerModal from '@components/ui/AppDisclaimerModal.astro';
 import { DIRECTORIO_ICONS } from '@constants/directorioApps.ts';
-import { APP_TYPE_BY_SLUG } from '@constants/tracking.ts';
+import { APP_NAME_BY_SLUG, APP_TYPE_BY_SLUG } from '@constants/tracking.ts';
 
 interface Props {
    id: string;
@@ -41,7 +41,30 @@ interface Props {
 }
 
 const { id, breadcrumbLabel, h1, paragraph, paragraphMobile, whatsappMessage } = Astro.props;
+const appType = APP_TYPE_BY_SLUG[id];
+// El nombre para GA4 sale del catálogo, no de breadcrumbLabel: esa prop es
+// texto de interfaz y puede cambiar por página sin que eso deba partir en
+// dos la ficha de la app en los informes.
+const appName = APP_NAME_BY_SLUG[id] ?? breadcrumbLabel;
 ---
+
+<!--
+   app_detail_view (plan de eventos GA4, fase 2): una vez por carga de cada
+   ficha de app, con el mismo catálogo (slug / nombre visible / legal-ilegal)
+   que usan app_select y whatsapp_click. Vive acá porque las 8 fichas
+   comparten este hero. window.gtag no existe sin PUBLIC_GA4_ID ni con
+   ?minimal=1 (ver GoogleAnalytics.astro): entonces no se emite nada.
+-->
+<script is:inline define:vars={{ appId: id, appName, appType }}>
+   if (typeof window.gtag === 'function') {
+      window.gtag('event', 'app_detail_view', {
+         app_id: appId,
+         app_name: appName,
+         app_type: appType,
+         page_location: location.href,
+      });
+   }
+</script>
 
 <section class="relative mx-auto max-w-5xl px-4 pt-16 md:pt-8" data-aos="fade-up">
    <StarField id={`${id}-hero`} ambientCount={35} />
@@ -86,8 +109,9 @@ const { id, breadcrumbLabel, h1, paragraph, paragraphMobile, whatsappMessage } =
                message={whatsappMessage}
                pageType="aplicaciones_prestamo_detalle"
                sectionName="hero"
-               appName={id}
-               appType={APP_TYPE_BY_SLUG[id]}
+               appId={id}
+               appName={appName}
+               appType={appType}
             />
          </div>
       </div>

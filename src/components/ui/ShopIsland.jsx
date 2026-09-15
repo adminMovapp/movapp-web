@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import { CartProvider, useCart } from '@context/CartContext.jsx';
@@ -6,6 +6,7 @@ import useConfig from '@hooks/useConfig.jsx';
 import StripeCheckout from '@components/ui/StripeCheckout.jsx';
 import { useMetaPixel } from '@hooks/useMetaPixel.jsx';
 import { pushToDataLayer, mapCartItemToGA4 } from '@utils/dataLayer.js';
+import { ERROR_TYPES, CHECKOUT_STEPS } from '@constants/tracking.ts';
 
 const fmt = (n) => Number(n || 0).toFixed(2);
 
@@ -70,7 +71,7 @@ const validations = {
 
 const emptyForm = { nombre: '', apellidos: '', email: '', telefono: '', codigoPostal: '' };
 
-const CheckoutPanel = ({ open, onClose, pais }) => {
+const CheckoutPanel = ({ open, openedByAdd, onClose, pais }) => {
    const { cart, count, total, addToCart, decreaseQuantity, removeFromCart } = useCart();
    const { trackInitiateCheckout } = useMetaPixel();
 
@@ -81,6 +82,20 @@ const CheckoutPanel = ({ open, onClose, pais }) => {
    // clientSecret cacheado: se crea una vez por sesión de checkout y se reutiliza
    // aunque el usuario vaya y vuelva entre datos/pago (evita órdenes duplicadas).
    const [clientSecret, setClientSecret] = useState('');
+   // Anti-duplicado de begin_checkout: una sola vez por sesión de checkout,
+   // aunque el usuario vaya y vuelva entre carrito y datos. Se resetea al
+   // cerrar el drawer y cuando cambia el total (misma vida que clientSecret).
+   const beginCheckoutTrackedRef = useRef(false);
+   // view_cart NO se emite en la apertura automática que sigue a "Agregar al
+   // carrito" (plan de eventos, fase 1: en ese clic queda solo add_to_cart;
+   // view_cart es abrir el carrito a propósito). Este ref recuerda si esa
+   // primera vista ya se "consumió" en la sesión actual del drawer.
+   const autoOpenViewSkippedRef = useRef(false);
+   // Anti-duplicado de add_payment_info, keyed por clientSecret: vive acá y
+   // no en el formulario de Stripe porque ese componente se desmonta al
+   // "Volver" a datos y se vuelve a montar al regresar a pago (un ref suyo
+   // arrancaría de cero y reemitiría el evento).
+   const paymentInfoTrackedFor = useRef('');
 
    const symbol = cart[0]?.simbolo || pais?.simbolo || '$';
    const moneda = cart[0]?.moneda || pais?.moneda || 'MXN';
@@ -107,6 +122,8 @@ const CheckoutPanel = ({ open, onClose, pais }) => {
          setStep('cart');
          setErrors({});
          setClientSecret(''); // nueva sesión de checkout la próxima vez
+         beginCheckoutTrackedRef.current = false;
+         autoOpenViewSkippedRef.current = false;
          onClose();
       }, 300);
    };
@@ -115,14 +132,21 @@ const CheckoutPanel = ({ open, onClose, pais }) => {
    // para que se cree uno nuevo con el monto correcto al volver a pagar.
    useEffect(() => {
       setClientSecret('');
+      beginCheckoutTrackedRef.current = false;
       if (step === 'pay') setStep('cart');
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [total]);
 
    // view_cart: solo cuando el paso "carrito" se vuelve visible (no en cada
    // cambio de cantidad dentro del mismo paso, para no duplicar el evento).
+   // !isClosing: handleClose vuelve el paso a "cart" mientras el drawer aún
+   // se está cerrando -- eso no es "ver el carrito".
    useEffect(() => {
-      if (open && step === 'cart' && cart.length > 0) {
+      if (open && !isClosing && step === 'cart' && cart.length > 0) {
+         if (openedByAdd && !autoOpenViewSkippedRef.current) {
+            autoOpenViewSkippedRef.current = true;
+            return;
+         }
          pushToDataLayer('view_cart', {
             currency: moneda,
             value: total,
@@ -150,22 +174,54 @@ const CheckoutPanel = ({ open, onClose, pais }) => {
 
    const goToForm = () => {
       if (cart.length === 0) return;
-      pushToDataLayer('begin_checkout', {
+      // GA4 y Meta se deduplican con el mismo ref para que los dos embudos
+      // cuenten lo mismo (un inicio de checkout por sesión de checkout).
+      if (!beginCheckoutTrackedRef.current) {
+         beginCheckoutTrackedRef.current = true;
+         pushToDataLayer('begin_checkout', {
+            currency: moneda,
+            value: total,
+            items: cart.map((item) => mapCartItemToGA4(item)),
+         });
+         trackInitiateCheckout(total, moneda, cart.map((c) => c.nombre), {
+            quantity: count,
+            country: pais?.codigo_pais,
+            paymentMethod: 'stripe',
+         });
+      }
+      setStep('form');
+   };
+
+   // Lo llama el Payment Element cada vez que queda "completo"; se emite
+   // una sola vez por PaymentIntent (ver paymentInfoTrackedFor arriba).
+   const onPaymentInfoComplete = () => {
+      if (!clientSecret || paymentInfoTrackedFor.current === clientSecret) return;
+      paymentInfoTrackedFor.current = clientSecret;
+      pushToDataLayer('add_payment_info', {
          currency: moneda,
          value: total,
+         payment_type: 'card',
          items: cart.map((item) => mapCartItemToGA4(item)),
       });
-      trackInitiateCheckout(total, moneda, cart.map((c) => c.nombre), {
-         quantity: count,
-         country: pais?.codigo_pais,
-         paymentMethod: 'stripe',
-      });
-      setStep('form');
    };
 
    const submitForm = (e) => {
       e.preventDefault();
-      if (validateForm()) setStep('pay');
+      if (validateForm()) {
+         setStep('pay');
+         return;
+      }
+      // checkout_error también para la validación del paso de datos (plan de
+      // eventos, fase 1), no solo para errores de pago de Stripe.
+      // error_message lleva nombres de campo, nunca valores.
+      const invalidFields = Object.entries(validations)
+         .filter(([field, { regex }]) => !form[field].trim() || !regex.test(form[field].trim()))
+         .map(([field]) => field);
+      pushToDataLayer('checkout_error', {
+         checkout_step: CHECKOUT_STEPS.checkout,
+         error_type: ERROR_TYPES.validationError,
+         error_message: invalidFields.join(','),
+      });
    };
 
    // Payload de create-intent construido desde el carrito (moneda local, cantidades correctas)
@@ -393,10 +449,8 @@ const CheckoutPanel = ({ open, onClose, pais }) => {
                      buildPayload={buildPayload}
                      existingClientSecret={clientSecret}
                      onIntentCreated={onIntentCreated}
+                     onPaymentInfoComplete={onPaymentInfoComplete}
                      onCancel={() => setStep('form')}
-                     cart={cart}
-                     total={total}
-                     currency={moneda}
                   />
                )}
             </div>
@@ -433,6 +487,9 @@ const ShopContent = () => {
    const { loading, prices, pais } = useConfig();
    const { addToCart } = useCart();
    const [drawerOpen, setDrawerOpen] = useState(false);
+   // true cuando el drawer se abrió solo tras "Agregar al carrito" (ver
+   // view_cart en CheckoutPanel); false cuando lo abrió el usuario.
+   const [openedByAdd, setOpenedByAdd] = useState(false);
 
    const products = useMemo(() => prices || [], [prices]);
 
@@ -449,21 +506,25 @@ const ShopContent = () => {
 
    // El ícono del header abre el drawer vía evento global
    useEffect(() => {
-      const openDrawer = () => setDrawerOpen(true);
+      const openDrawer = () => {
+         setOpenedByAdd(false);
+         setDrawerOpen(true);
+      };
       window.addEventListener('cart:open', openDrawer);
       return () => window.removeEventListener('cart:open', openDrawer);
    }, []);
 
    const handleAdd = (product) => {
-      // El catálogo no tiene ficha de producto separada (tarjeta -> carrito
-      // directo): select_item/view_item se sintetizan acá mismo, justo
-      // antes de add_to_cart (decisión confirmada, sin interacción visual
-      // propia para esos dos pasos).
+      // Solo add_to_cart en este clic (plan de eventos GA4, fase 1). Antes se
+      // sintetizaban también select_item y view_item, pero el catálogo no
+      // tiene listado con selección ni ficha de producto: la tarjeta va
+      // directo al carrito, así que esos dos pasos no existen como
+      // interacción real y solo ensuciaban el embudo. view_cart tampoco: el
+      // drawer se abre solo aquí (openedByAdd), ver CheckoutPanel.
       const item = mapCartItemToGA4(product, 1);
-      pushToDataLayer('select_item', { item_list_id: 'tienda', item_list_name: 'Tienda', items: [item] });
-      pushToDataLayer('view_item', { currency: product.moneda, value: item.price, items: [item] });
       pushToDataLayer('add_to_cart', { currency: product.moneda, value: item.price, items: [item] });
       addToCart(product);
+      setOpenedByAdd(true);
       setDrawerOpen(true);
    };
 
@@ -487,7 +548,7 @@ const ShopContent = () => {
             </div>
          )}
 
-         <CheckoutPanel open={drawerOpen} onClose={() => setDrawerOpen(false)} pais={pais} />
+         <CheckoutPanel open={drawerOpen} openedByAdd={openedByAdd} onClose={() => setDrawerOpen(false)} pais={pais} />
       </div>
    );
 };

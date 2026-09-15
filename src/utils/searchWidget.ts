@@ -7,6 +7,7 @@
 // armado de resultados en dos archivos .astro.
 import { SEARCH_INDEX, type SearchEntry } from '@constants/searchIndex';
 import { searchSite } from '@utils/search';
+import { pushToDataLayer } from '@utils/dataLayer.js';
 
 export interface SearchWidgetIds {
    root: string;
@@ -87,11 +88,42 @@ export function initSearchWidget(ids: SearchWidgetIds) {
    // de un texto instructivo tipo "escribe una palabra clave". El usuario
    // decide desde ahí si tipear o clickear directo algo que le llame la
    // atención. Con query, el matching difuso de @utils/search.ts filtra.
+   // view_search_results: este buscador es un overlay que filtra en memoria y
+   // NUNCA cambia la URL, así que la medición mejorada de GA4 no lo detecta
+   // (busca un ?q= que no existe) y hay que emitirlo a mano.
+   //
+   // El retardo es lo que hace que se mande UN evento con el término
+   // completo en vez de uno por tecla. La comparación con lastTrackedTerm
+   // cubre el caso de escribir algo, corregirlo y volver al mismo texto sin
+   // haber vaciado el campo. Vaciar el campo SÍ reinicia el término: ahí la
+   // búsqueda anterior se dio por terminada, y volver a escribirla cuenta
+   // como una búsqueda nueva, que es lo que de hecho hizo el usuario.
+   //
+   // El término va en minúsculas para que "Movapp" y "movapp" no se
+   // reporten como dos búsquedas distintas.
+   let searchTrackTimer: ReturnType<typeof setTimeout> | undefined;
+   let lastTrackedTerm = '';
+
+   function trackSearch(query: string, resultCount: number) {
+      clearTimeout(searchTrackTimer);
+      if (!query) {
+         lastTrackedTerm = '';
+         return;
+      }
+      searchTrackTimer = setTimeout(() => {
+         const term = query.toLowerCase();
+         if (term === lastTrackedTerm) return;
+         lastTrackedTerm = term;
+         pushToDataLayer('view_search_results', { search_term: term, search_results: resultCount });
+      }, 500);
+   }
+
    function runSearch() {
       const query = input!.value.trim();
       const matches = query ? searchSite(query, SEARCH_INDEX, 6) : SEARCH_INDEX;
       emptyState!.classList.toggle('hidden', matches.length > 0);
       renderResults(matches);
+      trackSearch(query, query ? matches.length : 0);
    }
 
    function isOpen() {

@@ -17,37 +17,47 @@
 interface Props {
    url: string;
    title: string;
+   // Slug del artículo -- va como "item_id" del evento "share" de GA4, para
+   // poder ver qué notas se comparten más.
+   slug: string;
 }
-const { url, title } = Astro.props;
+const { url, title, slug } = Astro.props;
 
 const encodedUrl = encodeURIComponent(url);
 const encodedTitle = encodeURIComponent(title);
 
+// "method" es el parámetro estándar del evento "share" de GA4 -- valor corto
+// y estable, no la etiqueta visible (que puede cambiar de texto sin que eso
+// deba romper los informes históricos).
 const platforms = [
    {
       label: 'Facebook',
+      method: 'facebook',
       href: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
       icon: '/img/logo-facebook.webp',
    },
    {
       label: 'LinkedIn',
+      method: 'linkedin',
       href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`,
       icon: '/img/Icono_Linkedin.webp',
    },
    {
       label: 'WhatsApp',
+      method: 'whatsapp',
       href: `https://api.whatsapp.com/send?text=${encodedTitle}%20${encodedUrl}`,
       icon: '/img/Icono_%20Whatsapp.webp',
    },
    {
       label: 'X (Twitter)',
+      method: 'x',
       href: `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`,
       icon: '/img/Icono_X.webp',
    },
 ];
 ---
 
-<div class="mt-10" data-share-block data-url={url} data-title={title}>
+<div class="mt-10" data-share-block data-url={url} data-title={title} data-item-id={slug}>
    <p class="text-center text-sm font-bold uppercase tracking-wide text-gray-500 dark:text-white/60">¡Comparte esta nota!</p>
 
    <div class="mt-4 flex justify-center gap-3">
@@ -69,6 +79,10 @@ const platforms = [
                target="_blank"
                rel="noopener noreferrer"
                aria-label={`Compartir en ${p.label}`}
+               data-ga-event="share"
+               data-share-method={p.method}
+               data-content-type="blog_article"
+               data-item-id={slug}
                class="flex h-10 w-10 items-center justify-center transition hover:-translate-y-0.5"
             >
                <img src={p.icon} alt={p.label} width="40" height="40" class="h-10 w-10 rounded-full object-cover" />
@@ -79,15 +93,28 @@ const platforms = [
 </div>
 
 <script>
+   import { pushToDataLayer } from '@utils/dataLayer.js';
+
    document.querySelectorAll<HTMLElement>('[data-share-block]').forEach((block) => {
       const button = block.querySelector<HTMLButtonElement>('[data-share-native]');
       const url = block.dataset.url ?? '';
       const title = block.dataset.title ?? '';
+      const itemId = block.dataset.itemId ?? '';
+
+      // Los 4 enlaces de red emiten "share" solos, vía el listener delegado
+      // de Layout.astro (data-ga-event + data-share-method). Este botón no
+      // puede: su método depende de lo que soporte el navegador en ese
+      // momento, así que se emite acá con el valor REAL y solo cuando la
+      // acción termina bien -- si el usuario cancela el panel del sistema,
+      // no hubo share y no se cuenta.
+      const trackShare = (method: string) =>
+         pushToDataLayer('share', { method, content_type: 'blog_article', item_id: itemId });
 
       button?.addEventListener('click', async () => {
          if (navigator.share) {
             try {
                await navigator.share({ title, url });
+               trackShare('nativo');
             } catch {
                // Usuario canceló el share sheet -- no hacer nada.
             }
@@ -96,6 +123,7 @@ const platforms = [
 
          try {
             await navigator.clipboard.writeText(url);
+            trackShare('copiar_enlace');
          } catch {
             // Clipboard no disponible -- sin fallback visual, el enlace
             // sigue accesible desde la barra de direcciones.

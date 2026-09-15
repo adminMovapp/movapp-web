@@ -4,11 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository layout
 
-The actual Astro project lives in `movapp-web/`, not the repo root. Run all commands from that directory.
+The Astro project lives at the repo root (`package.json`, `astro.config.mjs`, `src/` are top-level). Run all commands from the repo root.
 
 ## Commands
 
-All run from `movapp-web/`:
+All run from the repo root:
 
 ```
 npm run dev          # astro dev, port 7001 (see astro.config.mjs)
@@ -84,13 +84,17 @@ Two hard rules from the guide: the JSON-LD must exist in the initial SSR HTML (v
 
 ### Analytics/tracking
 
-Purchases and checkout steps are tracked through both a client-side Meta Pixel (`MetaPixelScript.astro`, `public/js/metaPixel.js`) and a server-side Meta Conversions API call (`netlify/functions/meta-conversion.js`), fired together via `window.metaPixel.track(...)` (see `src/hooks/useMetaPixel.jsx`). The Netlify function hashes all PII (email, phone, name, zip, city, state, country) with SHA-256 before sending to Meta's Graph API — never pass raw PII through unhashed when touching this function. GA/GTM are wired in separately via `GoogleAnalytics.astro`/`GoogleTagManager.astro`.
+Purchases and checkout steps are tracked through both a client-side Meta Pixel (`MetaPixelScript.astro`, `public/js/metaPixel.js`) and a server-side Meta Conversions API call (`netlify/functions/meta-conversion.js`), fired together via `window.metaPixel.track(...)` (see `src/hooks/useMetaPixel.jsx`). The Netlify function hashes all PII (email, phone, name, zip, city, state, country) with SHA-256 before sending to Meta's Graph API — never pass raw PII through unhashed when touching this function. GA4 is wired in via `GoogleAnalytics.astro` (canonical gtag snippet; it also assigns `window.gtag` explicitly because Astro wraps `define:vars` inline scripts in an IIFE). There is **no Google Tag Manager container**: the site used to load `gtm.js?id=GT-…` next to `gtag/js`, which duplicated the same Google tag and let the two instances clobber each other, so it was removed. Every GA4 event from code goes through `pushToDataLayer(event, params)` in `src/utils/dataLayer.js`, which calls `window.gtag('event', …)` — never push plain `{event: …}` objects to `dataLayer`, gtag.js ignores them without GTM. Navigation CTAs are tracked by a single delegated click listener in `Layout.astro`, following the consultant's "Plan de eventos GA4" (Sept 2026): any link to WhatsApp emits `whatsapp_click` (`button_id`, `button_text`, `placement`, `destination_url` without query string, `page_location`); other elements with `data-cta` or `data-destination-type` emit `cta_click` (`cta_name`, `placement`, `destination_type`, `destination_url`, `page_location`); `data-ga-event` overrides the name (app carousel cards emit `app_select` with `app_id`/`app_name`/`app_type`/`list_name`), and `AppHero.astro` emits `app_detail_view` on each app page load. `placement` is a closed catalog (`header|hero|footer|sticky|contenido`) from `data-placement`, else `hero` when `data-section-name="hero"`, else `contenido`. Adding a tracked CTA means adding those attributes, not a script. Never put PII in event params.
+
+Order matters inside that listener: `data-ga-event` is checked **before** the WhatsApp branch. The blog's share block (`BlogArticleShare.astro`) links to `api.whatsapp.com`, so without that precedence a share would be counted as `whatsapp_click` and inflate the main conversion. Its four network links emit `share` through the listener; the native-share button emits its own `share` from the component script, because its `method` (`nativo` vs `copiar_enlace`) is only known at runtime and it must not fire when the user cancels. `app_name` always comes from `APP_NAME_BY_SLUG` in `src/constants/tracking.ts` (display name) with the slug as `app_id`, so the same app never splits into two rows across `app_detail_view`, `app_select`, `whatsapp_click` and `cta_click`. `view_search_results` is emitted by hand from `src/utils/searchWidget.ts` (debounced, deduped): the site search is an overlay that never changes the URL, so GA4's enhanced measurement can never detect it. Both the helper and the listener are no-ops when GA4 is not mounted (`?minimal=1` or no `PUBLIC_GA4_ID`).
 
 ### Environment variables
 
-Required at runtime/build time (see `movapp-web/.env`, gitignored): `PUBLIC_API_LINK`, `PUBLIC_IPAPI_LINK`, `PUBLIC_STRIPE_PUBLISHABLE_KEY`, `PUBLIC_KEY_MP`, `PUBLIC_META_PIXEL_ID`, `PUBLIC_GA`, `PUBLIC_GTM_ID`, `PUBLIC_SITE_ENV`, `PUBLIC_SHOW_HEADER_LAYER`, `PUBLIC_SHOW_HEADER_URL`, `PUBLIC_SHOW_PRELOADER`. Netlify function-only (server secrets, not `PUBLIC_`-prefixed so never exposed to the client): `META_ACCESS_TOKEN`, `META_PIXEL_ID`, `META_TEST_EVENT_CODE`.
+Required at runtime/build time (see `.env`, gitignored): `PUBLIC_API_LINK`, `PUBLIC_IPAPI_LINK`, `PUBLIC_STRIPE_PUBLISHABLE_KEY`, `PUBLIC_KEY_MP`, `PUBLIC_META_PIXEL_ID`, `PUBLIC_GA4_ID`, `PUBLIC_SITE_ENV`, `PUBLIC_SHOW_HEADER_LAYER`, `PUBLIC_SHOW_HEADER_URL`, `PUBLIC_SHOW_PRELOADER`. Netlify function-only (server secrets, not `PUBLIC_`-prefixed so never exposed to the client): `META_ACCESS_TOKEN`, `META_PIXEL_ID`, `META_TEST_EVENT_CODE`.
 
 Meta Pixel vars (`PUBLIC_META_PIXEL_ID`, `META_PIXEL_ID`, `META_ACCESS_TOKEN`) are set **only in the Netlify production context** and left empty everywhere else — stage, branch deploys and local builds intentionally ship without the pixel so test traffic never reaches Meta. `Layout.astro` mounts `MetaPixelScript` only when `PUBLIC_META_PIXEL_ID` is truthy, and `metaPixel.js` no-ops `trackEvent`/`trackPageView` until the pixel is initialized. `PUBLIC_META_PIXEL_ID` is inlined at build time, so changing it in Netlify requires a redeploy; the two server vars are read at runtime by the function. The access token is generated in Events Manager → pixel → Settings → Conversions API → "Generate access token".
+
+`PUBLIC_GA4_ID` is also inlined at build time and must be **scoped per Netlify deploy context**: the staging property ID (`G-75VDY1T621`, "Movapp - Staging / QA") in `stage`/`branch-deploy`/`deploy-preview`, the production property ID only in `production`. `stage.movapp.org` and `movapp.org` share the `movapp.org` cookie domain, so a single ID in both would mix their data. `Layout.astro` mounts `GoogleAnalytics` only when the var is truthy.
 
 ### Netlify
 

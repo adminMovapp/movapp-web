@@ -94,10 +94,12 @@ const statusClass = statusColor === 'green' ? 'text-green-500' : 'text-red-500';
                         <a
                            href={`/aplicaciones-prestamo/${app.slug}`}
                            class="app-select-link mt-3 inline-block text-sm font-semibold text-text_banner underline-offset-4 hover:underline"
-                           data-app-name={app.slug}
+                           data-app-id={app.slug}
+                           data-app-name={app.name}
                            data-app-type={APP_TYPE_BY_SLUG[app.slug]}
                            data-source-section={id}
                            data-destination-type="internal_page"
+                           data-ga-event="app_select"
                         >
                            Ver información
                         </a>
