@@ -188,7 +188,7 @@ const CheckoutPanel = ({ open, openedByAdd, onOpenedByAddConsumed, onClose, pais
             value: total,
             items: cart.map((item) => mapCartItemToGA4(item)),
          });
-         trackInitiateCheckout(total, moneda, cart.map((c) => c.nombre), {
+         trackInitiateCheckout(total, moneda, cart.map((c) => String(c.producto_id)), {
             quantity: count,
             country: pais?.codigo_pais,
             paymentMethod: 'stripe',
@@ -264,7 +264,7 @@ const CheckoutPanel = ({ open, openedByAdd, onOpenedByAddConsumed, onClose, pais
             JSON.stringify({
                value: total,
                currency: moneda,
-               contentIds: cart.map((c) => c.nombre),
+               contentIds: cart.map((c) => String(c.producto_id)),
                email: form.email,
                phone: form.telefono,
                name: `${form.nombre} ${form.apellidos}`,
@@ -491,6 +491,7 @@ const CheckoutPanel = ({ open, openedByAdd, onOpenedByAddConsumed, onClose, pais
 const ShopContent = () => {
    const { loading, prices, pais } = useConfig();
    const { addToCart } = useCart();
+   const { trackAddToCart, trackViewContent } = useMetaPixel();
    const [drawerOpen, setDrawerOpen] = useState(false);
    // true cuando el drawer se abrió solo tras "Agregar al carrito" (ver
    // view_cart en CheckoutPanel); false cuando lo abrió el usuario.
@@ -515,7 +516,12 @@ const ShopContent = () => {
       products.forEach((p) => {
          const item = mapCartItemToGA4(p, 1);
          pushToDataLayer('view_item', { currency: p.moneda, value: item.price, items: [item] });
+         trackViewContent(item.price, p.moneda, [String(p.producto_id)], {
+            productName: p.nombre,
+            country: pais?.codigo_pais,
+         });
       });
+      // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [products]);
 
    // El ícono del header abre el drawer vía evento global
@@ -537,6 +543,11 @@ const ShopContent = () => {
       // drawer se abre solo aquí (openedByAdd), ver CheckoutPanel.
       const item = mapCartItemToGA4(product, 1);
       pushToDataLayer('add_to_cart', { currency: product.moneda, value: item.price, items: [item] });
+      trackAddToCart(item.price, product.moneda, [String(product.producto_id)], {
+         productName: product.nombre,
+         country: pais?.codigo_pais,
+         quantity: 1,
+      });
       addToCart(product);
       setOpenedByAdd(true);
       setDrawerOpen(true);

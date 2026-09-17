@@ -175,7 +175,7 @@ export async function handler(event, context) {
          access_token: process.env.META_ACCESS_TOKEN,
       };
 
-      if (process.env.NODE_ENV !== 'production' && process.env.META_TEST_EVENT_CODE) {
+      if (process.env.META_TEST_EVENT_CODE) {
          metaPayload.test_event_code = process.env.META_TEST_EVENT_CODE;
          console.log('🧪 Using test event code:', process.env.META_TEST_EVENT_CODE);
       }

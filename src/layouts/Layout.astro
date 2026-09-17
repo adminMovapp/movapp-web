@@ -767,45 +767,47 @@ const schemaJson = JSON.stringify(Array.isArray(pageSchema) ? pageSchema : [page
                   else if (locale.includes('ar')) userCountry = 'AR';
                }
 
-               await window.metaPixelUtils?.trackEvent?.(
-                  'Lead',
-                  {
-                     content_name: 'WhatsApp Contact Button',
-                     content_category: 'lead_generation',
-                     content_type: 'contact_cta',
+               // campaign_* solo si la URL realmente trae el UTM -- un
+               // fallback fijo (antes 'organic'/'website'/'whatsapp_contact')
+               // ensucia el análisis con una fuente inventada (QA de
+               // tracking Meta, sept. 2026).
+               var utmParams = new URLSearchParams(window.location.search);
+               var utmSource = utmParams.get('utm_source');
+               var utmMedium = utmParams.get('utm_medium');
+               var utmCampaign = utmParams.get('utm_campaign');
 
-                     lead_type: 'whatsapp_contact',
-                     lead_source: 'website_button',
-                     lead_quality: 'high_intent', // Usuario activamente buscó contacto
+               var leadCustomData = {
+                  content_name: 'WhatsApp Contact Button',
+                  content_category: 'lead_generation',
+                  content_type: 'contact_cta',
 
-                     page_url: window.location.href,
-                     page_title: document.title,
-                     referrer_url: referrer,
+                  lead_type: 'whatsapp_contact',
+                  lead_source: 'website_button',
+                  lead_quality: 'high_intent', // Usuario activamente buscó contacto
 
-                     device_type: isMobile ? 'mobile' : 'desktop',
-                     user_agent: userAgent,
-                     timestamp: timestamp,
+                  page_url: window.location.href,
+                  page_title: document.title,
+                  referrer_url: referrer,
 
-                     value: 50, // Valor estimado de un lead de WhatsApp
-                     currency: 'MXN',
+                  device_type: isMobile ? 'mobile' : 'desktop',
+                  timestamp: timestamp,
 
-                     country: userCountry,
+                  value: 50, // Valor estimado de un lead de WhatsApp
+                  currency: 'MXN',
 
-                     campaign_source: new URLSearchParams(window.location.search).get('utm_source') || 'organic',
-                     campaign_medium: new URLSearchParams(window.location.search).get('utm_medium') || 'website',
-                     campaign_name: new URLSearchParams(window.location.search).get('utm_campaign') || 'whatsapp_contact',
+                  country: userCountry,
 
-                     session_id: sessionStorage.getItem('session_id') || `session-${timestamp}`,
-                     page_load_time: performance.now(),
+                  whatsapp_message_preview: mensaje.substring(0, 50),
+                  contact_method: 'whatsapp',
+                  contact_intent: 'product_inquiry',
+               };
+               if (utmSource) leadCustomData.campaign_source = utmSource;
+               if (utmMedium) leadCustomData.campaign_medium = utmMedium;
+               if (utmCampaign) leadCustomData.campaign_name = utmCampaign;
 
-                     whatsapp_message_preview: mensaje.substring(0, 50),
-                     contact_method: 'whatsapp',
-                     contact_intent: 'product_inquiry',
-                  },
-                  {
-                     country: [userCountry],
-                  },
-               );
+               await window.metaPixelUtils?.trackEvent?.('Lead', leadCustomData, {
+                  country: [userCountry],
+               });
 
                try {
                   var leadData = {

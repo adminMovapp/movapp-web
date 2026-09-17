@@ -24,7 +24,7 @@ export function buildPurchasePayload(value, currency, contentIds, additionalData
       currency: currency,
       content_ids: ids,
       content_type: 'product',
-      num_items: ids.length,
+      num_items: additionalData.quantity || ids.length,
 
       // Información del producto
       content_name: additionalData.productName || ids[0] || 'El Hack',
@@ -45,7 +45,7 @@ export function buildPurchasePayload(value, currency, contentIds, additionalData
       // Custom parameters para segmentación
       customer_type: additionalData.customerType || 'new_customer',
       product_quantity: additionalData.quantity || 1,
-      unit_price: additionalData.unitPrice || numericValue,
+      unit_price: additionalData.unitPrice || numericValue / (additionalData.quantity || 1),
    };
 
    const userData = {

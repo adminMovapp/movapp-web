@@ -26,7 +26,7 @@ export function useMetaPixel() {
                currency: currency,
                content_ids: contentIds,
                content_type: 'product',
-               num_items: contentIds.length,
+               num_items: additionalData.quantity || contentIds.length,
 
                // Información del producto
                content_name: additionalData.productName || contentIds[0] || 'El Hack',
@@ -42,7 +42,7 @@ export function useMetaPixel() {
 
                // Custom parameters
                product_quantity: additionalData.quantity || 1,
-               unit_price: additionalData.unitPrice || parseFloat(value),
+               unit_price: additionalData.unitPrice || parseFloat(value) / (additionalData.quantity || 1),
                funnel_step: 'checkout_initiated',
             },
             {

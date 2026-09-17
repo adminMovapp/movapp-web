@@ -153,13 +153,28 @@ const fieldClass =
          // "éxito" actual (mock). Cuando exista un fetch real, este push debe
          // moverse al callback de éxito de esa respuesta (doc maestro hoja
          // 04: generate_lead solo tras éxito confirmado del backend --
-         // QA-031 queda bloqueado hasta entonces).
+         // QA-031 queda bloqueado hasta entonces). El Lead de Meta de abajo
+         // tiene la misma condición: mover junto con generate_lead.
          pushToDataLayer('generate_lead', {
             form_id: FORM_ID,
             form_name: FORM_NAME,
             lead_type: 'contacto_general',
             page_location: location.href,
          });
+         const fd = new FormData(form);
+         const correo = String(fd.get('correo') || '');
+         const nombre = String(fd.get('nombre') || '');
+         const apellido = String(fd.get('apellido') || '');
+         window.metaPixel?.track(
+            'Lead',
+            { content_name: FORM_NAME, content_category: 'lead_generation', lead_type: 'contacto_general' },
+            {
+               em: correo ? [correo] : undefined,
+               fn: nombre ? [nombre] : undefined,
+               ln: apellido ? [apellido] : undefined,
+               country: ['mx'],
+            },
+         );
          form.reset();
       });
    };
