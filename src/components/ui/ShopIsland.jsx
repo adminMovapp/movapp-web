@@ -71,7 +71,7 @@ const validations = {
 
 const emptyForm = { nombre: '', apellidos: '', email: '', telefono: '', codigoPostal: '' };
 
-const CheckoutPanel = ({ open, openedByAdd, onClose, pais }) => {
+const CheckoutPanel = ({ open, openedByAdd, onOpenedByAddConsumed, onClose, pais }) => {
    const { cart, count, total, addToCart, decreaseQuantity, removeFromCart } = useCart();
    const { trackInitiateCheckout } = useMetaPixel();
 
@@ -145,6 +145,11 @@ const CheckoutPanel = ({ open, openedByAdd, onClose, pais }) => {
       if (open && !isClosing && step === 'cart' && cart.length > 0) {
          if (openedByAdd && !autoOpenViewSkippedRef.current) {
             autoOpenViewSkippedRef.current = true;
+            // Se consume de inmediato en el padre (ShopContent) -- así
+            // "opened by add" nunca queda pegado en true más allá de ESTA
+            // apertura puntual (QA de tracking, sept. 2026: la primera
+            // apertura real del carrito de la sesión no debe perderse).
+            onOpenedByAddConsumed?.();
             return;
          }
          pushToDataLayer('view_cart', {
@@ -502,6 +507,15 @@ const ShopContent = () => {
          item_list_name: 'Tienda',
          items: products.map((p) => mapCartItemToGA4(p, 1)),
       });
+      // view_item: /tienda no tiene ficha de producto separada, así que la
+      // página misma hace de "vista de producto" para El Hack (decisión de
+      // negocio, QA de tracking sept. 2026) -- es el evento del que dependen
+      // las audiencias de remarketing de Google Ads y el ViewContent de
+      // Meta. select_item sigue retirado: no aporta con un solo producto.
+      products.forEach((p) => {
+         const item = mapCartItemToGA4(p, 1);
+         pushToDataLayer('view_item', { currency: p.moneda, value: item.price, items: [item] });
+      });
    }, [products]);
 
    // El ícono del header abre el drawer vía evento global
@@ -548,7 +562,13 @@ const ShopContent = () => {
             </div>
          )}
 
-         <CheckoutPanel open={drawerOpen} openedByAdd={openedByAdd} onClose={() => setDrawerOpen(false)} pais={pais} />
+         <CheckoutPanel
+            open={drawerOpen}
+            openedByAdd={openedByAdd}
+            onOpenedByAddConsumed={() => setOpenedByAdd(false)}
+            onClose={() => setDrawerOpen(false)}
+            pais={pais}
+         />
       </div>
    );
 };

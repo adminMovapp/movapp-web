@@ -51,9 +51,17 @@ interface Props {
    // Verde para apps reguladas ("Verificada"), rojo para reportadas
    // ("Reportes verificados") -- mismo criterio que ya usaban los grids.
    statusColor: 'green' | 'red';
+   // Nombre del listado para GA4 (list_name de app_select) -- default: el
+   // propio `id`. En el hub (Directorio*.astro) eso ya es el valor correcto
+   // ("directorio-reportadas"/"directorio-reguladas"); las 8 secciones
+   // "Otras apps" de cada ficha lo sobreescriben con un valor FIJO
+   // ("apps-relacionadas") para que las 8 se agrupen como un solo bloque en
+   // los informes, en vez de partirse una fila por cada slug de app (QA de
+   // tracking, sept. 2026).
+   listName?: string;
 }
 
-const { id, sectionId, heading, description, apps, statusColor } = Astro.props;
+const { id, sectionId, heading, description, apps, statusColor, listName = id } = Astro.props;
 const statusClass = statusColor === 'green' ? 'text-green-500' : 'text-red-500';
 ---
 
@@ -80,7 +88,7 @@ const statusClass = statusColor === 'green' ? 'text-green-500' : 'text-red-500';
 
       <ul class="otras-apps-track flex flex-1 snap-x snap-mandatory overflow-x-auto scroll-smooth">
          {
-            apps.map((app) => (
+            apps.map((app, i) => (
                <li class="w-full flex-shrink-0 snap-center px-1">
                   <div class="mx-auto grid max-w-sm grid-cols-1 items-center gap-4 rounded-2xl border border-purple_mv/25 bg-gradient-to-b from-purple_mv/[0.06] to-transparent p-5 shadow-card transition-colors duration-300 hover:border-purple_mv/50 hover:shadow-card-hover dark:border-white/10 dark:from-purple_mv/[0.1] dark:to-black/30 md:max-w-md md:grid-cols-2 md:gap-5">
                      {DIRECTORIO_ICONS[app.slug] && (
@@ -97,7 +105,8 @@ const statusClass = statusColor === 'green' ? 'text-green-500' : 'text-red-500';
                            data-app-id={app.slug}
                            data-app-name={app.name}
                            data-app-type={APP_TYPE_BY_SLUG[app.slug]}
-                           data-source-section={id}
+                           data-source-section={listName}
+                           data-position={i + 1}
                            data-destination-type="internal_page"
                            data-ga-event="app_select"
                         >

@@ -50,6 +50,9 @@ const { id, title, articles } = Astro.props;
                   data-section-name="articulos"
                   data-destination-type="internal_page"
                   data-article-slug={a.slug}
+                  data-ga-event="select_content"
+                  data-content-type="blog_article"
+                  data-item-id={a.slug}
                   class="mt-2 inline-block text-sm font-medium text-gray-900 dark:text-white underline"
                >
                   Ver noticia

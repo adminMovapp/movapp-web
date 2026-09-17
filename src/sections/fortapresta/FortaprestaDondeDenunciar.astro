@@ -46,6 +46,7 @@ const REPORT_CHANNELS = [
                <a
                   id={`cta-fortapresta-${channel.slug}`}
                   href={channel.href}
+                  data-cta={`fortapresta_${channel.slug.replace(/-/g, '_')}`}
                   data-external-warn
                   data-external-label={channel.title}
                   data-page-type="aplicaciones_prestamo_detalle"

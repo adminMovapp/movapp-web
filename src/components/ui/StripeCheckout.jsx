@@ -8,10 +8,26 @@ import { ERROR_TYPES, CHECKOUT_STEPS } from '@constants/tracking.ts';
 
 // Stripe no expone un "error_type" normalizado propio -- se mapea su
 // error.type al catálogo controlado de negocio (hoja 05/08) para no
-// registrar valores libres/alta cardinalidad en GA4.
+// registrar valores libres/alta cardinalidad en GA4. Dentro de "card_error"
+// Stripe mezcla rechazos reales del banco (card_declined,
+// insufficient_funds...) con errores de captura de datos (número/CVC/fecha
+// mal tecleados) -- sin este código, ambos casos salían como
+// payment_declined, mostrando un banco rechazando tarjetas que en realidad
+// el usuario tecleó mal (QA de tracking, sept. 2026).
+const CAPTURE_ERROR_CODES = [
+   'incorrect_number',
+   'invalid_number',
+   'incorrect_cvc',
+   'invalid_cvc',
+   'invalid_expiry_month',
+   'invalid_expiry_year',
+   'expired_card',
+];
+
 const mapStripeErrorType = (error) => {
-   if (error?.type === 'card_error') return ERROR_TYPES.paymentDeclined;
    if (error?.type === 'validation_error') return ERROR_TYPES.validationError;
+   if (error?.type === 'card_error' && CAPTURE_ERROR_CODES.includes(error.code)) return ERROR_TYPES.validationError;
+   if (error?.type === 'card_error') return ERROR_TYPES.paymentDeclined;
    return ERROR_TYPES.backendError;
 };
 

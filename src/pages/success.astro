@@ -96,7 +96,11 @@ import Layout from '@layouts/Layout.astro';
                   0,
                );
                pushToDataLayer('purchase', {
-                  transaction_id: orderId || pi,
+                  // pi (payment_intent de Stripe) nunca se reinicia; orderId es
+                  // un entero secuencial interno que sí (QA de tracking,
+                  // sept. 2026: usar el order_id arriesga que GA4 descarte
+                  // compras reales como duplicadas tras un reset de la BD).
+                  transaction_id: pi || orderId,
                   currency: purchasedCart[0]?.moneda,
                   value,
                   items: purchasedCart.map((it) => mapCartItemToGA4(it)),

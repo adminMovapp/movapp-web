@@ -922,20 +922,30 @@ const schemaJson = JSON.stringify(Array.isArray(pageSchema) ? pageSchema : [page
                   return;
                }
 
-               if (!ds.cta && !ds.destinationType && !ds.gaEvent) return;
+               // cta_click ya NO cae a el.id/"sin_nombre" (QA de tracking,
+               // sept. 2026: el 94% de los cta_click llegaban sin nombre
+               // identificable). Sin data-ga-event, el elemento necesita
+               // data-cta explícito para poder medirse -- ponerle el
+               // atributo es una decisión consciente de quien arma la
+               // plantilla, no algo que dependa de un id que puede cambiar
+               // por maquetación.
+               var eventName = ds.gaEvent;
+               if (!eventName) {
+                  if (!ds.cta) return;
+                  eventName = 'cta_click';
+               }
 
-               var eventName = ds.gaEvent || 'cta_click';
                var params = withApp({ placement: placementOf(el), page_location: location.href }, ds);
-               // cta_name solo tiene sentido en cta_click (o si el elemento
-               // trae data-cta explícito); app_select y similares no lo llevan.
-               if (eventName === 'cta_click' || ds.cta) params.cta_name = ds.cta || el.id || 'sin_nombre';
+               if (ds.cta) params.cta_name = ds.cta;
                if (ds.destinationType) params.destination_type = ds.destinationType;
                if (destinationUrl) params.destination_url = destinationUrl;
                if (ds.sourceSection) params.list_name = ds.sourceSection;
-               // Parámetros de "share" (bloque de compartir del blog). El
-               // botón nativo NO pasa por acá: su método depende de si el
-               // navegador soporta la Web Share API, así que lo emite el
-               // propio BlogArticleShare.astro.
+               if (ds.position) params.position = Number(ds.position);
+               // Parámetros de "share" (bloque de compartir del blog) y de
+               // "select_content" (navegación editorial del blog). El botón
+               // nativo de compartir NO pasa por acá: su método depende de
+               // si el navegador soporta la Web Share API, así que lo emite
+               // el propio BlogArticleShare.astro.
                if (ds.shareMethod) params.method = ds.shareMethod;
                if (ds.contentType) params.content_type = ds.contentType;
                if (ds.itemId) params.item_id = ds.itemId;

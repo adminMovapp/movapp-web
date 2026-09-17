@@ -107,28 +107,32 @@ const fieldClass =
       // inválidos (plan de eventos GA4, fase 1). La validación nativa
       // (required/type="email") bloquea el submit sin disparar "submit" --
       // lo único que dispara es "invalid", una vez por campo y de forma
-      // síncrona en el mismo tick, así que se juntan los nombres y se emite
-      // al vaciarse la pila. error_message lleva nombres de campo, nunca
-      // valores escritos por el usuario.
-      let invalidFields: string[] = [];
+      // síncrona en el mismo tick. En vez de acumular nombres a mano push
+      // por push (QA de tracking, sept. 2026: el error_message arrastraba
+      // campos de intentos anteriores), se lee el DOM directo con
+      // form.querySelectorAll(':invalid') al vaciarse la pila -- siempre
+      // refleja los campos inválidos DE ESE intento, sin memoria entre
+      // envíos. error_message lleva nombres de campo, nunca valores
+      // escritos por el usuario.
+      let errorPushedForAttempt = false;
       form.addEventListener(
          'invalid',
-         (e) => {
-            const field = e.target as HTMLInputElement | HTMLTextAreaElement | null;
-            const name = field?.name || field?.id || 'desconocido';
-            if (invalidFields.length === 0) {
-               queueMicrotask(() => {
-                  pushToDataLayer('form_error', {
-                     form_id: FORM_ID,
-                     form_name: FORM_NAME,
-                     error_type: ERROR_TYPES.validationError,
-                     error_message: invalidFields.join(','),
-                     page_location: location.href,
-                  });
-                  invalidFields = [];
+         () => {
+            if (errorPushedForAttempt) return;
+            errorPushedForAttempt = true;
+            queueMicrotask(() => {
+               const invalidFields = Array.from(form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>(':invalid')).map(
+                  (field) => field.name || field.id || 'desconocido',
+               );
+               pushToDataLayer('form_error', {
+                  form_id: FORM_ID,
+                  form_name: FORM_NAME,
+                  error_type: ERROR_TYPES.validationError,
+                  error_message: invalidFields.join(','),
+                  page_location: location.href,
                });
-            }
-            invalidFields.push(name);
+               errorPushedForAttempt = false;
+            });
          },
          true,
       );

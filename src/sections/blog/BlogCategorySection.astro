@@ -85,6 +85,9 @@ const resolvedArticles = isCarousel
                         data-section-name={id}
                         data-destination-type="internal_page"
                         data-article-slug={a.slug}
+                        data-ga-event="select_content"
+                        data-content-type="blog_article"
+                        data-item-id={a.slug}
                         class="mt-2 inline-block text-sm font-medium text-gray-900 dark:text-white underline"
                      >
                         {linkLabel}
@@ -158,6 +161,9 @@ const resolvedArticles = isCarousel
                               data-section-name={id}
                               data-destination-type="internal_page"
                               data-article-slug={a?.slug}
+                              data-ga-event="select_content"
+                              data-content-type="blog_article"
+                              data-item-id={a?.slug}
                            >
                               {linkLabel}
                            </a>
@@ -393,6 +399,7 @@ const resolvedArticles = isCarousel
             if (link) {
                link.href = `/blog/${item.slug}`;
                link.dataset.articleSlug = item.slug;
+               link.dataset.itemId = item.slug;
             }
          };
 
