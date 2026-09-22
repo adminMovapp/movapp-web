@@ -43,8 +43,11 @@ async function sendServerEvent(eventName, customData = {}, userData = {}, eventI
       const response = await fetch('/.netlify/functions/meta-conversion', {
          method: 'POST',
          headers: {
+            // Sin 'User-Agent': es un nombre de cabecera prohibido, el
+            // navegador lo descarta en silencio. El user-agent real llega
+            // igual en la petición y la función lo lee de ahí para
+            // client_user_agent.
             'Content-Type': 'application/json',
-            'User-Agent': navigator.userAgent,
          },
          body: JSON.stringify({
             event_name: eventName,

@@ -759,6 +759,8 @@ const schemaJson = JSON.stringify(Array.isArray(pageSchema) ? pageSchema : [page
                var timestamp = Date.now();
                var mensaje = btn.dataset.message || '';
 
+               var CURRENCY_BY_COUNTRY = { MX: 'MXN', CO: 'COP', AR: 'ARS' };
+
                var userCountry = 'MX'; // Default
                if (navigator.language) {
                   var locale = navigator.language.toLowerCase();
@@ -792,8 +794,12 @@ const schemaJson = JSON.stringify(Array.isArray(pageSchema) ? pageSchema : [page
                   device_type: isMobile ? 'mobile' : 'desktop',
                   timestamp: timestamp,
 
-                  value: 50, // Valor estimado de un lead de WhatsApp
-                  currency: 'MXN',
+                  // El valor es una convención de negocio, no una medición
+                  // (pendiente de confirmar con marketing si se queda). La
+                  // moneda sí sigue al país: antes iba 'MXN' fijo, así que un
+                  // clic desde Colombia o Argentina reportaba pesos mexicanos.
+                  value: 50,
+                  currency: CURRENCY_BY_COUNTRY[userCountry] || 'MXN',
 
                   country: userCountry,
 

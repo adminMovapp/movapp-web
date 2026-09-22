@@ -189,9 +189,12 @@ const CheckoutPanel = ({ open, openedByAdd, onOpenedByAddConsumed, onClose, pais
             items: cart.map((item) => mapCartItemToGA4(item)),
          });
          trackInitiateCheckout(total, moneda, cart.map((c) => String(c.producto_id)), {
+            // productName es obligatorio desde que content_ids pasó a llevar
+            // IDs: sin él, el hook cae en contentIds[0] y Meta recibe "1"
+            // como nombre del producto.
+            productName: cart[0]?.nombre,
             quantity: count,
             country: pais?.codigo_pais,
-            paymentMethod: 'stripe',
          });
       }
       setStep('form');
