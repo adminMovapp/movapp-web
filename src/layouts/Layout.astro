@@ -30,6 +30,12 @@ import GoogleAnalytics from '@components/layout/GoogleAnalytics.astro';
 
 import MetaPixelScript from '@components/layout/MetaPixelScript.astro';
 
+import { getServerCountry } from '@/utils/geo';
+
+// País del visitante resuelto en el servidor (geo de Netlify), no por
+// navigator.language -- ver src/utils/geo.js.
+const serverCountry = getServerCountry(Astro);
+
 const showHeaderLayer = import.meta.env.PUBLIC_SHOW_HEADER_LAYER === 'true';
 const showPreloader = import.meta.env.PUBLIC_SHOW_PRELOADER === 'true';
 // DIAGNÓSTICO TEMPORAL -- borrar junto con el resto del diagnóstico de
@@ -744,8 +750,17 @@ const schemaJson = JSON.stringify(Array.isArray(pageSchema) ? pageSchema : [page
          delegado en document cubre todos los botones (incluso los que se
          agreguen después) sin duplicarse.
       -->
-      <script is:inline>
+      <script is:inline define:vars={{ serverCountry }}>
          (function () {
+            // País resuelto en el servidor (geo de Netlify, ver
+            // src/utils/geo.js) -- antes se adivinaba con navigator.language,
+            // que no distingue es/es-ES/es-419 por país y hacía que "ar"
+            // (Argentina) matcheara también locales en árabe (ar, ar-EG). Es
+            // el mismo para toda la carga de página, así que se resuelve una
+            // sola vez acá y no en cada clic.
+            var userCountry = serverCountry;
+            var CURRENCY_BY_COUNTRY = { MX: 'MXN', CO: 'COP', AR: 'ARS' };
+
             document.addEventListener('click', async function (e) {
                var btn = e.target.closest('.wa__stt');
                if (!btn) return;
@@ -758,16 +773,6 @@ const schemaJson = JSON.stringify(Array.isArray(pageSchema) ? pageSchema : [page
                var referrer = document.referrer || 'direct';
                var timestamp = Date.now();
                var mensaje = btn.dataset.message || '';
-
-               var CURRENCY_BY_COUNTRY = { MX: 'MXN', CO: 'COP', AR: 'ARS' };
-
-               var userCountry = 'MX'; // Default
-               if (navigator.language) {
-                  var locale = navigator.language.toLowerCase();
-                  if (locale.includes('mx') || locale.includes('es-mx')) userCountry = 'MX';
-                  else if (locale.includes('co')) userCountry = 'CO';
-                  else if (locale.includes('ar')) userCountry = 'AR';
-               }
 
                // campaign_* solo si la URL realmente trae el UTM -- un
                // fallback fijo (antes 'organic'/'website'/'whatsapp_contact')

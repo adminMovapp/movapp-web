@@ -1,8 +1,11 @@
 ---
 import Layout from '@layouts/Layout.astro';
 import TiendaShop from '@sections/tienda/TiendaShop.astro';
+import { getServerCountry } from '@utils/geo';
+
+const serverCountry = getServerCountry(Astro);
 ---
 
 <Layout title="Tienda">
-   <TiendaShop />
+   <TiendaShop serverCountry={serverCountry} />
 </Layout>

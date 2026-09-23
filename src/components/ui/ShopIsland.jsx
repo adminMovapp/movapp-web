@@ -491,8 +491,8 @@ const CheckoutPanel = ({ open, openedByAdd, onOpenedByAddConsumed, onClose, pais
 // ============================================================
 // Contenido de la tienda (dentro del provider)
 // ============================================================
-const ShopContent = () => {
-   const { loading, prices, pais } = useConfig();
+const ShopContent = ({ serverCountry }) => {
+   const { loading, prices, pais } = useConfig(serverCountry);
    const { addToCart } = useCart();
    const { trackAddToCart, trackViewContent } = useMetaPixel();
    const [drawerOpen, setDrawerOpen] = useState(false);
@@ -590,9 +590,9 @@ const ShopContent = () => {
 // ============================================================
 // Isla principal — provee el carrito y la tienda
 // ============================================================
-const ShopIsland = () => (
+const ShopIsland = ({ serverCountry }) => (
    <CartProvider>
-      <ShopContent />
+      <ShopContent serverCountry={serverCountry} />
    </CartProvider>
 );
 
