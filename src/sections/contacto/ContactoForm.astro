@@ -75,10 +75,14 @@ const fieldClass =
          ¡Gracias! Recibimos tu mensaje y te contactaremos pronto.
       </p>
 
+      <p id="contactoFormError" role="alert" class="hidden text-center text-sm font-medium text-red-500">
+         No pudimos enviar tu mensaje. Intenta de nuevo en unos minutos.
+      </p>
+
       <button
          id="contacto-formulario-enviar"
          type="submit"
-         class="rounded-full bg-purple_mv px-6 py-4 text-base font-bold text-white transition hover:bg-purple_mv/85"
+         class="rounded-full bg-purple_mv px-6 py-4 text-base font-bold text-white transition hover:bg-purple_mv/85 disabled:cursor-not-allowed disabled:opacity-60"
       >
          Enviar
       </button>
@@ -89,17 +93,18 @@ const fieldClass =
    import { pushToDataLayer } from '@utils/dataLayer.js';
    import { ERROR_TYPES } from '@constants/tracking.ts';
 
-   // Sin backend todavía -- pendiente de confirmar el endpoint real que
-   // reciba este formulario. Por ahora valida en el navegador (required +
-   // type="email" nativos) y muestra un mensaje de confirmación local, sin
-   // enviar el POST a ningún lado; swap directo por un fetch() real en
-   // cuanto exista el endpoint (no inventar una llamada a una URL que no
-   // existe todavía).
+   // Envía a netlify/functions/contact-form.js vía /api/contact-form
+   // (redirect en netlify.toml). generate_lead y el Lead de Meta Pixel solo
+   // se disparan tras un 200 real del backend (doc maestro hoja 04, QA-031):
+   // antes de esto el "éxito" era un mock en el submit y contaba prospectos
+   // que nunca llegaban a nadie.
    const initContactoForm = (form: HTMLFormElement) => {
       if (form.getAttribute('data-ready') === 'true') return;
       form.setAttribute('data-ready', 'true');
 
       const status = document.getElementById('contactoFormStatus');
+      const errorStatus = document.getElementById('contactoFormError');
+      const submitButton = form.querySelector<HTMLButtonElement>('#contacto-formulario-enviar');
       const FORM_ID = 'contactanos';
       const FORM_NAME = 'formulario_contacto';
 
@@ -139,43 +144,69 @@ const fieldClass =
 
       form.addEventListener('submit', (e) => {
          e.preventDefault();
-         status?.classList.remove('hidden');
+         status?.classList.add('hidden');
+         errorStatus?.classList.add('hidden');
          // form_submit a mano: el automático de la medición mejorada de GA4
-         // no llega en este formulario (preventDefault + reset inmediato,
-         // comprobado en staging por el plan de eventos, fase 1).
+         // no llega en este formulario (preventDefault, comprobado en
+         // staging por el plan de eventos, fase 1).
          pushToDataLayer('form_submit', {
             form_id: FORM_ID,
             form_name: FORM_NAME,
             form_submit_text: 'Enviar',
             page_location: location.href,
          });
-         // TEMPORAL: no hay backend real todavía -- este es el punto de
-         // "éxito" actual (mock). Cuando exista un fetch real, este push debe
-         // moverse al callback de éxito de esa respuesta (doc maestro hoja
-         // 04: generate_lead solo tras éxito confirmado del backend --
-         // QA-031 queda bloqueado hasta entonces). El Lead de Meta de abajo
-         // tiene la misma condición: mover junto con generate_lead.
-         pushToDataLayer('generate_lead', {
-            form_id: FORM_ID,
-            form_name: FORM_NAME,
-            lead_type: 'contacto_general',
-            page_location: location.href,
-         });
+
          const fd = new FormData(form);
-         const correo = String(fd.get('correo') || '');
          const nombre = String(fd.get('nombre') || '');
          const apellido = String(fd.get('apellido') || '');
-         window.metaPixel?.track(
-            'Lead',
-            { content_name: FORM_NAME, content_category: 'lead_generation', lead_type: 'contacto_general' },
-            {
-               em: correo ? [correo] : undefined,
-               fn: nombre ? [nombre] : undefined,
-               ln: apellido ? [apellido] : undefined,
-               country: ['mx'],
-            },
-         );
-         form.reset();
+         const correo = String(fd.get('correo') || '');
+         const mensaje = String(fd.get('mensaje') || '');
+
+         if (submitButton) submitButton.disabled = true;
+
+         fetch('/api/contact-form', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nombre, apellido, correo, mensaje }),
+         })
+            .then(async (response) => {
+               if (!response.ok) throw new Error(`status ${response.status}`);
+
+               status?.classList.remove('hidden');
+               // generate_lead y el Lead de Meta Pixel solo se disparan tras
+               // este 200 real del backend (doc maestro hoja 04, QA-031): un
+               // envío simulado no debe contar como prospecto.
+               pushToDataLayer('generate_lead', {
+                  form_id: FORM_ID,
+                  form_name: FORM_NAME,
+                  lead_type: 'contacto_general',
+                  page_location: location.href,
+               });
+               window.metaPixel?.track(
+                  'Lead',
+                  { content_name: FORM_NAME, content_category: 'lead_generation', lead_type: 'contacto_general' },
+                  {
+                     em: correo ? [correo] : undefined,
+                     fn: nombre ? [nombre] : undefined,
+                     ln: apellido ? [apellido] : undefined,
+                     country: ['mx'],
+                  },
+               );
+               form.reset();
+            })
+            .catch(() => {
+               errorStatus?.classList.remove('hidden');
+               pushToDataLayer('form_error', {
+                  form_id: FORM_ID,
+                  form_name: FORM_NAME,
+                  error_type: ERROR_TYPES.backendError,
+                  error_message: 'contact_form_submit_failed',
+                  page_location: location.href,
+               });
+            })
+            .finally(() => {
+               if (submitButton) submitButton.disabled = false;
+            });
       });
    };
 

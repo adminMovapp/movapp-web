@@ -5,6 +5,7 @@
    "scripts": {
       "dev": "astro dev",
       "dev:staging": "astro dev",
+      "dev:functions": "netlify dev",
       "start": "astro dev",
       "build": "astro build",
       "preview": "astro preview",
@@ -23,6 +24,7 @@
       "@types/react-dom": "^19.1.6",
       "astro": "^5.10.1",
       "crypto-js": "^4.2.0",
+      "nodemailer": "^10.0.10",
       "react": "^19.1.0",
       "react-dom": "^19.1.0",
       "typescript": "^5.9.3"
@@ -30,6 +32,7 @@
    "devDependencies": {
       "@astrojs/tailwind": "^6.0.2",
       "autoprefixer": "^10.4.21",
+      "netlify-cli": "^27.8.1",
       "postcss": "^8.5.6",
       "prettier": "^3.6.2",
       "prettier-plugin-astro": "^0.14.1",

@@ -2,6 +2,10 @@
   command = "npm run build"
   publish = "dist"
 
+[dev]
+  command = "npm run dev -- --port 7003"
+  targetPort = 7003
+
 [build.environment]
   PUBLIC_SITE_ENV = "production"
 
