@@ -3,9 +3,10 @@ import nodemailer from 'nodemailer';
 /*
    Variables requeridas en Netlify (Environment variables), function-only, no
    PUBLIC_: SMTP_HOST, SMTP_PORT, SMTP_SECURE ('true'/'false'), SMTP_USER,
-   SMTP_PASS, MAIL_FROM, MAIL_TO.
+   SMTP_PASS, MAIL_TO. El remitente (from) usa SMTP_USER -- es la misma
+   cuenta, así que MAIL_FROM sobraba como variable separada.
 */
-const REQUIRED_ENV = ['SMTP_HOST', 'SMTP_PORT', 'SMTP_USER', 'SMTP_PASS', 'MAIL_FROM', 'MAIL_TO'];
+const REQUIRED_ENV = ['SMTP_HOST', 'SMTP_PORT', 'SMTP_USER', 'SMTP_PASS', 'MAIL_TO'];
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -128,7 +129,7 @@ export async function handler(event) {
                      >
                         <tr>
                            <td
-                              style="background:linear-gradient(135deg,#7c3aed,#5b21b6);padding:20px 24px;color:#f5f0fa;"
+                              style="background-color:#5b21b6;background:linear-gradient(135deg,#7c3aed,#5b21b6);padding:20px 24px;color:#f5f0fa;"
                            >
                               <h1
                                  style="margin:0;font-size:20px;line-height:1.4;font-weight:800;letter-spacing:0.03em;text-transform:uppercase;"
@@ -196,7 +197,7 @@ ${mensaje}
    `;
 
    const mailOptions = {
-      from: process.env.MAIL_FROM,
+      from: process.env.SMTP_USER,
       to: process.env.MAIL_TO,
       replyTo: correo,
       subject: mailSubject,
