@@ -148,10 +148,13 @@
   to = "/blog/que-es-movapp/"
   status = 301
 
-[[redirects]]
-  from = "/sacaste-prestamo-con-mastersol-y-ahora-te-molestan/"
-  to = "/blog/"
-  status = 301
+# /sacaste-prestamo-con-mastersol-y-ahora-te-molestan/ (61 clics / 6,474
+# impresiones GSC) SIN redirección a propósito: el mapa de migración
+# corregido (validación V-01 a V-13, sept. 2026) retiró el 301 a /blog/
+# genérico -- perdía la intención de búsqueda de "Mastersol" y no existe
+# ficha ni artículo equivalente en la arquitectura nueva. Queda pendiente
+# crear contenido propio sobre Mastersol antes de redirigir esta URL a algo
+# real (o decidir mantenerla activa en el sitio viejo mientras tanto).
 
 [[redirects]]
   from = "/que-pasa-si-no-le-pago-a-credmex/"
@@ -193,20 +196,26 @@
   to = "/blog/como-identificar-apps-montadeudas/"
   status = 301
 
-[[redirects]]
-  from = "/aplicaciones-usureras-gota-a-gota-digitales-o-llamadas-montadeudas/"
-  to = "/blog/como-identificar-apps-montadeudas/"
-  status = 301
+# /aplicaciones-usureras-gota-a-gota-digitales-o-llamadas-montadeudas/ SIN
+# redirección a propósito: el mapa corregido la bajó de 301 a "revisar
+# manualmente" -- solo tenía similitud Media con /blog/como-identificar-apps-
+# montadeudas/, y forzar una redirección de baja confianza contradice el
+# propio criterio del mapa. 0 clics / 31 impresiones, así que el costo de
+# dejarla pendiente es bajo.
 
 [[redirects]]
   from = "/prestamos-abusivos-montadeudas-chile/"
   to = "/blog/"
   status = 301
 
-[[redirects]]
-  from = "/lecredi-es-confiable/"
-  to = "/blog/"
-  status = 301
+# /lecredi-es-confiable/ (205 clics / 14,505 impresiones GSC -- la MAYOR
+# cantidad de impresiones de todo el inventario migrado) SIN redirección a
+# propósito, mismo motivo que Mastersol arriba: el mapa corregido retiró el
+# 301 a /blog/ genérico por perder la intención de búsqueda de "Lecredi", y
+# no hay ficha ni artículo equivalente todavía. Esta es la pérdida potencial
+# más grave de toda la migración según el análisis SEO -- crear el contenido
+# de Lecredi antes de Go Live, o decidir mantener la URL vieja activa en
+# paralelo mientras tanto, es prioridad Crítica.
 
 [[redirects]]
   from = "/peru-y-apps-maliciosas/"
