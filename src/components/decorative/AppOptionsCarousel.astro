@@ -92,7 +92,7 @@ const statusClass = statusColor === 'green' ? 'text-green-500' : 'text-red-500';
                <li class="w-full flex-shrink-0 snap-center px-1">
                   <div class="mx-auto grid max-w-sm grid-cols-1 items-center gap-4 rounded-2xl border border-purple_mv/25 bg-gradient-to-b from-purple_mv/[0.06] to-transparent p-5 shadow-card transition-colors duration-300 hover:border-purple_mv/50 hover:shadow-card-hover dark:border-white/10 dark:from-purple_mv/[0.1] dark:to-black/30 md:max-w-md md:grid-cols-2 md:gap-5">
                      {DIRECTORIO_ICONS[app.slug] && (
-                        <div class="mx-auto flex h-24 w-24 flex-shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-purple_mv/20 bg-purple_mv/5 dark:border-white/10 dark:bg-white/5 md:mx-0 md:h-28 md:w-28">
+                        <div class="app-carousel-icon-box mx-auto flex h-24 w-24 flex-shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-purple_mv/20 bg-purple_mv/5 dark:border-white/10 dark:bg-white/5 md:mx-0 md:h-28 md:w-28">
                            <Image src={DIRECTORIO_ICONS[app.slug]} alt="" width={112} class="h-full w-full object-contain p-3" loading="lazy" />
                         </div>
                      )}
@@ -143,6 +143,27 @@ const statusClass = statusColor === 'green' ? 'text-green-500' : 'text-red-500';
    }
    .otras-apps-track::-webkit-scrollbar {
       display: none;
+   }
+
+   /*
+      CLS (GOLIVE-011, ver skill Rendimiento -- este componente lo comparten
+      DirectorioReportadas.astro/DirectorioReguladas.astro y las 8 secciones
+      "Otras apps" de cada ficha de app, o sea: Directorio Y al menos una
+      página de detalle de app, dos de las plantillas con CLS severo del
+      hallazgo). El <Image> pide width=112 (retina para el hueco de
+      md:h-28=112px) pero el hueco final en móvil es h-24=96px -- mismo
+      patrón que el resto de la skill: se fija el tamaño real acá para que
+      no dependa de que Tailwind ya haya cargado.
+   */
+   .app-carousel-icon-box {
+      height: 6rem; /* = h-24 */
+      width: 6rem;
+   }
+   @media (min-width: 768px) {
+      .app-carousel-icon-box {
+         height: 7rem; /* = md:h-28 */
+         width: 7rem;
+      }
    }
 </style>
 

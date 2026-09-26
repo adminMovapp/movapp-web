@@ -1,17 +1,22 @@
 import type { APIRoute } from 'astro';
 import { getSiteConfig } from '@/utils/config.jsx';
 
-const ROBOTS_STAGING = `User-agent: *
-Disallow: /
-`;
-
-const ROBOTS_PRODUCTION = `User-agent: *
-Allow: /
-`;
-
 export const GET: APIRoute = ({ request }) => {
   const cfg = getSiteConfig(request);
-  const content = cfg.isProduction ? ROBOTS_PRODUCTION : ROBOTS_STAGING;
+  const base = cfg.siteUrl.replace(/\/$/, '');
+
+  // La directiva Sitemap solo tiene sentido en producción: en staging/dev el
+  // Disallow: / de abajo ya bloquea el rastreo completo del sitio, así que
+  // apuntar a un sitemap que nadie puede seguir no aporta nada.
+  const content = cfg.isProduction
+    ? `User-agent: *
+Allow: /
+
+Sitemap: ${base}/sitemap.xml
+`
+    : `User-agent: *
+Disallow: /
+`;
 
   return new Response(content, {
     headers: { 'Content-Type': 'text/plain; charset=utf-8' },

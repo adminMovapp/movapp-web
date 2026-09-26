@@ -8,7 +8,7 @@ export const siteConfigData = {
     description: "Movapp es una organización que ayuda a personas víctimas de las aplicaciones de préstamo no reguladas mediante apoyo psicológico, asesoría personalizada y la aplicación de El Hack.",
     author: "Movapp",
     locale: "es_MX",
-    language: "es"
+    language: "es-MX"
   },
   urls: {
     production: "https://movapp.org",
@@ -118,13 +118,32 @@ export const VIDEOS = {
 // 2. LOGIC: Resolución de Entornos y Configuración Dinámica
 // ============================================================
 function resolveEnv(hostname) {
-   if (!hostname || hostname === 'localhost' || hostname.startsWith('localhost:') || hostname.startsWith('127.') || hostname.startsWith('192.168.')) {
+   const looksLikeDevHost =
+      hostname &&
+      (hostname === 'localhost' || hostname.startsWith('localhost:') || hostname.startsWith('127.') || hostname.startsWith('192.168.'));
+
+   /*
+      import.meta.env.DEV solo es `true` corriendo de verdad `astro dev`
+      (incluido bajo `netlify dev`). Hace falta ese chequeo además del propio
+      hostname porque una página `prerender = true` (los 27 artículos del
+      blog en src/pages/blog/[articulo].astro y sus 3 categorías) recibe un
+      Astro.request con un host "localhost" SINTÉTICO durante `astro build`
+      -- Astro no tiene un visitante real del que leer el dominio en ese
+      momento. Sin este chequeo, esa rama devolvía "development" (siteUrl =
+      localhost) en CUALQUIER build real (stage o producción), sin importar
+      PUBLIC_SITE_ENV -- la causa de que los 27 artículos emitieran
+      canonical/og:url/schema apuntando a localhost:7001 en stage/producción
+      mientras el resto del sitio (SSR, con request real de un visitante)
+      resolvía bien (GOLIVE-004 / URL-POST-001).
+   */
+   if (looksLikeDevHost && import.meta.env.DEV) {
       return 'development';
    }
-   if (siteConfigData.stagingHostnames.some(h => hostname.includes(h))) {
+   if (hostname && siteConfigData.stagingHostnames.some(h => hostname.includes(h))) {
       return 'staging';
    }
-   // Variable de entorno como fallback (útil en build time o SSR sin request)
+   // Build time (sin request) o prerender: se resuelve por PUBLIC_SITE_ENV,
+   // la misma variable que netlify.toml ya fija por contexto de deploy.
    const envVar = import.meta.env.PUBLIC_SITE_ENV;
    if (envVar === 'staging' || envVar === 'development') return envVar;
    return 'production';
@@ -156,6 +175,22 @@ function buildConfig(env) {
       get logoUrl() { return `${this.siteUrl}${this.assets.logo}`; },
       get defaultImage() { return `${this.siteUrl}${this.assets.defaultOgImage}`; },
    };
+}
+
+/*
+   Normaliza una ruta a su forma con barra final ("/tienda" -> "/tienda/"),
+   la convención del sitio (staging ya la agrega automáticamente en el
+   servidor, así que un destino sin barra generaba un salto extra antes de
+   llegar al 200 final). No toca "/" ni rutas que son un archivo real
+   (sitemap.xml, robots.txt, imágenes...), identificadas por tener un punto
+   en el último segmento.
+*/
+export function withTrailingSlash(pathname) {
+   if (!pathname || pathname === '/') return '/';
+   if (pathname.endsWith('/')) return pathname;
+   const lastSegment = pathname.split('/').pop();
+   if (lastSegment.includes('.')) return pathname;
+   return `${pathname}/`;
 }
 
 // Resuelve config a partir del hostname del request (runtime SSR)
@@ -203,7 +238,7 @@ export function generateSEOTags(props = {}, request = null) {
     author,
     publishedTime,
     modifiedTime,
-    canonical: new URL(url, cfg.canonicalUrl).href,
+    canonical: new URL(withTrailingSlash(new URL(url, cfg.canonicalUrl).pathname), cfg.canonicalUrl).href,
     robots: noIndex || cfg.noIndex ? 'noindex, nofollow' : cfg.robotsContent
   };
 }

@@ -4,7 +4,7 @@ import MenuDesktopVisual from '@components/layout/MenuDesktopVisual.astro';
 
 const topLinks = [
    { href: '/', label: 'Inicio' },
-   { href: '/el-hack', label: 'Hack' },
+   { href: '/el-hack/', label: 'Hack' },
 ];
 
 // Mismo agrupamiento que el submenú "Contenido" que antes vivía inline en el
@@ -12,15 +12,15 @@ const topLinks = [
 // que usa el mismo agrupamiento para su propio acordeón "Contenido".
 //
 // "Movapp"/"Colaboraciones"/"Mente digital"/"Nuestras redes" quitados del
-// menú (2026-09-02, a pedido explícito) -- las páginas (/nosotros,
-// /collaborations, /mind, /red) siguen existiendo, solo dejan de ser
-// alcanzables desde acá.
+// menú (2026-09-02, a pedido explícito). /nosotros sigue existiendo solo como
+// 301 a Home (no se vuelve a publicar); /collaborations, /mind, /red quedan
+// fuera de este deploy (siguiente fase).
 const contentLinks = [
-   { href: '/aplicaciones-prestamo', label: 'Aplicaciones' },
-   { href: '/preguntas-frecuente', label: 'Preguntas frecuentes' },
-   { href: '/testimonios', label: 'Testimonios' },
-   { href: '/blog', label: 'Blog' },
-   { href: '/contacto', label: 'Contáctanos' },
+   { href: '/aplicaciones-prestamo/', label: 'Aplicaciones' },
+   { href: '/preguntas-frecuentes/', label: 'Preguntas frecuentes' },
+   { href: '/testimonios/', label: 'Testimonios' },
+   { href: '/blog/', label: 'Blog' },
+   { href: '/contacto/', label: 'Contáctanos' },
 ];
 ---
 

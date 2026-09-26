@@ -38,7 +38,7 @@ const ProductCard = ({ product, onAdd }) => (
          <p className="mt-1 flex-1 text-sm leading-relaxed text-gray-600 dark:text-white/60">{product.descripcion}</p>
 
          <div className="mt-5">
-            <span className="block text-[11px] uppercase tracking-widest text-gray-400 dark:text-white/40">Precio</span>
+            <span className="block text-[11px] uppercase tracking-widest text-gray-500 dark:text-white/50">Precio</span>
             <span className="text-2xl font-extrabold text-text_banner">
                {product.simbolo} {fmt(product.precio)}
                <span className="ml-1 text-sm font-medium text-gray-500 dark:text-white/50">{product.moneda}</span>
@@ -559,9 +559,32 @@ const ShopContent = ({ serverCountry }) => {
    return (
       <div className="mx-auto w-full max-w-6xl px-4">
          {loading ? (
+            // CLS (GOLIVE-011, ver skill Rendimiento): antes este esqueleto era
+            // un único bloque "h-80" (320px) -- la ProductCard real (imagen
+            // h-52 + padding p-6 + título + descripción + precio + botón) mide
+            // bastante más que eso, así que al reemplazar el esqueleto por las
+            // tarjetas reales (cuando useConfig termina de resolver país +
+            // precios) el layout saltaba de golpe -- confirmado como la causa
+            // más probable del CLS severo medido en /tienda. Se replica la
+            // MISMA estructura/padding que ProductCard (bloque de imagen +
+            // líneas de texto + botón) en vez de un solo rectángulo, para que
+            // el alto final quede prácticamente igual sin importar el largo
+            // real de nombre/descripción de cada producto.
             <div className="flex flex-wrap justify-center gap-6">
                {[0, 1, 2].map((i) => (
-                  <div key={i} className="h-80 w-full max-w-sm animate-pulse rounded-3xl border border-gray-200 bg-gray-100 dark:border-white/10 dark:bg-white/5" />
+                  <div
+                     key={i}
+                     className="flex w-full max-w-sm flex-col overflow-hidden rounded-3xl border border-gray-200 bg-white dark:border-white/10 dark:bg-neutral-950"
+                  >
+                     <div className="h-52 animate-pulse bg-gray-100 dark:bg-white/5" />
+                     <div className="flex flex-1 flex-col p-6">
+                        <div className="h-6 w-3/4 animate-pulse rounded bg-gray-200 dark:bg-white/10" />
+                        <div className="mt-3 h-4 w-full animate-pulse rounded bg-gray-200 dark:bg-white/10" />
+                        <div className="mt-2 h-4 w-2/3 flex-1 animate-pulse rounded bg-gray-200 dark:bg-white/10" />
+                        <div className="mt-5 h-8 w-1/2 animate-pulse rounded bg-gray-200 dark:bg-white/10" />
+                        <div className="mt-5 h-12 w-full animate-pulse rounded-full bg-gray-200 dark:bg-white/10" />
+                     </div>
+                  </div>
                ))}
             </div>
          ) : products.length === 0 ? (

@@ -111,6 +111,10 @@ const schemaJson = JSON.stringify(Array.isArray(pageSchema) ? pageSchema : [page
 <!doctype html>
 <html lang={siteConfig.site.language} class="no-js dark">
    <head>
+      <!-- Primer hijo de <head>, sin excepción: PageSpeed marca el charset
+         si aparece después del primer 1024 bytes de HTML. -->
+      <meta charset="UTF-8" />
+
       <!--
          Preconnect a jsDelivr: flag-icons.min.css (usado por la isla de
          tienda) solo se pide con JS, vía el script de más abajo -- pero la
@@ -199,8 +203,7 @@ const schemaJson = JSON.stringify(Array.isArray(pageSchema) ? pageSchema : [page
          </script>
       )}
 
-      <!-- Charset y viewport -->
-      <meta charset="UTF-8" />
+      <!-- Viewport (charset ya se declaró como primer hijo de <head>) -->
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
       <meta http-equiv="X-UA-Compatible" content="IE=edge" />

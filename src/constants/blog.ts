@@ -6,6 +6,45 @@
 // rutas ya construidas con el brief) y arma el enlace a /blog/<slug> -- esa
 // página de artículo individual todavía no existe, pero el enlace se crea de
 // todos modos (ver skill Importaciones).
+import { BLOG_ARTICLES } from '@constants/blogArticles.ts';
+import { parseSpanishDate } from '@utils/schema.js';
+
+// Abreviatura de mes en español para la fecha corta de cada tarjeta de
+// "Noticias recientes" (p.ej. "10 dic 2025") -- "sept" para septiembre porque
+// es la abreviatura de uso real en español, no la de 3 letras genérica.
+const SHORT_MONTHS: Record<string, string> = {
+   enero: 'ene',
+   febrero: 'feb',
+   marzo: 'mar',
+   abril: 'abr',
+   mayo: 'may',
+   junio: 'jun',
+   julio: 'jul',
+   agosto: 'ago',
+   septiembre: 'sept',
+   octubre: 'oct',
+   noviembre: 'nov',
+   diciembre: 'dic',
+};
+
+// "Diciembre 10, 2025" (formato real de BLOG_ARTICLES.publishDate) -> "10 dic
+// 2025". No reusa parseSpanishDate para esto (esa devuelve ISO, no texto
+// corto); sí lo usa para la clave de orden más abajo.
+function shortSpanishDate(text: string): string | null {
+   const match = /^(\p{L}+)\s+(\d{1,2}),\s*(\d{4})$/u.exec(text.trim());
+   if (!match) return null;
+   const [, monthName, day, year] = match;
+   const short = SHORT_MONTHS[monthName.toLowerCase()];
+   return short ? `${day} ${short} ${year}` : null;
+}
+
+// publishDate real (fuente única: BLOG_ARTICLES, ver blogArticles.ts) para un
+// slug de esta lista -- evita mantener una fecha aparte y desincronizada acá.
+function resolveArticleDate(slug: string): { date: string | null; iso: string | null } {
+   const raw = BLOG_ARTICLES.find((article) => article.slug === slug)?.publishDate;
+   if (!raw) return { date: null, iso: null };
+   return { date: shortSpanishDate(raw), iso: parseSpanishDate(raw) };
+}
 
 export const BLOG_FEATURED = {
    slug: 'historia-movapp',
@@ -27,8 +66,13 @@ export const BLOG_HOME_SECTIONS = [
    {
       id: 'recientes',
       title: 'Noticias recientes',
-      // Orden cronológico descendente (más nuevo primero) -- mismo criterio
-      // que "recientes" en blogCategoryPages.ts.
+      // Orden cronológico descendente (más nuevo primero), calculado de
+      // verdad a partir de BLOG_ARTICLES.publishDate (resolveArticleDate)
+      // en vez de confiar en que este array esté a mano en el orden
+      // correcto -- goLive QA (URL-BLOG-003): el orden manual anterior
+      // coincidía por casualidad, pero un artículo nuevo agregado sin
+      // fijarse en la fecha lo habría desordenado en silencio. `date` es la
+      // fecha corta que se muestra en la tarjeta (BlogCategorySection.astro).
       articles: [
          { slug: 'prestamax-es-confiable', title: 'Montadeudas – ¿Prestamax Es Confiable?' },
          { slug: 'fast-efectivo-es-confiable', title: 'Montadeudas – ¿Fast Efectivo Es Confiable?' },
@@ -48,7 +92,13 @@ export const BLOG_HOME_SECTIONS = [
             slug: 'montadeudas-van-a-tu-casa',
             title: '¿Los Montadeudas Van A Tu Casa? – ¿Qué Puedes Hacer En Caso De Caer Con Montadeudas?',
          },
-      ],
+      ]
+         .map((article) => ({ ...article, ...resolveArticleDate(article.slug) }))
+         .sort((a, b) => (b.iso ?? '').localeCompare(a.iso ?? ''))
+         // "iso" era solo la clave de orden -- no hace falta pasarla a la
+         // tarjeta (BlogCategorySection.astro solo necesita "date", ya
+         // formateada para mostrar).
+         .map(({ iso, ...article }) => article),
    },
    {
       id: 'populares',

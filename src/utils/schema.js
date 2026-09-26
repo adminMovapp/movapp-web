@@ -34,7 +34,7 @@
      search.google.com/test/rich-results  ·  validator.schema.org
 */
 
-import { getSiteConfig, URLS } from '@utils/config.jsx';
+import { getSiteConfig, URLS, withTrailingSlash } from '@utils/config.jsx';
 import { HOME_FAQS } from '@constants/homeFaqs.ts';
 import { EL_HACK_FAQS, EL_HACK_STEPS, EL_HACK_HOW_IT_WORKS_TITLE } from '@constants/elhack.ts';
 import { FAQS_PAGE_ACOSO } from '@constants/faqsPageAcoso.ts';
@@ -146,7 +146,7 @@ const CONTEXT = 'https://schema.org';
 function abs(path, cfg) {
    if (!path) return cfg.canonicalUrl;
    if (/^https?:\/\//.test(path)) return path;
-   return new URL(path, cfg.canonicalUrl).href;
+   return new URL(withTrailingSlash(path), cfg.canonicalUrl).href;
 }
 
 // Quita las claves null/undefined para no emitir campos vacíos (p. ej.
@@ -432,25 +432,18 @@ export const PAGE_SCHEMA = {
    // Combina las 3 secciones de la página (Acoso, El Hack, Movapp) en un solo
    // FAQPage: el schema no necesita conservar la agrupación visual, solo que
    // cada Question/acceptedAnswer coincida con lo que se lee en pantalla.
-   '/preguntas-frecuente': {
+   '/preguntas-frecuentes': {
       name: 'Preguntas frecuentes',
       description: 'Respondemos las dudas más comunes sobre acoso de apps de préstamo, El Hack y Movapp.',
       breadcrumb: 'Preguntas frecuentes',
       build: (request) => [
          generateFAQSchema([...FAQS_PAGE_ACOSO, ...FAQS_PAGE_EL_HACK, ...FAQS_PAGE_MOVAPP]),
-         breadcrumbFor('/preguntas-frecuente', request),
+         breadcrumbFor('/preguntas-frecuentes', request),
       ],
    },
 
-   // --- AboutPage: subtipo de WebPage para "quiénes somos". Refuerza E-E-A-T
-   // asociando la entidad Movapp con su misión. (Guía §2.4)
-   '/nosotros': {
-      type: 'AboutPage',
-      name: 'Bienvenido a Movapp',
-      description:
-         'Movapp es una organización que ayuda a personas víctimas de las aplicaciones de préstamo no reguladas mediante apoyo psicológico, asesoría personalizada y la aplicación de El Hack.',
-      breadcrumb: 'Nosotros',
-   },
+   // /nosotros no se vuelve a publicar en este deploy (301 permanente a Home,
+   // ver netlify.toml) -- sin entrada acá, cae al fallback de Organization.
 
    /*
       --- Páginas de soporte (guía §2.5): con su contenido actual no
@@ -465,8 +458,11 @@ export const PAGE_SCHEMA = {
       // página, solo video, y declararlas sería schema engañoso.
       type: 'CollectionPage',
       name: 'testimonios movapp',
+      // Suavizado (QA Go-Live, URL-TEST-002): "dejaron de ser acosadas" era
+      // una promesa universal que los testimonios reales no respaldan de
+      // forma pareja.
       description:
-         'Lee testimonios reales de personas que dejaron de ser acosadas por apps de préstamos montadeudas gracias a Movapp. Comparte tu experiencia también.',
+         'Lee testimonios reales de personas que enfrentaron el acoso de apps de préstamo montadeudas y encontraron apoyo con Movapp. Comparte tu experiencia también.',
       breadcrumb: 'Testimonios',
    },
 
@@ -505,12 +501,6 @@ export const PAGE_SCHEMA = {
       description:
          'Revisa nuestro listado actualizado de apps fraudulentas e ilegales. Analizamos cada plataforma para que sepas cuáles evitar y cuáles sí son seguras.',
       breadcrumb: 'Evaluaciones de apps y lista negra',
-   },
-
-   '/collaborations': {
-      name: 'Colaboraciones',
-      description: 'Colaboraciones de Movapp con medios y creadores que difunden cómo frenar a las apps montadeuda.',
-      breadcrumb: 'Colaboraciones',
    },
 
    // --- CollectionPage: listado de apps agrupadas por estatus (reportadas vs.
@@ -753,22 +743,9 @@ export const PAGE_SCHEMA = {
       ],
    },
 
-   // ⚠ /mind y /red pueden evolucionar a Article o CollectionPage si se
-   // convierten en hubs de contenido. Por ahora WebPage + Breadcrumb es
-   // suficiente y correcto (guía §2.5).
-   '/mind': {
-      name: 'Bienvenido a mente digital',
-      description:
-         'Espacio dedicado a recuperar la paz emocional tras el acoso de las aplicaciones no reguladas, con la guía de la Dra. Dalia.',
-      breadcrumb: 'Mente digital',
-   },
-
-   '/red': {
-      name: '¡Síguenos y mantente conectado!',
-      description:
-         'Síguenos en nuestras redes sociales para consejos de seguridad, actualizaciones de El Hack y contenido exclusivo.',
-      breadcrumb: 'Redes',
-   },
+   // /mind, /red y /collaborations quedan fuera de este deploy (siguiente
+   // fase, ver instrucciones de redirecciones) -- sin entradas acá, sus
+   // rutas (si se accede a ellas) caen al fallback de Organization.
 
    '/aviso-de-privacidad': {
       name: 'Política de Privacidad',
@@ -788,7 +765,7 @@ function breadcrumbFor(pathname, request) {
 // 4. API PÚBLICA — lo que consume Layout.astro
 // ============================================================
 
-// Normaliza la ruta: "/preguntas-frecuente/" y "/preguntas-frecuente" son la misma página; "" es "/".
+// Normaliza la ruta: "/preguntas-frecuentes/" y "/preguntas-frecuentes" son la misma página; "" es "/".
 function normalize(pathname) {
    if (!pathname) return '/';
    const clean = pathname.replace(/\/+$/, '');
@@ -811,7 +788,7 @@ export function getPageSchema(pathname, request = null) {
    const page = getPageEntry(pathname);
    if (!page) return [generateOrganizationSchema(request)];
 
-   // Páginas con composición propia (Home, /el-hack, /preguntas-frecuente).
+   // Páginas con composición propia (Home, /el-hack, /preguntas-frecuentes).
    if (page.build) return page.build(request);
 
    // Caso por defecto: WebPage (o su subtipo) + BreadcrumbList.

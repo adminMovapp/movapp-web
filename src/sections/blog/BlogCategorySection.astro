@@ -25,6 +25,10 @@ import { BLOG_IMAGES } from '@constants/blogImages.ts';
 interface Article {
    slug: string;
    title: string;
+   // Fecha corta ya formateada (p.ej. "10 dic 2025") -- solo la trae la
+   // sección "recientes" (ver @constants/blog.ts, resolveArticleDate);
+   // "populares"/"antiguas" no la necesitan, así que es opcional.
+   date?: string | null;
 }
 interface Props {
    id: string;
@@ -49,7 +53,7 @@ const resolvedArticles = isCarousel
         articles.map(async (a) => {
            const source = BLOG_IMAGES[a.slug];
            const image = source ? await getImage({ src: source, width: 700 }) : null;
-           return { slug: a.slug, title: a.title, image: image?.src ?? null };
+           return { slug: a.slug, title: a.title, date: a.date ?? null, image: image?.src ?? null };
         }),
      )
    : [];
@@ -78,9 +82,24 @@ const resolvedArticles = isCarousel
                      ) : (
                         <ImagePlaceholder class="aspect-[16/9] w-full" />
                      )}
-                     <h3 class="mt-4 font-bold text-purple_mv">{a.title}</h3>
+                     <h3 class="mt-4 font-bold text-purple_mv">
+                        <a
+                           href={`/blog/${a.slug}/`}
+                           data-page-type="blog"
+                           data-section-name={id}
+                           data-destination-type="internal_page"
+                           data-article-slug={a.slug}
+                           data-ga-event="select_content"
+                           data-content-type="blog_article"
+                           data-item-id={a.slug}
+                           class="hover:underline"
+                        >
+                           {a.title}
+                        </a>
+                     </h3>
+                     {a.date && <p class="mt-1 text-xs text-gray-500 dark:text-white/50">{a.date}</p>}
                      <a
-                        href={`/blog/${a.slug}`}
+                        href={`/blog/${a.slug}/`}
                         data-page-type="blog"
                         data-section-name={id}
                         data-destination-type="internal_page"
@@ -153,10 +172,25 @@ const resolvedArticles = isCarousel
                                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
                               </svg>
                            </div>
-                           <h3 class="category-title mt-4 font-bold text-purple_mv">{a?.title}</h3>
+                           <h3 class="category-title mt-4 font-bold text-purple_mv">
+                              <a
+                                 class="category-title-link hover:underline"
+                                 href={a ? `/blog/${a.slug}/` : undefined}
+                                 data-page-type="blog"
+                                 data-section-name={id}
+                                 data-destination-type="internal_page"
+                                 data-article-slug={a?.slug}
+                                 data-ga-event="select_content"
+                                 data-content-type="blog_article"
+                                 data-item-id={a?.slug}
+                              >
+                                 {a?.title}
+                              </a>
+                           </h3>
+                           <p class:list={['category-date mt-1 text-xs text-gray-500 dark:text-white/50', !a?.date && 'hidden']}>{a?.date}</p>
                            <a
                               class="category-link mt-2 inline-block text-sm font-medium text-gray-900 dark:text-white underline"
-                              href={a ? `/blog/${a.slug}` : undefined}
+                              href={a ? `/blog/${a.slug}/` : undefined}
                               data-page-type="blog"
                               data-section-name={id}
                               data-destination-type="internal_page"
@@ -202,9 +236,21 @@ const resolvedArticles = isCarousel
             ) : (
                <ImagePlaceholder class="aspect-[16/9] w-full" />
             )}
-            <h3 class="mt-4 font-bold text-purple_mv">{articles[0].title}</h3>
+            <h3 class="mt-4 font-bold text-purple_mv">
+               <a
+                  href={`/blog/${articles[0].slug}/`}
+                  data-page-type="blog"
+                  data-section-name={id}
+                  data-destination-type="internal_page"
+                  data-article-slug={articles[0].slug}
+                  class="hover:underline"
+               >
+                  {articles[0].title}
+               </a>
+            </h3>
+            {articles[0].date && <p class="mt-1 text-xs text-gray-500 dark:text-white/50">{articles[0].date}</p>}
             <a
-               href={`/blog/${articles[0].slug}`}
+               href={`/blog/${articles[0].slug}/`}
                data-page-type="blog"
                data-section-name={id}
                data-destination-type="internal_page"
@@ -363,7 +409,7 @@ const resolvedArticles = isCarousel
          if (!dataScript || root.dataset.ready === 'true') return;
          root.dataset.ready = 'true';
 
-         type CategoryItem = { slug: string; title: string; image: string | null };
+         type CategoryItem = { slug: string; title: string; date: string | null; image: string | null };
          const items: CategoryItem[] = JSON.parse(dataScript.textContent || '[]');
          if (!items.length) return;
 
@@ -377,7 +423,8 @@ const resolvedArticles = isCarousel
          const fillSlot = (slot: HTMLLIElement, item: CategoryItem) => {
             const img = slot.querySelector<HTMLImageElement>('.category-img');
             const placeholder = slot.querySelector<HTMLElement>('.category-placeholder');
-            const heading = slot.querySelector<HTMLElement>('.category-title');
+            const titleLink = slot.querySelector<HTMLAnchorElement>('.category-title-link');
+            const dateEl = slot.querySelector<HTMLElement>('.category-date');
             const link = slot.querySelector<HTMLAnchorElement>('.category-link');
             if (img) {
                if (item.image) {
@@ -395,9 +442,21 @@ const resolvedArticles = isCarousel
             // BlogRelatedArticles.astro.
             if (placeholder) placeholder.classList.toggle('hidden', !!item.image);
             if (placeholder) placeholder.classList.toggle('flex', !item.image);
-            if (heading) heading.textContent = item.title;
+            // El título ahora es un <a> (antes un <h3> de solo texto, ver
+            // GOLIVE URL-BLOG-002): al repaginar hay que reescribir también su
+            // href/dataset, no solo el texto.
+            if (titleLink) {
+               titleLink.textContent = item.title;
+               titleLink.href = `/blog/${item.slug}/`;
+               titleLink.dataset.articleSlug = item.slug;
+               titleLink.dataset.itemId = item.slug;
+            }
+            if (dateEl) {
+               dateEl.textContent = item.date ?? '';
+               dateEl.classList.toggle('hidden', !item.date);
+            }
             if (link) {
-               link.href = `/blog/${item.slug}`;
+               link.href = `/blog/${item.slug}/`;
                link.dataset.articleSlug = item.slug;
                link.dataset.itemId = item.slug;
             }
