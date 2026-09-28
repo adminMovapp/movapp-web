@@ -7,6 +7,46 @@ import ImgElHackNegro from '@assets/elhack-negro.png';
 ---
 
 <!--
+   Vista de producto en /el-hack (a pedido, sept. 2026): hasta ahora el
+   funnel de Meta (ViewContent → AddToCart → InitiateCheckout → Purchase)
+   arrancaba recién en /tienda -- cualquier visita a esta página, que es la
+   landing real del producto, no quedaba registrada. Vive en el Hero porque
+   es la única sección que corre una vez por carga de página (mismo criterio
+   que app_detail_view en AppHero.astro para las fichas de apps).
+
+   Sin "value"/"currency": el precio real depende del país (getPrices, ver
+   useConfig/api.jsx) y esta página no lo resuelve -- inventar un monto fijo
+   sería un dato falso en el evento. content_ids/content_name usan el mismo
+   identificador y fallback ('el_hack' / 'El Hack') que ya usan
+   trackInitiateCheckout/trackAddToCart/trackPurchase en useMetaPixel.jsx y
+   metaPixelPayloads.js, para que los 4 eventos del funnel se agrupen bajo el
+   mismo producto en los informes.
+
+   window.gtag/window.metaPixel pueden no existir todavía (script cargado
+   antes que MetaPixelScript.astro/GoogleAnalytics.astro terminen de montar,
+   o directamente ausentes con ?minimal=1 / sin las env vars) -- por eso se
+   espera a DOMContentLoaded y se lee cada uno de forma opcional, igual que
+   el resto de los puntos de tracking del sitio.
+-->
+<script>
+   import { pushToDataLayer } from '@utils/dataLayer.js';
+
+   document.addEventListener('DOMContentLoaded', () => {
+      pushToDataLayer('view_item', {
+         items: [{ item_id: 'el_hack', item_name: 'El Hack', item_category: 'digital_solution' }],
+      });
+
+      window.metaPixel?.track('ViewContent', {
+         content_ids: ['el_hack'],
+         content_name: 'El Hack',
+         content_category: 'digital_solution',
+         content_type: 'product',
+         event_source_url: window.location.href,
+      });
+   });
+</script>
+
+<!--
    Sin pb-16 a propósito (mismo criterio que HomeHero.astro): este <section>
    no usa "my-section" (el margen estándar de 4rem, ver tailwind.config.mjs,
    que colapsa con el margin-top de la siguiente sección), sino padding para
