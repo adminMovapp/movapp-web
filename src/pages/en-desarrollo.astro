@@ -1,0 +1,96 @@
+---
+import { Image } from 'astro:assets';
+import Layout from '@layouts/Layout.astro';
+import ImgLogoBlanco from '@assets/Logo-Blanco.png';
+import { SITE_LOCK_VERIFY_PATH } from '@/utils/siteLock';
+
+// Landing de "Próximamente" que ve cualquier visitante mientras
+// SITE_LOCK_ENABLED=true (ver src/middleware.ts). Siempre oscura a
+// propósito (clase "dark-section" de global.css conserva texto/fondos
+// blancos aunque el visitante tenga el tema claro guardado en
+// localStorage) -- es una landing de transición, no necesita adaptarse al
+// tema del sitio.
+//
+// 503 (no 200): un rastreador que la reciba debe entender "temporalmente
+// no disponible, volvé más tarde" y no indexarla ni tratar el redirect de
+// arriba como permanente -- noIndex por si acaso, pero el status es la
+// señal real para bots.
+Astro.response.status = 503;
+Astro.response.statusText = 'Service Unavailable';
+Astro.response.headers.set('Retry-After', '3600');
+
+const redirectTo = Astro.url.searchParams.get('redirect_to') || '/';
+const hasError = Astro.url.searchParams.get('error') === '1';
+---
+
+<Layout title="Próximamente" noIndex={true} hideChrome={true} showGrid={false}>
+   <section class="dark-section relative flex min-h-[100svh] w-full items-center justify-center overflow-hidden bg-[#050505] px-4 py-16">
+      <!-- Resplandor morado ambiente, mismo lenguaje visual que StarField.astro
+         (aura difusa detrás del contenido) -- puramente decorativo, sin script,
+         para no repetir el riesgo de CLS ya documentado con piezas animadas
+         como .hero-orbit-group. -->
+      <div
+         aria-hidden="true"
+         class="pointer-events-none absolute left-1/2 top-1/3 h-72 w-[80%] max-w-[640px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-purple_mv/30 blur-[120px]"
+      >
+      </div>
+
+      <div class="relative z-10 flex w-full max-w-md flex-col items-center text-center">
+         <Image src={ImgLogoBlanco} alt="Movapp" height={100} class="gate-logo mb-8 h-12 w-auto md:h-14" />
+
+         <h1 class="text-3xl font-bold text-white sm:text-4xl">Próximamente</h1>
+         <p class="mt-4 text-base text-white/70">
+            Estamos preparando una nueva versión del sitio. Vuelve pronto para verla completa.
+         </p>
+
+         <form method="post" action={SITE_LOCK_VERIFY_PATH} class="mt-10 flex w-full flex-col items-stretch gap-3">
+            <input type="hidden" name="redirect_to" value={redirectTo} />
+
+            <label for="gate-password" class="sr-only">Contraseña de acceso anticipado</label>
+            <input
+               id="gate-password"
+               type="password"
+               name="password"
+               placeholder="Contraseña de acceso"
+               autocomplete="current-password"
+               required
+               class="w-full rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-center text-white placeholder-white/40 outline-none transition focus:border-purple_mv focus:ring-2 focus:ring-purple_mv/50"
+            />
+
+            {
+               hasError && (
+                  <p class="text-sm font-medium text-red-400" role="alert">
+                     Contraseña incorrecta. Intenta de nuevo.
+                  </p>
+               )
+            }
+
+            <button
+               type="submit"
+               class="mt-1 w-full rounded-full bg-purple_mv px-6 py-3 font-semibold text-white shadow-card transition hover:shadow-card-hover"
+            >
+               Entrar
+            </button>
+         </form>
+      </div>
+   </section>
+</Layout>
+
+<style>
+   /*
+      Tamaño real del logo fijado acá (no solo con "h-12"/"md:h-14" de
+      Tailwind), mismo criterio documentado en Header.astro: sin Tailwind
+      cargado, height={100} pinta el <img> a su tamaño real (pensado para
+      retina), mucho más grande que el final -- salto de layout apenas
+      llega Tailwind. Debe coincidir con esas clases si cambian.
+   */
+   .gate-logo {
+      height: 3rem; /* h-12 */
+      width: auto;
+   }
+   @media (min-width: 768px) {
+      .gate-logo {
+         height: 3.5rem; /* md:h-14 */
+      }
+   }
+</style>

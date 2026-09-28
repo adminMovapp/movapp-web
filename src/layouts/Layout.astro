@@ -76,8 +76,17 @@ interface Props {
       compartido de todo el sitio.
    */
    disableCopy?: boolean;
+   /*
+      Oculta Header/HeaderLayer/MobileBottomNav/paneles de menú/Footer --
+      pensado para páginas de "todo o nada" que no deben ofrecer navegación
+      al resto del sitio (ver src/pages/en-desarrollo.astro, la landing del
+      candado de acceso SITE_LOCK_ENABLED). Nada más del layout cambia: SEO,
+      schema, mecanismo no-js/js y scripts siguen igual que en cualquier
+      otra página.
+   */
+   hideChrome?: boolean;
 }
-const { title, schema, showGrid = true, disableCopy = false } = Astro.props;
+const { title, schema, showGrid = true, disableCopy = false, hideChrome = false } = Astro.props;
 
 const siteConfig = getSiteConfig(Astro.request);
 
@@ -372,9 +381,9 @@ const schemaJson = JSON.stringify(Array.isArray(pageSchema) ? pageSchema : [page
          )
       }
 
-      {showHeaderLayer ? <HeaderLayer /> : null}
+      {!hideChrome && showHeaderLayer ? <HeaderLayer /> : null}
 
-      <Header />
+      {!hideChrome && <Header />}
 
       <main class="relative min-h-[100svh] isolate">
          {showGrid && <BackgroundGrid />}
@@ -382,7 +391,7 @@ const schemaJson = JSON.stringify(Array.isArray(pageSchema) ? pageSchema : [page
             <div class:list={[disableCopy && 'no-copy']}>
                <slot />
             </div>
-            <Footer />
+            {!hideChrome && <Footer />}
          </div>
       </main>
 
@@ -408,10 +417,10 @@ const schemaJson = JSON.stringify(Array.isArray(pageSchema) ? pageSchema : [page
          })();
       </script>
 
-      <MobileBottomNav />
-      <MobileSearchBackdrop />
-      <MenuMobilePanel />
-      <MenuDesktopPanel />
+      {!hideChrome && <MobileBottomNav />}
+      {!hideChrome && <MobileSearchBackdrop />}
+      {!hideChrome && <MenuMobilePanel />}
+      {!hideChrome && <MenuDesktopPanel />}
 
       <!--
          DIAGNÓSTICO TEMPORAL (v2) -- borrar una vez resuelto. Solo se activa
