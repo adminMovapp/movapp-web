@@ -747,6 +747,18 @@ export const PAGE_SCHEMA = {
    // fase, ver instrucciones de redirecciones) -- sin entradas acá, sus
    // rutas (si se accede a ellas) caen al fallback de Organization.
 
+   // --- Sala de Prensa: hub de medios/comunicados. CollectionPage, mismo
+   // criterio que /testimonios y /blog (listado de contenido, no un artículo
+   // único). Sin ImageObject/Review: la página no muestra calificaciones ni
+   // una sola imagen protagonista.
+   '/prensa': {
+      type: 'CollectionPage',
+      name: 'Sala de Prensa',
+      description:
+         'Sala de prensa de Movapp: comunicados oficiales, apariciones en medios y recursos de prensa (logotipos, fotografías y dossier) para periodistas y aliados.',
+      breadcrumb: 'Sala de Prensa',
+   },
+
    '/aviso-de-privacidad': {
       name: 'Política de Privacidad',
       description:

@@ -117,6 +117,12 @@ export const SEARCH_INDEX: SearchEntry[] = [
       keywords: ['contacto', 'whatsapp', 'hablar con alguien', 'asesoria', 'denunciar', 'ayuda', 'telefono', 'correo', 'escribenos'],
    },
    {
+      title: 'Sala de Prensa',
+      href: '/prensa/',
+      description: 'Comunicados oficiales, apariciones en medios y recursos de prensa de Movapp.',
+      keywords: ['prensa', 'medios', 'periodista', 'comunicado', 'press kit', 'dossier', 'contacto de prensa', 'noticias'],
+   },
+   {
       title: 'Tienda',
       href: '/tienda/',
       description: 'Compra El Hack y protege tus datos.',
