@@ -40,7 +40,7 @@ export const SITE_LOCK_NO_CACHE_HEADERS: Record<string, string> = {
 // node:process); import.meta.env queda solo como respaldo para `astro dev`,
 // donde las variables del .env no llegan a process.env. String() normaliza
 // el caso booleano por si ese respaldo llega a usarse en un build.
-function readServerEnv(runtimeValue: string | undefined, buildValue: unknown): string {
+export function readServerEnv(runtimeValue: string | undefined, buildValue: unknown): string {
    const value = runtimeValue ?? buildValue;
    return value === undefined || value === null ? '' : String(value).trim();
 }

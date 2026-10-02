@@ -119,8 +119,8 @@ export const SEARCH_INDEX: SearchEntry[] = [
    {
       title: 'Sala de Prensa',
       href: '/prensa/',
-      description: 'Comunicados oficiales, apariciones en medios y recursos de prensa de Movapp.',
-      keywords: ['prensa', 'medios', 'periodista', 'comunicado', 'press kit', 'dossier', 'contacto de prensa', 'noticias'],
+      description: 'Entrevistas y apariciones de Movapp en medios: Erik Mann sobre fraudes digitales.',
+      keywords: ['prensa', 'medios', 'entrevista', 'noticiero', 'video', 'erik mann', 'fraudes digitales', 'noticias'],
    },
    {
       title: 'Tienda',
