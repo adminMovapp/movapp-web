@@ -1,5 +1,11 @@
 ---
 import ShopIsland from '@components/ui/ShopIsland.jsx';
+
+interface Props {
+   serverCountry?: string;
+}
+
+const { serverCountry } = Astro.props;
 ---
 
 <section class="relative overflow-hidden">
@@ -23,7 +29,7 @@ import ShopIsland from '@components/ui/ShopIsland.jsx';
 
       <!-- Tienda dinámica (catálogo + carrito + checkout) -->
       <div data-aos="fade-up">
-         <ShopIsland client:load />
+         <ShopIsland client:load serverCountry={serverCountry} />
       </div>
    </div>
 </section>

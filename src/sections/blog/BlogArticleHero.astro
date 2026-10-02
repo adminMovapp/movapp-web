@@ -54,7 +54,20 @@ const hasMobileOverride = mobileAuthor !== undefined || mobileReadingMinutes !==
    <div class="relative z-10 mt-8">
       {
          BLOG_IMAGES[slug] ? (
-            <Image src={BLOG_IMAGES[slug]} alt={title} width={1000} class="aspect-[16/10] w-full rounded-2xl object-cover" />
+            // Imagen destacada del artículo: LCP candidate de la plantilla de
+            // blog (GLOBAL-001, ver skill Rendimiento) -- <Image> por defecto
+            // renderiza loading="lazy", que retrasaba justo el elemento más
+            // grande y más arriba de la página. Es la única imagen de esta
+            // sección (el resto del hero es solo texto), así que no hay
+            // riesgo de robarle prioridad a otra imagen del mismo hero.
+            <Image
+               src={BLOG_IMAGES[slug]}
+               alt={title}
+               width={1000}
+               class="aspect-[16/10] w-full rounded-2xl object-cover"
+               loading="eager"
+               fetchpriority="high"
+            />
          ) : (
             <ImagePlaceholder class="aspect-[16/10] w-full" />
          )

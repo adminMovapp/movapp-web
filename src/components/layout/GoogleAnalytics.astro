@@ -2,32 +2,17 @@
 const GA4_ID = import.meta.env.PUBLIC_GA4_ID;
 ---
 
+<script async src={`https://www.googletagmanager.com/gtag/js?id=${GA4_ID}`}></script>
 <script is:inline define:vars={{ GA4_ID }}>
    window.dataLayer = window.dataLayer || [];
-
-   // Page view inicial
-   window.dataLayer.push({
-      event: 'page_view',
-      page_path: window.location.pathname,
-      page_title: document.title,
-      page_location: window.location.href,
-      // event_id: eventId,
-   });
-
-   // Cargar GA4
-   const script = document.createElement('script');
-   script.src = `https://www.googletagmanager.com/gtag/js?id=${GA4_ID}`;
-   script.async = true;
-   script.onload = () => {
-      window.gtag =
-         window.gtag ||
-         function () {
-            (window.gtag.q = window.gtag.q || []).push(arguments);
-         };
-      window.gtag('js', new Date());
-      window.gtag('config', GA4_ID, {
-         send_page_view: false,
-      });
-   };
-   document.head.appendChild(script);
+   function gtag() {
+      dataLayer.push(arguments);
+   }
+   // Astro envuelve los <script is:inline define:vars> en una IIFE, así que
+   // esta función NO queda en window por sí sola. Se expone a propósito: es
+   // la única vía por la que el resto del sitio emite eventos a GA4 (ver
+   // src/utils/dataLayer.js y el listener de CTAs en Layout.astro).
+   window.gtag = gtag;
+   gtag('js', new Date());
+   gtag('config', GA4_ID);
 </script>

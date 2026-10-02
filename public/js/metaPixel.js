@@ -43,8 +43,11 @@ async function sendServerEvent(eventName, customData = {}, userData = {}, eventI
       const response = await fetch('/.netlify/functions/meta-conversion', {
          method: 'POST',
          headers: {
+            // Sin 'User-Agent': es un nombre de cabecera prohibido, el
+            // navegador lo descarta en silencio. El user-agent real llega
+            // igual en la petición y la función lo lee de ahí para
+            // client_user_agent.
             'Content-Type': 'application/json',
-            'User-Agent': navigator.userAgent,
          },
          body: JSON.stringify({
             event_name: eventName,
@@ -89,6 +92,10 @@ async function sendServerEvent(eventName, customData = {}, userData = {}, eventI
 
 async function trackEvent(eventName, customData = {}, userData = {}) {
    if (typeof window === 'undefined') return;
+   // Sin pixel inicializado (stage/local sin PUBLIC_META_PIXEL_ID) no hay
+   // nada que medir: se evita también el POST a meta-conversion, que sin
+   // META_ACCESS_TOKEN respondería 500 en cada evento.
+   if (!pixelInitialized) return null;
 
    const eventId = generateEventId();
 
@@ -122,6 +129,7 @@ async function trackEvent(eventName, customData = {}, userData = {}) {
 
 async function trackPageView(customData = {}) {
    if (typeof window === 'undefined') return;
+   if (!pixelInitialized) return null; // ver trackEvent
 
    const eventId = generateEventId();
 

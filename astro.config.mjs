@@ -31,7 +31,14 @@ export default defineConfig({
       // assetsInclude: ['**/*.json']
    },
    output: 'server',
-   adapter: netlify(),
+   // edgeMiddleware solo con el candado activo (SITE_LOCK_ENABLED, ver
+   // src/middleware.ts): la función SSR se registra con preferStatic, así que
+   // las páginas prerenderizadas (blog) salen del CDN sin pasar por ella --
+   // como Edge Function el middleware corre antes que el CDN en cada request
+   // y el candado cubre también esas páginas. Sin candado se queda en la
+   // función SSR para no sumar una invocación de Edge a cada request.
+   // Consecuencia: cambiar SITE_LOCK_ENABLED en Netlify exige un redeploy.
+   adapter: netlify({ edgeMiddleware: process.env.SITE_LOCK_ENABLED?.trim().toLowerCase() === 'true' }),
    // 'always' (no 'auto'): evita que Astro extraiga los <style> con scope de
    // componente a archivos _astro/*.css enlazados aparte -- Lighthouse los
    // marcaba como "solicitudes de bloqueo de renderización" (ida y vuelta de

@@ -66,27 +66,28 @@ const year = new Date().getFullYear();
          </a>
       </div>
 
-      <!-- Barra inferior: MÓVIL (a pedido, solo aviso de privacidad + términos
-           en la misma línea, y el crédito debajo) -->
+      <!-- Barra inferior: MÓVIL (a pedido, aviso de privacidad + contacto en
+           la misma línea, y el crédito debajo). "Términos y condiciones" se
+           retiró temporalmente (2026-09-25): la página aún no existe (404) y
+           Legal no ha aprobado el contenido -- se vuelve a agregar cuando esté
+           publicada. -->
       <div class="mt-6 flex flex-col items-center gap-2 border-t border-black/10 pt-4 text-sm text-gray-500 dark:border-white/10 dark:text-white/60 md:hidden">
          <div class="flex items-center gap-4">
-            <a href="/aviso-de-privacidad" class="transition-colors hover:text-text_banner">Aviso de privacidad</a>
-            <a href="/contacto" class="transition-colors hover:text-text_banner">Contáctanos</a>
-            <a href="/terminos-y-condiciones" class="transition-colors hover:text-text_banner">Términos y condiciones</a>
+            <a href="/aviso-de-privacidad/" class="transition-colors hover:text-text_banner">Aviso de privacidad</a>
+            <a href="/contacto/" class="transition-colors hover:text-text_banner">Contáctanos</a>
          </div>
          <p>Movappbyerikmann © - Todos Los Derechos Reservados - {year}</p>
       </div>
 
       <!-- Barra inferior: ESCRITORIO -- mismas opciones que la barra de
-           móviles (aviso de privacidad + términos), a pedido. -->
+           móviles (aviso de privacidad + contacto), a pedido. -->
       <div
          class="mt-6 hidden items-center justify-between gap-4 border-t border-black/10 pt-4 text-sm text-gray-500 dark:border-white/10 dark:text-white/60 md:mt-10 md:flex md:pt-6"
       >
          <p>Movappbyerikmann © - Todos Los Derechos Reservados - {year}</p>
          <div class="flex items-center gap-4">
-            <a href="/aviso-de-privacidad" class="transition-colors hover:text-text_banner">Aviso de privacidad</a>
-            <a href="/contacto" class="transition-colors hover:text-text_banner">Contáctanos</a>
-            <a href="/terminos-y-condiciones" class="transition-colors hover:text-text_banner">Términos y condiciones</a>
+            <a href="/aviso-de-privacidad/" class="transition-colors hover:text-text_banner">Aviso de privacidad</a>
+            <a href="/contacto/" class="transition-colors hover:text-text_banner">Contáctanos</a>
          </div>
       </div>
 

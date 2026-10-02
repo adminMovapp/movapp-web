@@ -7,6 +7,46 @@ import ImgElHackNegro from '@assets/elhack-negro.png';
 ---
 
 <!--
+   Vista de producto en /el-hack (a pedido, sept. 2026): hasta ahora el
+   funnel de Meta (ViewContent → AddToCart → InitiateCheckout → Purchase)
+   arrancaba recién en /tienda -- cualquier visita a esta página, que es la
+   landing real del producto, no quedaba registrada. Vive en el Hero porque
+   es la única sección que corre una vez por carga de página (mismo criterio
+   que app_detail_view en AppHero.astro para las fichas de apps).
+
+   Sin "value"/"currency": el precio real depende del país (getPrices, ver
+   useConfig/api.jsx) y esta página no lo resuelve -- inventar un monto fijo
+   sería un dato falso en el evento. content_ids/content_name usan el mismo
+   identificador y fallback ('el_hack' / 'El Hack') que ya usan
+   trackInitiateCheckout/trackAddToCart/trackPurchase en useMetaPixel.jsx y
+   metaPixelPayloads.js, para que los 4 eventos del funnel se agrupen bajo el
+   mismo producto en los informes.
+
+   window.gtag/window.metaPixel pueden no existir todavía (script cargado
+   antes que MetaPixelScript.astro/GoogleAnalytics.astro terminen de montar,
+   o directamente ausentes con ?minimal=1 / sin las env vars) -- por eso se
+   espera a DOMContentLoaded y se lee cada uno de forma opcional, igual que
+   el resto de los puntos de tracking del sitio.
+-->
+<script>
+   import { pushToDataLayer } from '@utils/dataLayer.js';
+
+   document.addEventListener('DOMContentLoaded', () => {
+      pushToDataLayer('view_item', {
+         items: [{ item_id: 'el_hack', item_name: 'El Hack', item_category: 'digital_solution' }],
+      });
+
+      window.metaPixel?.track('ViewContent', {
+         content_ids: ['el_hack'],
+         content_name: 'El Hack',
+         content_category: 'digital_solution',
+         content_type: 'product',
+         event_source_url: window.location.href,
+      });
+   });
+</script>
+
+<!--
    Sin pb-16 a propósito (mismo criterio que HomeHero.astro): este <section>
    no usa "my-section" (el margen estándar de 4rem, ver tailwind.config.mjs,
    que colapsa con el margin-top de la siguiente sección), sino padding para
@@ -56,14 +96,26 @@ import ImgElHackNegro from '@assets/elhack-negro.png';
       mismas animaciones que tenía ahí (float + glitch).
    -->
    <div class="hero-logo-float relative z-10 my-6 w-[55%] max-w-[380px] aspect-[510/144]" aria-hidden="true">
+      <!--
+         GLOBAL-001 (ver skill Rendimiento): sin "loading"/"fetchpriority",
+         <Image> renderiza loading="lazy" por defecto -- estos 2 logos están
+         arriba del pliegue junto con el H1 (no hay foto grande en este hero,
+         a diferencia de HomeHero.astro), así que igual conviene pedirlos
+         eager+high en vez de dejarlos competir por prioridad con recursos
+         menos urgentes.
+      -->
       <Image
          src={ImgElHackNegro}
          alt=""
+         loading="eager"
+         fetchpriority="high"
          class="hero-logo-glitch absolute inset-0 h-full w-full object-contain opacity-30 blur-[2px] dark:hidden"
       />
       <Image
          src={ImgElHackBlanco}
          alt=""
+         loading="eager"
+         fetchpriority="high"
          class="hero-logo-glitch absolute inset-0 hidden h-full w-full object-contain opacity-30 blur-[2px] dark:block"
       />
    </div>
@@ -82,6 +134,27 @@ import ImgElHackNegro from '@assets/elhack-negro.png';
    */
    .hero-logo-float {
       animation: heroLogoFloat 6.5s ease-in-out infinite;
+   }
+
+   /*
+      CLS (GOLIVE-011, ver skill Rendimiento): el tamaño real de este wrapper
+      (w-[55%] max-w-[380px] aspect-[510/144]) es 100% Tailwind -- sus 2
+      <Image> hijos son "absolute" (no aportan tamaño al padre) y el propio
+      "aspect-[510/144]" es una utilidad de Tailwind, así que mientras
+      Tailwind no cargó (mecanismo no-js/js, ver skill Diseño) este <div> no
+      tiene ninguna regla de tamaño propia y colapsa: sin hijos "en flujo"
+      que le den alto, mide 0 y el H1 y el párrafo de abajo quedan pegados;
+      al llegar Tailwind, salta de golpe a su alto real (proporción 510:144
+      sobre el 55%/380px de ancho). Igual que el bug de CLS de imágenes
+      chicas (logos/íconos) documentado en la skill, se fija el tamaño real
+      acá -- un <style> con scope de Astro se inlinea siempre
+      (inlineStylesheets:'always'), así que aplica desde el primer pintado,
+      con o sin JS.
+   */
+   .hero-logo-float {
+      width: 55%;
+      max-width: 380px;
+      aspect-ratio: 510 / 144;
    }
 
    @keyframes heroLogoFloat {

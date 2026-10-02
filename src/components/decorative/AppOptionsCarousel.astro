@@ -51,9 +51,17 @@ interface Props {
    // Verde para apps reguladas ("Verificada"), rojo para reportadas
    // ("Reportes verificados") -- mismo criterio que ya usaban los grids.
    statusColor: 'green' | 'red';
+   // Nombre del listado para GA4 (list_name de app_select) -- default: el
+   // propio `id`. En el hub (Directorio*.astro) eso ya es el valor correcto
+   // ("directorio-reportadas"/"directorio-reguladas"); las 8 secciones
+   // "Otras apps" de cada ficha lo sobreescriben con un valor FIJO
+   // ("apps-relacionadas") para que las 8 se agrupen como un solo bloque en
+   // los informes, en vez de partirse una fila por cada slug de app (QA de
+   // tracking, sept. 2026).
+   listName?: string;
 }
 
-const { id, sectionId, heading, description, apps, statusColor } = Astro.props;
+const { id, sectionId, heading, description, apps, statusColor, listName = id } = Astro.props;
 const statusClass = statusColor === 'green' ? 'text-green-500' : 'text-red-500';
 ---
 
@@ -80,11 +88,11 @@ const statusClass = statusColor === 'green' ? 'text-green-500' : 'text-red-500';
 
       <ul class="otras-apps-track flex flex-1 snap-x snap-mandatory overflow-x-auto scroll-smooth">
          {
-            apps.map((app) => (
+            apps.map((app, i) => (
                <li class="w-full flex-shrink-0 snap-center px-1">
                   <div class="mx-auto grid max-w-sm grid-cols-1 items-center gap-4 rounded-2xl border border-purple_mv/25 bg-gradient-to-b from-purple_mv/[0.06] to-transparent p-5 shadow-card transition-colors duration-300 hover:border-purple_mv/50 hover:shadow-card-hover dark:border-white/10 dark:from-purple_mv/[0.1] dark:to-black/30 md:max-w-md md:grid-cols-2 md:gap-5">
                      {DIRECTORIO_ICONS[app.slug] && (
-                        <div class="mx-auto flex h-24 w-24 flex-shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-purple_mv/20 bg-purple_mv/5 dark:border-white/10 dark:bg-white/5 md:mx-0 md:h-28 md:w-28">
+                        <div class="app-carousel-icon-box mx-auto flex h-24 w-24 flex-shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-purple_mv/20 bg-purple_mv/5 dark:border-white/10 dark:bg-white/5 md:mx-0 md:h-28 md:w-28">
                            <Image src={DIRECTORIO_ICONS[app.slug]} alt="" width={112} class="h-full w-full object-contain p-3" loading="lazy" />
                         </div>
                      )}
@@ -94,10 +102,13 @@ const statusClass = statusColor === 'green' ? 'text-green-500' : 'text-red-500';
                         <a
                            href={`/aplicaciones-prestamo/${app.slug}`}
                            class="app-select-link mt-3 inline-block text-sm font-semibold text-text_banner underline-offset-4 hover:underline"
-                           data-app-name={app.slug}
+                           data-app-id={app.slug}
+                           data-app-name={app.name}
                            data-app-type={APP_TYPE_BY_SLUG[app.slug]}
-                           data-source-section={id}
+                           data-source-section={listName}
+                           data-position={i + 1}
                            data-destination-type="internal_page"
+                           data-ga-event="app_select"
                         >
                            Ver información
                         </a>
@@ -132,6 +143,27 @@ const statusClass = statusColor === 'green' ? 'text-green-500' : 'text-red-500';
    }
    .otras-apps-track::-webkit-scrollbar {
       display: none;
+   }
+
+   /*
+      CLS (GOLIVE-011, ver skill Rendimiento -- este componente lo comparten
+      DirectorioReportadas.astro/DirectorioReguladas.astro y las 8 secciones
+      "Otras apps" de cada ficha de app, o sea: Directorio Y al menos una
+      página de detalle de app, dos de las plantillas con CLS severo del
+      hallazgo). El <Image> pide width=112 (retina para el hueco de
+      md:h-28=112px) pero el hueco final en móvil es h-24=96px -- mismo
+      patrón que el resto de la skill: se fija el tamaño real acá para que
+      no dependa de que Tailwind ya haya cargado.
+   */
+   .app-carousel-icon-box {
+      height: 6rem; /* = h-24 */
+      width: 6rem;
+   }
+   @media (min-width: 768px) {
+      .app-carousel-icon-box {
+         height: 7rem; /* = md:h-28 */
+         width: 7rem;
+      }
    }
 </style>
 

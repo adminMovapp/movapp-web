@@ -53,6 +53,7 @@ import Layout from '@layouts/Layout.astro';
 
    <script>
       import { pushToDataLayer, mapCartItemToGA4 } from '@utils/dataLayer.js';
+      import { buildPurchasePayload } from '@utils/metaPixelPayloads.js';
 
       // Snapshot del carrito ANTES de vaciarlo: currency/value/items del
       // purchase de GA4 salen de acá (shape ya conocido). El GET
@@ -95,12 +96,41 @@ import Layout from '@layouts/Layout.astro';
                   0,
                );
                pushToDataLayer('purchase', {
-                  transaction_id: orderId || pi,
+                  // pi (payment_intent de Stripe) nunca se reinicia; orderId es
+                  // un entero secuencial interno que sí (QA de tracking,
+                  // sept. 2026: usar el order_id arriesga que GA4 descarte
+                  // compras reales como duplicadas tras un reset de la BD).
+                  transaction_id: pi || orderId,
                   currency: purchasedCart[0]?.moneda,
                   value,
                   items: purchasedCart.map((it) => mapCartItemToGA4(it)),
                });
                localStorage.setItem(dedupKey, '1');
+            }
+
+            // "Purchase" de Meta Pixel, con el mismo anti-duplicado por
+            // payment_intent. El snapshot lo dejó ShopIsland.onIntentCreated
+            // en sessionStorage (ahí se explica por qué no se emite al crear
+            // el intent). window.metaPixel lo crea MetaPixelScript en
+            // DOMContentLoaded -- a este punto ya pasó (hubo un fetch en
+            // medio); si no existe es porque no hay PUBLIC_META_PIXEL_ID
+            // (stage/local) y no se emite nada.
+            const metaDedupKey = `meta_purchase_${pi}`;
+            let pending = null;
+            try {
+               pending = JSON.parse(sessionStorage.getItem('meta_pending_purchase') || 'null');
+            } catch (e) {}
+            if (pending && !localStorage.getItem(metaDedupKey) && window.metaPixel) {
+               const { value: metaValue, currency: metaCurrency, contentIds, ...additionalData } = pending;
+               const { customData, userData } = buildPurchasePayload(metaValue, metaCurrency, contentIds, {
+                  ...additionalData,
+                  orderId: orderId || pi,
+               });
+               await window.metaPixel.track('Purchase', customData, userData);
+               localStorage.setItem(metaDedupKey, '1');
+               try {
+                  sessionStorage.removeItem('meta_pending_purchase');
+               } catch (e) {}
             }
          } catch (e) {}
       })();

@@ -4,12 +4,12 @@
 // Santiago (2026-08-28): "Cobranza con amenazas".
 //
 // "Acceso a contactos" -- ese mismo wireframe también trajo un texto nuevo
-// para esta tarjeta ("Localizada en el registro de CONDUSEF..."), pero es
+// para esta tarjeta ("Localizada en el registro de CONDUSEF..."), pero era
 // literalmente el mismo texto de la tarjeta "Registro vigente" de CrediSeguro
-// y contradice la tarjeta de Info de esta misma página ("Registro CONDUSEF:
-// No localizada"). Confirmado con Santiago: se aplica ÚNICAMENTE en móvil
-// (textMobile) -- el texto de escritorio ya construido no se toca. Mismo
-// patrón responsive que HomeSymptoms.astro.
+// y contradecía la tarjeta de Info de esta misma página ("Registro CONDUSEF:
+// No localizada"). Retirado (QA Go-Live, URL-PRESTA-001): mobile y desktop
+// deben mostrar el mismo dato verificado, así que ya no hay textMobile acá y
+// ambos breakpoints caen al mismo `text`.
 //
 // Línea de tiempo de scroll (2026-09-01, extendida desde StarPresta a las 4
 // apps "montadeudas") -- ver <RiskTimeline /> para el mecanismo completo.
@@ -19,7 +19,6 @@ const RISK_SIGNS = [
    {
       title: 'Acceso a contactos',
       text: 'Solicita permiso para leer la agenda telefónica.',
-      textMobile: 'Localizada en el registro de CONDUSEF a la fecha de revisión.',
    },
    { title: 'Comisiones poco claras', text: 'No se especifican tasas antes de aceptar.' },
    { title: 'Cobranza con amenazas', text: 'Reportes de mensajes intimidatorios.' },

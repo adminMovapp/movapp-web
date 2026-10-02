@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import { CartProvider, useCart } from '@context/CartContext.jsx';
@@ -6,6 +6,7 @@ import useConfig from '@hooks/useConfig.jsx';
 import StripeCheckout from '@components/ui/StripeCheckout.jsx';
 import { useMetaPixel } from '@hooks/useMetaPixel.jsx';
 import { pushToDataLayer, mapCartItemToGA4 } from '@utils/dataLayer.js';
+import { ERROR_TYPES, CHECKOUT_STEPS } from '@constants/tracking.ts';
 
 const fmt = (n) => Number(n || 0).toFixed(2);
 
@@ -37,7 +38,7 @@ const ProductCard = ({ product, onAdd }) => (
          <p className="mt-1 flex-1 text-sm leading-relaxed text-gray-600 dark:text-white/60">{product.descripcion}</p>
 
          <div className="mt-5">
-            <span className="block text-[11px] uppercase tracking-widest text-gray-400 dark:text-white/40">Precio</span>
+            <span className="block text-[11px] uppercase tracking-widest text-gray-500 dark:text-white/50">Precio</span>
             <span className="text-2xl font-extrabold text-text_banner">
                {product.simbolo} {fmt(product.precio)}
                <span className="ml-1 text-sm font-medium text-gray-500 dark:text-white/50">{product.moneda}</span>
@@ -70,9 +71,9 @@ const validations = {
 
 const emptyForm = { nombre: '', apellidos: '', email: '', telefono: '', codigoPostal: '' };
 
-const CheckoutPanel = ({ open, onClose, pais }) => {
+const CheckoutPanel = ({ open, openedByAdd, onOpenedByAddConsumed, onClose, pais }) => {
    const { cart, count, total, addToCart, decreaseQuantity, removeFromCart } = useCart();
-   const { trackInitiateCheckout, trackPurchase } = useMetaPixel(import.meta.env.PUBLIC_META_PIXEL_ID);
+   const { trackInitiateCheckout } = useMetaPixel();
 
    const [isClosing, setIsClosing] = useState(false);
    const [step, setStep] = useState('cart'); // 'cart' | 'form' | 'pay'
@@ -81,6 +82,20 @@ const CheckoutPanel = ({ open, onClose, pais }) => {
    // clientSecret cacheado: se crea una vez por sesión de checkout y se reutiliza
    // aunque el usuario vaya y vuelva entre datos/pago (evita órdenes duplicadas).
    const [clientSecret, setClientSecret] = useState('');
+   // Anti-duplicado de begin_checkout: una sola vez por sesión de checkout,
+   // aunque el usuario vaya y vuelva entre carrito y datos. Se resetea al
+   // cerrar el drawer y cuando cambia el total (misma vida que clientSecret).
+   const beginCheckoutTrackedRef = useRef(false);
+   // view_cart NO se emite en la apertura automática que sigue a "Agregar al
+   // carrito" (plan de eventos, fase 1: en ese clic queda solo add_to_cart;
+   // view_cart es abrir el carrito a propósito). Este ref recuerda si esa
+   // primera vista ya se "consumió" en la sesión actual del drawer.
+   const autoOpenViewSkippedRef = useRef(false);
+   // Anti-duplicado de add_payment_info, keyed por clientSecret: vive acá y
+   // no en el formulario de Stripe porque ese componente se desmonta al
+   // "Volver" a datos y se vuelve a montar al regresar a pago (un ref suyo
+   // arrancaría de cero y reemitiría el evento).
+   const paymentInfoTrackedFor = useRef('');
 
    const symbol = cart[0]?.simbolo || pais?.simbolo || '$';
    const moneda = cart[0]?.moneda || pais?.moneda || 'MXN';
@@ -107,6 +122,8 @@ const CheckoutPanel = ({ open, onClose, pais }) => {
          setStep('cart');
          setErrors({});
          setClientSecret(''); // nueva sesión de checkout la próxima vez
+         beginCheckoutTrackedRef.current = false;
+         autoOpenViewSkippedRef.current = false;
          onClose();
       }, 300);
    };
@@ -115,14 +132,26 @@ const CheckoutPanel = ({ open, onClose, pais }) => {
    // para que se cree uno nuevo con el monto correcto al volver a pagar.
    useEffect(() => {
       setClientSecret('');
+      beginCheckoutTrackedRef.current = false;
       if (step === 'pay') setStep('cart');
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [total]);
 
    // view_cart: solo cuando el paso "carrito" se vuelve visible (no en cada
    // cambio de cantidad dentro del mismo paso, para no duplicar el evento).
+   // !isClosing: handleClose vuelve el paso a "cart" mientras el drawer aún
+   // se está cerrando -- eso no es "ver el carrito".
    useEffect(() => {
-      if (open && step === 'cart' && cart.length > 0) {
+      if (open && !isClosing && step === 'cart' && cart.length > 0) {
+         if (openedByAdd && !autoOpenViewSkippedRef.current) {
+            autoOpenViewSkippedRef.current = true;
+            // Se consume de inmediato en el padre (ShopContent) -- así
+            // "opened by add" nunca queda pegado en true más allá de ESTA
+            // apertura puntual (QA de tracking, sept. 2026: la primera
+            // apertura real del carrito de la sesión no debe perderse).
+            onOpenedByAddConsumed?.();
+            return;
+         }
          pushToDataLayer('view_cart', {
             currency: moneda,
             value: total,
@@ -150,22 +179,57 @@ const CheckoutPanel = ({ open, onClose, pais }) => {
 
    const goToForm = () => {
       if (cart.length === 0) return;
-      pushToDataLayer('begin_checkout', {
+      // GA4 y Meta se deduplican con el mismo ref para que los dos embudos
+      // cuenten lo mismo (un inicio de checkout por sesión de checkout).
+      if (!beginCheckoutTrackedRef.current) {
+         beginCheckoutTrackedRef.current = true;
+         pushToDataLayer('begin_checkout', {
+            currency: moneda,
+            value: total,
+            items: cart.map((item) => mapCartItemToGA4(item)),
+         });
+         trackInitiateCheckout(total, moneda, cart.map((c) => String(c.producto_id)), {
+            // productName es obligatorio desde que content_ids pasó a llevar
+            // IDs: sin él, el hook cae en contentIds[0] y Meta recibe "1"
+            // como nombre del producto.
+            productName: cart[0]?.nombre,
+            quantity: count,
+            country: pais?.codigo_pais,
+         });
+      }
+      setStep('form');
+   };
+
+   // Lo llama el Payment Element cada vez que queda "completo"; se emite
+   // una sola vez por PaymentIntent (ver paymentInfoTrackedFor arriba).
+   const onPaymentInfoComplete = () => {
+      if (!clientSecret || paymentInfoTrackedFor.current === clientSecret) return;
+      paymentInfoTrackedFor.current = clientSecret;
+      pushToDataLayer('add_payment_info', {
          currency: moneda,
          value: total,
+         payment_type: 'card',
          items: cart.map((item) => mapCartItemToGA4(item)),
       });
-      trackInitiateCheckout(total, moneda, cart.map((c) => c.nombre), {
-         quantity: count,
-         country: pais?.codigo_pais,
-         paymentMethod: 'stripe',
-      });
-      setStep('form');
    };
 
    const submitForm = (e) => {
       e.preventDefault();
-      if (validateForm()) setStep('pay');
+      if (validateForm()) {
+         setStep('pay');
+         return;
+      }
+      // checkout_error también para la validación del paso de datos (plan de
+      // eventos, fase 1), no solo para errores de pago de Stripe.
+      // error_message lleva nombres de campo, nunca valores.
+      const invalidFields = Object.entries(validations)
+         .filter(([field, { regex }]) => !form[field].trim() || !regex.test(form[field].trim()))
+         .map(([field]) => field);
+      pushToDataLayer('checkout_error', {
+         checkout_step: CHECKOUT_STEPS.checkout,
+         error_type: ERROR_TYPES.validationError,
+         error_message: invalidFields.join(','),
+      });
    };
 
    // Payload de create-intent construido desde el carrito (moneda local, cantidades correctas)
@@ -189,16 +253,34 @@ const CheckoutPanel = ({ open, onClose, pais }) => {
 
    const onIntentCreated = ({ clientSecret: cs }) => {
       if (cs) setClientSecret(cs); // cachear para reutilizar y no duplicar orden
-      trackPurchase(total, moneda, cart.map((c) => c.nombre), {
-         email: form.email,
-         phone: form.telefono,
-         name: `${form.nombre} ${form.apellidos}`,
-         postalCode: form.codigoPostal,
-         quantity: count,
-         country: pais?.codigo_pais,
-         paymentMethod: 'stripe',
-         customerType: 'new_customer',
-      });
+
+      // El "Purchase" de Meta NO se dispara aquí: en este punto el
+      // PaymentIntent apenas existe y el pago todavía no se confirmó, así
+      // que un checkout abandonado contaría como compra. Se deja un
+      // snapshot y /success lo emite una sola vez por payment_intent
+      // (mismo criterio que el purchase de GA4 en success.astro).
+      // sessionStorage y no localStorage: sobrevive el redirect same-tab de
+      // Stripe (return_url) pero no persiste PII más allá de la pestaña.
+      try {
+         sessionStorage.setItem(
+            'meta_pending_purchase',
+            JSON.stringify({
+               value: total,
+               currency: moneda,
+               contentIds: cart.map((c) => String(c.producto_id)),
+               email: form.email,
+               phone: form.telefono,
+               name: `${form.nombre} ${form.apellidos}`,
+               postalCode: form.codigoPostal,
+               quantity: count,
+               country: pais?.codigo_pais,
+               paymentMethod: 'stripe',
+               customerType: 'new_customer',
+            }),
+         );
+      } catch (e) {
+         // sessionStorage no disponible: se pierde solo el evento de Meta
+      }
    };
 
    if (!open || typeof document === 'undefined') return null;
@@ -375,10 +457,8 @@ const CheckoutPanel = ({ open, onClose, pais }) => {
                      buildPayload={buildPayload}
                      existingClientSecret={clientSecret}
                      onIntentCreated={onIntentCreated}
+                     onPaymentInfoComplete={onPaymentInfoComplete}
                      onCancel={() => setStep('form')}
-                     cart={cart}
-                     total={total}
-                     currency={moneda}
                   />
                )}
             </div>
@@ -411,10 +491,14 @@ const CheckoutPanel = ({ open, onClose, pais }) => {
 // ============================================================
 // Contenido de la tienda (dentro del provider)
 // ============================================================
-const ShopContent = () => {
-   const { loading, prices, pais } = useConfig();
+const ShopContent = ({ serverCountry }) => {
+   const { loading, prices, pais } = useConfig(serverCountry);
    const { addToCart } = useCart();
+   const { trackAddToCart, trackViewContent } = useMetaPixel();
    const [drawerOpen, setDrawerOpen] = useState(false);
+   // true cuando el drawer se abrió solo tras "Agregar al carrito" (ver
+   // view_cart en CheckoutPanel); false cuando lo abrió el usuario.
+   const [openedByAdd, setOpenedByAdd] = useState(false);
 
    const products = useMemo(() => prices || [], [prices]);
 
@@ -427,34 +511,80 @@ const ShopContent = () => {
          item_list_name: 'Tienda',
          items: products.map((p) => mapCartItemToGA4(p, 1)),
       });
+      // view_item: /tienda no tiene ficha de producto separada, así que la
+      // página misma hace de "vista de producto" para El Hack (decisión de
+      // negocio, QA de tracking sept. 2026) -- es el evento del que dependen
+      // las audiencias de remarketing de Google Ads y el ViewContent de
+      // Meta. select_item sigue retirado: no aporta con un solo producto.
+      products.forEach((p) => {
+         const item = mapCartItemToGA4(p, 1);
+         pushToDataLayer('view_item', { currency: p.moneda, value: item.price, items: [item] });
+         trackViewContent(item.price, p.moneda, [String(p.producto_id)], {
+            productName: p.nombre,
+            country: pais?.codigo_pais,
+         });
+      });
+      // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [products]);
 
    // El ícono del header abre el drawer vía evento global
    useEffect(() => {
-      const openDrawer = () => setDrawerOpen(true);
+      const openDrawer = () => {
+         setOpenedByAdd(false);
+         setDrawerOpen(true);
+      };
       window.addEventListener('cart:open', openDrawer);
       return () => window.removeEventListener('cart:open', openDrawer);
    }, []);
 
    const handleAdd = (product) => {
-      // El catálogo no tiene ficha de producto separada (tarjeta -> carrito
-      // directo): select_item/view_item se sintetizan acá mismo, justo
-      // antes de add_to_cart (decisión confirmada, sin interacción visual
-      // propia para esos dos pasos).
+      // Solo add_to_cart en este clic (plan de eventos GA4, fase 1). Antes se
+      // sintetizaban también select_item y view_item, pero el catálogo no
+      // tiene listado con selección ni ficha de producto: la tarjeta va
+      // directo al carrito, así que esos dos pasos no existen como
+      // interacción real y solo ensuciaban el embudo. view_cart tampoco: el
+      // drawer se abre solo aquí (openedByAdd), ver CheckoutPanel.
       const item = mapCartItemToGA4(product, 1);
-      pushToDataLayer('select_item', { item_list_id: 'tienda', item_list_name: 'Tienda', items: [item] });
-      pushToDataLayer('view_item', { currency: product.moneda, value: item.price, items: [item] });
       pushToDataLayer('add_to_cart', { currency: product.moneda, value: item.price, items: [item] });
+      trackAddToCart(item.price, product.moneda, [String(product.producto_id)], {
+         productName: product.nombre,
+         country: pais?.codigo_pais,
+         quantity: 1,
+      });
       addToCart(product);
+      setOpenedByAdd(true);
       setDrawerOpen(true);
    };
 
    return (
       <div className="mx-auto w-full max-w-6xl px-4">
          {loading ? (
+            // CLS (GOLIVE-011, ver skill Rendimiento): antes este esqueleto era
+            // un único bloque "h-80" (320px) -- la ProductCard real (imagen
+            // h-52 + padding p-6 + título + descripción + precio + botón) mide
+            // bastante más que eso, así que al reemplazar el esqueleto por las
+            // tarjetas reales (cuando useConfig termina de resolver país +
+            // precios) el layout saltaba de golpe -- confirmado como la causa
+            // más probable del CLS severo medido en /tienda. Se replica la
+            // MISMA estructura/padding que ProductCard (bloque de imagen +
+            // líneas de texto + botón) en vez de un solo rectángulo, para que
+            // el alto final quede prácticamente igual sin importar el largo
+            // real de nombre/descripción de cada producto.
             <div className="flex flex-wrap justify-center gap-6">
                {[0, 1, 2].map((i) => (
-                  <div key={i} className="h-80 w-full max-w-sm animate-pulse rounded-3xl border border-gray-200 bg-gray-100 dark:border-white/10 dark:bg-white/5" />
+                  <div
+                     key={i}
+                     className="flex w-full max-w-sm flex-col overflow-hidden rounded-3xl border border-gray-200 bg-white dark:border-white/10 dark:bg-neutral-950"
+                  >
+                     <div className="h-52 animate-pulse bg-gray-100 dark:bg-white/5" />
+                     <div className="flex flex-1 flex-col p-6">
+                        <div className="h-6 w-3/4 animate-pulse rounded bg-gray-200 dark:bg-white/10" />
+                        <div className="mt-3 h-4 w-full animate-pulse rounded bg-gray-200 dark:bg-white/10" />
+                        <div className="mt-2 h-4 w-2/3 flex-1 animate-pulse rounded bg-gray-200 dark:bg-white/10" />
+                        <div className="mt-5 h-8 w-1/2 animate-pulse rounded bg-gray-200 dark:bg-white/10" />
+                        <div className="mt-5 h-12 w-full animate-pulse rounded-full bg-gray-200 dark:bg-white/10" />
+                     </div>
+                  </div>
                ))}
             </div>
          ) : products.length === 0 ? (
@@ -469,7 +599,13 @@ const ShopContent = () => {
             </div>
          )}
 
-         <CheckoutPanel open={drawerOpen} onClose={() => setDrawerOpen(false)} pais={pais} />
+         <CheckoutPanel
+            open={drawerOpen}
+            openedByAdd={openedByAdd}
+            onOpenedByAddConsumed={() => setOpenedByAdd(false)}
+            onClose={() => setDrawerOpen(false)}
+            pais={pais}
+         />
       </div>
    );
 };
@@ -477,9 +613,9 @@ const ShopContent = () => {
 // ============================================================
 // Isla principal — provee el carrito y la tienda
 // ============================================================
-const ShopIsland = () => (
+const ShopIsland = ({ serverCountry }) => (
    <CartProvider>
-      <ShopContent />
+      <ShopContent serverCountry={serverCountry} />
    </CartProvider>
 );
 

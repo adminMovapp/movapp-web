@@ -1,14 +1,21 @@
 // src/utils/dataLayer.js
 //
-// Único punto de push a window.dataLayer para eventos GA4 que requieren
-// datos estructurados (items[], value, transaction_id) que un trigger de
-// GTM basado en DOM no puede ensamblar -- ver doc maestro de tracking,
-// hoja 05. Los CTAs de navegación (whatsapp, app_select) NO pasan por acá:
-// usan atributos data-* leídos directo por GTM (ver ButtonContact.astro).
+// Único punto de emisión de eventos GA4 desde el código (islas de React,
+// scripts de página). Va por window.gtag, que define GoogleAnalytics.astro en
+// el <head>: gtag.js SOLO procesa comandos gtag() (entradas tipo Arguments en
+// dataLayer); un objeto plano {event, ...} solo lo entiende un contenedor de
+// Google Tag Manager con triggers, y el sitio no usa GTM -- los pushes de ese
+// estilo se quedaban en el aire sin llegar nunca a GA4.
+//
+// Si window.gtag no existe (?minimal=1, o build sin PUBLIC_GA4_ID: local y
+// cualquier contexto sin la variable) no se emite nada, a propósito.
+//
+// Los CTAs de navegación (WhatsApp, enlaces internos/externos, tarjetas de
+// apps) NO pasan por acá: llevan atributos data-* que lee un listener
+// delegado en Layout.astro (whatsapp_click / cta_click / app_select).
 export function pushToDataLayer(event, params = {}) {
-   if (typeof window === 'undefined') return;
-   window.dataLayer = window.dataLayer || [];
-   window.dataLayer.push({ event, ...params });
+   if (typeof window === 'undefined' || typeof window.gtag !== 'function') return;
+   window.gtag('event', event, params);
 }
 
 // Mapea el shape real del carrito (español: producto_id/nombre/precio) al

@@ -22,6 +22,11 @@
 // - order: 'play-first' (default) o 'app-first' -- HomeHero mostraba antes
 //   App Store primero; el resto, Google Play primero. Se respeta el orden
 //   que cada sección ya tenía en vez de forzar uno nuevo.
+// - pageType/sectionName: tracking GA4 (QA de tracking, sept. 2026 -- estos
+//   badges no emitían ningún evento propio, solo el "click" saliente
+//   genérico de la medición mejorada, que no distingue tienda ni ubicación).
+//   Mismo mecanismo data-* que el resto de CTAs del sitio (ver Layout.astro):
+//   cta_name sale de pageType_sectionName_<tienda>.
 import { Image } from 'astro:assets';
 import ImgPlayStore from '@assets/play-store-v2.webp';
 import ImgAppStore from '@assets/app-store-v2.webp';
@@ -31,12 +36,16 @@ interface Props {
    class?: string;
    size?: 'sm' | 'md';
    order?: 'play-first' | 'app-first';
+   pageType: string;
+   sectionName: string;
 }
 
 const {
    class: wrapperClass = 'flex items-center gap-3',
    size = 'md',
    order = 'play-first',
+   pageType,
+   sectionName,
 } = Astro.props;
 
 const STORES = {
@@ -57,6 +66,10 @@ const badgeOrder = order === 'app-first' ? (['app', 'play'] as const) : (['play'
                target="_blank"
                rel="noopener noreferrer"
                aria-label={`Descargar en ${store.alt}`}
+               data-cta={`${pageType}_${sectionName}_${key}`}
+               data-page-type={pageType}
+               data-section-name={sectionName}
+               data-destination-type="app_store"
                class="transition hover:scale-105"
             >
                {size === 'sm' ? (

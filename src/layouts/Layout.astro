@@ -26,20 +26,26 @@ import { getSiteConfig, generateSEOTags } from '@/utils/config.jsx';
 // datos de las entidades, generadores y qué schema le toca a cada ruta.
 import { getPageSchema, getPageEntry } from '@/utils/schema.js';
 
-import GoogleTagManager from '@components/layout/GoogleTagManager.astro';
 import GoogleAnalytics from '@components/layout/GoogleAnalytics.astro';
 
 import MetaPixelScript from '@components/layout/MetaPixelScript.astro';
+
+import { getServerCountry } from '@/utils/geo';
+
+// País del visitante resuelto en el servidor (geo de Netlify), no por
+// navigator.language -- ver src/utils/geo.js.
+const serverCountry = getServerCountry(Astro);
 
 const showHeaderLayer = import.meta.env.PUBLIC_SHOW_HEADER_LAYER === 'true';
 const showPreloader = import.meta.env.PUBLIC_SHOW_PRELOADER === 'true';
 // DIAGNÓSTICO TEMPORAL -- borrar junto con el resto del diagnóstico de
 // "navdebug" una vez resuelto el flote de la barra inferior. ?nochat=1 ya
 // descartó al widget de LeadConnector como causa (mismo bug con o sin él).
-// ?minimal=1 apaga TAMBIÉN GTM/GA4/Meta Pixel de una sola vez -- GTM en
-// particular puede estar inyectando tags de terceros (heatmaps, session
-// recording, etc.) que no se ven en este código porque viven en la
-// configuración del contenedor de GTM, no en el repo.
+// ?minimal=1 apaga TAMBIÉN GA4 y Meta Pixel de una sola vez, para poder
+// probar la página sin ningún script de terceros. (Ya no hay Google Tag
+// Manager: el contenedor GT-M6XFBNNJ nunca tuvo etiquetas propias -- era el
+// alias interno de la etiqueta de Google -- y cargarlo junto a gtag/js
+// duplicaba la misma etiqueta dos veces y las instancias se pisaban.)
 const disableChatWidget = Astro.url.searchParams.get('nochat') === '1' || Astro.url.searchParams.get('minimal') === '1';
 const disableThirdPartyScripts = Astro.url.searchParams.get('minimal') === '1';
 
@@ -70,8 +76,17 @@ interface Props {
       compartido de todo el sitio.
    */
    disableCopy?: boolean;
+   /*
+      Oculta Header/HeaderLayer/MobileBottomNav/paneles de menú/Footer --
+      pensado para páginas de "todo o nada" que no deben ofrecer navegación
+      al resto del sitio (ver src/pages/en-desarrollo.astro, la landing del
+      candado de acceso SITE_LOCK_ENABLED). Nada más del layout cambia: SEO,
+      schema, mecanismo no-js/js y scripts siguen igual que en cualquier
+      otra página.
+   */
+   hideChrome?: boolean;
 }
-const { title, schema, showGrid = true, disableCopy = false } = Astro.props;
+const { title, schema, showGrid = true, disableCopy = false, hideChrome = false } = Astro.props;
 
 const siteConfig = getSiteConfig(Astro.request);
 
@@ -105,6 +120,10 @@ const schemaJson = JSON.stringify(Array.isArray(pageSchema) ? pageSchema : [page
 <!doctype html>
 <html lang={siteConfig.site.language} class="no-js dark">
    <head>
+      <!-- Primer hijo de <head>, sin excepción: PageSpeed marca el charset
+         si aparece después del primer 1024 bytes de HTML. -->
+      <meta charset="UTF-8" />
+
       <!--
          Preconnect a jsDelivr: flag-icons.min.css (usado por la isla de
          tienda) solo se pide con JS, vía el script de más abajo -- pero la
@@ -193,8 +212,7 @@ const schemaJson = JSON.stringify(Array.isArray(pageSchema) ? pageSchema : [page
          </script>
       )}
 
-      <!-- Charset y viewport -->
-      <meta charset="UTF-8" />
+      <!-- Viewport (charset ya se declaró como primer hijo de <head>) -->
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
       <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -249,8 +267,18 @@ const schemaJson = JSON.stringify(Array.isArray(pageSchema) ? pageSchema : [page
       <!-- Header meta-pixel  -->
       <meta name="facebook-domain-verification" content="uffghfhff1th1z040abwzgjgjto9mi" />
 
-      {!disableThirdPartyScripts && <GoogleTagManager />}
-      {!disableThirdPartyScripts && <GoogleAnalytics />}
+      {
+         /*
+            GA4 solo se monta si hay PUBLIC_GA4_ID (mismo criterio que
+            PUBLIC_META_PIXEL_ID más abajo): sin ID no se pide
+            gtag/js?id=undefined. Es build-time: el ID de staging va en los
+            contextos stage/branch-deploy/deploy-preview de Netlify y el de
+            producción solo en production -- stage.movapp.org y movapp.org
+            comparten las cookies del dominio raíz, así que un mismo ID en
+            los dos mezclaría los datos.
+         */
+      }
+      {!disableThirdPartyScripts && import.meta.env.PUBLIC_GA4_ID && <GoogleAnalytics />}
       <noscript>
          <style>
             [data-aos] {
@@ -338,11 +366,24 @@ const schemaJson = JSON.stringify(Array.isArray(pageSchema) ? pageSchema : [page
       class="bg-gray-300 text-gray-900 dark:bg-[#050505] dark:text-white min-h-[100svh] flex flex-col overflow-x-hidden transition-colors duration-300"
    >
       {showPreloader && <Preloader />}
-      {!disableThirdPartyScripts && <MetaPixelScript pixelId={import.meta.env.PUBLIC_META_PIXEL_ID} />}
+      {
+         /*
+            PUBLIC_META_PIXEL_ID solo está definida en el contexto production
+            de Netlify (stage/local sin pixel para no contaminar datos reales
+            con tráfico de pruebas). Sin ID no se monta nada: ni fbevents.js
+            ni fbq('init', undefined). Es build-time (inlined en el bundle),
+            así que cambiarla en Netlify requiere redeploy.
+         */
+      }
+      {
+         !disableThirdPartyScripts && import.meta.env.PUBLIC_META_PIXEL_ID && (
+            <MetaPixelScript pixelId={import.meta.env.PUBLIC_META_PIXEL_ID} />
+         )
+      }
 
-      {showHeaderLayer ? <HeaderLayer /> : null}
+      {!hideChrome && showHeaderLayer ? <HeaderLayer /> : null}
 
-      <Header />
+      {!hideChrome && <Header />}
 
       <main class="relative min-h-[100svh] isolate">
          {showGrid && <BackgroundGrid />}
@@ -350,7 +391,7 @@ const schemaJson = JSON.stringify(Array.isArray(pageSchema) ? pageSchema : [page
             <div class:list={[disableCopy && 'no-copy']}>
                <slot />
             </div>
-            <Footer />
+            {!hideChrome && <Footer />}
          </div>
       </main>
 
@@ -376,10 +417,10 @@ const schemaJson = JSON.stringify(Array.isArray(pageSchema) ? pageSchema : [page
          })();
       </script>
 
-      <MobileBottomNav />
-      <MobileSearchBackdrop />
-      <MenuMobilePanel />
-      <MenuDesktopPanel />
+      {!hideChrome && <MobileBottomNav />}
+      {!hideChrome && <MobileSearchBackdrop />}
+      {!hideChrome && <MenuMobilePanel />}
+      {!hideChrome && <MenuDesktopPanel />}
 
       <!--
          DIAGNÓSTICO TEMPORAL (v2) -- borrar una vez resuelto. Solo se activa
@@ -710,6 +751,232 @@ const schemaJson = JSON.stringify(Array.isArray(pageSchema) ? pageSchema : [page
 
             initAosReveal();
             document.addEventListener('astro:page-load', initAosReveal);
+         })();
+      </script>
+
+      <!--
+         Tracking del evento "Lead" en botones WhatsApp (.wa__stt). Vive acá,
+         una sola vez, y no en ButtonContact.astro: ese componente se repite
+         2-3 veces en varias páginas, y un listener por instancia hacía que
+         el mismo clic disparara el evento 2-3 veces. Un solo listener
+         delegado en document cubre todos los botones (incluso los que se
+         agreguen después) sin duplicarse.
+      -->
+      <script is:inline define:vars={{ serverCountry }}>
+         (function () {
+            // País resuelto en el servidor (geo de Netlify, ver
+            // src/utils/geo.js) -- antes se adivinaba con navigator.language,
+            // que no distingue es/es-ES/es-419 por país y hacía que "ar"
+            // (Argentina) matcheara también locales en árabe (ar, ar-EG). Es
+            // el mismo para toda la carga de página, así que se resuelve una
+            // sola vez acá y no en cada clic.
+            var userCountry = serverCountry;
+            var CURRENCY_BY_COUNTRY = { MX: 'MXN', CO: 'COP', AR: 'ARS' };
+
+            document.addEventListener('click', async function (e) {
+               var btn = e.target.closest('.wa__stt');
+               if (!btn) return;
+
+               // window.metaPixelUtils no existe cuando MetaPixelScript no se
+               // monta (stage/local sin PUBLIC_META_PIXEL_ID, o ?minimal=1) --
+               // se lee de forma perezosa y opcional, nunca a nivel de módulo.
+               var userAgent = navigator.userAgent;
+               var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
+               var referrer = document.referrer || 'direct';
+               var timestamp = Date.now();
+               var mensaje = btn.dataset.message || '';
+
+               // campaign_* solo si la URL realmente trae el UTM -- un
+               // fallback fijo (antes 'organic'/'website'/'whatsapp_contact')
+               // ensucia el análisis con una fuente inventada (QA de
+               // tracking Meta, sept. 2026).
+               var utmParams = new URLSearchParams(window.location.search);
+               var utmSource = utmParams.get('utm_source');
+               var utmMedium = utmParams.get('utm_medium');
+               var utmCampaign = utmParams.get('utm_campaign');
+
+               var leadCustomData = {
+                  content_name: 'WhatsApp Contact Button',
+                  content_category: 'lead_generation',
+                  content_type: 'contact_cta',
+
+                  lead_type: 'whatsapp_contact',
+                  lead_source: 'website_button',
+                  lead_quality: 'high_intent', // Usuario activamente buscó contacto
+
+                  page_url: window.location.href,
+                  page_title: document.title,
+                  referrer_url: referrer,
+
+                  device_type: isMobile ? 'mobile' : 'desktop',
+                  timestamp: timestamp,
+
+                  // El valor es una convención de negocio, no una medición
+                  // (pendiente de confirmar con marketing si se queda). La
+                  // moneda sí sigue al país: antes iba 'MXN' fijo, así que un
+                  // clic desde Colombia o Argentina reportaba pesos mexicanos.
+                  value: 50,
+                  currency: CURRENCY_BY_COUNTRY[userCountry] || 'MXN',
+
+                  country: userCountry,
+
+                  whatsapp_message_preview: mensaje.substring(0, 50),
+                  contact_method: 'whatsapp',
+                  contact_intent: 'product_inquiry',
+               };
+               if (utmSource) leadCustomData.campaign_source = utmSource;
+               if (utmMedium) leadCustomData.campaign_medium = utmMedium;
+               if (utmCampaign) leadCustomData.campaign_name = utmCampaign;
+
+               await window.metaPixelUtils?.trackEvent?.('Lead', leadCustomData, {
+                  country: [userCountry],
+               });
+
+               try {
+                  var leadData = {
+                     timestamp: timestamp,
+                     page: window.location.pathname,
+                     referrer: referrer,
+                     device: isMobile ? 'mobile' : 'desktop',
+                     country: userCountry,
+                  };
+                  localStorage.setItem('whatsapp_lead_' + timestamp, JSON.stringify(leadData));
+               } catch (err) {
+                  // Silently fail if localStorage is not available
+               }
+
+               // Deliberadamente NO se trackea el hover: antes cada
+               // mouseenter mandaba un "Lead" (value 10) a cliente y
+               // servidor, inflando la conversión Lead con ruido de
+               // engagement. Lead = clic real.
+            });
+         })();
+      </script>
+
+      <!--
+         Tracking GA4 de CTAs de navegación ("Plan de eventos GA4 · Movapp",
+         fase 2): UN solo listener delegado en document para todos los
+         enlaces/botones medibles -- los atributos data-* que ya llevaban
+         (ButtonContact.astro, CTAs de cada sección, tarjetas del carrusel
+         de apps) estaban pensados para triggers DOM de Google Tag Manager,
+         pero el sitio nunca tuvo un contenedor con reglas, así que se leen
+         acá y se emiten con gtag directo. Agregar un CTA medible = ponerle
+         los data-*; no hace falta JS por evento.
+
+         Tres familias de evento:
+         - whatsapp_click: cualquier <a> a wa.me / api.whatsapp.com (canal
+           principal; params button_id, button_text, placement,
+           destination_url, page_location). NO se mezcla con cta_click.
+           OJO con el orden: un data-ga-event explícito gana SIEMPRE, y por
+           eso se comprueba primero. El bloque "¡Comparte esta nota!" del
+           blog tiene un enlace de compartir por WhatsApp
+           (api.whatsapp.com/send?text=...) que, sin esa precedencia, caería
+           acá y contaría como un contacto por WhatsApp -- inflando con
+           shares la conversión principal del negocio.
+         - cta_click: el resto de elementos con data-cta o
+           data-destination-type (params cta_name, placement,
+           destination_type, destination_url, page_location).
+         - data-ga-event sobreescribe el nombre (p.ej. "app_select" en las
+           tarjetas de apps, con app_id/app_name/app_type/list_name).
+
+         "placement" se limita al catálogo corto del plan (header, hero,
+         footer, sticky, contenido): sale de data-placement, o "hero" si la
+         sección es el hero, o "contenido" por defecto.
+
+         Se mantiene separado del listener de Meta "Lead" de arriba a
+         propósito: aquel es async y solo WhatsApp; este es síncrono y
+         dispara-y-olvida (en un clic de WhatsApp corren los dos, uno por
+         plataforma). Nunca preventDefault ni retrasar la navegación: gtag
+         manda el hit con sendBeacon y target=_blank ni siquiera descarga la
+         página; retrasar rompería clic medio/modificadores y pelearía con
+         ExternalLinkModal.astro (que hace preventDefault sin
+         stopPropagation: el clic original al enlace externo sí llega acá y
+         se mide la intención; su botón de confirmar no lleva data-* y por
+         eso no duplica).
+
+         Sin datos personales en ningún parámetro: destination_url va sin
+         query string (el href de WhatsApp lleva el mensaje precargado) y
+         nunca se reenvían data-message ni data-external-label.
+      -->
+      <script is:inline>
+         (function () {
+            var PLACEMENTS = ['header', 'hero', 'footer', 'sticky', 'contenido'];
+
+            function placementOf(el) {
+               var ds = el.dataset;
+               if (ds.placement && PLACEMENTS.indexOf(ds.placement) !== -1) return ds.placement;
+               if (ds.sectionName === 'hero') return 'hero';
+               return 'contenido';
+            }
+
+            function withApp(params, ds) {
+               if (ds.appId || ds.appName) {
+                  params.app_id = ds.appId || ds.appName;
+                  params.app_name = ds.appName || ds.appId;
+               }
+               if (ds.appType) params.app_type = ds.appType;
+               return params;
+            }
+
+            document.addEventListener('click', function (e) {
+               // window.gtag no existe sin PUBLIC_GA4_ID ni con ?minimal=1
+               // (ver GoogleAnalytics.astro): no se emite nada.
+               if (typeof window.gtag !== 'function') return;
+               var el = e.target.closest('a, button');
+               if (!el) return;
+
+               var ds = el.dataset;
+               var href = el.tagName === 'A' ? el.href || '' : '';
+               var destinationUrl = href ? href.split('?')[0] : undefined;
+
+               if (!ds.gaEvent && (/wa\.me|api\.whatsapp\.com/.test(href) || ds.destinationType === 'whatsapp')) {
+                  window.gtag(
+                     'event',
+                     'whatsapp_click',
+                     withApp(
+                        {
+                           button_id: ds.trackId || el.id || 'wa_sin_id',
+                           button_text: (el.innerText || '').trim().slice(0, 60),
+                           placement: placementOf(el),
+                           destination_url: destinationUrl,
+                           page_location: location.href,
+                        },
+                        ds,
+                     ),
+                  );
+                  return;
+               }
+
+               // cta_click ya NO cae a el.id/"sin_nombre" (QA de tracking,
+               // sept. 2026: el 94% de los cta_click llegaban sin nombre
+               // identificable). Sin data-ga-event, el elemento necesita
+               // data-cta explícito para poder medirse -- ponerle el
+               // atributo es una decisión consciente de quien arma la
+               // plantilla, no algo que dependa de un id que puede cambiar
+               // por maquetación.
+               var eventName = ds.gaEvent;
+               if (!eventName) {
+                  if (!ds.cta) return;
+                  eventName = 'cta_click';
+               }
+
+               var params = withApp({ placement: placementOf(el), page_location: location.href }, ds);
+               if (ds.cta) params.cta_name = ds.cta;
+               if (ds.destinationType) params.destination_type = ds.destinationType;
+               if (destinationUrl) params.destination_url = destinationUrl;
+               if (ds.sourceSection) params.list_name = ds.sourceSection;
+               if (ds.position) params.position = Number(ds.position);
+               // Parámetros de "share" (bloque de compartir del blog) y de
+               // "select_content" (navegación editorial del blog). El botón
+               // nativo de compartir NO pasa por acá: su método depende de
+               // si el navegador soporta la Web Share API, así que lo emite
+               // el propio BlogArticleShare.astro.
+               if (ds.shareMethod) params.method = ds.shareMethod;
+               if (ds.contentType) params.content_type = ds.contentType;
+               if (ds.itemId) params.item_id = ds.itemId;
+
+               window.gtag('event', eventName, params);
+            });
          })();
       </script>
    </body>

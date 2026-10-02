@@ -1,81 +1,66 @@
 // src/constants/blogImages.ts
 //
-// Imagen real por artículo, keyed por slug -- migradas de public/img/blog a
-// src/assets siguiendo la skill de Rendimiento. El resto de public/img/blog
-// que no aparece acá todavía no tiene un slug/artículo correspondiente en
-// @constants/blog.ts ni en @constants/blogCategoryPages.ts, así que se
-// quedó donde estaba sin usar.
-//
-// El nombre del archivo importado (@assets/<archivo>.webp) ya no coincide
-// con el slug del artículo en varios casos -- el slug ahora sigue la URL
-// canónica del documento maestro de SEO, mientras que el nombre de archivo
-// quedó fijo al del wireframe/origen original (incl. 3 archivos de
-// "riesgo" y 2 de "noticias" ya limpiados a mano de sufijos de WordPress
-// como "-1024x683" o "-2" al migrarlos a src/assets). Solo la clave del
-// diccionario (el slug) importa para la resolución de imagen; el nombre de
-// archivo es independiente y no hace falta que coincida.
-import ImgErikMann from '@assets/erik-mann-contra-los-montadeudas.webp';
-import ImgAppsPrestamos from '@assets/aplicaciones-de-prestamos-confiables.webp';
-import ImgOjoApps from '@assets/ojo-aplicaciones-montadeudas.webp';
-import ImgQueHacer from '@assets/app-montadeudas-que-hacer.webp';
-import ImgElHackFunciona from '@assets/el-hack-funciona.webp';
-import ImgPrestamaxConfiable from '@assets/prestamax-es-confiable.webp';
-import ImgListaMontadeudas from '@assets/lista-de-montadeudas.webp';
-import ImgFastEfectivo from '@assets/fast-efectivo-es-confiable.webp';
-import ImgOkDineroCondusef from '@assets/ok-dinero-condusef.webp';
-import ImgEstrategiasComunes from '@assets/estrategias-comunes-de-los-montadeudas.webp';
-import ImgMontadeudasVanATuCasa from '@assets/montadeudas-van-a-tu-casa.webp';
-import ImgKabyLlamaContactos from '@assets/montadeudas-kaby-llama-contactos.webp';
-import ImgMexdinLlamaContactos from '@assets/mexdin-llama-a-tus-contactos.webp';
-import ImgPublicarEnRedes from '@assets/montadeudas-publicar-en-redes-sociales.webp';
-import ImgCobranzaStarpresta from '@assets/la-cobranza-de-starpresta.webp';
-import ImgHicreditoCobrando from '@assets/hicredito-te-esta-cobrando.webp';
-import ImgMexicashMolesta from '@assets/mexicash-molesta-a-tus-contactos.webp';
-import ImgMovappConfiable from '@assets/movapp-confiable-erik-mann.webp';
-import ImgDefensaDeudor from '@assets/defensa-del-deudor-v-movapp.webp';
-import ImgQuePasoFortaprest from '@assets/que-paso-con-fortaprest.webp';
-import ImgQuePasaCredmex from '@assets/que-pasa-si-no-pago-credmex.webp';
-import ImgRealizarElHack from '@assets/realizar-el-hack.webp';
-import ImgQueHacerSiDescargaste from '@assets/que-hacer-en-caso-de-descargar-apps-montadeudas.webp';
-import ImgComoDenunciarMontadeudas from '@assets/como-denunciar-app-de-prestamos-fraude.webp';
-import ImgCondusefVsMontadeudas from '@assets/condusef-vs-los-montadeudas.webp';
-import ImgComoNoPagarMontadeudas from '@assets/como-no-pagar-a-montadeudas.webp';
-import ImgQueEsMovapp from '@assets/que-es-movapp.webp';
+// Imagen real por artículo, keyed por slug. Set de imágenes nuevo (sept.
+// 2026, carpeta "blogf" entregada para reemplazar el set anterior) -- las 27
+// cubren exactamente los 27 slugs de @constants/blogArticles.ts, confirmado
+// 1 a 1 antes de reemplazar nada. Los archivos originales tenían el título
+// del artículo como nombre (con acentos/espacios/signos); se copiaron a
+// src/assets con el nombre `blog-<slug>.png` para que el nombre de archivo
+// sea estable y no dependa de caracteres especiales.
+import ImgAppsPrestamosConfiables from '@assets/blog-apps-prestamos-confiables.png';
+import ImgCobranzaStarpresta from '@assets/blog-cobranza-starpresta.png';
+import ImgComoDenunciarMontadeudas from '@assets/blog-como-denunciar-montadeudas.png';
+import ImgComoIdentificarAppsMontadeudas from '@assets/blog-como-identificar-apps-montadeudas.png';
+import ImgCondusefMontadeudas from '@assets/blog-condusef-montadeudas.png';
+import ImgDefensaDelDeudorVsMovapp from '@assets/blog-defensa-del-deudor-vs-movapp.png';
+import ImgEstrategiasMontadeudas from '@assets/blog-estrategias-montadeudas.png';
+import ImgFastEfectivoEsConfiable from '@assets/blog-fast-efectivo-es-confiable.png';
+import ImgHackAppNoDisponible from '@assets/blog-hack-app-no-disponible.png';
+import ImgHackMovappEsConfiable from '@assets/blog-hack-movapp-es-confiable.png';
+import ImgHicreditoEsConfiable from '@assets/blog-hicredito-es-confiable.png';
+import ImgHistoriaMovapp from '@assets/blog-historia-movapp.png';
+import ImgKabyEsMontadeudas from '@assets/blog-kaby-es-montadeudas.png';
+import ImgListaMontadeudas from '@assets/blog-lista-montadeudas.png';
+import ImgMexdinLlamaContactos from '@assets/blog-mexdin-llama-contactos.png';
+import ImgMexicashEsMontadeudas from '@assets/blog-mexicash-es-montadeudas.png';
+import ImgMontadeudasRedesSociales from '@assets/blog-montadeudas-redes-sociales.png';
+import ImgMontadeudasVanATuCasa from '@assets/blog-montadeudas-van-a-tu-casa.png';
+import ImgMovappEsConfiable from '@assets/blog-movapp-es-confiable.png';
+import ImgOkDineroCondusef from '@assets/blog-ok-dinero-condusef.png';
+import ImgPrestamaxEsConfiable from '@assets/blog-prestamax-es-confiable.png';
+import ImgQueEsMovapp from '@assets/blog-que-es-movapp.png';
+import ImgQueHacerConAppsMontadeudas from '@assets/blog-que-hacer-con-apps-montadeudas.png';
+import ImgQueHacerSiDescargasteAppMontadeudas from '@assets/blog-que-hacer-si-descargaste-app-montadeudas.png';
+import ImgQuePasaSiNoPagasMontadeudas from '@assets/blog-que-pasa-si-no-pagas-montadeudas.png';
+import ImgQuePasaSiNoPagoCredmex from '@assets/blog-que-pasa-si-no-pago-credmex.png';
+import ImgQuePasoFortaprest from '@assets/blog-que-paso-fortaprest.png';
 
 export const BLOG_IMAGES: Record<string, ImageMetadata> = {
-   'historia-movapp': ImgErikMann,
-   'apps-prestamos-confiables': ImgAppsPrestamos,
-   'como-identificar-apps-montadeudas': ImgOjoApps,
-   'que-hacer-con-apps-montadeudas': ImgQueHacer,
-   // 2026-08-30: reemplaza el placeholder compartido con
-   // 'hack-movapp-es-confiable' -- este artículo ya tiene wireframe propio
-   // con su propia imagen ("que-es-movapp.webp", encontrada sin usar en
-   // public/img/blog/, migrada a src/assets). 'hack-movapp-es-confiable'
-   // sigue con ImgElHackFunciona hasta que se construya su propio wireframe.
+   'historia-movapp': ImgHistoriaMovapp,
+   'apps-prestamos-confiables': ImgAppsPrestamosConfiables,
+   'como-identificar-apps-montadeudas': ImgComoIdentificarAppsMontadeudas,
+   'que-hacer-con-apps-montadeudas': ImgQueHacerConAppsMontadeudas,
    'que-es-movapp': ImgQueEsMovapp,
-   'prestamax-es-confiable': ImgPrestamaxConfiable,
+   'prestamax-es-confiable': ImgPrestamaxEsConfiable,
    'lista-montadeudas': ImgListaMontadeudas,
-   'fast-efectivo-es-confiable': ImgFastEfectivo,
+   'fast-efectivo-es-confiable': ImgFastEfectivoEsConfiable,
    'ok-dinero-condusef': ImgOkDineroCondusef,
    'que-paso-fortaprest': ImgQuePasoFortaprest,
-   'estrategias-montadeudas': ImgEstrategiasComunes,
+   'estrategias-montadeudas': ImgEstrategiasMontadeudas,
    'montadeudas-van-a-tu-casa': ImgMontadeudasVanATuCasa,
-   'kaby-es-montadeudas': ImgKabyLlamaContactos,
+   'kaby-es-montadeudas': ImgKabyEsMontadeudas,
    'mexdin-llama-contactos': ImgMexdinLlamaContactos,
-   'montadeudas-redes-sociales': ImgPublicarEnRedes,
+   'montadeudas-redes-sociales': ImgMontadeudasRedesSociales,
    'cobranza-starpresta': ImgCobranzaStarpresta,
-   'hicredito-es-confiable': ImgHicreditoCobrando,
-   'mexicash-es-montadeudas': ImgMexicashMolesta,
-   'que-pasa-si-no-pago-credmex': ImgQuePasaCredmex,
-   // 'hack-movapp-es-confiable' (categoría "noticias") -- sin wireframe
-   // propio todavía, usa este placeholder temporal (ImgElHackFunciona)
-   // hasta que se construya su propio artículo.
-   'hack-movapp-es-confiable': ImgElHackFunciona,
-   'movapp-es-confiable': ImgMovappConfiable,
-   'defensa-del-deudor-vs-movapp': ImgDefensaDeudor,
-   'hack-app-no-disponible': ImgRealizarElHack,
-   'que-hacer-si-descargaste-app-montadeudas': ImgQueHacerSiDescargaste,
+   'hicredito-es-confiable': ImgHicreditoEsConfiable,
+   'mexicash-es-montadeudas': ImgMexicashEsMontadeudas,
+   'que-pasa-si-no-pago-credmex': ImgQuePasaSiNoPagoCredmex,
+   'hack-movapp-es-confiable': ImgHackMovappEsConfiable,
+   'movapp-es-confiable': ImgMovappEsConfiable,
+   'defensa-del-deudor-vs-movapp': ImgDefensaDelDeudorVsMovapp,
+   'hack-app-no-disponible': ImgHackAppNoDisponible,
+   'que-hacer-si-descargaste-app-montadeudas': ImgQueHacerSiDescargasteAppMontadeudas,
    'como-denunciar-montadeudas': ImgComoDenunciarMontadeudas,
-   'condusef-montadeudas': ImgCondusefVsMontadeudas,
-   'que-pasa-si-no-pagas-montadeudas': ImgComoNoPagarMontadeudas,
+   'condusef-montadeudas': ImgCondusefMontadeudas,
+   'que-pasa-si-no-pagas-montadeudas': ImgQuePasaSiNoPagasMontadeudas,
 };
