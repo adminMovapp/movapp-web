@@ -1,7 +1,7 @@
 // Vídeos de /prensa. La lista (qué vídeos y en qué orden) viene del backend
-// de Movapp, en la URL de la variable de entorno PRESS_VIDEOS_API_URL
-// (p. ej. https://api-stage.movapp.com.mx/videos/press), que solo devuelve
-// IDs de Vimeo:
+// de Movapp: la variable de entorno PRESS_VIDEOS_API_URL trae solo el dominio
+// (p. ej. https://api-stage.movapp.com.mx) y aquí se le agrega PRESS_PATH.
+// Solo devuelve IDs de Vimeo:
 //
 //    { success, module, videos: [{ id, videoId, orden }] }
 //
@@ -37,6 +37,7 @@ interface VimeoOEmbed {
    thumbnail_url?: string;
 }
 
+const PRESS_PATH = '/videos/press';
 const TIMEOUT_MS = 5000;
 // Caché en memoria de la instancia de la función SSR: evita repetir las
 // 1 + N peticiones en cada visita mientras la instancia siga caliente.
@@ -45,7 +46,8 @@ let cache: { at: number; videos: PressVideo[] } | null = null;
 
 function getApiUrl(): string {
    const runtime = typeof process !== 'undefined' ? process.env.PRESS_VIDEOS_API_URL : undefined;
-   return readServerEnv(runtime, import.meta.env.PRESS_VIDEOS_API_URL);
+   const base = readServerEnv(runtime, import.meta.env.PRESS_VIDEOS_API_URL);
+   return base ? base.replace(/\/+$/, '') + PRESS_PATH : '';
 }
 
 async function fetchJson<T>(url: string): Promise<T> {
