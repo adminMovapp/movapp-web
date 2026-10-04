@@ -34,9 +34,6 @@ const mapStripeErrorType = (error) => {
 // Instancia única de Stripe (fuera del componente)
 const stripePromise = loadStripe(import.meta.env.PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
-// Fuera del componente: identidad estable para no reinicializar el Element.
-const PAYMENT_ELEMENT_OPTIONS = { wallets: { link: 'never' } };
-
 const isDarkTheme = () =>
    typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
 
@@ -93,11 +90,6 @@ const CheckoutForm = ({ onCancel, onPaymentInfoComplete }) => {
          )}
 
          <PaymentElement
-            // Link desactivado: recuerda la sesión por cookie de Stripe y
-            // sigue pidiendo su código de verificación aunque el usuario
-            // elija "pagar con otro medio"; además en modo test nunca envía
-            // códigos reales (y en live van por SMS, no al correo del form).
-            options={PAYMENT_ELEMENT_OPTIONS}
             onReady={() => setReady(true)}
             onChange={(e) => {
                // add_payment_info lo emite (y deduplica) el padre: este
