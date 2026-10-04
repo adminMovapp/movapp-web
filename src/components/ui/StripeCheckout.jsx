@@ -34,6 +34,9 @@ const mapStripeErrorType = (error) => {
 // Instancia única de Stripe (fuera del componente)
 const stripePromise = loadStripe(import.meta.env.PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
+// Fuera del componente: identidad estable para no reinicializar el Element.
+const PAYMENT_ELEMENT_OPTIONS = { wallets: { link: 'never' } };
+
 const isDarkTheme = () =>
    typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
 
@@ -90,6 +93,11 @@ const CheckoutForm = ({ onCancel, onPaymentInfoComplete }) => {
          )}
 
          <PaymentElement
+            // Link desactivado: recuerda la sesión por cookie de Stripe y
+            // sigue pidiendo su código de verificación aunque el usuario
+            // elija "pagar con otro medio"; además en modo test nunca envía
+            // códigos reales (y en live van por SMS, no al correo del form).
+            options={PAYMENT_ELEMENT_OPTIONS}
             onReady={() => setReady(true)}
             onChange={(e) => {
                // add_payment_info lo emite (y deduplica) el padre: este
@@ -185,6 +193,14 @@ const StripeCheckout = ({ buildPayload, existingClientSecret = '', onIntentCreat
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, []);
 
+   // Antes de cualquier return: un hook tras el early return de error rompe
+   // el orden de hooks. Opciones memoizadas: una identidad estable evita que Elements se reinicialice
+   // en cada render (causa común de que el PaymentElement no termine de montar).
+   const elementsOptions = useMemo(
+      () => (clientSecret ? { clientSecret, appearance: buildAppearance() } : null),
+      [clientSecret],
+   );
+
    if (error) {
       return (
          <div className="py-4 text-center">
@@ -200,13 +216,6 @@ const StripeCheckout = ({ buildPayload, existingClientSecret = '', onIntentCreat
          </div>
       );
    }
-
-   // Opciones memoizadas: una identidad estable evita que Elements se reinicialice
-   // en cada render (causa común de que el PaymentElement no termine de montar).
-   const elementsOptions = useMemo(
-      () => (clientSecret ? { clientSecret, appearance: buildAppearance() } : null),
-      [clientSecret],
-   );
 
    if (!clientSecret) {
       return <p className="py-6 text-center text-sm text-gray-500 dark:text-white/70">Preparando pago seguro…</p>;
