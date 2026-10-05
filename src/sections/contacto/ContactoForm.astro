@@ -101,7 +101,7 @@ const fieldClass =
 
 <script>
    import { pushToDataLayer } from '@utils/dataLayer.js';
-   import { ERROR_TYPES } from '@constants/tracking.ts';
+   import { ERROR_TYPES, LEAD_VALUE } from '@constants/tracking.ts';
 
    // Envía a netlify/functions/contact-form.js vía /api/contact-form
    // (redirect en netlify.toml). generate_lead y el Lead de Meta Pixel solo
@@ -194,7 +194,13 @@ const fieldClass =
                });
                window.metaPixel?.track(
                   'Lead',
-                  { content_name: FORM_NAME, content_category: 'lead_generation', lead_type: 'contacto_general' },
+                  {
+                     content_name: FORM_NAME,
+                     content_category: 'lead_generation',
+                     lead_type: 'contacto_general',
+                     value: LEAD_VALUE.value,
+                     currency: LEAD_VALUE.currency,
+                  },
                   {
                      em: correo ? [correo] : undefined,
                      fn: nombre ? [nombre] : undefined,

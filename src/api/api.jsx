@@ -29,6 +29,27 @@ export const getPrices = async (idcountry) => {
    }
 };
 
+// País de la lista de /config/countries para un código ISO (geo de
+// Netlify), con fallback a MX y luego al primero. Compartido por useConfig
+// (tienda) y getLocalizedPrices (/el-hack) para que los dos resuelvan el
+// mismo país -- y por lo tanto el mismo precio y moneda.
+export const selectCountry = (list, code = 'MX') => {
+   const wanted = String(code || 'MX').toUpperCase();
+   return (
+      list.find((p) => String(p.codigo_pais).toUpperCase() === wanted) ||
+      list.find((p) => String(p.codigo_pais).toUpperCase() === 'MX') ||
+      list[0] ||
+      null
+   );
+};
+
+// countries -> país -> precios en moneda local, sin estado de React.
+export const getLocalizedPrices = async (code) => {
+   const pais = selectCountry(await getCountries(), code);
+   const prices = pais?.id != null ? await getPrices(pais.id) : [];
+   return { pais, prices };
+};
+
 export const createStripeIntent = async (payload) => {
    try {
       const res = await fetch(`${urlApi}/payments/web/stripe/create-intent`, {

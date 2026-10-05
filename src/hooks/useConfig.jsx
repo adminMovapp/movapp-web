@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getCountries, getPrices } from '@api/api';
+import { getCountries, getPrices, selectCountry } from '@api/api';
 
 // Mapea código de país -> bandera flag-icons
 const flagClass = (code) => `fi fi-${String(code || 'mx').toLowerCase()}`;
@@ -29,15 +29,9 @@ const useConfig = (initialCountryCode = 'MX') => {
             if (cancelled) return;
             setCountries(list);
 
-            // 2. País detectado en el servidor (prop, ya resuelto vía geo de Netlify)
-            const code = String(initialCountryCode || 'MX').toUpperCase();
-
-            // 3. Mapear código -> país de la lista (fallback MX / primer país)
-            let selected =
-               list.find((p) => String(p.codigo_pais).toUpperCase() === code) ||
-               list.find((p) => String(p.codigo_pais).toUpperCase() === 'MX') ||
-               list[0] ||
-               null;
+            // 2-3. País detectado en el servidor (prop, geo de Netlify) ->
+            // país de la lista (fallback MX / primer país)
+            const selected = selectCountry(list, initialCountryCode);
 
             if (cancelled) return;
             if (selected) {
