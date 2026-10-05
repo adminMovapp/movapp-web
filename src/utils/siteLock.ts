@@ -5,8 +5,8 @@
 // está activo el middleware corre como Netlify Edge Function (Deno, ver
 // "edgeMiddleware" en astro.config.mjs) y en dev/SSR corre en Node -- Web
 // Crypto es la única API idéntica en los dos runtimes.
-export const SITE_LOCK_GATE_PATH = '/en-desarrollo';
-export const SITE_LOCK_VERIFY_PATH = '/verificar-acceso';
+export const SITE_LOCK_GATE_PATH = '/en-desarrollo/';
+export const SITE_LOCK_VERIFY_PATH = '/verificar-acceso/';
 export const SITE_LOCK_COOKIE_NAME = 'site_access';
 
 // TTL de la cookie Y del token firmado adentro: aunque alguien extraiga la

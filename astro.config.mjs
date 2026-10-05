@@ -31,6 +31,13 @@ export default defineConfig({
       // assetsInclude: ['**/*.json']
    },
    output: 'server',
+   // 'always' (auditoría CS-003): la variante sin barra de cada página SSR
+   // respondía 200 con canonical a la versión con barra (contenido
+   // duplicado). Astro ahora contesta 301 (GET) / 308 (resto de métodos)
+   // hacia la URL con barra; los endpoints con extensión (robots.txt,
+   // sitemap.xml...) quedan fuera de la regla. Todo href interno debe
+   // escribirse ya con la barra final para no generar ese salto.
+   trailingSlash: 'always',
    // edgeMiddleware solo con el candado activo (SITE_LOCK_ENABLED, ver
    // src/middleware.ts): la función SSR se registra con preferStatic, así que
    // las páginas prerenderizadas (blog) salen del CDN sin pasar por ella --
