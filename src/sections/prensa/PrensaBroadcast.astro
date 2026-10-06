@@ -1,0 +1,760 @@
+---
+// "Transmisión" de /prensa: un monitor de TV (barra REC, cintillo tipo
+// noticiero) que reproduce el vídeo del canal activo, más una
+// grilla de "canales" (uno por vídeo) para cambiar entre ellos con un efecto
+// de estática. Los vídeos llegan por prop desde src/pages/prensa.astro (API
+// PRESS_VIDEOS_API_URL + oEmbed de Vimeo, ver @api/pressVideos.ts).
+//
+// Sin enlaces a Vimeo a propósito: los vídeos solo se ven embebidos acá. Sin
+// JS quedan título, duración y miniatura de cada uno (el contenido), sin
+// reproductor. El <iframe> de Vimeo solo se crea al darle play (facade):
+// cargarlo de entrada sumaría ~1 MB de JS de terceros a la página sin que el
+// usuario lo haya pedido (ver skill Rendimiento).
+import StarField from '@components/decorative/StarField.astro';
+import { formatDuration, vimeoEmbedUrl, vimeoThumb, type PressVideo } from '@api/pressVideos.ts';
+
+interface Props {
+   videos: PressVideo[];
+}
+
+const { videos } = Astro.props;
+
+const channel = (i: number) => String(i + 1).padStart(2, '0');
+const total = channel(videos.length - 1);
+// srcset de miniaturas de Vimeo: "-d_<ancho>" devuelve exactamente ese ancho.
+const srcset = (video: PressVideo, widths: number[]) => widths.map((w) => `${vimeoThumb(video, w)} ${w}w`).join(', ');
+---
+
+<section class="relative mx-auto mt-8 w-full max-w-5xl px-4 md:mt-12">
+   <StarField id="prensa-broadcast" ambientCount={30} />
+
+   <div id="press-broadcast" data-active="0">
+      <!-- ===== Monitor ===== -->
+      <div class="press-monitor relative rounded-[1.75rem] p-px">
+         <div class="relative overflow-hidden rounded-[calc(1.75rem-1px)] bg-neutral-950">
+            <!-- Barra superior: REC + canal -->
+            <div class="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-2.5 font-mono text-[10px] uppercase tracking-[0.2em] text-white/70 md:px-6 md:text-xs">
+               <span class="flex items-center gap-2">
+                  <span class="press-rec-dot h-2 w-2 rounded-full bg-red-500" aria-hidden="true"></span>
+                  <span data-monitor-status>Al aire</span>
+               </span>
+               <span>
+                  CH <span data-monitor-channel class="font-bold text-white">01</span> / {total}
+               </span>
+            </div>
+
+            <!-- Pantalla -->
+            <div data-monitor-screen class="press-screen relative aspect-video overflow-hidden bg-black">
+               {
+                  videos.map((video, i) => (
+                     <button
+                        type="button"
+                        data-monitor-poster
+                        data-index={i}
+                        data-embed={vimeoEmbedUrl(video, true)}
+                        data-title={video.title}
+                        data-video-id={video.vimeoId}
+                        aria-label={`Reproducir: ${video.title}`}
+                        class:list={[
+                           'press-poster group absolute inset-0 block w-full cursor-pointer text-left transition-opacity duration-500',
+                           i === 0 ? 'opacity-100' : 'pointer-events-none opacity-0',
+                        ]}
+                        tabindex={i === 0 ? undefined : -1}
+                     >
+                        {video.portrait ? (
+                           <>
+                              {/* Vertical en pantalla 16:9: la misma miniatura desenfocada de
+                                  fondo + la nítida completa al centro, en vez de recortarla. */}
+                              <img
+                                 src={vimeoThumb(video, 360)}
+                                 alt=""
+                                 width="360"
+                                 height="640"
+                                 loading="lazy"
+                                 decoding="async"
+                                 class="press-poster-bg"
+                                 aria-hidden="true"
+                              />
+                              <img
+                                 src={vimeoThumb(video, 640)}
+                                 srcset={srcset(video, [360, 640])}
+                                 sizes="(min-width: 1024px) 315px, 30vw"
+                                 alt={video.title}
+                                 width="640"
+                                 height="1138"
+                                 loading={i === 0 ? 'eager' : 'lazy'}
+                                 fetchpriority={i === 0 ? 'high' : 'auto'}
+                                 decoding="async"
+                                 class="press-poster-img press-poster-img--contain"
+                              />
+                           </>
+                        ) : (
+                           <img
+                              src={vimeoThumb(video, 1280)}
+                              srcset={srcset(video, [640, 960, 1280])}
+                              sizes="(min-width: 1024px) 990px, 100vw"
+                              alt={video.title}
+                              width="1280"
+                              height="720"
+                              loading={i === 0 ? 'eager' : 'lazy'}
+                              fetchpriority={i === 0 ? 'high' : 'auto'}
+                              decoding="async"
+                              class="press-poster-img transition-transform duration-700 group-hover:scale-[1.03]"
+                           />
+                        )}
+
+                        <span class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-black/30" aria-hidden="true" />
+                        <span class="press-scanlines absolute inset-0" aria-hidden="true" />
+
+                        <!-- Esquinas HUD -->
+                        <span class="press-corner left-3 top-3 border-l-2 border-t-2 md:left-5 md:top-5" aria-hidden="true" />
+                        <span class="press-corner right-3 top-3 border-r-2 border-t-2 md:right-5 md:top-5" aria-hidden="true" />
+                        <span class="press-corner bottom-3 left-3 border-b-2 border-l-2 md:bottom-5 md:left-5" aria-hidden="true" />
+                        <span class="press-corner bottom-3 right-3 border-b-2 border-r-2 md:bottom-5 md:right-5" aria-hidden="true" />
+
+                        {video.durationSeconds > 0 && (
+                           <span class="absolute left-6 top-6 rounded-md bg-black/60 px-2 py-1 font-mono text-[11px] font-bold text-white backdrop-blur-sm md:left-9 md:top-9 md:text-xs">
+                              {formatDuration(video.durationSeconds)}
+                           </span>
+                        )}
+
+                        <!-- Botón de play con anillos -->
+                        <span class="absolute left-1/2 top-[42%] -translate-x-1/2 -translate-y-1/2" aria-hidden="true">
+                           <span class="press-ring absolute inset-0 rounded-full border-2 border-purple_mv" />
+                           <span class="press-ring press-ring--late absolute inset-0 rounded-full border-2 border-purple_mv" />
+                           <span class="relative flex h-16 w-16 items-center justify-center rounded-full bg-purple_mv text-white shadow-[0_0_40px_rgba(129,73,226,0.7)] transition-transform duration-300 group-hover:scale-110 md:h-24 md:w-24">
+                              <svg class="ml-1 h-7 w-7 md:h-10 md:w-10" viewBox="0 0 24 24" fill="currentColor">
+                                 <path d="M8 5.14v13.72a1 1 0 001.5.86l11-6.86a1 1 0 000-1.72l-11-6.86A1 1 0 008 5.14z" />
+                              </svg>
+                           </span>
+                        </span>
+
+                        <!-- Cintillo tipo noticiero -->
+                        <span class="absolute bottom-5 left-5 right-5 flex flex-col items-start md:bottom-10 md:left-10 md:right-auto md:max-w-xl">
+                           <span class="press-lower-kicker bg-purple_mv px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-white md:text-xs">
+                              Prensa · CH {channel(i)}
+                           </span>
+                           <span class="press-lower-title bg-white px-3 py-1.5 text-left text-sm font-bold leading-snug text-gray-900 md:px-4 md:py-2 md:text-xl">
+                              {video.title}
+                           </span>
+                        </span>
+                     </button>
+                  ))
+               }
+
+
+               <!-- Contenedor del <iframe> de Vimeo (lo crea el script al dar
+                    play). Al salir el monitor de pantalla con el vídeo
+                    sonando, este mismo contenedor pasa a position:fixed
+                    (mini reproductor): cambiar solo su CSS no recarga el
+                    iframe, moverlo de nodo sí lo haría. -->
+               <div data-player-shell class="press-shell absolute inset-0 z-10 hidden">
+                  <div
+                     data-dock-bar
+                     class="press-dock-bar items-center gap-2 border-b border-white/10 bg-neutral-950 py-1.5 pl-3 pr-1.5 font-mono text-[10px] uppercase tracking-[0.15em] text-white/80"
+                  >
+                     <span class="press-rec-dot h-1.5 w-1.5 flex-shrink-0 rounded-full bg-red-500" aria-hidden="true"></span>
+                     <span class="flex-shrink-0 font-bold text-white">CH <span data-dock-channel>01</span></span>
+                     <span data-dock-title class="min-w-0 flex-1 truncate normal-case tracking-normal"></span>
+                     <button
+                        type="button"
+                        data-dock-back
+                        aria-label="Volver al monitor"
+                        class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full transition hover:bg-white/10"
+                     >
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                           <path d="M12 19V5M5 12l7-7 7 7" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                     </button>
+                     <button
+                        type="button"
+                        data-dock-close
+                        aria-label="Cerrar mini reproductor"
+                        class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full transition hover:bg-white/10"
+                     >
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                           <path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"></path>
+                        </svg>
+                     </button>
+                  </div>
+                  <div data-player-frame class="press-player-frame relative h-full w-full bg-black"></div>
+               </div>
+
+               <!-- Pantalla final propia: reemplaza a la de Vimeo ("seguir a
+                    Movapp en Vimeo"), ver finish() en el script. -->
+               <div
+                  data-endcard
+                  class="press-endcard absolute inset-0 z-10 hidden flex-col items-center justify-center gap-3 bg-black/75 p-4 text-center backdrop-blur-sm md:gap-5"
+               >
+                  <p class="font-mono text-[10px] uppercase tracking-[0.25em] text-white/60 md:text-xs">Fin de la transmisión</p>
+                  <div class="flex flex-col items-center gap-2 sm:flex-row sm:gap-3">
+                     <button
+                        type="button"
+                        data-end-replay
+                        class="inline-flex min-h-[44px] items-center gap-2 rounded-full border border-white/25 px-5 py-2 text-sm font-bold text-white transition hover:border-white hover:bg-white/10"
+                     >
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                           <path d="M4 4v6h6M20 12a8 8 0 01-14.9 4M4 12a8 8 0 0114.9-4" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                        Ver de nuevo
+                     </button>
+                     <button
+                        type="button"
+                        data-end-next
+                        class="inline-flex min-h-[44px] max-w-full items-center gap-2 rounded-full bg-purple_mv px-5 py-2 text-sm font-bold text-white shadow-[0_0_30px_rgba(129,73,226,0.6)] transition hover:scale-105"
+                     >
+                        <span class="truncate">Siguiente<span class="hidden sm:inline">: <span data-end-next-title></span></span></span>
+                        <svg class="h-4 w-4 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                           <path d="M8 5.14v13.72a1 1 0 001.5.86l11-6.86a1 1 0 000-1.72l-11-6.86A1 1 0 008 5.14z"></path>
+                        </svg>
+                     </button>
+                  </div>
+               </div>
+
+               <!-- Estática al cambiar de canal -->
+               <div data-monitor-static class="press-static pointer-events-none absolute inset-0 z-20 opacity-0" aria-hidden="true">
+               </div>
+            </div>
+         </div>
+      </div>
+
+      <!-- ===== Canales ===== -->
+      <ul class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 md:mt-8 md:gap-6 lg:grid-cols-4">
+         {
+            videos.map((video, i) => (
+               <li
+                  class="press-channel group relative flex h-full items-center gap-4 rounded-2xl border border-purple_mv/20 bg-white/60 p-3 transition-all duration-300 hover:-translate-y-1 hover:border-purple_mv/60 hover:shadow-[0_0_30px_rgba(129,73,226,0.25)] dark:border-white/10 dark:bg-white/[0.04] sm:flex-col sm:items-stretch sm:p-4"
+                  data-on={i === 0 ? '' : undefined}
+               >
+                  <span class="press-channel-thumb relative block aspect-video w-2/5 flex-shrink-0 overflow-hidden rounded-xl bg-black sm:w-full">
+                     {video.portrait && (
+                        <img src={vimeoThumb(video, 360)} alt="" width="360" height="640" loading="lazy" decoding="async" class="press-poster-bg" aria-hidden="true" />
+                     )}
+                     <img
+                        src={vimeoThumb(video, 640)}
+                        srcset={video.portrait ? undefined : srcset(video, [320, 640])}
+                        sizes={video.portrait ? undefined : '(min-width: 1024px) 230px, (min-width: 640px) 45vw, 40vw'}
+                        alt=""
+                        width="640"
+                        height={video.portrait ? 1138 : 360}
+                        loading="lazy"
+                        decoding="async"
+                        class:list={[
+                           'press-channel-img opacity-80 transition duration-500 group-hover:scale-105 group-hover:opacity-100',
+                           video.portrait && 'press-poster-img--contain',
+                        ]}
+                     />
+                     <span class="absolute left-2 top-2 rounded bg-black/70 px-1.5 py-0.5 font-mono text-[10px] font-bold tracking-wider text-white">
+                        CH {channel(i)}
+                     </span>
+                     {video.durationSeconds > 0 && (
+                        <span class="absolute bottom-2 right-2 rounded bg-black/70 px-1.5 py-0.5 font-mono text-[10px] font-bold text-white">
+                           {formatDuration(video.durationSeconds)}
+                        </span>
+                     )}
+                     <!-- Indicador "en pantalla" (solo el canal activo, ver CSS) -->
+                     <span class="press-onair absolute inset-0 items-center justify-center bg-purple_mv/40 backdrop-blur-[2px]" aria-hidden="true">
+                        <span class="flex h-5 items-end gap-[3px]">
+                           <span class="press-eq-bar" />
+                           <span class="press-eq-bar" />
+                           <span class="press-eq-bar" />
+                           <span class="press-eq-bar" />
+                        </span>
+                     </span>
+                  </span>
+
+                  <span class="flex min-w-0 flex-col gap-1.5 sm:px-1 sm:pb-1">
+                     <span class="text-[10px] font-bold uppercase tracking-[0.18em] text-purple_mv dark:text-purple-300">
+                        Canal {channel(i)}
+                        <span class="press-onair-label ml-1 text-red-500">· En pantalla</span>
+                     </span>
+                     <h2 class="text-base font-bold leading-snug text-gray-900 dark:text-white">
+                        <!-- El botón cubre toda la tarjeta (after:inset-0) sin
+                             meter el <h2> dentro de un <button>, que no es HTML válido. -->
+                        <button
+                           type="button"
+                           data-channel={i}
+                           aria-current={i === 0 ? 'true' : undefined}
+                           class="text-left after:absolute after:inset-0 after:rounded-2xl after:content-['']"
+                        >
+                           {video.title}
+                        </button>
+                     </h2>
+                  </span>
+               </li>
+            ))
+         }
+      </ul>
+   </div>
+</section>
+
+<style>
+   /* Tamaño final de la pantalla fijado acá y no solo con aspect-video/
+      absolute de Tailwind: este <style> se inlinea siempre, Tailwind llega
+      después -- sin esto el póster se pinta primero a su tamaño intrínseco
+      (1280x720) y salta al cargar Tailwind (CLS, ver skill Rendimiento). */
+   .press-screen {
+      position: relative;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+   }
+   .press-poster {
+      position: absolute;
+      inset: 0;
+   }
+   .press-poster-img,
+   .press-channel-img {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+   }
+   /* Vídeos verticales: completos al centro sobre su propia miniatura
+      desenfocada (no recortados a 16:9). */
+   .press-poster-img--contain {
+      object-fit: contain;
+   }
+   .press-poster-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: blur(24px) brightness(0.6);
+      transform: scale(1.2);
+   }
+   .press-channel-thumb {
+      position: relative;
+      aspect-ratio: 16 / 9;
+      overflow: hidden; /* recorta el scale() de .press-poster-bg también sin Tailwind */
+   }
+
+   /* Mini reproductor: la barra solo existe acoplado. */
+   .press-dock-bar {
+      display: none;
+   }
+   .press-shell.is-docked {
+      position: fixed;
+      inset: auto auto 84px 16px; /* sobre la barra inferior móvil */
+      z-index: 60;
+      display: flex;
+      flex-direction: column;
+      width: min(64vw, 300px);
+      height: auto;
+      overflow: hidden;
+      border: 1px solid rgba(129, 73, 226, 0.7);
+      border-radius: 1rem;
+      background: #0a0a0a;
+      box-shadow:
+         0 0 40px rgba(129, 73, 226, 0.45),
+         0 20px 50px rgba(0, 0, 0, 0.6);
+      animation: press-dock-in 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+   }
+   .press-shell.is-docked .press-dock-bar {
+      display: flex;
+   }
+   .press-shell.is-docked .press-player-frame {
+      height: auto;
+      aspect-ratio: 16 / 9;
+   }
+   @media (min-width: 768px) {
+      .press-shell.is-docked {
+         inset: auto 24px 24px auto;
+         width: 380px;
+      }
+   }
+   @keyframes press-dock-in {
+      from {
+         transform: translateY(24px) scale(0.95);
+         opacity: 0;
+      }
+   }
+
+   /* Borde con gradiente animado + resplandor morado del monitor. */
+   .press-monitor {
+      background: linear-gradient(135deg, rgba(129, 73, 226, 0.9), rgba(255, 255, 255, 0.15) 40%, rgba(129, 73, 226, 0.9));
+      background-size: 200% 200%;
+      animation: press-border 8s ease-in-out infinite;
+      box-shadow:
+         0 0 60px rgba(129, 73, 226, 0.35),
+         0 30px 80px -20px rgba(0, 0, 0, 0.6);
+   }
+   @keyframes press-border {
+      0%,
+      100% {
+         background-position: 0% 50%;
+      }
+      50% {
+         background-position: 100% 50%;
+      }
+   }
+
+   .press-rec-dot {
+      box-shadow: 0 0 10px rgba(239, 68, 68, 0.9);
+      animation: press-blink 1.2s steps(2, start) infinite;
+   }
+   @keyframes press-blink {
+      to {
+         visibility: hidden;
+      }
+   }
+
+   .press-scanlines {
+      background: repeating-linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 0 1px, transparent 1px 3px);
+      mix-blend-mode: overlay;
+   }
+
+   .press-corner {
+      position: absolute;
+      width: 1.25rem;
+      height: 1.25rem;
+      border-color: rgba(255, 255, 255, 0.55);
+   }
+
+   .press-ring {
+      animation: press-ring 2.4s ease-out infinite;
+   }
+   .press-ring--late {
+      animation-delay: 1.2s;
+   }
+   @keyframes press-ring {
+      from {
+         transform: scale(1);
+         opacity: 0.8;
+      }
+      to {
+         transform: scale(1.9);
+         opacity: 0;
+      }
+   }
+
+   /* Cintillo: entra deslizándose cada vez que su póster queda en pantalla. */
+   .press-poster[data-current] .press-lower-kicker,
+   .press-poster[data-current] .press-lower-title {
+      animation: press-lower-in 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+   }
+   .press-poster[data-current] .press-lower-title {
+      animation-delay: 0.12s;
+   }
+   @keyframes press-lower-in {
+      from {
+         transform: translateX(-24px);
+         opacity: 0;
+      }
+   }
+
+   /* Estática de TV (ruido SVG) que tapa el cambio de canal. */
+   .press-static {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-color: #111;
+   }
+   .press-static.is-on {
+      animation:
+         press-static-jitter 0.12s steps(3) infinite,
+         press-static-fade 0.45s ease-out both;
+   }
+   @keyframes press-static-jitter {
+      0% {
+         background-position: 0 0;
+      }
+      33% {
+         background-position: -40px 25px;
+      }
+      66% {
+         background-position: 30px -50px;
+      }
+   }
+   @keyframes press-static-fade {
+      0% {
+         opacity: 1;
+      }
+      60% {
+         opacity: 0.9;
+      }
+      100% {
+         opacity: 0;
+      }
+   }
+
+   /* Canal activo */
+   .press-onair,
+   .press-onair-label {
+      display: none;
+   }
+   .press-channel[data-on] {
+      border-color: rgba(129, 73, 226, 0.7);
+      box-shadow: 0 0 30px rgba(129, 73, 226, 0.25);
+   }
+   .press-channel[data-on] .press-onair {
+      display: flex;
+   }
+   .press-channel[data-on] .press-onair-label {
+      display: inline;
+   }
+   .press-eq-bar {
+      display: block;
+      width: 4px;
+      height: 100%;
+      border-radius: 2px;
+      background: #fff;
+      transform-origin: bottom;
+      animation: press-eq 0.9s ease-in-out infinite alternate;
+   }
+   .press-eq-bar:nth-child(2) {
+      animation-delay: -0.3s;
+   }
+   .press-eq-bar:nth-child(3) {
+      animation-delay: -0.6s;
+   }
+   .press-eq-bar:nth-child(4) {
+      animation-delay: -0.15s;
+   }
+   @keyframes press-eq {
+      from {
+         transform: scaleY(0.25);
+      }
+      to {
+         transform: scaleY(1);
+      }
+   }
+
+   @media (prefers-reduced-motion: reduce) {
+      .press-monitor,
+      .press-rec-dot,
+      .press-ring,
+      .press-eq-bar,
+      .press-shell.is-docked,
+      .press-poster[data-current] .press-lower-kicker,
+      .press-poster[data-current] .press-lower-title {
+         animation: none;
+      }
+      .press-static.is-on {
+         animation: press-static-fade 0.3s ease-out both;
+      }
+   }
+</style>
+
+<script>
+   import { pushToDataLayer } from '@utils/dataLayer.js';
+
+   // El reproductor se controla con la API postMessage de Vimeo (la misma que
+   // usa su SDK @vimeo/player, sin sumar la dependencia):
+   //  - fin del vídeo: se quita el iframe un instante antes de que termine,
+   //    así nunca aparece la pantalla final de Vimeo ("seguir a Movapp en
+   //    Vimeo", que no se puede apagar desde el embed) y en su lugar sale la
+   //    tarjeta propia [data-endcard].
+   //  - scroll: si el monitor sale de pantalla con el vídeo sonando, el
+   //    contenedor del iframe se acopla como mini reproductor fijo. Antes el
+   //    iframe se quedaba atrás y, fuera de vista, mostraba una miniatura
+   //    que no era la del vídeo en curso.
+   const VIMEO_ORIGIN = 'https://player.vimeo.com';
+   const END_MARGIN_SECONDS = 0.6;
+
+   function initPressBroadcast() {
+      const root = document.getElementById('press-broadcast');
+      if (!root || root.dataset.ready === 'true') return;
+      root.dataset.ready = 'true';
+
+      const q = <T extends HTMLElement = HTMLElement>(sel: string) => root.querySelector<T>(sel);
+      const screen = q('[data-monitor-screen]');
+      const shell = q('[data-player-shell]');
+      const frame = q('[data-player-frame]');
+      const endcard = q('[data-endcard]');
+      const staticLayer = q('[data-monitor-static]');
+      const channelLabel = q('[data-monitor-channel]');
+      const statusLabel = q('[data-monitor-status]');
+      const dockChannel = q('[data-dock-channel]');
+      const dockTitle = q('[data-dock-title]');
+      const nextTitle = q('[data-end-next-title]');
+      const posters = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-monitor-poster]'));
+      const channels = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-channel]'));
+      if (!screen || !shell || !frame || !posters.length) return;
+
+      let active = 0;
+      let iframe: HTMLIFrameElement | null = null;
+      let playing = false;
+      let docked = false;
+      let dockDismissed = false;
+      let monitorVisible = true;
+      posters[0].dataset.current = '';
+
+      const pad = (n: number) => String(n + 1).padStart(2, '0');
+      const setStatus = (text: string) => {
+         if (statusLabel) statusLabel.textContent = text;
+      };
+
+      function send(method: string, value?: string) {
+         const msg = value === undefined ? { method } : { method, value };
+         iframe?.contentWindow?.postMessage(JSON.stringify(msg), VIMEO_ORIGIN);
+      }
+
+      function setDocked(on: boolean) {
+         if (on === docked) return;
+         docked = on;
+         shell!.classList.toggle('is-docked', on);
+      }
+
+      function updateDock() {
+         // Se acopla solo si está sonando; si ya está acoplado y el usuario
+         // lo pausa ahí mismo, se queda acoplado (no desaparece de golpe).
+         setDocked(!!iframe && !monitorVisible && !dockDismissed && (playing || docked));
+      }
+
+      function showEndcard(on: boolean) {
+         endcard?.classList.toggle('hidden', !on);
+         endcard?.classList.toggle('flex', on);
+      }
+
+      function removePlayer() {
+         iframe?.remove();
+         iframe = null;
+         playing = false;
+         setDocked(false);
+         shell!.classList.add('hidden');
+         setStatus('Al aire');
+      }
+
+      function finish() {
+         if (!iframe) return;
+         send('pause');
+         removePlayer();
+         setStatus('Fin');
+         if (nextTitle) nextTitle.textContent = posters[(active + 1) % posters.length].dataset.title ?? '';
+         showEndcard(true);
+      }
+
+      function play(index: number) {
+         const poster = posters[index];
+         removePlayer();
+         showEndcard(false);
+         iframe = document.createElement('iframe');
+         iframe.src = poster.dataset.embed ?? '';
+         iframe.title = poster.dataset.title ?? 'Vídeo';
+         iframe.allow = 'autoplay; fullscreen; picture-in-picture';
+         iframe.allowFullscreen = true;
+         iframe.className = 'absolute inset-0 h-full w-full';
+         frame!.appendChild(iframe);
+         shell!.classList.remove('hidden');
+         if (dockChannel) dockChannel.textContent = pad(index);
+         if (dockTitle) dockTitle.textContent = poster.dataset.title ?? '';
+         dockDismissed = false;
+         setStatus('Reproduciendo');
+         pushToDataLayer('video_start', {
+            video_title: poster.dataset.title,
+            video_provider: 'vimeo',
+            video_id: poster.dataset.videoId,
+         });
+      }
+
+      function tuneTo(index: number) {
+         if (index === active) return;
+         removePlayer();
+         showEndcard(false);
+
+         // Reinicia la animación de estática aunque ya estuviera corriendo.
+         staticLayer?.classList.remove('is-on');
+         void staticLayer?.offsetWidth;
+         staticLayer?.classList.add('is-on');
+
+         posters.forEach((p, i) => {
+            const on = i === index;
+            p.classList.toggle('opacity-100', on);
+            p.classList.toggle('opacity-0', !on);
+            p.classList.toggle('pointer-events-none', !on);
+            p.tabIndex = on ? 0 : -1;
+            if (on) p.dataset.current = '';
+            else delete p.dataset.current;
+         });
+         channels.forEach((c, i) => {
+            const card = c.closest<HTMLElement>('.press-channel');
+            if (i === index) {
+               c.setAttribute('aria-current', 'true');
+               if (card) card.dataset.on = '';
+            } else {
+               c.removeAttribute('aria-current');
+               if (card) delete card.dataset.on;
+            }
+         });
+         if (channelLabel) channelLabel.textContent = pad(index);
+         active = index;
+      }
+
+      function tuneAndPlay(index: number) {
+         const wasActive = index === active;
+         tuneTo(index);
+         // Lleva el monitor a la vista (en móvil los canales quedan debajo).
+         const rect = screen!.getBoundingClientRect();
+         if (rect.top < 0 || rect.bottom > window.innerHeight) {
+            screen!.scrollIntoView({ behavior: 'smooth', block: 'center' });
+         }
+         // Deja que la estática se vea antes de arrancar el vídeo.
+         setTimeout(() => play(index), wasActive ? 0 : 350);
+      }
+
+      window.addEventListener('message', (e) => {
+         if (!iframe || e.origin !== VIMEO_ORIGIN || e.source !== iframe.contentWindow) return;
+         let msg: { event?: string; data?: { seconds?: number; duration?: number } };
+         try {
+            msg = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
+         } catch {
+            return;
+         }
+         switch (msg?.event) {
+            case 'ready':
+               ['play', 'pause', 'ended', 'timeupdate'].forEach((ev) => send('addEventListener', ev));
+               break;
+            case 'play':
+               playing = true;
+               setStatus('Reproduciendo');
+               updateDock();
+               break;
+            case 'pause':
+               playing = false;
+               setStatus('En pausa');
+               break;
+            case 'timeupdate': {
+               const { seconds = 0, duration = 0 } = msg.data ?? {};
+               if (duration > 0 && duration - seconds <= END_MARGIN_SECONDS) finish();
+               break;
+            }
+            case 'ended':
+               finish();
+               break;
+         }
+      });
+
+      if ('IntersectionObserver' in window) {
+         new IntersectionObserver(
+            ([entry]) => {
+               monitorVisible = entry.intersectionRatio >= 0.35;
+               // Volver a ver el monitor "rearma" el mini reproductor.
+               if (monitorVisible) dockDismissed = false;
+               updateDock();
+            },
+            { threshold: [0, 0.35, 0.7] },
+         ).observe(screen);
+      }
+
+      q('[data-dock-back]')?.addEventListener('click', () => {
+         screen.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+      q('[data-dock-close]')?.addEventListener('click', () => {
+         send('pause');
+         dockDismissed = true;
+         setDocked(false);
+      });
+      q('[data-end-replay]')?.addEventListener('click', () => play(active));
+      q('[data-end-next]')?.addEventListener('click', () => tuneAndPlay((active + 1) % posters.length));
+
+      posters.forEach((poster, i) => {
+         poster.addEventListener('click', () => play(i));
+      });
+
+      channels.forEach((channel, i) => {
+         channel.addEventListener('click', () => tuneAndPlay(i));
+      });
+   }
+
+   initPressBroadcast();
+   document.addEventListener('astro:page-load', initPressBroadcast);
+</script>

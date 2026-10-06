@@ -185,6 +185,14 @@ const StripeCheckout = ({ buildPayload, existingClientSecret = '', onIntentCreat
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, []);
 
+   // Antes de cualquier return: un hook tras el early return de error rompe
+   // el orden de hooks. Opciones memoizadas: una identidad estable evita que Elements se reinicialice
+   // en cada render (causa común de que el PaymentElement no termine de montar).
+   const elementsOptions = useMemo(
+      () => (clientSecret ? { clientSecret, appearance: buildAppearance() } : null),
+      [clientSecret],
+   );
+
    if (error) {
       return (
          <div className="py-4 text-center">
@@ -200,13 +208,6 @@ const StripeCheckout = ({ buildPayload, existingClientSecret = '', onIntentCreat
          </div>
       );
    }
-
-   // Opciones memoizadas: una identidad estable evita que Elements se reinicialice
-   // en cada render (causa común de que el PaymentElement no termine de montar).
-   const elementsOptions = useMemo(
-      () => (clientSecret ? { clientSecret, appearance: buildAppearance() } : null),
-      [clientSecret],
-   );
 
    if (!clientSecret) {
       return <p className="py-6 text-center text-sm text-gray-500 dark:text-white/70">Preparando pago seguro…</p>;

@@ -5,8 +5,8 @@
 // está activo el middleware corre como Netlify Edge Function (Deno, ver
 // "edgeMiddleware" en astro.config.mjs) y en dev/SSR corre en Node -- Web
 // Crypto es la única API idéntica en los dos runtimes.
-export const SITE_LOCK_GATE_PATH = '/en-desarrollo';
-export const SITE_LOCK_VERIFY_PATH = '/verificar-acceso';
+export const SITE_LOCK_GATE_PATH = '/en-desarrollo/';
+export const SITE_LOCK_VERIFY_PATH = '/verificar-acceso/';
 export const SITE_LOCK_COOKIE_NAME = 'site_access';
 
 // TTL de la cookie Y del token firmado adentro: aunque alguien extraiga la
@@ -40,7 +40,7 @@ export const SITE_LOCK_NO_CACHE_HEADERS: Record<string, string> = {
 // node:process); import.meta.env queda solo como respaldo para `astro dev`,
 // donde las variables del .env no llegan a process.env. String() normaliza
 // el caso booleano por si ese respaldo llega a usarse en un build.
-function readServerEnv(runtimeValue: string | undefined, buildValue: unknown): string {
+export function readServerEnv(runtimeValue: string | undefined, buildValue: unknown): string {
    const value = runtimeValue ?? buildValue;
    return value === undefined || value === null ? '' : String(value).trim();
 }

@@ -264,3 +264,18 @@ html.no-js summary {
    cursor: pointer;
    font-weight: 600;
 }
+
+/*
+   PrensaBroadcast.astro: los pósters del monitor se apilan (position:absolute
+   en su <style> con scope, que sí se aplica sin JS) y solo el activo es
+   visible vía clases de Tailwind -- sin Tailwind el último taparía al
+   primero. Se deja solo el primero: cada vídeo sigue presente (título,
+   duración y miniatura) en la lista de canales de abajo. El mini
+   reproductor y la pantalla final solo existen con JS (su "hidden" es de
+   Tailwind).
+*/
+html.no-js .press-poster:not(:first-child),
+html.no-js .press-shell,
+html.no-js .press-endcard {
+   display: none;
+}

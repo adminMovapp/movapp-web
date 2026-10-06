@@ -61,3 +61,23 @@ export function buildPurchasePayload(value, currency, contentIds, additionalData
 
    return { customData, userData };
 }
+
+/**
+ * customData del evento "ViewContent". Compartido por la tienda (vía
+ * useMetaPixel().trackViewContent) y /el-hack (src/utils/productView.js),
+ * para que las dos vistas del mismo producto lleguen idénticas a Meta.
+ * value/currency se omiten si no se conoce el precio, nunca van en 0.
+ */
+export function buildViewContentPayload(value, currency, contentIds, additionalData = {}) {
+   const numericValue = parseFloat(value);
+   const hasPrice = Number.isFinite(numericValue) && numericValue > 0 && Boolean(currency);
+   return {
+      ...(hasPrice ? { value: numericValue, currency } : {}),
+      content_ids: contentIds,
+      content_type: 'product',
+      content_name: additionalData.productName || contentIds[0] || 'El Hack',
+      content_category: 'digital_solution',
+      event_source_url: typeof window !== 'undefined' ? window.location.href : undefined,
+      country: additionalData.country || 'MX',
+   };
+}

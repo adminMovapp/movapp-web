@@ -1,4 +1,4 @@
-import { buildPurchasePayload } from '@utils/metaPixelPayloads.js';
+import { buildPurchasePayload, buildViewContentPayload } from '@utils/metaPixelPayloads.js';
 
 export function useMetaPixel() {
    // OJO: "Purchase" ya no se dispara desde el checkout (ShopIsland) sino
@@ -82,20 +82,7 @@ export function useMetaPixel() {
    // Evento para cuando el usuario ve el producto
    const trackViewContent = async (value, currency, contentIds, additionalData = {}) => {
       if (typeof window !== 'undefined' && window.metaPixel) {
-         return await window.metaPixel.track(
-            'ViewContent',
-            {
-               value: parseFloat(value),
-               currency: currency,
-               content_ids: contentIds,
-               content_type: 'product',
-               content_name: additionalData.productName || contentIds[0] || 'El Hack',
-               content_category: 'digital_solution',
-               event_source_url: window.location.href,
-               country: additionalData.country || 'MX',
-            },
-            {},
-         );
+         return await window.metaPixel.track('ViewContent', buildViewContentPayload(value, currency, contentIds, additionalData), {});
       }
       return null;
    };
