@@ -6,6 +6,7 @@ import useConfig from '@hooks/useConfig.jsx';
 import StripeCheckout from '@components/ui/StripeCheckout.jsx';
 import { useMetaPixel } from '@hooks/useMetaPixel.jsx';
 import { pushToDataLayer, mapCartItemToGA4 } from '@utils/dataLayer.js';
+import { trackProductView } from '@utils/productView.js';
 import { ERROR_TYPES, CHECKOUT_STEPS } from '@constants/tracking.ts';
 
 const fmt = (n) => Number(n || 0).toFixed(2);
@@ -494,7 +495,7 @@ const CheckoutPanel = ({ open, openedByAdd, onOpenedByAddConsumed, onClose, pais
 const ShopContent = ({ serverCountry }) => {
    const { loading, prices, pais } = useConfig(serverCountry);
    const { addToCart } = useCart();
-   const { trackAddToCart, trackViewContent } = useMetaPixel();
+   const { trackAddToCart } = useMetaPixel();
    const [drawerOpen, setDrawerOpen] = useState(false);
    // true cuando el drawer se abrió solo tras "Agregar al carrito" (ver
    // view_cart en CheckoutPanel); false cuando lo abrió el usuario.
@@ -516,14 +517,8 @@ const ShopContent = ({ serverCountry }) => {
       // negocio, QA de tracking sept. 2026) -- es el evento del que dependen
       // las audiencias de remarketing de Google Ads y el ViewContent de
       // Meta. select_item sigue retirado: no aporta con un solo producto.
-      products.forEach((p) => {
-         const item = mapCartItemToGA4(p, 1);
-         pushToDataLayer('view_item', { currency: p.moneda, value: item.price, items: [item] });
-         trackViewContent(item.price, p.moneda, [String(p.producto_id)], {
-            productName: p.nombre,
-            country: pais?.codigo_pais,
-         });
-      });
+      // trackProductView es el mismo que usa /el-hack (ElHackHero.astro).
+      products.forEach((p) => trackProductView(p, pais?.codigo_pais));
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [products]);
 

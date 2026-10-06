@@ -51,3 +51,16 @@ export const ERROR_TYPES = {
    validationError: 'validation',
    backendError: 'backend_error',
 } as const;
+
+// Valor de un Lead en Meta (clic a WhatsApp en Layout.astro y envío del
+// formulario de ContactoForm.astro): convención de negocio, no una
+// medición -- 19.50 MXN fijado por marketing (oct. 2026). La moneda va fija
+// en MXN aunque el visitante sea de otro país: el monto está definido en
+// pesos mexicanos, y mandar "19.50 COP" sería un valor distinto.
+export const LEAD_VALUE = { value: 19.5, currency: 'MXN' } as const;
+
+// producto_id de El Hack en /config/prices (API de la app móvil). Con él,
+// /el-hack elige su producto de la misma lista que pinta la tienda, para que
+// view_item/ViewContent lleven el mismo item_id/content_ids que AddToCart y
+// Purchase -- Meta relaciona "vio" con "compró" solo si el ID coincide.
+export const EL_HACK_PRODUCT_ID = '1';

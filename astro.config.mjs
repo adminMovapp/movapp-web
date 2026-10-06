@@ -4,6 +4,26 @@ import react from '@astrojs/react';
 import tailwind from '@astrojs/tailwind';
 import netlify from '@astrojs/netlify';
 
+// Solo en `astro dev`: con trailingSlash 'always', el middleware de Astro
+// responde 404 ("trailing slash mismatch") a /.netlify/images?url=... porque
+// solo exime las rutas que empiezan con /_ o /@ -- y es la URL que genera
+// <Image> con el adaptador de Netlify, así que en local no cargaba ninguna
+// imagen. Se reescribe a /.netlify/images/?url=... (el plugin de Netlify la
+// atiende igual) en el evento 'request' del servidor HTTP, antes que
+// cualquier middleware: Astro mete el suyo al frente de la pila. En Netlify
+// esa ruta la sirve el Image CDN sin pasar por Astro, no aplica.
+const netlifyImagesDevSlash = {
+   name: 'netlify-images-dev-slash',
+   apply: 'serve',
+   configureServer(server) {
+      server.httpServer?.prependListener('request', (req) => {
+         if (req.url?.startsWith('/.netlify/images?')) {
+            req.url = '/.netlify/images/' + req.url.slice('/.netlify/images'.length);
+         }
+      });
+   },
+};
+
 export default defineConfig({
    // applyBaseStyles: false — evita que la integración inyecte su propio
    // <link> con las directivas @tailwind en cada página. El único punto de
@@ -13,6 +33,7 @@ export default defineConfig({
 
    vite: {
       // plugins: [tailwindcss()],
+      plugins: [netlifyImagesDevSlash],
       resolve: {
          alias: {
             '@': '/src/',
@@ -31,6 +52,13 @@ export default defineConfig({
       // assetsInclude: ['**/*.json']
    },
    output: 'server',
+   // 'always' (auditoría CS-003): la variante sin barra de cada página SSR
+   // respondía 200 con canonical a la versión con barra (contenido
+   // duplicado). Astro ahora contesta 301 (GET) / 308 (resto de métodos)
+   // hacia la URL con barra; los endpoints con extensión (robots.txt,
+   // sitemap.xml...) quedan fuera de la regla. Todo href interno debe
+   // escribirse ya con la barra final para no generar ese salto.
+   trailingSlash: 'always',
    // edgeMiddleware solo con el candado activo (SITE_LOCK_ENABLED, ver
    // src/middleware.ts): la función SSR se registra con preferStatic, así que
    // las páginas prerenderizadas (blog) salen del CDN sin pasar por ella --

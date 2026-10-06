@@ -64,7 +64,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
    if (isPublicAsset(pathname)) return next();
 
    const path = normalizePath(pathname);
-   if (path === SITE_LOCK_GATE_PATH || path === SITE_LOCK_VERIFY_PATH) {
+   if (path === normalizePath(SITE_LOCK_GATE_PATH) || path === normalizePath(SITE_LOCK_VERIFY_PATH)) {
       return withNoCache(await next());
    }
 

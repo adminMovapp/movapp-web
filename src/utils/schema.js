@@ -343,6 +343,26 @@ export function generateBlogPostingSchema({ headline, description, path, publish
 }
 
 /*
+   VideoObject: un vídeo embebido de Vimeo (ver @api/pressVideos.ts). Google
+   exige name, description, thumbnailUrl y uploadDate; embedUrl le indica
+   dónde está el reproductor. Si el vídeo no tiene descripción en Vimeo se
+   usa el título (es lo único visible en la página).
+*/
+export function generateVideoObjectSchema(video) {
+   const seconds = video.durationSeconds ?? 0;
+   return prune({
+      '@context': CONTEXT,
+      '@type': 'VideoObject',
+      name: video.title,
+      description: video.description || video.title,
+      thumbnailUrl: `${video.thumbnailBase}-d_1280`,
+      uploadDate: video.uploadDate || undefined,
+      duration: seconds ? `PT${Math.floor(seconds / 60)}M${seconds % 60}S` : undefined,
+      embedUrl: `https://player.vimeo.com/video/${video.vimeoId}`,
+   });
+}
+
+/*
    HowTo: solo aplica si la página tiene una sección de pasos VISIBLE, y los
    pasos deben coincidir uno a uno con los de la página (por eso comparten
    fuente de datos). `totalTime` en ISO 8601 (PT10M = 10 minutos).
@@ -747,15 +767,15 @@ export const PAGE_SCHEMA = {
    // fase, ver instrucciones de redirecciones) -- sin entradas acá, sus
    // rutas (si se accede a ellas) caen al fallback de Organization.
 
-   // --- Sala de Prensa: hub de medios/comunicados. CollectionPage, mismo
-   // criterio que /testimonios y /blog (listado de contenido, no un artículo
-   // único). Sin ImageObject/Review: la página no muestra calificaciones ni
-   // una sola imagen protagonista.
+   // --- Sala de Prensa: apariciones de Movapp en medios, en vídeo.
+   // CollectionPage (listado de contenido, mismo criterio que /testimonios y
+   // /blog). Los VideoObject NO van acá: la lista de vídeos viene de una API
+   // en cada request (ver @api/pressVideos.ts), así que src/pages/prensa.astro
+   // los suma a getPageSchema() y pasa el resultado por la prop `schema`.
    '/prensa': {
       type: 'CollectionPage',
       name: 'Sala de Prensa',
-      description:
-         'Sala de prensa de Movapp: comunicados oficiales, apariciones en medios y recursos de prensa (logotipos, fotografías y dossier) para periodistas y aliados.',
+      description: 'Sala de prensa de Movapp: entrevistas y apariciones de Erik Mann en medios sobre fraudes digitales y apps de préstamo.',
       breadcrumb: 'Sala de Prensa',
    },
 

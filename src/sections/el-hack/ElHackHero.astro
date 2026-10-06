@@ -4,45 +4,48 @@ import StormField from '@components/decorative/StormField.astro';
 import Breadcrumbs from '@components/ui/Breadcrumbs.astro';
 import ImgElHackBlanco from '@assets/elhack-blanco.png';
 import ImgElHackNegro from '@assets/elhack-negro.png';
+import { getServerCountry } from '@utils/geo';
+
+const serverCountry = getServerCountry(Astro);
 ---
 
 <!--
-   Vista de producto en /el-hack (a pedido, sept. 2026): hasta ahora el
-   funnel de Meta (ViewContent → AddToCart → InitiateCheckout → Purchase)
-   arrancaba recién en /tienda -- cualquier visita a esta página, que es la
-   landing real del producto, no quedaba registrada. Vive en el Hero porque
-   es la única sección que corre una vez por carga de página (mismo criterio
-   que app_detail_view en AppHero.astro para las fichas de apps).
+   Vista de producto en /el-hack (a pedido, sept. 2026): cualquier visita a
+   la landing real del producto abre el funnel de Meta (ViewContent ->
+   AddToCart -> InitiateCheckout -> Purchase). Vive en el Hero porque es la
+   única sección que corre una vez por carga de página (mismo criterio que
+   app_detail_view en AppHero.astro).
 
-   Sin "value"/"currency": el precio real depende del país (getPrices, ver
-   useConfig/api.jsx) y esta página no lo resuelve -- inventar un monto fijo
-   sería un dato falso en el evento. content_ids/content_name usan el mismo
-   identificador y fallback ('el_hack' / 'El Hack') que ya usan
-   trackInitiateCheckout/trackAddToCart/trackPurchase en useMetaPixel.jsx y
-   metaPixelPayloads.js, para que los 4 eventos del funnel se agrupen bajo el
-   mismo producto en los informes.
+   Mismos datos que la tienda (QA de tracking, oct. 2026): antes mandaba
+   'el_hack'/'digital_solution' sin precio, y la tienda manda el producto
+   real de /config/prices (ID 1, categoría Software, precio y moneda del
+   país). Meta reconoce el producto por su ID, así que con IDs distintos no
+   podía relacionar "vio El Hack" con "compró". Ahora busca el producto en
+   la misma lista y con el mismo país (geo de Netlify) que la tienda, y lo
+   manda por trackProductView, el mismo helper de ShopIsland.jsx.
 
-   window.gtag/window.metaPixel pueden no existir todavía (script cargado
-   antes que MetaPixelScript.astro/GoogleAnalytics.astro terminen de montar,
-   o directamente ausentes con ?minimal=1 / sin las env vars) -- por eso se
-   espera a DOMContentLoaded y se lee cada uno de forma opcional, igual que
-   el resto de los puntos de tracking del sitio.
+   Si la API no responde a tiempo, el evento sale igual con el ID correcto
+   pero sin precio (nunca value: 0). Los precios se piden en el navegador,
+   no en el SSR, para no sumarle dos llamadas a la API al TTFB de la página.
 -->
+<div id="el-hack-product-view" data-country={serverCountry} hidden></div>
 <script>
-   import { pushToDataLayer } from '@utils/dataLayer.js';
+   import { getLocalizedPrices } from '@api/api';
+   import { trackProductView } from '@utils/productView.js';
+   import { EL_HACK_PRODUCT_ID } from '@constants/tracking.ts';
 
-   document.addEventListener('DOMContentLoaded', () => {
-      pushToDataLayer('view_item', {
-         items: [{ item_id: 'el_hack', item_name: 'El Hack', item_category: 'digital_solution' }],
-      });
+   const PRICES_TIMEOUT_MS = 4000;
 
-      window.metaPixel?.track('ViewContent', {
-         content_ids: ['el_hack'],
-         content_name: 'El Hack',
-         content_category: 'digital_solution',
-         content_type: 'product',
-         event_source_url: window.location.href,
-      });
+   document.addEventListener('DOMContentLoaded', async () => {
+      const country = document.getElementById('el-hack-product-view')?.dataset.country || 'MX';
+      const timeout = new Promise<null>((resolve) => setTimeout(() => resolve(null), PRICES_TIMEOUT_MS));
+      const result = await Promise.race([getLocalizedPrices(country).catch(() => null), timeout]);
+
+      const product = result?.prices.find((p: { producto_id: unknown }) => String(p.producto_id) === EL_HACK_PRODUCT_ID) || {
+         producto_id: EL_HACK_PRODUCT_ID,
+         nombre: 'El Hack',
+      };
+      trackProductView(product, result?.pais?.codigo_pais || country);
    });
 </script>
 

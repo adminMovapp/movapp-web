@@ -31,6 +31,7 @@ import GoogleAnalytics from '@components/layout/GoogleAnalytics.astro';
 import MetaPixelScript from '@components/layout/MetaPixelScript.astro';
 
 import { getServerCountry } from '@/utils/geo';
+import { LEAD_VALUE } from '@constants/tracking.ts';
 
 // País del visitante resuelto en el servidor (geo de Netlify), no por
 // navigator.language -- ver src/utils/geo.js.
@@ -762,7 +763,7 @@ const schemaJson = JSON.stringify(Array.isArray(pageSchema) ? pageSchema : [page
          delegado en document cubre todos los botones (incluso los que se
          agreguen después) sin duplicarse.
       -->
-      <script is:inline define:vars={{ serverCountry }}>
+      <script is:inline define:vars={{ serverCountry, leadValue: LEAD_VALUE }}>
          (function () {
             // País resuelto en el servidor (geo de Netlify, ver
             // src/utils/geo.js) -- antes se adivinaba con navigator.language,
@@ -771,7 +772,6 @@ const schemaJson = JSON.stringify(Array.isArray(pageSchema) ? pageSchema : [page
             // el mismo para toda la carga de página, así que se resuelve una
             // sola vez acá y no en cada clic.
             var userCountry = serverCountry;
-            var CURRENCY_BY_COUNTRY = { MX: 'MXN', CO: 'COP', AR: 'ARS' };
 
             document.addEventListener('click', async function (e) {
                var btn = e.target.closest('.wa__stt');
@@ -811,12 +811,10 @@ const schemaJson = JSON.stringify(Array.isArray(pageSchema) ? pageSchema : [page
                   device_type: isMobile ? 'mobile' : 'desktop',
                   timestamp: timestamp,
 
-                  // El valor es una convención de negocio, no una medición
-                  // (pendiente de confirmar con marketing si se queda). La
-                  // moneda sí sigue al país: antes iba 'MXN' fijo, así que un
-                  // clic desde Colombia o Argentina reportaba pesos mexicanos.
-                  value: 50,
-                  currency: CURRENCY_BY_COUNTRY[userCountry] || 'MXN',
+                  // Valor y moneda fijos de LEAD_VALUE (constants/tracking.ts),
+                  // el mismo que usa el Lead del formulario de contacto.
+                  value: leadValue.value,
+                  currency: leadValue.currency,
 
                   country: userCountry,
 
