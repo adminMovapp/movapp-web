@@ -1,0 +1,118 @@
+---
+// /whatsapp/ -- URL propia para compartir en YouTube, redes y campañas
+// (p. ej. /whatsapp/?utm_source=youtube&utm_medium=social&utm_campaign=contacto).
+// Redirige directo al WhatsApp del sitio sin página intermedia ni clic extra.
+//
+// Por qué no es un [[redirects]] en netlify.toml: un 301/302 del servidor
+// nunca ejecuta gtag.js, así que GA4 no vería el acceso ni sus UTM. Esta
+// página carga gtag con la misma PUBLIC_GA4_ID del resto del sitio (ya
+// separada por contexto: stage -> propiedad de staging, production -> la de
+// producción), registra page_view + whatsapp_redirect con la URL completa
+// (GA4 toma source/medium/campaign de los utm_* de page_location) y en
+// cuanto el hit sale hace location.replace al destino.
+//
+// Lo que el usuario ve en la barra es solo <dominio>/whatsapp/: el query se
+// limpia con history.replaceState antes de nada (la URL con UTM ya quedó
+// guardada para GA4), y el link de WhatsApp no aparece en ningún lado.
+//
+// El mensaje precargado lo trae el link de cada anuncio en el parámetro
+// "text" (mismo nombre que usa WhatsApp), p. ej.
+// /whatsapp/?utm_source=youtube&utm_campaign=contacto&text=Hola,%20vi%20su%20video
+// Sin "text" (o vacío), va el mensaje predeterminado del sitio
+// (WHATSAPP_MENSAJE_PREDETERMINADO, el mismo de ButtonContact.astro). Ese
+// parámetro va solo a WhatsApp: no se manda a GA4 (la campaña ya la
+// identifican los utm_*).
+//
+// El número sale de URLS.whatsapp.principal, el mismo de ButtonContact.astro:
+// si cambia, se cambia ahí y esta URL pública sigue igual.
+import { URLS, WHATSAPP_MENSAJE_PREDETERMINADO, getSiteConfig } from '@utils/config.jsx';
+
+const GA4_ID = import.meta.env.PUBLIC_GA4_ID || '';
+const cfg = getSiteConfig(Astro.request);
+const canonical = `${cfg.siteUrl}/whatsapp/`;
+
+// Un link mal armado puede traer un segundo "?" en vez de "&"
+// (?utm_source=youtube?utm_medium=social). Solo se corrige el "?" que va
+// justo antes de un nombre de parámetro ("?clave="): un "?" dentro del
+// mensaje ("¿Me pueden ayudar?") se respeta.
+const params = new URLSearchParams(Astro.url.search.slice(1).replace(/\?(?=[\w-]+=)/g, '&'));
+const mensaje = params.get('text')?.trim() || WHATSAPP_MENSAJE_PREDETERMINADO;
+params.delete('text');
+const query = params.toString();
+
+// Destino con un solo "?" y el resto con "&". El mensaje va con
+// encodeURIComponent (espacios como %20), igual que ButtonContact.astro.
+const destino = `https://api.whatsapp.com/send/?phone=${URLS.whatsapp.principal.replace('+', '')}&text=${encodeURIComponent(mensaje)}&type=phone_number&app_absent=0`;
+
+// Cada acceso debe llegar al navegador (y a gtag): nada de caché en el CDN.
+Astro.response.headers.set('Cache-Control', 'no-store');
+Astro.response.headers.set('Netlify-CDN-Cache-Control', 'no-store');
+Astro.response.headers.set('X-Robots-Tag', 'noindex, nofollow');
+---
+
+<!doctype html>
+<html lang="es-MX">
+   <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <meta name="robots" content="noindex, nofollow" />
+      <meta name="referrer" content="strict-origin-when-cross-origin" />
+      <title>WhatsApp · Movapp</title>
+      <link rel="canonical" href={canonical} />
+      <link rel="icon" href="/ico-movapp.ico" />
+      <!-- Sin JavaScript (bots, navegadores limitados) igual se redirige; solo no se mide. -->
+      <noscript><meta http-equiv="refresh" content={`0;url=${destino}`} /></noscript>
+      <script is:inline define:vars={{ GA4_ID, destino, query }}>
+         // URL que recibe GA4: la normalizada en el servidor (un solo "?",
+         // sin el mensaje), de donde toma source/medium/campaign.
+         var params = new URLSearchParams(query);
+         var urlCompleta = location.origin + location.pathname + (query ? '?' + query : '');
+
+         // Lo único que ve el usuario: <dominio>/whatsapp/
+         history.replaceState(null, '', location.pathname);
+
+         var redirigido = false;
+         function ir() {
+            if (redirigido) return;
+            redirigido = true;
+            location.replace(destino);
+         }
+
+         if (!GA4_ID) {
+            ir();
+         } else {
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+               dataLayer.push(arguments);
+            }
+            gtag('js', new Date());
+            gtag('config', GA4_ID, {
+               page_location: urlCompleta,
+               page_referrer: document.referrer,
+               page_title: 'WhatsApp redirect',
+            });
+            gtag('event', 'whatsapp_redirect', {
+               page_location: urlCompleta,
+               destination_type: 'whatsapp',
+               utm_source: params.get('utm_source') || undefined,
+               utm_medium: params.get('utm_medium') || undefined,
+               utm_campaign: params.get('utm_campaign') || undefined,
+               event_callback: ir,
+               event_timeout: 1500,
+            });
+            // Respaldo si gtag.js no carga (bloqueador, red lenta): el usuario
+            // llega a WhatsApp igual, solo ese acceso no se mide.
+            setTimeout(ir, 1500);
+
+            var s = document.createElement('script');
+            s.async = true;
+            s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA4_ID;
+            s.onerror = ir;
+            document.head.appendChild(s);
+         }
+      </script>
+   </head>
+   <body style="margin:0;background:#050505;color:#fff;font-family:system-ui,sans-serif;display:flex;min-height:100vh;align-items:center;justify-content:center">
+      <p>Abriendo WhatsApp…</p>
+   </body>
+</html>

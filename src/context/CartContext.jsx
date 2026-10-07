@@ -99,24 +99,39 @@ export const CartProvider = ({ children }) => {
       }
    }, []);
 
-   // Actualiza precios/moneda del carrito cuando cambia el país (match por producto_id)
+   // Reemplaza precio/moneda de lo guardado en localStorage por lo que acaba
+   // de devolver /config/prices (match por producto_id): sin esto un carrito
+   // viejo seguía mostrando y cobrando el precio del día en que se agregó.
+   // Si nada cambió devuelve el mismo arreglo, así no se reescribe
+   // localStorage ni se emite cart:updated en cada visita.
    const updateCartPrices = useCallback((prices) => {
       if (!prices || prices.length === 0) return;
       setCart((prev) => {
-         if (prev.length === 0) return prev;
-         return prev.map((item) => {
+         let changed = false;
+         const next = prev.map((item) => {
             const match = prices.find((p) => p.producto_id === item.producto_id);
             if (!match) return item;
-            const newPrecio = match.precio ?? item.precio;
-            return {
+            const updated = {
                ...item,
-               precio: String(newPrecio),
+               precio: String(match.precio ?? item.precio),
                precio_mx: match.precio_mx ?? item.precio_mx,
                moneda: match.moneda || item.moneda,
                simbolo: match.simbolo || item.simbolo,
-               total: item.quantity * parsePrice(newPrecio),
             };
+            updated.total = item.quantity * parsePrice(updated.precio);
+            if (
+               updated.precio !== item.precio ||
+               updated.precio_mx !== item.precio_mx ||
+               updated.moneda !== item.moneda ||
+               updated.simbolo !== item.simbolo ||
+               updated.total !== item.total
+            ) {
+               changed = true;
+               return updated;
+            }
+            return item;
          });
+         return changed ? next : prev;
       });
    }, []);
 

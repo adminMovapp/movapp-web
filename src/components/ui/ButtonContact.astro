@@ -1,5 +1,5 @@
 ---
-import { URLS } from '@utils/config.jsx';
+import { URLS, WHATSAPP_MENSAJE_PREDETERMINADO } from '@utils/config.jsx';
 
 interface Props {
    label?: string;
@@ -37,7 +37,7 @@ const {
    label = 'Contáctanos',
    fullWidth = false,
    id,
-   message = '¡Hola! Quiero más información sobre El Hack.',
+   message = WHATSAPP_MENSAJE_PREDETERMINADO,
    pageType,
    sectionName,
    placement,

@@ -77,6 +77,11 @@ export const URLS = {
   }
 };
 
+// Mensaje precargado por defecto de WhatsApp: el de ButtonContact.astro
+// cuando no recibe "message", y el de /whatsapp/ cuando el link del anuncio
+// no trae "text". Un solo lugar para que no se desincronicen.
+export const WHATSAPP_MENSAJE_PREDETERMINADO = "¡Hola! Quiero más información sobre El Hack.";
+
 export const SOCIALS = [
   {
     name: "YouTube",
