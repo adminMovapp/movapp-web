@@ -494,7 +494,7 @@ const CheckoutPanel = ({ open, openedByAdd, onOpenedByAddConsumed, onClose, pais
 // ============================================================
 const ShopContent = ({ serverCountry }) => {
    const { loading, prices, pais } = useConfig(serverCountry);
-   const { addToCart } = useCart();
+   const { addToCart, updateCartPrices } = useCart();
    const { trackAddToCart } = useMetaPixel();
    const [drawerOpen, setDrawerOpen] = useState(false);
    // true cuando el drawer se abrió solo tras "Agregar al carrito" (ver
@@ -502,6 +502,12 @@ const ShopContent = ({ serverCountry }) => {
    const [openedByAdd, setOpenedByAdd] = useState(false);
 
    const products = useMemo(() => prices || [], [prices]);
+
+   // El carrito de localStorage trae el precio de cuando se agregó: en
+   // cuanto llegan los de la API se le aplican (la API es la fuente de verdad).
+   useEffect(() => {
+      updateCartPrices(products);
+   }, [products, updateCartPrices]);
 
    // view_item_list: una sola vez por set de productos real (no en cada
    // re-render de ShopContent -- useEffect solo refire si cambia `products`).
