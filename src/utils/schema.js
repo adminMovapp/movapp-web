@@ -62,11 +62,10 @@ export const SCHEMA_DATA = {
       // Solo perfiles oficiales verificados. Se toman de @utils/config.jsx
       // (URLS) para no mantener dos listas de redes en el repo.
       sameAs: [URLS.youtube, URLS.facebook, URLS.instagram, URLS.tiktok],
-      // Canal de contacto oficial: WhatsApp.
-      contactPhone: URLS.whatsapp.oficial,
-      // TODO: si se define una página de contacto propia (/contacto), poner
-      // aquí su ruta. Mientras sea null, el ContactPoint no emite `url`.
-      contactPath: null,
+      // Canal de contacto: el WhatsApp "principal" (el mismo de los botones
+      // del sitio, ver ButtonContact.astro), con su enlace directo como `url`.
+      contactPhone: URLS.whatsapp.principal,
+      contactUrl: `https://api.whatsapp.com/send/?phone=${URLS.whatsapp.principal.replace('+', '')}`,
       // Dimensiones reales de public/img/Logo.png (cfg.assets.logo) -- Google
       // prefiere `logo` como ImageObject con width/height explícitos en vez
       // de un string plano. Deben moverse juntos si el archivo cambia.
@@ -84,11 +83,10 @@ export const SCHEMA_DATA = {
    movappApp: {
       name: 'Movapp',
       operatingSystem: 'Android, iOS',
-      // No es una app financiera (no maneja dinero/transacciones): identifica
-      // y reporta apps de préstamo predatorias, así que Google la clasifica
-      // mejor como SecurityApplication.
-      applicationCategory: 'SecurityApplication',
-      description: 'App para identificar y reportar apps de préstamo predatorias en México.',
+      // FinanceApplication y esta descripción vienen del schema de Home
+      // actualizado (oct. 2026), que reemplazó al SecurityApplication previo.
+      applicationCategory: 'FinanceApplication',
+      description: 'Aplicación de Movapp con información y contenido sobre finanzas personales.',
       // TODO: pegar la URL real de la ficha en Google Play. Mientras sea null,
       // downloadUrl no se emite (mejor omitir el campo que inventar una URL).
       downloadUrl: null,
@@ -118,7 +116,8 @@ export const SCHEMA_DATA = {
          que el costo del hack es de $500 MXN (la asesoría sí es 100%
          gratuita). Declarar price 0 sería justo el "schema engañoso" que la
          propia guía prohíbe (regla 3). Por eso priceSpecification lleva un
-         price numérico explícito y no solo la description en texto libre.
+         minPrice numérico ("desde $500") y no solo la description en texto
+         libre. El `url` del Offer se agrega en generateElHackSchema.
 
          ⚠ Este 500 y el copy de la FAQ "¿Cuánto cuesta?" en
          @constants/elhack.ts tienen que moverse juntos.
@@ -126,11 +125,13 @@ export const SCHEMA_DATA = {
       offer: {
          '@type': 'Offer',
          priceCurrency: 'MXN',
+         description:
+            'Servicio desde $500 MXN. La asesoría inicial es gratuita; el costo final depende de la cantidad de préstamos activos.',
          priceSpecification: {
             '@type': 'PriceSpecification',
             priceCurrency: 'MXN',
-            price: '500',
-            description: 'La asesoría inicial es gratuita. El costo del servicio varía según el caso.',
+            minPrice: 500,
+            description: 'Precio mínimo del servicio. El costo final depende de la cantidad de préstamos activos.',
          },
       },
    },
@@ -155,6 +156,26 @@ function prune(obj) {
    return Object.fromEntries(Object.entries(obj).filter(([, v]) => v !== null && v !== undefined));
 }
 
+/*
+   @id estables de las entidades del sitio ("https://movapp.org/#organization").
+   Permiten que los nodos del @graph de Home (y el provider de El Hack) se
+   referencien entre sí en vez de repetir la entidad completa.
+*/
+function entityId(key, cfg) {
+   return `${abs('/', cfg)}#${key}`;
+}
+
+/*
+   Agrupa varios nodos en un único objeto { @context, @graph }: cada nodo
+   pierde su propio @context (lo hereda del contenedor). Lo usa Home.
+*/
+export function generateGraph(nodes = []) {
+   return {
+      '@context': CONTEXT,
+      '@graph': nodes.map(({ '@context': _ctx, ...node }) => node),
+   };
+}
+
 // --- WebSite (solo Home) ---
 export function generateWebSiteSchema(request = null) {
    const cfg = getSiteConfig(request);
@@ -162,9 +183,11 @@ export function generateWebSiteSchema(request = null) {
       '@context': CONTEXT,
       '@type': 'WebSite',
       name: cfg.site.name,
-      url: cfg.canonicalUrl,
+      url: abs('/', cfg),
       description: cfg.site.description,
       inLanguage: cfg.site.language,
+      '@id': entityId('website', cfg),
+      publisher: { '@id': entityId('organization', cfg) },
       // potentialAction/SearchAction: el sitio no tiene buscador interno, así
       // que se omite a propósito -- declararlo sin buscador es schema engañoso.
    };
@@ -179,7 +202,7 @@ export function generateOrganizationSchema(request = null) {
       '@type': 'Organization',
       name: cfg.site.name,
       description: cfg.site.description,
-      url: cfg.canonicalUrl,
+      url: abs('/', cfg),
       logo: {
          '@type': 'ImageObject',
          url: cfg.logoUrl,
@@ -194,9 +217,10 @@ export function generateOrganizationSchema(request = null) {
          contactType: cfg.business.contactType,
          availableLanguage: cfg.business.availableLanguage,
          telephone: org.contactPhone,
-         url: org.contactPath ? abs(org.contactPath, cfg) : null,
+         url: org.contactUrl,
       }),
       areaServed: { '@type': 'Country', name: cfg.business.country },
+      '@id': entityId('organization', cfg),
    });
 }
 
@@ -214,6 +238,8 @@ export function generateMovappAppSchema(request = null) {
       downloadUrl: app.downloadUrl,
       description: app.description,
       offers: app.offer,
+      '@id': entityId('app', cfg),
+      publisher: { '@id': entityId('organization', cfg) },
    });
 }
 
@@ -229,10 +255,14 @@ export function generateElHackSchema({ detailed = false } = {}, request = null) 
       serviceType: app.serviceType,
       url: abs(app.path, cfg),
       description: detailed ? app.descriptionLP : app.description,
-      provider: { '@type': 'Organization', name: cfg.site.name, url: cfg.canonicalUrl },
+      provider: {
+         '@type': 'Organization',
+         name: cfg.site.name,
+         url: abs('/', cfg),
+         '@id': entityId('organization', cfg),
+      },
       areaServed: { '@type': 'Country', name: cfg.business.country },
-      inLanguage: cfg.site.language,
-      offers: app.offer,
+      offers: { ...app.offer, url: abs(app.path, cfg) },
    });
 }
 
@@ -256,8 +286,9 @@ export function generateBreadcrumbSchema(items = [], request = null) {
    FAQPage: `faqs` acepta [{ q, a }] o [{ question, answer }].
    El texto de acceptedAnswer debe ser EXACTAMENTE el que el usuario lee en
    pantalla; por eso se le pasa la misma constante que renderiza el markup.
+   `extra` agrega propiedades al nodo (Home: @id, inLanguage, isPartOf).
 */
-export function generateFAQSchema(faqs = []) {
+export function generateFAQSchema(faqs = [], extra = {}) {
    return {
       '@context': CONTEXT,
       '@type': 'FAQPage',
@@ -269,6 +300,7 @@ export function generateFAQSchema(faqs = []) {
             text: item.a ?? item.answer,
          },
       })),
+      ...extra,
    };
 }
 
@@ -417,12 +449,21 @@ export const PAGE_SCHEMA = {
       name: 'Movapp',
       description: null, // usa la del sitio (siteConfigData.site.description)
       breadcrumb: null,
-      build: (request) => [
-         generateWebSiteSchema(request),
-         generateOrganizationSchema(request),
-         generateMovappAppSchema(request),
-         generateFAQSchema(HOME_FAQS),
-      ],
+      // Un único @graph cuyos nodos se enlazan por @id (WebSite/App →
+      // publisher Organization, FAQPage → isPartOf WebSite).
+      build: (request) => {
+         const cfg = getSiteConfig(request);
+         return generateGraph([
+            generateOrganizationSchema(request),
+            generateWebSiteSchema(request),
+            generateMovappAppSchema(request),
+            generateFAQSchema(HOME_FAQS, {
+               '@id': entityId('faq', cfg),
+               inLanguage: cfg.site.language,
+               isPartOf: { '@id': entityId('website', cfg) },
+            }),
+         ]);
+      },
    },
 
    // --- LP de conversión. El Service es más detallado que la mención de
@@ -810,7 +851,8 @@ export function getPageEntry(pathname) {
 }
 
 /*
-   Array de schemas de una ruta. Es lo que Layout.astro serializa en el <head>.
+   Schemas de una ruta (array de nodos, u objeto @graph en Home). Es lo que
+   Layout.astro serializa en el <head>.
 
    Las rutas que NO están en PAGE_SCHEMA (utilitarias: /404, /success,
    /pending, /failure, /tienda...) reciben solo el Organization: declaran la
