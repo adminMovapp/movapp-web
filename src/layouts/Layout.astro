@@ -115,7 +115,9 @@ const seoTags = generateSEOTags(
    JavaScript, así que el schema sigue presente en la versión sin JS.
 */
 const pageSchema = schema ?? getPageSchema(Astro.url.pathname, Astro.request);
-const schemaJson = JSON.stringify(Array.isArray(pageSchema) ? pageSchema : [pageSchema]);
+// Un objeto suelto (p. ej. el { @context, @graph } de Home) se serializa tal
+// cual; el resto de las rutas emite un array de nodos.
+const schemaJson = JSON.stringify(pageSchema);
 ---
 
 <!doctype html>
