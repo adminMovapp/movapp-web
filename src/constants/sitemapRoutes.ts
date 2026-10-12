@@ -36,6 +36,7 @@ export const SITE_PAGES = [
    { path: '/preguntas-frecuentes/', changefreq: 'monthly', priority: '0.7' },
    { path: '/prensa/', changefreq: 'monthly', priority: '0.6' },
    { path: '/aviso-de-privacidad/', changefreq: 'yearly', priority: '0.3' },
+   { path: '/terminos-y-condiciones/', changefreq: 'yearly', priority: '0.3' },
    { path: '/blog/', changefreq: 'weekly', priority: '0.7' },
    { path: '/blog/evaluaciones/', changefreq: 'weekly', priority: '0.5' },
    ...BLOG_ARTICLE_PATHS,
