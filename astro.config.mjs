@@ -80,10 +80,7 @@ export default defineConfig({
    server: {
       // host: '192.168.3.143', //'192.168.3.143', // host: true,
       port: 7001,
-      headers: {
-         'X-Frame-Options': 'SAMEORIGIN',
-         'X-Content-Type-Options': 'nosniff',
-         'Referrer-Policy': 'strict-origin-when-cross-origin',
-      },
+      // Sin "headers" acá: las cabeceras de seguridad las pone
+      // src/middleware.ts también en dev (ver src/utils/securityHeaders.ts).
    },
 });

@@ -25,7 +25,15 @@ const fieldClass =
       <p class="mt-3 text-gray-700 dark:text-white/80">Pregúntanos cómo podemos ayudarte.</p>
    </div>
 
-   <form id="contactoForm" class="glass-card mt-10 flex flex-col gap-5 rounded-2xl border border-purple_mv/20 p-6 dark:border-white/10 md:p-8">
+   <!--
+      method="post" (auditoría ZAP/Softree, oct. 2026, "Sensitive Information in
+      URL"): sin JavaScript el navegador envía el formulario con el método por
+      defecto, GET, y el correo del usuario acababa en la URL
+      (/contacto/?correo=...), en el historial, en logs y en el Referer. Con
+      POST la página se vuelve a renderizar sin exponer nada. Con JavaScript no
+      cambia nada: el listener de abajo hace preventDefault y envía por fetch.
+   -->
+   <form id="contactoForm" method="post" class="glass-card mt-10 flex flex-col gap-5 rounded-2xl border border-purple_mv/20 p-6 dark:border-white/10 md:p-8">
       <div class="flex flex-col gap-2 text-left">
          <label for="contacto-nombre" class="text-sm font-semibold text-gray-900 dark:text-white">Nombres</label>
          <input
