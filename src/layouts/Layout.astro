@@ -10,7 +10,14 @@ import stylesheetHref from '@styles/global.css?url';
 import '@styles/no-js.css';
 // Solo lo usa la isla de React de la tienda (bandera de país); sin JS esa
 // isla ni siquiera se hidrata, así que también se difiere a este script.
-const flagIconsHref = 'https://cdn.jsdelivr.net/npm/flag-icons/css/flag-icons.min.css';
+// Versión FIJADA + Subresource Integrity (auditoría ZAP, oct. 2026): con la
+// URL sin versión el contenido podía cambiar y SRI era imposible. Al subir
+// de versión hay que recalcular el hash:
+//   curl -s <url> | openssl dgst -sha384 -binary | openssl base64 -A
+// Si el hash no coincide, el navegador descarta SOLO esta hoja (se pierden
+// las banderas de la tienda), nunca Tailwind (global.css es same-origin).
+const flagIconsHref = 'https://cdn.jsdelivr.net/npm/flag-icons@7.5.0/css/flag-icons.min.css';
+const flagIconsSri = 'sha384-8olrmTcwXL3OYMeB+2ok8jx9/U/FZxeLnoRWdu1Pyi+lakrkqoI7hfysfQF5Q1Xx';
 import Header from '@components/layout/Header.astro';
 import MobileBottomNav from '@components/layout/MobileBottomNav.astro';
 import MenuMobilePanel from '@components/layout/MenuMobilePanel.astro';
@@ -162,7 +169,7 @@ const schemaJson = JSON.stringify(pageSchema);
          estado actual del sitio (sin este fix) a quedar trabado en no-js
          para siempre.
       -->
-      <script is:inline define:vars={{ stylesheetHref, flagIconsHref }}>
+      <script is:inline define:vars={{ stylesheetHref, flagIconsHref, flagIconsSri }}>
          (function () {
             var flip = function () {
                document.documentElement.classList.remove('no-js');
@@ -184,6 +191,8 @@ const schemaJson = JSON.stringify(pageSchema);
             var flagLink = document.createElement('link');
             flagLink.rel = 'stylesheet';
             flagLink.href = flagIconsHref;
+            flagLink.integrity = flagIconsSri;
+            flagLink.crossOrigin = 'anonymous';
             document.head.appendChild(flagLink);
          })();
       </script>
@@ -258,10 +267,11 @@ const schemaJson = JSON.stringify(pageSchema);
       <!-- <link rel="manifest" href="/site.webmanifest" /> -->
       <meta name="theme-color" content={siteConfig.seo.themeColor} />
 
-      <!-- Headers de seguridad -->
-      <meta http-equiv="X-Content-Type-Options" content="nosniff" />
-      <!-- <meta http-equiv="X-Frame-Options" content="SAMEORIGIN" /> -->
-      <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+<!--
+         Las cabeceras de seguridad (CSP, HSTS, X-Frame-Options, nosniff,
+         Referrer-Policy...) van como headers HTTP reales, no como <meta
+         http-equiv> (aquí no tienen efecto): ver src/utils/securityHeaders.ts.
+      -->
       <meta name="generator" content={Astro.generator} />
 
       <!-- Schema.org JSON-LD -->

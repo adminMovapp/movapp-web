@@ -1,3 +1,4 @@
+import type { APIContext, MiddlewareNext } from 'astro';
 import { defineMiddleware } from 'astro:middleware';
 import {
    SITE_LOCK_COOKIE_NAME,
@@ -8,6 +9,32 @@ import {
    isSiteLockEnabled,
    verifySiteLockToken,
 } from '@/utils/siteLock';
+import { applyHeaders, buildSecurityHeaders, parseOrigin } from '@/utils/securityHeaders';
+
+// Este middleware hace dos cosas, en este orden:
+//  1. Candado de acceso a todo el sitio (handleSiteLock, más abajo).
+//  2. Cabeceras de seguridad (CSP, HSTS, X-Frame-Options...) en TODA
+//     respuesta que salga de acá, pase o no por el candado: páginas SSR,
+//     endpoints .ts (robots.txt, sitemap...), 404/500 y los 302/503 del
+//     propio candado. Los archivos estáticos del CDN (blog prerenderizado,
+//     /_astro, /img...) no pasan por el middleware: a esos se las pone el
+//     bloque [[headers]] de netlify.toml, que tiene que decir lo mismo que
+//     src/utils/securityHeaders.ts (`npm run check:headers`).
+//
+// Cableado en build-time: PUBLIC_API_LINK es PUBLIC_ (se inlinea como string
+// literal, una URL no cae en el pitfall "true"->boolean del candado) y
+// import.meta.env.DEV también. No pasa por process.env a propósito.
+//
+// Hueco conocido: el 301 de trailingSlash: 'always' (/tienda -> /tienda/) lo
+// produce Astro antes de llegar al middleware, así que en modo función SSR
+// sale sin estas cabeceras. Con el candado activo (modo Edge) sí pasa por
+// acá. Un 301 sin cuerpo no es vector de clickjacking/XSS y ZAP no evalúa
+// 3xx en el umbral por defecto.
+const API_ORIGIN = parseOrigin(import.meta.env.PUBLIC_API_LINK);
+if (!API_ORIGIN) {
+   console.warn('[securityHeaders] PUBLIC_API_LINK ausente o inválida: connect-src de la CSP no incluye la API.');
+}
+const SECURITY_HEADERS = buildSecurityHeaders({ apiOrigin: API_ORIGIN, dev: import.meta.env.DEV });
 
 // Candado de acceso a todo el sitio: se activa/desactiva con SITE_LOCK_ENABLED
 // (env var de servidor, no PUBLIC_ -- nunca debe llegar al bundle de cliente).
@@ -25,30 +52,41 @@ import {
 // exponen contenido del sitio), y las Netlify Functions de /api/*, que siguen
 // fuera del candado a propósito (webhooks/formularios, ver CLAUDE.md).
 const PUBLIC_PATH_PREFIXES = ['/_astro/', '/.netlify/', '/api/', '/img/', '/js/'];
-const PUBLIC_FILES = new Set(['/ico-movapp.ico', '/favicon.ico', '/favicon-32x32.png', '/favicon-16x16.png', '/apple-touch-icon.png']);
+const PUBLIC_FILES = new Set([
+   '/ico-movapp.ico',
+   '/favicon.ico',
+   '/favicon-32x32.png',
+   '/favicon-16x16.png',
+   '/apple-touch-icon.png',
+]);
 
 function isPublicAsset(pathname: string): boolean {
    return PUBLIC_FILES.has(pathname) || PUBLIC_PATH_PREFIXES.some((prefix) => pathname.startsWith(prefix));
 }
 
-// Una Response de fetch/Response.redirect puede traer headers inmutables;
-// en ese caso se copia a una Response nueva antes de agregar las cabeceras.
-function withNoCache(response: Response): Response {
+// Una Response de fetch/Response.redirect (y la que devuelve context.next()
+// en la Edge Function) puede traer headers inmutables; en ese caso se copia
+// a una Response nueva antes de agregar las cabeceras.
+function withHeaders(response: Response, apply: (headers: Headers) => void): Response {
    try {
-      applyNoCacheHeaders(response.headers);
+      apply(response.headers);
       return response;
    } catch {
       const copy = new Response(response.body, response);
-      applyNoCacheHeaders(copy.headers);
+      apply(copy.headers);
       return copy;
    }
 }
+
+const withNoCache = (response: Response) => withHeaders(response, applyNoCacheHeaders);
+const withSecurityHeaders = (response: Response) =>
+   withHeaders(response, (headers) => applyHeaders(headers, SECURITY_HEADERS));
 
 function normalizePath(pathname: string): string {
    return pathname.length > 1 && pathname.endsWith('/') ? pathname.slice(0, -1) : pathname;
 }
 
-export const onRequest = defineMiddleware(async (context, next) => {
+async function handleSiteLock(context: APIContext, next: MiddlewareNext): Promise<Response> {
    if (!isSiteLockEnabled()) return next();
 
    // Astro también ejecuta el middleware al prerenderizar en el build: sin
@@ -89,4 +127,12 @@ export const onRequest = defineMiddleware(async (context, next) => {
       response.headers.append('Set-Cookie', `${SITE_LOCK_COOKIE_NAME}=; Path=/; Max-Age=0; HttpOnly; SameSite=Lax`);
    }
    return response;
+}
+
+export const onRequest = defineMiddleware(async (context, next) => {
+   // Las cabeceras se aplican también a las respuestas de prerender del
+   // build (se descartan al escribir el HTML, inofensivo) -- así en
+   // `astro dev`, donde el blog cuenta como prerenderizado, la CSP se puede
+   // probar igual en esas rutas.
+   return withSecurityHeaders(await handleSiteLock(context, next));
 });

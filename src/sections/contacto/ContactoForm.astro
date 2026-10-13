@@ -25,7 +25,15 @@ const fieldClass =
       <p class="mt-3 text-gray-700 dark:text-white/80">Pregúntanos cómo podemos ayudarte.</p>
    </div>
 
-   <form id="contactoForm" class="glass-card mt-10 flex flex-col gap-5 rounded-2xl border border-purple_mv/20 p-6 dark:border-white/10 md:p-8">
+   <!--
+      method="post" (auditoría ZAP/Softree, oct. 2026, "Sensitive Information in
+      URL"): sin JavaScript el navegador envía el formulario con el método por
+      defecto, GET, y el correo del usuario acababa en la URL
+      (/contacto/?correo=...), en el historial, en logs y en el Referer. Con
+      POST la página se vuelve a renderizar sin exponer nada. Con JavaScript no
+      cambia nada: el listener de abajo hace preventDefault y envía por fetch.
+   -->
+   <form id="contactoForm" method="post" class="glass-card mt-10 flex flex-col gap-5 rounded-2xl border border-purple_mv/20 p-6 dark:border-white/10 md:p-8">
       <div class="flex flex-col gap-2 text-left">
          <label for="contacto-nombre" class="text-sm font-semibold text-gray-900 dark:text-white">Nombres</label>
          <input
@@ -80,13 +88,19 @@ const fieldClass =
       </p>
 
       <!--
-         Referencia contextual al tratamiento de datos junto al submit (QA
-         Go-Live, URL-CONTACT-003) -- enlaza al aviso ya publicado y aprobado,
-         no agrega redacción legal nueva.
+         Aviso de privacidad simplificado (anexo del aviso integral del
+         8-sep-2026, art. 16 fr. II de la LFPDPPP: va al pie de todo
+         formulario del sitio, con enlace al integral). Texto literal de
+         legal -- no parafrasear.
       -->
-      <p class="text-center text-xs text-gray-500 dark:text-white/60">
-         Al enviar este formulario aceptas nuestro
-         <a href="/aviso-de-privacidad/" class="underline hover:text-purple_mv">aviso de privacidad</a>.
+      <p class="text-justify text-xs text-gray-500 dark:text-white/60">
+         MOVAPPBYERIKMANN, S.A. de C.V., con domicilio en Homero 229, Polanco, Ciudad de México, tratará tus datos de
+         identificación, contacto y patrimoniales, así como —si lo consientes por separado— datos sensibles de salud
+         emocional, para evaluar tu caso, prestarte nuestros servicios, procesar tus pagos y darte seguimiento. De manera
+         secundaria podemos usarlos para enviarte información y publicidad, a lo que puedes negarte escribiendo a
+         <a href="mailto:contacto@movapp.org" class="underline hover:text-purple_mv">contacto@movapp.org</a>. Consulta el
+         aviso de privacidad integral en
+         <a href="/aviso-de-privacidad/" class="underline hover:text-purple_mv">movapp.org/aviso-de-privacidad</a>.
       </p>
 
       <button

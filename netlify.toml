@@ -30,17 +30,35 @@
 [functions]
   directory = "netlify/functions"
 
-# Cabeceras de seguridad (GLOBAL-004). CSP queda fuera a propósito: el sitio
-# carga GTM/Meta Pixel/YouTube/Stripe/jsDelivr y una CSP mal calibrada los
-# rompe en silencio -- necesita su propia pasada de pruebas dirigida, no un
-# valor genérico puesto sin verificar contra esos dominios.
+# Cabeceras de seguridad (GLOBAL-004 + auditoría ZAP, oct. 2026).
+# FUENTE DE VERDAD: src/utils/securityHeaders.ts -- este bloque es una COPIA
+# para los archivos estáticos del CDN (blog prerenderizado, /_astro, /img,
+# /js, favicons). Netlify NO aplica [[headers]] a las respuestas de la
+# función SSR ni de Edge Functions: a esas se las pone src/middleware.ts con
+# el mismo módulo. Al tocar cualquiera de los dos, correr
+# `npm run check:headers` (falla si difieren).
+# La CSP de acá no lleva el origen de PUBLIC_API_LINK a propósito: este
+# archivo es común a todos los contextos de deploy y el único HTML estático
+# (blog) no hace fetch a la API ni monta islas de React.
 [[headers]]
   for = "/*"
   [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://connect.facebook.net https://js.stripe.com https://*.js.stripe.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' data: blob: https://cdn.jsdelivr.net https://i.vimeocdn.com https://www.facebook.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://*.stripe.com; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://stats.g.doubleclick.net https://www.facebook.com https://connect.facebook.net https://api.stripe.com https://*.js.stripe.com; frame-src https://js.stripe.com https://*.js.stripe.com https://hooks.stripe.com https://player.vimeo.com; font-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; upgrade-insecure-requests"
+    Strict-Transport-Security = "max-age=31536000"
     X-Frame-Options = "SAMEORIGIN"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+# Image CDN de Netlify (/.netlify/images?url=...): sus respuestas no reciben
+# el bloque for = "/*" de arriba (ZAP 10021 las reportó sin nosniff). Solo
+# nosniff: el resto de cabeceras no aplica a una imagen. Pendiente de
+# confirmar tras el deploy que Netlify honra reglas de headers en esta ruta;
+# si no, queda como riesgo aceptado (imagen con Content-Type correcto).
+[[headers]]
+  for = "/.netlify/images"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
 
 [[redirects]]
   from = "/api/*"

@@ -1,0 +1,541 @@
+---
+// Mismo diseño que aviso-de-privacidad.astro (fondo StarField por sección,
+// cards rounded-2xl/border-purple_mv/shadow-card, negritas en morado). El
+// copy son los Términos y Condiciones entregados por legal (última
+// actualización: 1 de octubre de 2026) y se transcribe literal: no
+// parafrasear ni "mejorar" redacción, cualquier cambio de texto debe venir
+// de legal. Solo se partió en párrafos la sección 8 (Cancelación /
+// Devoluciones / Procedimiento venían corridos) para que se pueda leer en
+// móvil; las palabras son las mismas.
+import Layout from '@layouts/Layout.astro';
+import Breadcrumbs from '@components/ui/Breadcrumbs.astro';
+import StarField from '@components/decorative/StarField.astro';
+
+const cardClass =
+   'rounded-2xl border border-purple_mv/25 bg-gradient-to-b from-purple_mv/[0.06] to-transparent p-6 shadow-card dark:border-white/10 dark:from-purple_mv/[0.1] dark:to-black/30 md:p-8';
+const linkClass = 'text-text_banner underline decoration-purple_mv/40 underline-offset-2 hover:decoration-purple_mv';
+const h2Class = 'mb-3 text-lg font-bold text-text_banner md:text-xl';
+const listClass = 'mt-3 list-inside list-disc space-y-3 marker:text-text_banner';
+const bodyClass = 'relative z-10 space-y-6 text-justify text-sm text-gray-700 dark:text-white/80 md:text-lg';
+const strongClass = 'font-bold text-text_banner';
+---
+
+<Layout title="Términos y condiciones" showGrid={false}>
+   <section class="relative mx-auto max-w-3xl px-4 pt-32 text-center md:pt-40" data-aos="fade-up">
+      <StarField id="terms-hero" ambientCount={40} />
+      <div class="relative z-10">
+         <Breadcrumbs />
+         <h1 class="mt-4 text-3xl font-bold uppercase gradient-text-move bg-gradient-to-r from-gray-900 to-purple_mv bg-clip-text text-transparent dark:from-white dark:to-purple_mv md:text-5xl">
+            Términos y Condiciones de Uso
+         </h1>
+         <p class="mt-4 text-sm text-gray-500 dark:text-white/60 md:text-lg">
+            MOVAPPBYERIKMANN, S.A. de C.V. · Última actualización: 1 de octubre de 2026
+         </p>
+      </div>
+   </section>
+
+   <!-- Un StarField por sección (2-3 cards c/u), mismo criterio que el aviso
+        de privacidad: uno solo detrás de todas las cards diluye las estrellas. -->
+   <section class="relative mx-auto max-w-3xl px-4 py-3">
+      <StarField id="terms-1" ambientCount={35} />
+
+      <div class={bodyClass}>
+         <!-- 1. Quiénes somos y qué aceptas al usar Movapp -->
+         <div class={cardClass}>
+            <h2 class={h2Class}>1. Quiénes somos y qué aceptas al usar Movapp</h2>
+            <p>
+               MOVAPPBYERIKMANN, S.A. de C.V. (en lo sucesivo, “Movapp”), con Registro Federal de Contribuyentes
+               MOV250429BM6 y domicilio en Calle Homero número 229, Colonia Polanco, Alcaldía Miguel Hidalgo, C.P. 11590,
+               Ciudad de México, es titular del sitio web movapp.org y de las aplicaciones móviles distribuidas bajo la
+               marca Movapp.
+            </p>
+            <p class="mt-3">
+               Al acceder al sitio, descargar o utilizar la aplicación, o contratar cualquiera de nuestros servicios,
+               aceptas los presentes Términos y Condiciones en su totalidad. Si no estás de acuerdo con ellos, no utilices
+               los servicios.
+            </p>
+            <p class="mt-3">
+               Estos Términos se complementan con el Aviso de Privacidad, disponible en
+               <a href="/aviso-de-privacidad/" class={linkClass}>movapp.org/aviso-de-privacidad</a>, que forma parte
+               integrante de los mismos.
+            </p>
+            <p class="mt-3">
+               Datos de contacto para reclamaciones y aclaraciones, en términos del artículo 76 BIS, fracción III de la Ley
+               Federal de Protección al Consumidor: domicilio físico el señalado en el párrafo anterior; WhatsApp +52 55
+               7876 7442; correo electrónico
+               <a href="mailto:contacto@movapp.org" class={linkClass}>contacto@movapp.org</a>.
+            </p>
+         </div>
+
+         <!-- 2. Definiciones -->
+         <div class={cardClass}>
+            <h2 class={h2Class}>2. Definiciones</h2>
+            <ul class={listClass}>
+               <li>
+                  <strong class={strongClass}>Usuario:</strong> la persona física mayor de edad y con capacidad legal que
+                  accede al Sitio, descarga la Aplicación o contrata los Servicios.
+               </li>
+               <li><strong class={strongClass}>Sitio:</strong> el portal movapp.org y sus subdominios.</li>
+               <li>
+                  <strong class={strongClass}>Aplicación:</strong> el software desarrollado o licenciado por Movapp y
+                  distribuido a través de Google Play, App Store o cualquier otro canal autorizado.
+               </li>
+               <li>
+                  <strong class={strongClass}>El Hack:</strong> nombre comercial de la funcionalidad de bloqueo y filtrado
+                  de comunicaciones incorporada en la Aplicación.
+               </li>
+               <li>
+                  <strong class={strongClass}>Servicios:</strong> de forma conjunta, El Hack, la asesoría personalizada y
+                  el acompañamiento psicológico.
+               </li>
+            </ul>
+         </div>
+      </div>
+   </section>
+
+   <section class="relative mx-auto max-w-3xl px-4 py-3">
+      <StarField id="terms-2" ambientCount={35} />
+
+      <div class={bodyClass}>
+         <!-- 3. Qué son los Servicios -->
+         <div class={cardClass}>
+            <h2 class={h2Class}>3. Qué son los Servicios</h2>
+            <p>
+               Movapp asiste a personas afectadas por prácticas de cobranza ilegítima proveniente de aplicaciones de
+               préstamo no reguladas, mediante tres componentes:
+            </p>
+            <ul class={listClass}>
+               <li>
+                  <strong class={strongClass}>El Hack</strong>, una herramienta técnica que bloquea o filtra en tu
+                  dispositivo las llamadas y mensajes provenientes de los números y aplicaciones que tú identifiques.
+               </li>
+               <li>
+                  <strong class={strongClass}>Asesoría personalizada</strong>, orientación sobre las opciones disponibles
+                  frente a la situación que enfrentas.
+               </li>
+               <li>
+                  <strong class={strongClass}>Acompañamiento psicológico</strong>, contención emocional prestada por
+                  profesionales con formación en la materia.
+               </li>
+            </ul>
+         </div>
+
+         <!-- 4. Qué NO son los Servicios -->
+         <div class={cardClass}>
+            <h2 class={h2Class}>4. Qué NO son los Servicios</h2>
+            <p>Esta sección es esencial. Al aceptar estos Términos reconoces que:</p>
+            <ul class={listClass}>
+               <li>
+                  Movapp no extingue, no cancela, no reestructura ni condona deuda alguna. La existencia y exigibilidad de
+                  cualquier adeudo que hayas contraído se rige por la relación jurídica que tengas con tu acreedor y no se
+                  ve modificada por el uso de los Servicios.
+               </li>
+               <li>
+                  El Hack es una herramienta de bloqueo en tu dispositivo, no una garantía de cese del hostigamiento.
+                  Movapp no controla las conductas de terceros y no puede garantizar que cesen los intentos de contacto por
+                  medios distintos a los bloqueados.
+               </li>
+               <li>
+                  La asesoría personalizada no constituye asesoría jurídica ni representación legal, ni genera relación
+                  abogado-cliente. Si tu caso requiere patrocinio jurídico, te orientaremos sobre la conveniencia de acudir
+                  con un profesional del derecho.
+               </li>
+               <li>
+                  El acompañamiento psicológico no sustituye el diagnóstico, el tratamiento médico o psiquiátrico, ni la
+                  atención de urgencia. Si atraviesas una crisis o consideras que tu integridad está en riesgo, acude de
+                  inmediato a los servicios de emergencia o a la Línea de la Vida al
+                  <a href="tel:8009112000" class={linkClass}>800 911 2000</a>.
+               </li>
+               <li>
+                  Movapp no es una institución financiera y no otorga créditos, no capta recursos del público ni realiza
+                  actividades reservadas a entidades del sistema financiero.
+               </li>
+            </ul>
+         </div>
+      </div>
+   </section>
+
+   <section class="relative mx-auto max-w-3xl px-4 py-3">
+      <StarField id="terms-3" ambientCount={35} />
+
+      <div class={bodyClass}>
+         <!-- 5. Requisitos y cuenta de usuario -->
+         <div class={cardClass}>
+            <h2 class={h2Class}>5. Requisitos y cuenta de usuario</h2>
+            <p>
+               Para utilizar los Servicios debes ser mayor de dieciocho años y contar con capacidad legal. Al registrarte
+               te obligas a proporcionar información veraz, completa y actualizada, y a mantenerla vigente.
+            </p>
+            <p class="mt-3">
+               Eres responsable de la confidencialidad de tus credenciales de acceso y de toda actividad realizada desde tu
+               cuenta. Notifícanos de inmediato cualquier uso no autorizado.
+            </p>
+         </div>
+
+         <!-- 6. Licencia de uso y permisos del dispositivo -->
+         <div class={cardClass}>
+            <h2 class={h2Class}>6. Licencia de uso y permisos del dispositivo</h2>
+            <p>
+               Movapp te otorga una licencia personal, limitada, revocable, intransferible y no exclusiva para usar la
+               Aplicación conforme a estos Términos. No adquieres derecho de propiedad alguno sobre el software.
+            </p>
+            <p class="mt-3">
+               Para funcionar, El Hack requiere que le concedas permisos sobre funciones de tu dispositivo, tales como el
+               registro de llamadas, los mensajes o la agenda de contactos. Estos permisos se utilizan exclusivamente para
+               bloquear y filtrar comunicaciones, el procesamiento ocurre localmente en tu dispositivo y Movapp no extrae,
+               almacena ni comercializa tu lista de contactos. Puedes revocar los permisos en cualquier momento desde la
+               configuración de tu dispositivo, en el entendido de que ello puede impedir el funcionamiento de la
+               herramienta.
+            </p>
+            <p class="mt-3">
+               Queda prohibido descompilar, aplicar ingeniería inversa, modificar, redistribuir, comercializar, ceder o
+               crear obras derivadas de la Aplicación, así como emplearla para fines distintos de los previstos en estos
+               Términos.
+            </p>
+         </div>
+
+         <!-- 7. Obligaciones del Usuario -->
+         <div class={cardClass}>
+            <h2 class={h2Class}>7. Obligaciones del Usuario</h2>
+            <ul class={listClass}>
+               <li>Utilizar los Servicios de manera lícita y conforme a estos Términos.</li>
+               <li>
+                  Proporcionar información veraz sobre tu situación. La información falsa o incompleta puede impedirnos
+                  prestarte un servicio adecuado y es causa de terminación.
+               </li>
+               <li>
+                  Abstenerte de emplear los Servicios para eludir el pago de obligaciones legítimamente contraídas o para
+                  causar daño a terceros.
+               </li>
+               <li>Contar con el consentimiento de los terceros cuyos datos personales nos compartas.</li>
+               <li>
+                  Abstenerte de realizar conductas que comprometan la seguridad, disponibilidad o integridad del Sitio o de
+                  la Aplicación.
+               </li>
+            </ul>
+         </div>
+      </div>
+   </section>
+
+   <section class="relative mx-auto max-w-3xl px-4 py-3">
+      <StarField id="terms-4" ambientCount={35} />
+
+      <div class={bodyClass}>
+         <!-- 8. Contraprestación, facturación y cancelación -->
+         <div class={cardClass}>
+            <h2 class={h2Class}>8. Contraprestación, facturación y cancelación</h2>
+            <p>
+               Los Servicios tienen un costo de <strong class={strongClass}>$500.00 M.N.</strong> (quinientos pesos 00/100
+               moneda nacional) por cada aplicación trabajada. No se trata de una suscripción ni de un pago periódico: cada
+               aplicación cuyo tratamiento solicites genera su propio cargo, que se te informa antes de que lo autorices.
+               El pago se realiza a través de la Aplicación o mediante transferencia electrónica de fondos. Los precios se
+               expresan en pesos mexicanos e incluyen el Impuesto al Valor Agregado.
+            </p>
+            <p class="mt-3">
+               Movapp podrá habilitar medios de pago adicionales, los cuales se informarán en esta sección con anterioridad
+               a que estén disponibles. La incorporación de un nuevo medio de pago no modifica el precio ni las demás
+               condiciones de los Servicios que tengas contratados.
+            </p>
+            <p class="mt-3">
+               <strong class={strongClass}>Pago con activos virtuales.</strong> Movapp podrá recibir el pago en activos
+               virtuales, tales como USDT. Cuando esta modalidad se encuentre habilitada, aplican las reglas siguientes:
+            </p>
+            <ul class={listClass}>
+               <li>
+                  El precio se mantiene en pesos mexicanos. El monto en activo virtual se determina conforme al tipo de
+                  cambio de referencia vigente al momento en que se genera la solicitud de pago, el cual se te informará
+                  antes de que autorices la operación.
+               </li>
+               <li>
+                  Movapp únicamente recibe activos virtuales en cuentas o identificadores registrados a nombre de
+                  MOVAPPBYERIKMANN, S.A. de C.V. Antes de pagar, verifica que el titular de la cuenta receptora corresponda
+                  a esa denominación. Si la plataforma que utilizas muestra el nombre del titular al capturar el
+                  identificador, confírmalo en ese momento; las transferencias realizadas directamente a una dirección de
+                  blockchain no despliegan el nombre del titular, por lo que en ese caso debes confirmar los datos por los
+                  canales oficiales antes de enviar.
+               </li>
+               <li>
+                  Los datos de pago se proporcionan únicamente a través de los canales oficiales de Movapp: el sitio
+                  movapp.org, la Aplicación y la cuenta oficial de WhatsApp con el número +52 55 7876 7442. Nuestras
+                  cuentas oficiales muestran el distintivo de verificación de la plataforma correspondiente, donde éste se
+                  encuentre disponible.
+               </li>
+               <li>
+                  Ninguna persona a título individual está autorizada para solicitarte pagos a nombre de Movapp desde un
+                  número telefónico, perfil de red social o correo electrónico distintos de los canales oficiales. Si
+                  recibes una solicitud de pago desde un canal no oficial, o dirigida a una cuenta cuyo titular no sea
+                  MOVAPPBYERIKMANN, S.A. de C.V., no realices el pago y repórtalo de inmediato.
+               </li>
+               <li>
+                  Las transferencias de activos virtuales en la red son irreversibles. Movapp no puede recuperar ni
+                  reembolsar fondos enviados a una dirección equivocada por error del remitente.
+               </li>
+               <li>
+                  El comprobante fiscal digital se emite en pesos mexicanos, con independencia del activo virtual empleado
+                  para el pago.
+               </li>
+               <li>
+                  Movapp no compra, no vende, no custodia, no administra ni intercambia activos virtuales por cuenta de sus
+                  usuarios; los recibe exclusivamente como contraprestación de sus propios servicios.
+               </li>
+            </ul>
+            <p class="mt-3">
+               <strong class={strongClass}>Vigencia y renovación.</strong> El servicio no está sujeto a plazo ni requiere
+               renovación: se contrata por aplicación trabajada y el acompañamiento permanece disponible mientras sigas las
+               indicaciones de tu asesor. Movapp no realiza cobros automáticos recurrentes ni renovaciones automáticas. El
+               servicio se tiene por concluido respecto de una aplicación cuando, una vez entregadas las indicaciones
+               finales de tu asesor, vuelves a instalar la aplicación de préstamo correspondiente o te apartas de dichas
+               indicaciones; en ese caso puedes volver a contratarlo. Si en el futuro Movapp ofrece membresías o cualquier
+               modalidad con cobros periódicos, te informará de forma clara, destacada y accesible su periodicidad, monto y
+               fecha de cobro, y solo los aplicará con tu consentimiento expreso e informado, en términos del artículo 76
+               BIS, fracción VIII de la Ley Federal de Protección al Consumidor.
+            </p>
+            <p class="mt-3">
+               <strong class={strongClass}>Cancelación.</strong> Puedes cancelar el servicio en cualquier momento y de
+               manera inmediata, desde la Aplicación o escribiendo a
+               <a href="mailto:contacto@movapp.org" class={linkClass}>contacto@movapp.org</a>, sin penalización alguna,
+               conforme al artículo 76 BIS, fracción IX de la Ley Federal de Protección al Consumidor. La cancelación surte
+               efectos desde que la solicitas y no da lugar, por sí sola, a la devolución del importe pagado.
+            </p>
+            <p class="mt-3">
+               <strong class={strongClass}>Devoluciones.</strong> El importe cubierto corresponde al trabajo realizado
+               sobre la aplicación de que se trate, por lo que la devolución no es automática ni procede por el solo hecho
+               de que continúen los intentos de contacto de tus acreedores. La devolución procede únicamente cuando se
+               reúnen las tres condiciones siguientes: a) que la solicites dentro de los siete días hábiles siguientes a la
+               fecha del pago; b) que la aplicación pagada no haya sido trabajada, entendiéndose por trabajada aquella
+               sobre la cual Movapp ya realizó la configuración, el bloqueo o el filtrado correspondiente, o respecto de la
+               cual tu asesor ya te entregó las indicaciones; y c) que el pago corresponda a una aplicación identificada y
+               se acredite con el comprobante respectivo.
+            </p>
+            <p class="mt-3">
+               <strong class={strongClass}>Procedimiento.</strong> Envía tu solicitud a
+               <a href="mailto:contacto@movapp.org" class={linkClass}>contacto@movapp.org</a> con tu nombre completo, el
+               número telefónico que tengas registrado, la fecha e importe del pago, el comprobante correspondiente, la
+               aplicación de que se trate y el motivo de tu solicitud. Movapp acusa recibo dentro de las veinticuatro horas
+               siguientes, resuelve dentro de los diez días hábiles posteriores a la recepción de la solicitud completa y
+               te comunica la resolución por el mismo medio. Si resulta procedente, el reembolso se realiza por el mismo
+               medio de pago empleado, salvo que aceptes otro distinto, dentro de los diez días hábiles siguientes. Para
+               estos efectos, Movapp conserva el registro de las aplicaciones trabajadas y de la fecha en que se
+               trabajaron. No procede la devolución cuando la aplicación ya fue trabajada, cuando la solicitud sea
+               extemporánea, cuando reinstales la aplicación de préstamo o te apartes de las indicaciones de tu asesor, ni
+               cuando no se acredite el pago. Lo anterior se entiende sin perjuicio del derecho de revocación del
+               consentimiento previsto en el artículo 56 de la Ley Federal de Protección al Consumidor cuando resulte
+               aplicable, y de los derechos que te reconocen los artículos 92 y 92 Bis de la misma Ley si el servicio no
+               corresponde a lo ofrecido.
+            </p>
+            <p class="mt-3">
+               Para solicitar tu comprobante fiscal digital escribe a
+               <a href="mailto:contacto@movapp.org" class={linkClass}>contacto@movapp.org</a> dentro del mes calendario en
+               que realizaste el pago.
+            </p>
+         </div>
+      </div>
+   </section>
+
+   <section class="relative mx-auto max-w-3xl px-4 py-3">
+      <StarField id="terms-5" ambientCount={35} />
+
+      <div class={bodyClass}>
+         <!-- 9. Disponibilidad del servicio -->
+         <div class={cardClass}>
+            <h2 class={h2Class}>9. Disponibilidad del servicio</h2>
+            <p>
+               Movapp realiza esfuerzos razonables para mantener el Sitio y la Aplicación disponibles, pero no garantiza
+               disponibilidad ininterrumpida. Podremos suspender temporalmente el acceso por mantenimiento, actualizaciones
+               o causas de fuerza mayor, procurando avisar con anticipación cuando sea posible.
+            </p>
+            <p class="mt-3">
+               La Aplicación depende de tu dispositivo, de tu sistema operativo y de tu conexión a internet. Movapp no
+               responde por fallas atribuibles a esos elementos ni a las tiendas de aplicaciones.
+            </p>
+         </div>
+
+         <!-- 10. Responsabilidad -->
+         <div class={cardClass}>
+            <h2 class={h2Class}>10. Responsabilidad</h2>
+            <p>
+               Movapp responde del cumplimiento de los Servicios contratados en los términos aquí pactados y conforme a la
+               Ley Federal de Protección al Consumidor. Ninguna disposición de estos Términos libera a Movapp de su
+               responsabilidad civil ni la traslada al Usuario o a terceros; cualquier cláusula que llegara a interpretarse
+               en ese sentido se tendrá por no puesta, conforme al artículo 90, fracciones II y III de dicha ley.
+            </p>
+            <p class="mt-3">
+               Lo anterior se entiende sin perjuicio de que Movapp no responde por hechos que no le son imputables, tales
+               como las conductas de terceros ajenos a la relación —incluidas las de tus acreedores—, la revocación de
+               permisos del dispositivo por parte del Usuario, las fallas del dispositivo, del sistema operativo o de la
+               conexión a internet del Usuario, o la información inexacta que el propio Usuario proporcione.
+            </p>
+         </div>
+      </div>
+   </section>
+
+   <section class="relative mx-auto max-w-3xl px-4 py-3">
+      <StarField id="terms-6" ambientCount={35} />
+
+      <div class={bodyClass}>
+         <!-- 11. Propiedad intelectual -->
+         <div class={cardClass}>
+            <h2 class={h2Class}>11. Propiedad intelectual</h2>
+            <p>
+               La marca Movapp, el nombre El Hack, los signos distintivos, el software, los contenidos, textos, gráficos,
+               videos y bases de datos del Sitio y de la Aplicación son propiedad de Movapp o se usan bajo licencia, y
+               están protegidos por la legislación en materia de propiedad industrial y derechos de autor. Su uso no
+               autorizado queda prohibido.
+            </p>
+         </div>
+
+         <!-- 12. Contenidos y enlaces de terceros -->
+         <div class={cardClass}>
+            <h2 class={h2Class}>12. Contenidos y enlaces de terceros</h2>
+            <p>
+               El Sitio puede contener enlaces o materiales de terceros. Movapp no controla ni asume responsabilidad por su
+               contenido, políticas o prácticas, y su inclusión no implica recomendación.
+            </p>
+         </div>
+
+         <!-- 13. Protección de datos personales -->
+         <div class={cardClass}>
+            <h2 class={h2Class}>13. Protección de datos personales</h2>
+            <p>
+               El tratamiento de tus datos personales se rige por el Aviso de Privacidad disponible en
+               <a href="/aviso-de-privacidad/" class={linkClass}>movapp.org/aviso-de-privacidad</a>, que declaras haber
+               leído.
+            </p>
+         </div>
+      </div>
+   </section>
+
+   <section class="relative mx-auto max-w-3xl px-4 py-3">
+      <StarField id="terms-7" ambientCount={35} />
+
+      <div class={bodyClass}>
+         <!-- 14. Compromisos de Movapp en la contratación por medios electrónicos -->
+         <div class={cardClass}>
+            <h2 class={h2Class}>14. Compromisos de Movapp en la contratación por medios electrónicos</h2>
+            <p>
+               Conforme al artículo 76 BIS de la Ley Federal de Protección al Consumidor, Movapp asume frente a ti los
+               siguientes compromisos:
+            </p>
+            <ul class={listClass}>
+               <li>
+                  Tratar de forma confidencial la información que nos proporciones y no difundirla ni transmitirla a
+                  proveedores ajenos a la transacción, salvo tu autorización expresa o requerimiento de autoridad
+                  competente.
+               </li>
+               <li>
+                  Emplear medidas técnicas de seguridad y confidencialidad e informarte de sus características generales,
+                  en los términos del Aviso de Privacidad.
+               </li>
+               <li>
+                  Ponerte a la vista, antes de contratar, nuestro domicilio físico, teléfono y demás medios de contacto
+                  para reclamaciones y aclaraciones.
+               </li>
+               <li>
+                  Abstenernos de prácticas comerciales engañosas y de estrategias publicitarias que no te den información
+                  clara y suficiente sobre los Servicios.
+               </li>
+               <li>
+                  Informarte de forma completa los términos, condiciones, costos y cargos adicionales antes de que
+                  contrates.
+               </li>
+               <li>Respetar tu decisión de no recibir avisos comerciales, la cual puedes manifestar en cualquier momento.</li>
+               <li>
+                  Informarte de forma clara, destacada y accesible si algún servicio implica cobros automáticos
+                  recurrentes, su periodicidad, monto y fecha de cobro, y aplicarlos únicamente con tu consentimiento
+                  expreso e informado.
+               </li>
+               <li>Poner a tu disposición mecanismos que te permitan cancelar el servicio de manera inmediata.</li>
+            </ul>
+            <p class="mt-3">
+               Movapp reconoce que se dirige a personas que atraviesan una situación de vulnerabilidad económica y
+               emocional, y asume el compromiso de no emplear con ellas estrategias de venta que aprovechen esa condición.
+            </p>
+         </div>
+
+         <!-- 15. Servicios adicionales -->
+         <div class={cardClass}>
+            <h2 class={h2Class}>15. Servicios adicionales</h2>
+            <p>
+               Si Movapp llega a ofrecer servicios adicionales, especiales o conexos al servicio básico, solo los prestará
+               con tu consentimiento expreso, por escrito o por vía electrónica. Podrás contratarlos o no, contratarlos con
+               el proveedor que elijas y darlos por terminados en cualquier momento sin que ello suspenda o cancele el
+               servicio básico, conforme al artículo 86 TER de la Ley Federal de Protección al Consumidor. Estas
+               prerrogativas te asisten aunque no se hubieran incluido expresamente en estos Términos.
+            </p>
+         </div>
+      </div>
+   </section>
+
+   <section class="relative mx-auto max-w-3xl px-4 py-3">
+      <StarField id="terms-8" ambientCount={35} />
+
+      <div class={bodyClass}>
+         <!-- 16. Modificaciones -->
+         <div class={cardClass}>
+            <h2 class={h2Class}>16. Modificaciones</h2>
+            <p>
+               Movapp podrá actualizar estos Términos para atender cambios legales, técnicos o comerciales. Ninguna
+               modificación afectará las condiciones —incluido el precio— de los Servicios que ya tengas contratados
+               durante su vigencia; las modificaciones surtirán efecto únicamente respecto de contrataciones o renovaciones
+               posteriores a su entrada en vigor.
+            </p>
+            <p class="mt-3">
+               Toda modificación se publicará en el Sitio con indicación de la fecha de actualización y se te comunicará
+               por el medio de contacto que hayas registrado, con al menos treinta días naturales de anticipación a su
+               entrada en vigor. Si no estás de acuerdo, podrás dar por terminada la relación sin penalización alguna antes
+               de esa fecha.
+            </p>
+            <p class="mt-3">
+               Esta cláusula no faculta a Movapp para modificar unilateralmente el contenido del contrato ni para
+               sustraerse de sus obligaciones, en términos del artículo 90, fracción I de la Ley Federal de Protección al
+               Consumidor.
+            </p>
+         </div>
+
+         <!-- 17. Vigencia y terminación -->
+         <div class={cardClass}>
+            <h2 class={h2Class}>17. Vigencia y terminación</h2>
+            <p>
+               Puedes dejar de usar los Servicios en cualquier momento, desinstalando la Aplicación y solicitando la baja de
+               tu cuenta. Movapp podrá suspender o terminar tu acceso, previo aviso, cuando incumplas estos Términos,
+               cuando proporciones información falsa o cuando utilices los Servicios con fines ilícitos.
+            </p>
+         </div>
+      </div>
+   </section>
+
+   <section class="relative mx-auto max-w-3xl px-4 py-3">
+      <StarField id="terms-9" ambientCount={35} />
+
+      <div class={bodyClass}>
+         <!-- 18. Atención al Usuario -->
+         <div class={cardClass}>
+            <h2 class={h2Class}>18. Atención al Usuario</h2>
+            <p>
+               Para dudas, aclaraciones o quejas escríbenos a
+               <a href="mailto:contacto@movapp.org" class={linkClass}>contacto@movapp.org</a> o al WhatsApp +52 55 7876
+               7442. Atenderemos tu solicitud dentro de las veinticuatro horas siguientes a su recepción.
+            </p>
+         </div>
+
+         <!-- 19. Legislación aplicable y jurisdicción -->
+         <div class={cardClass}>
+            <h2 class={h2Class}>19. Legislación aplicable y jurisdicción</h2>
+            <p>Estos Términos se rigen por las leyes de los Estados Unidos Mexicanos.</p>
+            <p class="mt-3">
+               Cualquier controversia podrá someterse ante la Procuraduría Federal del Consumidor en la vía administrativa.
+               Agotada ésta o de no ser aplicable, serán competentes los tribunales de la Ciudad de México o los del
+               domicilio del Usuario, a elección de este último.
+            </p>
+            <p class="mt-3">
+               Esta cláusula no somete al Usuario a tribunales extranjeros ni implica renuncia a la protección de la Ley
+               Federal de Protección al Consumidor, en términos de su artículo 90, fracción VI.
+            </p>
+            <p class="mt-3">
+               Si resides fuera de México, conservas los derechos que te reconozca la legislación de consumo de tu país de
+               residencia, los cuales Movapp respetará en la medida en que le resulten aplicables.
+            </p>
+         </div>
+      </div>
+   </section>
+</Layout>

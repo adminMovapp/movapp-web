@@ -821,10 +821,17 @@ export const PAGE_SCHEMA = {
    },
 
    '/aviso-de-privacidad': {
-      name: 'Política de Privacidad',
+      name: 'Aviso de Privacidad Integral',
       description:
-         'Política de privacidad de Movapp: qué información recopilamos, cómo la usamos y cuáles son tus derechos.',
-      breadcrumb: 'Política de privacidad',
+         'Aviso de privacidad integral de Movapp: qué datos personales tratamos, para qué los usamos, a quién los transferimos y cómo ejercer tus derechos ARCO.',
+      breadcrumb: 'Aviso de privacidad',
+   },
+
+   '/terminos-y-condiciones': {
+      name: 'Términos y Condiciones de Uso',
+      description:
+         'Términos y condiciones de Movapp: qué incluyen y qué no incluyen El Hack, la asesoría y el acompañamiento, precio por aplicación, cancelación y devoluciones.',
+      breadcrumb: 'Términos y condiciones',
    },
 };
 
