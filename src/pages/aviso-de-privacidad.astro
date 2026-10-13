@@ -2,9 +2,12 @@
 // Diseño alineado al resto del sitio (fondo StarField, cards
 // rounded-2xl/border-purple_mv/shadow-card, negritas en morado -- ver
 // BlogArticleBody.astro para el mismo tratamiento en contenido largo de
-// lectura). Antes esta página no tenía ningún estilo del sistema de diseño
-// (texto blanco plano sin variante de tema, sin cards, sin fondo). El copy
-// legal se mantiene idéntico, solo cambia el markup/clases.
+// lectura). El copy es el Aviso de Privacidad Integral entregado por legal
+// (última actualización: 8 de septiembre de 2026) y se transcribe literal:
+// no parafrasear ni "mejorar" redacción, cualquier cambio de texto debe venir
+// de legal. El anexo del documento (aviso simplificado) NO se publica aquí:
+// su texto vive al pie de ContactoForm.astro, que es donde el anexo indica
+// colocarlo en el sitio web.
 import Layout from '@layouts/Layout.astro';
 import Breadcrumbs from '@components/ui/Breadcrumbs.astro';
 import StarField from '@components/decorative/StarField.astro';
@@ -12,72 +15,116 @@ import StarField from '@components/decorative/StarField.astro';
 const cardClass =
    'rounded-2xl border border-purple_mv/25 bg-gradient-to-b from-purple_mv/[0.06] to-transparent p-6 shadow-card dark:border-white/10 dark:from-purple_mv/[0.1] dark:to-black/30 md:p-8';
 const linkClass = 'text-text_banner underline decoration-purple_mv/40 underline-offset-2 hover:decoration-purple_mv';
+const h2Class = 'mb-3 text-lg font-bold text-text_banner md:text-xl';
+const h3Class = 'mb-2 mt-5 text-base font-bold text-text_banner md:text-lg';
+const listClass = 'mt-3 list-inside list-disc space-y-3 marker:text-text_banner';
+const bodyClass = 'relative z-10 space-y-6 text-justify text-sm text-gray-700 dark:text-white/80 md:text-lg';
+const strongClass = 'font-bold text-text_banner';
 ---
 
-<Layout title="Política de privacidad" showGrid={false}>
+<Layout title="Aviso de privacidad" showGrid={false}>
    <section class="relative mx-auto max-w-3xl px-4 pt-32 text-center md:pt-40" data-aos="fade-up">
       <StarField id="privacypolicy-hero" ambientCount={40} />
       <div class="relative z-10">
          <Breadcrumbs />
          <h1 class="mt-4 text-3xl font-bold uppercase gradient-text-move bg-gradient-to-r from-gray-900 to-purple_mv bg-clip-text text-transparent dark:from-white dark:to-purple_mv md:text-5xl">
-            Política de Privacidad
+            Aviso de Privacidad Integral
          </h1>
          <p class="mt-4 text-sm text-gray-500 dark:text-white/60 md:text-lg">
-            Fecha de la última actualización: 1 de mayo de 2025
+            MOVAPPBYERIKMANN, S.A. de C.V. · Última actualización: 8 de septiembre de 2026
          </p>
       </div>
    </section>
 
    <!-- Repartido en varias secciones (2 cards c/u), cada una con su propio
-        StarField -- un solo StarField detrás de las 10 cards diluía las
+        StarField -- un solo StarField detrás de todas las cards diluía las
         estrellas en un área demasiado alta (casi invisibles entre cards),
         mismo criterio de "un fondo animado por sección" que el resto del
         sitio (Home, aplicaciones-prestamo, etc.), no un único fondo gigante. -->
    <section class="relative mx-auto max-w-3xl px-4 py-3">
       <StarField id="privacypolicy-1" ambientCount={35} />
 
-      <div class="relative z-10 space-y-6 text-justify text-sm text-gray-700 dark:text-white/80 md:text-lg">
-         <!-- 1. Identificación del Responsable -->
+      <div class={bodyClass}>
+         <!-- 1. Identidad y domicilio del responsable -->
          <div class={cardClass}>
-            <h2 class="mb-3 text-lg font-bold text-text_banner md:text-xl">1. Identificación del Responsable</h2>
-            <p>Movapp by Erik Mann</p>
+            <h2 class={h2Class}>1. Identidad y domicilio del responsable</h2>
             <p>
-               <a href="mailto:privacidad@movapp.org" class={linkClass}>privacidad@movapp.org</a>
+               MOVAPPBYERIKMANN, S.A. de C.V. (en lo sucesivo, “Movapp”, “nosotros” o “el Responsable”), con Registro
+               Federal de Contribuyentes MOV250429BM6 y domicilio en Calle Homero número 229, Colonia Polanco, Alcaldía
+               Miguel Hidalgo, C.P. 11590, Ciudad de México, es responsable del tratamiento de tus datos personales, en
+               términos de la Ley Federal de Protección de Datos Personales en Posesión de los Particulares (en lo
+               sucesivo, “la Ley”).
+            </p>
+            <p class="mt-3">
+               Este aviso aplica a los datos personales que recabamos a través del sitio web movapp.org, de nuestras
+               aplicaciones móviles disponibles en Google Play y App Store, del número de WhatsApp +52 55 7876 7442, y de
+               cualquier otro canal de atención que pongamos a tu disposición.
+            </p>
+            <p class="mt-3">
+               Para cualquier asunto relacionado con tus datos personales puedes escribirnos a
+               <a href="mailto:contacto@movapp.org" class={linkClass}>contacto@movapp.org</a>.
             </p>
          </div>
 
-         <!-- 2. Información que Recopilamos -->
+         <!-- 2. Datos personales que tratamos -->
          <div class={cardClass}>
-            <h2 class="mb-3 text-lg font-bold text-text_banner md:text-xl">2. Información que Recopilamos</h2>
-            <p>Recopilamos diferentes tipos de información cuando utilizas nuestro sitio web:</p>
-            <ul class="mt-3 list-inside list-disc space-y-3 marker:text-text_banner">
-               <li>
-                  <strong class="font-bold text-text_banner">Datos de Identificación:</strong> Nombre y apellidos o alias,
-                  dirección de correo electrónico, número de teléfono, información de inicio de sesión (nombre de usuario y
-                  contraseña, si aplica).
-               </li>
-               <li>
-                  <strong class="font-bold text-text_banner">Información de Pago:</strong> Cuando realizas una compra,
-                  recopilamos información necesaria para procesar tu pago. Ten en cuenta que los detalles de tu tarjeta de
-                  crédito o débito se procesan directamente por nuestros proveedores de servicios de pago (PayPal y Mercado
-                  Pago) y no son almacenados directamente por nosotros. Solo recibimos confirmación de la transacción.
-               </li>
-               <li>
-                  <strong class="font-bold text-text_banner">Datos de Uso del Sitio Web:</strong> Información sobre cómo
-                  navegas y utilizas nuestro sitio web, incluyendo las páginas que visitas, los productos que ves, los
-                  artículos que agregas al carrito, las búsquedas que realizas y el tiempo que pasas en el sitio.
-               </li>
-               <li>
-                  <strong class="font-bold text-text_banner">Información del Dispositivo:</strong> Tipo de dispositivo,
-                  sistema operativo, aplicaciones de préstamos inmediatos instaladas.
-               </li>
-               <li>
-                  <strong class="font-bold text-text_banner">Datos Recopilados a través de Cookies y Tecnologías
-                  Similares:</strong> Utilizamos cookies y otras tecnologías de seguimiento (como se describe en nuestra
-                  Política de Cookies) para mejorar la funcionalidad de nuestro sitio web, analizar el comportamiento del
-                  usuario y personalizar la experiencia.
-               </li>
-            </ul>
+            <h2 class={h2Class}>2. Datos personales que tratamos</h2>
+            <p>
+               Para las finalidades señaladas en este aviso, podemos recabar y tratar las siguientes categorías de datos
+               personales:
+            </p>
+
+            <h3 class={h3Class}>2.1. Datos de identificación y contacto</h3>
+            <p>
+               Nombre completo, edad o fecha de nacimiento, número telefónico, número de WhatsApp, correo electrónico,
+               entidad federativa o localidad de residencia y, cuando resulte necesario para acreditar tu identidad, copia
+               de tu identificación oficial.
+            </p>
+
+            <h3 class={h3Class}>2.2. Datos patrimoniales y financieros</h3>
+            <p>
+               Información sobre las aplicaciones o plataformas de préstamo con las que mantienes o mantuviste una
+               relación, montos solicitados y adeudados, fechas de contratación y vencimiento, capturas de pantalla de
+               mensajes o requerimientos de cobro, comprobantes de pago y datos de la cuenta bancaria, identificador de
+               plataforma o dirección desde la que realizas tus pagos a Movapp.
+            </p>
+            <p class="mt-3">
+               De conformidad con el artículo 7 de la Ley, los datos financieros y patrimoniales requieren tu
+               consentimiento expreso, el cual otorgas al proporcionarlos y aceptar el presente aviso.
+            </p>
+
+            <h3 class={h3Class}>2.3. Datos personales sensibles</h3>
+            <p>
+               Cuando solicitas o recibes el servicio de acompañamiento psicológico, podemos tratar información relativa a
+               tu estado de salud emocional y psicológica, así como aquella que compartas durante las sesiones. Esta
+               información constituye dato personal sensible en términos de la Ley.
+            </p>
+            <p class="mt-3">
+               Para su tratamiento requerimos tu consentimiento expreso y por escrito, conforme al artículo 8 de la Ley,
+               el cual se recaba de forma separada y específica antes de iniciar el acompañamiento. Puedes recibir los
+               demás servicios de Movapp sin otorgar este consentimiento.
+            </p>
+
+            <h3 class={h3Class}>2.4. Datos de terceros contenidos en tu dispositivo</h3>
+            <p>
+               Para prestar el servicio conocido comercialmente como “El Hack”, nuestra aplicación puede requerir acceso a
+               funciones de tu dispositivo, tales como registro de llamadas, mensajes o agenda de contactos, con la
+               finalidad exclusiva de bloquear o filtrar comunicaciones provenientes de las aplicaciones de préstamo que
+               tú identifiques.
+            </p>
+            <p class="mt-3">
+               Movapp no extrae, no almacena en sus servidores, no comercializa ni transfiere tu lista de contactos. El
+               procesamiento ocurre localmente en tu dispositivo. Cuando nos proporcionas voluntariamente datos de
+               terceros —por ejemplo, capturas de conversaciones en las que aparecen sus números—, te obligas a haberles
+               informado y a contar con su consentimiento para ese tratamiento.
+            </p>
+
+            <h3 class={h3Class}>2.5. Datos técnicos y de navegación</h3>
+            <p>
+               Dirección IP, tipo y versión de navegador o sistema operativo, identificadores de dispositivo, páginas
+               visitadas, tiempo de permanencia y origen del tráfico, recabados mediante cookies y tecnologías similares en
+               los términos de la sección 10.
+            </p>
          </div>
       </div>
    </section>
@@ -85,35 +132,80 @@ const linkClass = 'text-text_banner underline decoration-purple_mv/40 underline-
    <section class="relative mx-auto max-w-3xl px-4 py-3">
       <StarField id="privacypolicy-2" ambientCount={35} />
 
-      <div class="relative z-10 space-y-6 text-justify text-sm text-gray-700 dark:text-white/80 md:text-lg">
-         <!-- 3. Cómo Utilizamos la Información Recopilada -->
+      <div class={bodyClass}>
+         <!-- 3. Finalidades del tratamiento -->
          <div class={cardClass}>
-            <h2 class="mb-3 text-lg font-bold text-text_banner md:text-xl">3. Cómo Utilizamos la Información Recopilada</h2>
-            <p>Utilizamos la información recopilada para los siguientes propósitos:</p>
-            <ul class="mt-3 list-inside list-disc space-y-3 marker:text-text_banner">
-               <li>Procesar y gestionar tus pedidos.</li>
-               <li>Gestionar tu cuenta y verificar tu identidad.</li>
-               <li>Mejorar nuestro sitio web y servicios.</li>
-               <li>Personalizar tu experiencia.</li>
-               <li>Marketing y publicidad (con tu consentimiento).</li>
-               <li>Atención al cliente.</li>
-               <li>Seguridad y prevención de fraude.</li>
-               <li>Cumplir con obligaciones legales.</li>
+            <h2 class={h2Class}>3. Finalidades del tratamiento</h2>
+
+            <h3 class={h3Class}>3.1. Finalidades primarias</h3>
+            <p>
+               Las siguientes finalidades son necesarias para prestarte el servicio y dan origen a la relación entre tú y
+               Movapp:
+            </p>
+            <ul class={listClass}>
+               <li>Identificarte, verificar tu identidad y crear y administrar tu cuenta de usuario.</li>
+               <li>Evaluar tu caso y determinar qué servicios de Movapp resultan aplicables a tu situación.</li>
+               <li>Prestar el servicio de bloqueo y filtrado de comunicaciones a través de nuestra aplicación.</li>
+               <li>Brindarte asesoría personalizada y, cuando lo consientas expresamente, acompañamiento psicológico.</li>
+               <li>Procesar tus pagos, emitir comprobantes fiscales y llevar el registro contable correspondiente.</li>
+               <li>Atender tus dudas, solicitudes, quejas y solicitudes de ejercicio de derechos ARCO.</li>
+               <li>
+                  Dar cumplimiento a obligaciones legales a cargo de Movapp y atender requerimientos de autoridad
+                  competente.
+               </li>
             </ul>
+
+            <h3 class={h3Class}>3.2. Finalidades secundarias</h3>
+            <p>
+               Las siguientes finalidades no son necesarias para prestarte el servicio, y puedes negarte a ellas sin que
+               eso afecte la atención que recibes:
+            </p>
+            <ul class={listClass}>
+               <li>
+                  Enviarte información sobre nuevos servicios, promociones, contenidos educativos y campañas de
+                  prevención.
+               </li>
+               <li>Elaborar estadísticas y estudios de mercado, en lo posible con información disociada.</li>
+               <li>
+                  Mostrarte publicidad personalizada en plataformas de terceros mediante las herramientas descritas en la
+                  sección 10.
+               </li>
+               <li>
+                  Invitarte a participar en encuestas de satisfacción, testimonios o materiales de difusión, en el
+                  entendido de que tu testimonio solo se publicará con tu autorización específica y por separado.
+               </li>
+            </ul>
+            <p class="mt-3">
+               Si no deseas que tus datos se traten para estas finalidades, envía un correo a
+               <a href="mailto:contacto@movapp.org" class={linkClass}>contacto@movapp.org</a> con el asunto
+               <strong class={strongClass}>“Limitación de finalidades secundarias”</strong>, indicando tu nombre y el medio
+               de contacto que registraste. Tu negativa no será motivo para negarte los servicios que contrataste.
+            </p>
          </div>
 
-         <!-- 4. Cómo Compartimos la Información -->
+         <!-- 4. Consentimiento -->
          <div class={cardClass}>
-            <h2 class="mb-3 text-lg font-bold text-text_banner md:text-xl">4. Cómo Compartimos la Información</h2>
-            <p>Podemos compartir tu información personal con los siguientes terceros:</p>
-            <ul class="mt-3 list-inside list-disc space-y-3 marker:text-text_banner">
-               <li>Proveedores de servicios de pago (PayPal, Mercado Pago).</li>
-               <li>Proveedores de servicios de envío.</li>
-               <li>Proveedores de servicios de análisis web (Google Analytics).</li>
-               <li>Proveedores de servicios de marketing y publicidad (Meta, Facebook).</li>
-               <li>Proveedores de servicios tecnológicos (alojamiento web, correos electrónicos, etc.).</li>
-               <li>Autoridades legales en caso de ser requerido por la ley.</li>
-            </ul>
+            <h2 class={h2Class}>4. Consentimiento</h2>
+            <p>
+               Al proporcionarnos tus datos personales por cualquiera de los canales señalados en la sección 1, y al
+               aceptar este aviso, otorgas tu consentimiento para el tratamiento descrito.
+            </p>
+            <p class="mt-3">
+               Tratándose de datos financieros y patrimoniales, tu consentimiento es expreso; tratándose de datos
+               personales sensibles, lo recabamos de forma expresa y por escrito, mediante firma autógrafa, firma
+               electrónica o cualquier otro mecanismo de autenticación, en documento separado.
+            </p>
+            <p class="mt-3">
+               Puedes revocar tu consentimiento en cualquier momento, sin efectos retroactivos, mediante solicitud enviada
+               a <a href="mailto:contacto@movapp.org" class={linkClass}>contacto@movapp.org</a>. La revocación puede
+               implicar que no estemos en posibilidad de seguir prestándote el servicio.
+            </p>
+            <p class="mt-3">
+               No requerimos tu consentimiento cuando una disposición jurídica lo disponga, cuando los datos figuren en
+               fuentes de acceso público, cuando se sometan a un procedimiento previo de disociación, cuando sean
+               necesarios para cumplir obligaciones derivadas de la relación jurídica entre tú y Movapp, o en los demás
+               supuestos del artículo 9 de la Ley.
+            </p>
          </div>
       </div>
    </section>
@@ -121,34 +213,85 @@ const linkClass = 'text-text_banner underline decoration-purple_mv/40 underline-
    <section class="relative mx-auto max-w-3xl px-4 py-3">
       <StarField id="privacypolicy-3" ambientCount={35} />
 
-      <div class="relative z-10 space-y-6 text-justify text-sm text-gray-700 dark:text-white/80 md:text-lg">
-         <!-- 5. Seguridad de la Información -->
+      <div class={bodyClass}>
+         <!-- 5. Transferencias de datos personales -->
          <div class={cardClass}>
-            <h2 class="mb-3 text-lg font-bold text-text_banner md:text-xl">5. Seguridad de la Información</h2>
+            <h2 class={h2Class}>5. Transferencias de datos personales</h2>
             <p>
-               Implementamos medidas de seguridad razonables para proteger tu información personal contra accesos no
-               autorizados, pérdidas, alteraciones o destrucciones. Estas medidas incluyen el uso de protocolos de
-               seguridad para proteger la información transmitida a través de nuestro sitio web. Sin embargo, debes tener
-               en cuenta que ninguna transmisión de datos a través de Internet o sistema de almacenamiento electrónico es
-               completamente segura.
+               Movapp no vende, renta ni comercializa tus datos personales. Únicamente los transferimos en los siguientes
+               casos:
+            </p>
+            <ul class={listClass}>
+               <li>
+                  A autoridades administrativas o judiciales competentes, cuando exista requerimiento fundado y motivado o
+                  cuando una disposición legal lo exija.
+               </li>
+               <li>
+                  A los profesionistas independientes —psicólogos, abogados o contadores— que intervengan en la atención
+                  de tu caso, exclusivamente para esa finalidad y bajo obligación de confidencialidad.
+               </li>
+               <li>
+                  A instituciones financieras, procesadores de pago y plataformas de intercambio de activos virtuales,
+                  únicamente para procesar tus pagos y verificar su origen.
+               </li>
+            </ul>
+            <p class="mt-3">
+               Los proveedores que tratan datos por cuenta y bajo instrucciones de Movapp —alojamiento, mensajería,
+               analítica— tienen el carácter de encargados y no de terceros receptores, por lo que sus tratamientos no
+               constituyen transferencia.
+            </p>
+            <p class="mt-3">
+               Al aceptar el presente aviso manifiestas tu conformidad con las transferencias antes descritas. Si no estás
+               de acuerdo con alguna de ellas, comunícalo a
+               <a href="mailto:contacto@movapp.org" class={linkClass}>contacto@movapp.org</a>. Toda transferencia se
+               realizará comunicando al receptor este aviso y las finalidades a las que sujetaste el tratamiento, en
+               términos del artículo 35 de la Ley; las previstas en el artículo 36 de la Ley no requieren tu
+               consentimiento.
             </p>
          </div>
 
          <!-- 6. Derechos ARCO -->
          <div class={cardClass}>
-            <h2 class="mb-3 text-lg font-bold text-text_banner md:text-xl">
-               6. Tus Derechos de Protección de Datos (Derechos ARCO)
-            </h2>
+            <h2 class={h2Class}>6. Derechos ARCO</h2>
             <p>
-               De acuerdo con la Ley Federal de Protección de Datos Personales en Posesión de los Particulares (LFPDPPP)
-               en México, tienes los siguientes derechos con respecto a tus datos personales:
+               Tienes derecho a conocer qué datos personales tenemos de ti, para qué los usamos y las condiciones de su uso
+               (<strong class={strongClass}>Acceso</strong>); a solicitar la corrección de tu información cuando esté
+               desactualizada, sea inexacta o incompleta (<strong class={strongClass}>Rectificación</strong>); a pedir que
+               la eliminemos de nuestros registros cuando consideres que no está siendo utilizada conforme a los
+               principios, deberes y obligaciones de la Ley (<strong class={strongClass}>Cancelación</strong>); y a
+               oponerte al uso de tus datos para fines específicos (<strong class={strongClass}>Oposición</strong>).
             </p>
-            <ul class="mt-3 list-inside list-disc space-y-3 marker:text-text_banner">
-               <li>Acceso: Derecho a conocer qué datos personales tenemos sobre ti.</li>
-               <li>Rectificación: Derecho a solicitar la corrección de tus datos personales si son inexactos o incompletos.</li>
-               <li>Cancelación: Derecho a solicitar la eliminación de tus datos personales cuando ya no sean necesarios.</li>
-               <li>Oposición: Derecho a oponerte al tratamiento de tus datos personales para fines específicos.</li>
+
+            <h3 class={h3Class}>6.1. Cómo ejercerlos</h3>
+            <p>
+               Envía tu solicitud a <a href="mailto:contacto@movapp.org" class={linkClass}>contacto@movapp.org</a> con el
+               asunto <strong class={strongClass}>“Derechos ARCO”</strong>, acompañando:
+            </p>
+            <ul class={listClass}>
+               <li>Tu nombre completo y un medio para comunicarte la respuesta.</li>
+               <li>
+                  Copia de tu identificación oficial vigente o, en su caso, del documento que acredite la representación
+                  legal.
+               </li>
+               <li>
+                  Una descripción clara y precisa de los datos respecto de los que buscas ejercer el derecho y del derecho
+                  que deseas ejercer.
+               </li>
+               <li>Cualquier documento que facilite la localización de tus datos.</li>
+               <li>Tratándose de rectificación, la modificación solicitada y la documentación que la sustente.</li>
             </ul>
+
+            <h3 class={h3Class}>6.2. Plazos</h3>
+            <p>
+               Te comunicaremos la determinación adoptada dentro de los veinte días siguientes a la recepción de tu
+               solicitud y, de resultar procedente, la haremos efectiva dentro de los quince días siguientes a esa
+               comunicación, conforme al artículo 31 de la Ley. Estos plazos podrán ampliarse por una sola vez y por un
+               periodo igual cuando las circunstancias del caso lo justifiquen, lo que te sería notificado.
+            </p>
+            <p class="mt-3">
+               El ejercicio de los derechos ARCO es gratuito; solo podrán cobrarse los gastos justificados de envío o
+               reproducción.
+            </p>
          </div>
       </div>
    </section>
@@ -156,22 +299,41 @@ const linkClass = 'text-text_banner underline decoration-purple_mv/40 underline-
    <section class="relative mx-auto max-w-3xl px-4 py-3">
       <StarField id="privacypolicy-4" ambientCount={35} />
 
-      <div class="relative z-10 space-y-6 text-justify text-sm text-gray-700 dark:text-white/80 md:text-lg">
-         <!-- 7. Retención de Datos -->
+      <div class={bodyClass}>
+         <!-- 7. Limitación del uso o divulgación de tus datos -->
          <div class={cardClass}>
-            <h2 class="mb-3 text-lg font-bold text-text_banner md:text-xl">7. Retención de Datos</h2>
+            <h2 class={h2Class}>7. Limitación del uso o divulgación de tus datos</h2>
             <p>
-               Conservaremos tu información personal durante el tiempo que sea necesario para cumplir con los fines para
-               los que fue recopilada, incluyendo el cumplimiento de obligaciones legales, contables o de informes.
+               Además de los mecanismos anteriores, puedes solicitar tu inscripción en nuestro listado de exclusión
+               escribiendo a <a href="mailto:contacto@movapp.org" class={linkClass}>contacto@movapp.org</a>, con lo que
+               dejarás de recibir comunicaciones promocionales. También puedes inscribirte en el Registro Público para
+               Evitar Publicidad de la Procuraduría Federal del Consumidor.
             </p>
          </div>
 
-         <!-- 8. Cookies y Tecnologías Similares -->
+         <!-- 8. Conservación de tus datos -->
          <div class={cardClass}>
-            <h2 class="mb-3 text-lg font-bold text-text_banner md:text-xl">8. Cookies y Tecnologías Similares</h2>
+            <h2 class={h2Class}>8. Conservación de tus datos</h2>
             <p>
-               Nuestro sitio web utiliza cookies y otras tecnologías de seguimiento. Te invitamos a revisar nuestra
-               Política de Cookies para obtener más información.
+               Conservaremos tus datos personales durante la vigencia de la relación y, concluida ésta, por el plazo
+               necesario para atender responsabilidades derivadas de la misma y para cumplir las obligaciones de
+               conservación contable y fiscal que nos resultan aplicables. Transcurridos esos plazos, los datos serán
+               bloqueados y posteriormente suprimidos.
+            </p>
+         </div>
+
+         <!-- 9. Medidas de seguridad -->
+         <div class={cardClass}>
+            <h2 class={h2Class}>9. Medidas de seguridad</h2>
+            <p>
+               Movapp ha implementado medidas de seguridad administrativas, técnicas y físicas para proteger tus datos
+               contra daño, pérdida, alteración, destrucción o uso, acceso o tratamiento no autorizado, en términos del
+               artículo 18 de la Ley.
+            </p>
+            <p class="mt-3">
+               En caso de que ocurra una vulneración de seguridad que afecte de forma significativa tus derechos
+               patrimoniales o morales, te lo informaremos sin demora, a fin de que puedas tomar las medidas
+               correspondientes.
             </p>
          </div>
       </div>
@@ -180,25 +342,83 @@ const linkClass = 'text-text_banner underline decoration-purple_mv/40 underline-
    <section class="relative mx-auto max-w-3xl px-4 py-3">
       <StarField id="privacypolicy-5" ambientCount={35} />
 
-      <div class="relative z-10 space-y-6 text-justify text-sm text-gray-700 dark:text-white/80 md:text-lg">
-         <!-- 9. Cambios en la Política de Privacidad -->
+      <div class={bodyClass}>
+         <!-- 10. Cookies y tecnologías de rastreo -->
          <div class={cardClass}>
-            <h2 class="mb-3 text-lg font-bold text-text_banner md:text-xl">9. Cambios en esta Política de Privacidad</h2>
+            <h2 class={h2Class}>10. Cookies y tecnologías de rastreo</h2>
             <p>
-               Podemos actualizar esta política de privacidad en cualquier momento. Te notificaremos cualquier cambio
-               significativo publicando la nueva política en nuestro sitio web.
+               Nuestro sitio web utiliza cookies y tecnologías similares que permiten recabar información sobre tu
+               navegación de forma automática y simultánea a tu visita. Actualmente empleamos:
+            </p>
+            <ul class={listClass}>
+               <li>
+                  Google Tag Manager y las herramientas de medición de Google, para conocer el desempeño del sitio y el
+                  origen del tráfico.
+               </li>
+               <li>
+                  Meta Pixel, para medir la efectividad de nuestras campañas y mostrarte publicidad relevante en las
+                  plataformas de Meta.
+               </li>
+               <li>Google AdSense, para la presentación de anuncios.</li>
+            </ul>
+            <p class="mt-3">
+               Puedes deshabilitar el uso de cookies desde la configuración de tu navegador, así como administrar la
+               personalización de anuncios desde las herramientas que ofrecen Google y Meta. Deshabilitarlas puede afectar
+               el funcionamiento de algunas secciones del sitio.
             </p>
          </div>
 
-         <!-- 10. Información de Contacto -->
+         <!-- 11. Menores de edad -->
          <div class={cardClass}>
-            <h2 class="mb-3 text-lg font-bold text-text_banner md:text-xl">10. Información de Contacto</h2>
+            <h2 class={h2Class}>11. Menores de edad</h2>
             <p>
-               Si tienes alguna pregunta o inquietud sobre esta política de privacidad, por favor contáctanos a través del
-               correo electrónico:
+               Los servicios de Movapp están dirigidos a personas mayores de edad. No recabamos intencionalmente datos
+               personales de menores de dieciocho años. Si detectamos que hemos recibido datos de una persona menor de
+               edad sin la intervención de quien ejerza la patria potestad o tutela, procederemos a su supresión.
             </p>
+         </div>
+      </div>
+   </section>
+
+   <section class="relative mx-auto max-w-3xl px-4 py-3">
+      <StarField id="privacypolicy-6" ambientCount={35} />
+
+      <div class={bodyClass}>
+         <!-- 12. Cambios al presente aviso -->
+         <div class={cardClass}>
+            <h2 class={h2Class}>12. Cambios al presente aviso</h2>
             <p>
-               <a href="mailto:privacidad@movapp.org" class={linkClass}>privacidad@movapp.org</a>
+               Este aviso puede modificarse para atender novedades legislativas, políticas internas o nuevos
+               requerimientos para la prestación de nuestros servicios. Las modificaciones se publicarán en
+               <a href="/aviso-de-privacidad/" class={linkClass}>movapp.org/aviso-de-privacidad</a>, indicando la fecha
+               de la última actualización. Cuando el cambio sea sustancial, te lo comunicaremos además por el medio de
+               contacto que hayas registrado.
+            </p>
+         </div>
+
+         <!-- 13. Usuarios que residen fuera de México -->
+         <div class={cardClass}>
+            <h2 class={h2Class}>13. Usuarios que residen fuera de México</h2>
+            <p>
+               Movapp es una sociedad mexicana y el tratamiento de datos personales que realiza se rige por la Ley Federal
+               de Protección de Datos Personales en Posesión de los Particulares, que conforme a su artículo 1 es de
+               observancia general en todo el territorio nacional. Esa ley nos obliga respecto de todos los datos que
+               tratamos, con independencia del país en el que residas.
+            </p>
+            <p class="mt-3">
+               Si resides fuera de México, puedes ejercer tus derechos por los mismos medios señalados en la sección 6, y
+               Movapp reconocerá y atenderá los derechos adicionales que la normativa de tu país de residencia te
+               reconozca, en la medida en que le resulte aplicable.
+            </p>
+         </div>
+
+         <!-- 14. Autoridad competente -->
+         <div class={cardClass}>
+            <h2 class={h2Class}>14. Autoridad competente</h2>
+            <p>
+               Si consideras que tu derecho a la protección de datos personales ha sido lesionado por alguna conducta u
+               omisión de nuestra parte, o presumes alguna violación a las disposiciones de la Ley, podrás interponer tu
+               inconformidad ante la Secretaría Anticorrupción y Buen Gobierno.
             </p>
          </div>
       </div>

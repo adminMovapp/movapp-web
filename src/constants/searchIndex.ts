@@ -131,7 +131,13 @@ export const SEARCH_INDEX: SearchEntry[] = [
    {
       title: 'Aviso de privacidad',
       href: '/aviso-de-privacidad/',
-      description: 'Política de privacidad y manejo de datos personales.',
-      keywords: ['aviso de privacidad', 'politica de privacidad', 'datos personales', 'proteccion de datos', 'privacidad'],
+      description: 'Aviso de privacidad integral: datos personales que tratamos y cómo ejercer tus derechos ARCO.',
+      keywords: ['aviso de privacidad', 'politica de privacidad', 'datos personales', 'proteccion de datos', 'privacidad', 'derechos arco'],
+   },
+   {
+      title: 'Términos y condiciones',
+      href: '/terminos-y-condiciones/',
+      description: 'Condiciones de uso de Movapp: precio, cancelación, devoluciones y pago.',
+      keywords: ['terminos y condiciones', 'condiciones de uso', 'reembolso', 'devolucion', 'cancelacion', 'cancelar', 'garantia', 'legal'],
    },
 ];
