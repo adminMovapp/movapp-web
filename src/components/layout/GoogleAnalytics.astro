@@ -2,6 +2,15 @@
 const GA4_ID = import.meta.env.PUBLIC_GA4_ID;
 ---
 
+<!--
+   Sin atributo integrity (SRI) a propósito -- riesgo ACEPTADO y documentado
+   (auditoría ZAP, oct. 2026: "SRI missing" / "Cross-Domain JS inclusion").
+   Google rota el contenido de gtag/js y no publica hashes, así que la
+   etiqueta oficial se instala sin integrity; con un hash fijo dejaría de
+   cargar en la primera actualización de Google. Control compensatorio: la
+   CSP (src/utils/securityHeaders.ts) limita los hosts que pueden ejecutar
+   scripts en la página.
+-->
 <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA4_ID}`}></script>
 <script is:inline define:vars={{ GA4_ID }}>
    window.dataLayer = window.dataLayer || [];
