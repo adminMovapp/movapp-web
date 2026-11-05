@@ -23,7 +23,9 @@
 // del autor no se ven afectados visualmente: "justify" solo estira el
 // espaciado entre palabras en líneas que SÍ envuelven a una siguiente
 // línea, un texto de una sola línea se ve igual que con text-align normal.
+import { Image } from 'astro:assets';
 import ImagePlaceholder from '@components/ui/ImagePlaceholder.astro';
+import BlogInline from '@sections/blog/BlogInline.astro';
 import BlogArticleShare from '@sections/blog/BlogArticleShare.astro';
 import StarField from '@components/decorative/StarField.astro';
 
@@ -64,7 +66,15 @@ interface Props {
          // distinta de la imagen destacada del Hero -- sin archivo real
          // entregado aún, así que se muestra como ImagePlaceholder (mismo
          // criterio ya usado para íconos de apps sin ícono real).
-         | { type: 'image'; alt: string }
+         // "src"/"caption" opcionales (2026-11-05, Octopus Conference 2026):
+         // primer artículo con fotos de cuerpo reales y pie de foto visible.
+         // Sin "src" sigue cayendo al ImagePlaceholder de antes.
+         | { type: 'image'; alt: string; src?: ImageMetadata; caption?: string }
+         // Lista de fuentes numeradas [1], [2]... (2026-11-05, Octopus
+         // Conference 2026): cada item lleva id="fuente-n", destino de las
+         // llamadas [^n] de los párrafos (BlogInline.astro). El número sale
+         // del orden del item, no se escribe en el texto.
+         | { type: 'sources'; items: string[] }
       )[];
    }[];
    authorBio: { name: string; text: string };
@@ -73,16 +83,9 @@ interface Props {
 }
 const { slug, sections, authorBio, shareUrl, shareTitle } = Astro.props;
 
-// Negritas inline dentro de un párrafo (2026-08-30, "como-identificar-apps-
-// montadeudas": la fuente marca "El Hack" en negritas dentro de una
-// oración) -- sintaxis "**texto**" en los datos, parseada acá a
-// <strong class="font-bold text-text_banner"> (negrita Y morado, regla de
-// la skill Importaciones). El resto del texto se imprime tal cual.
-function renderInline(text: string) {
-   return text.split(/(\*\*[^*]+\*\*)/g).map((part) =>
-      part.startsWith('**') && part.endsWith('**') ? { bold: part.slice(2, -2) } : part,
-   );
-}
+// Negritas inline (2026-08-30, "como-identificar-apps-montadeudas"),
+// enlaces y llamadas a fuentes (2026-11-05, Octopus Conference 2026) --
+// ver BlogInline.astro.
 ---
 
 <section class="relative mx-auto max-w-3xl px-4" data-aos="fade-up">
@@ -98,21 +101,15 @@ function renderInline(text: string) {
                      block.mobileText ? (
                         <p>
                            <span class="md:hidden">
-                              {renderInline(block.mobileText).map((seg) =>
-                                 typeof seg === 'string' ? seg : <strong class="font-bold text-text_banner">{seg.bold}</strong>,
-                              )}
+                              <BlogInline text={block.mobileText} />
                            </span>
                            <span class="hidden md:inline">
-                              {renderInline(block.text).map((seg) =>
-                                 typeof seg === 'string' ? seg : <strong class="font-bold text-text_banner">{seg.bold}</strong>,
-                              )}
+                              <BlogInline text={block.text} />
                            </span>
                         </p>
                      ) : (
                         <p>
-                           {renderInline(block.text).map((seg) =>
-                              typeof seg === 'string' ? seg : <strong class="font-bold text-text_banner">{seg.bold}</strong>,
-                           )}
+                           <BlogInline text={block.text} />
                         </p>
                      )
                   ) : block.type === 'appGrid' ? (
@@ -134,9 +131,7 @@ function renderInline(text: string) {
                      <ol start={block.start} class="list-decimal space-y-2 pl-5 marker:font-bold marker:text-text_banner">
                         {block.items.map((item) => (
                            <li>
-                              {renderInline(item).map((seg) =>
-                                 typeof seg === 'string' ? seg : <strong class="font-bold text-text_banner">{seg.bold}</strong>,
-                              )}
+                              <BlogInline text={item} />
                            </li>
                         ))}
                      </ol>
@@ -144,9 +139,7 @@ function renderInline(text: string) {
                      <ul class="list-disc space-y-2 pl-5 marker:text-text_banner">
                         {block.items.map((item) => (
                            <li>
-                              {renderInline(item).map((seg) =>
-                                 typeof seg === 'string' ? seg : <strong class="font-bold text-text_banner">{seg.bold}</strong>,
-                              )}
+                              <BlogInline text={item} />
                            </li>
                         ))}
                      </ul>
@@ -154,12 +147,25 @@ function renderInline(text: string) {
                      <ul class="list-none space-y-1">
                         {block.items.map((item) => (
                            <li>
-                              {renderInline(item).map((seg) =>
-                                 typeof seg === 'string' ? seg : <strong class="font-bold text-text_banner">{seg.bold}</strong>,
-                              )}
+                              <BlogInline text={item} />
                            </li>
                         ))}
                      </ul>
+                  ) : block.type === 'sources' ? (
+                     <ol class="list-none space-y-2 text-left text-sm md:text-base">
+                        {block.items.map((item, i) => (
+                           <li id={`fuente-${i + 1}`} class="scroll-mt-24">
+                              <span class="font-bold text-text_banner">[{i + 1}]</span> <BlogInline text={item} />
+                           </li>
+                        ))}
+                     </ol>
+                  ) : block.src ? (
+                     <figure>
+                        <Image src={block.src} alt={block.alt} width={1000} class="h-auto w-full rounded-2xl" loading="lazy" />
+                        {block.caption && (
+                           <figcaption class="mt-2 text-center text-sm italic text-gray-500 dark:text-white/60">{block.caption}</figcaption>
+                        )}
+                     </figure>
                   ) : (
                      <ImagePlaceholder class="aspect-[16/10] w-full" />
                   ),

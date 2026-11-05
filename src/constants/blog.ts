@@ -74,6 +74,12 @@ export const BLOG_HOME_SECTIONS = [
       // fijarse en la fecha lo habría desordenado en silencio. `date` es la
       // fecha corta que se muestra en la tarjeta (BlogCategorySection.astro).
       articles: [
+         // 2026-11-05: séptimo artículo de la sección (las 3 secciones ya
+         // no suman 27 sino 28). La fecha la ordena primero sola.
+         {
+            slug: 'octopus-conference-2026-ciberdelincuencia-ia-extorsion',
+            title: 'Octopus Conference 2026: inteligencia artificial, evidencia digital y extorsión en la agenda global contra la ciberdelincuencia',
+         },
          { slug: 'prestamax-es-confiable', title: 'Montadeudas – ¿Prestamax Es Confiable?' },
          { slug: 'fast-efectivo-es-confiable', title: 'Montadeudas – ¿Fast Efectivo Es Confiable?' },
          {

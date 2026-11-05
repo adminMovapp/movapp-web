@@ -93,6 +93,10 @@ export const BLOG_CATEGORY_PAGES: BlogCategoryPage[] = [
       h1: 'Noticias de Movapp',
       intro: 'Mantente al día con los últimos operativos, alertas financieras y actualizaciones del equipo de Movapp en la lucha contra el fraude digital.',
       recentArticles: [
+         {
+            slug: 'octopus-conference-2026-ciberdelincuencia-ia-extorsion',
+            title: 'Octopus Conference 2026: inteligencia artificial, evidencia digital y extorsión en la agenda global contra la ciberdelincuencia',
+         },
          { slug: 'que-es-movapp', title: '¿Qué Es Movapp?' },
          {
             slug: 'historia-movapp',
