@@ -47,8 +47,10 @@ function resolveArticleDate(slug: string): { date: string | null; iso: string | 
 }
 
 export const BLOG_FEATURED = {
-   slug: 'historia-movapp',
-   title: 'Erik Mann y Movapp contra los montadeudas – Conoce la historia de cómo surgió Movapp',
+   // 2026-11-06, a pedido: el artículo de Octopus Conference 2026 pasa a ser
+   // el destacado (antes: historia-movapp, que sigue en "Noticias recientes").
+   slug: 'octopus-conference-2026-ciberdelincuencia-ia-extorsion',
+   title: 'Octopus Conference 2026: inteligencia artificial, evidencia digital y extorsión en la agenda global contra la ciberdelincuencia',
 };
 
 // Reemplaza las 4 categorías-stub anteriores (Evaluaciones/Modus operandi/
