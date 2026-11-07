@@ -353,7 +353,7 @@ export function parseSpanishDate(text) {
    documentada arriba, pensada justo para esto: el schema depende del
    frontmatter de cada artículo, no de una ruta fija).
 */
-export function generateBlogPostingSchema({ headline, description, path, publishDate, authorName }, request = null) {
+export function generateBlogPostingSchema({ headline, description, path, publishDate, authorName, image }, request = null) {
    const cfg = getSiteConfig(request);
    const iso = parseSpanishDate(publishDate);
    return prune({
@@ -363,6 +363,9 @@ export function generateBlogPostingSchema({ headline, description, path, publish
       description,
       url: abs(path, cfg),
       inLanguage: cfg.site.language,
+      // URL absoluta de la imagen destacada (la resuelve [articulo].astro con
+      // getImage); prune() la quita si el artículo no tiene imagen.
+      image,
       datePublished: iso,
       // Sin fecha de edición propia por artículo todavía (BLOG_ARTICLES no
       // la trae) -- se usa la misma que datePublished en vez de inventar una

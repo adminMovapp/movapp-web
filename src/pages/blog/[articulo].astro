@@ -20,12 +20,14 @@
 // no un meta title de ≤60 caracteres; el primer párrafo es una intro de
 // 200-300 caracteres, no una meta description de SERP). Cada entrada de
 // BLOG_ARTICLES ahora trae su propio copy de SEO, independiente del H1.
+import { getImage } from 'astro:assets';
 import Layout from '@layouts/Layout.astro';
 import BlogArticleHero from '@sections/blog/BlogArticleHero.astro';
 import BlogArticleBody from '@sections/blog/BlogArticleBody.astro';
 import BlogRelatedArticles from '@sections/blog/BlogRelatedArticles.astro';
 import BlogArticleCTA from '@sections/blog/BlogArticleCTA.astro';
 import { BLOG_ARTICLES } from '@constants/blogArticles.ts';
+import { BLOG_IMAGES } from '@constants/blogImages.ts';
 import { getSiteConfig } from '@utils/config.jsx';
 import { generateBlogPostingSchema, generateBreadcrumbSchema } from '@utils/schema.js';
 
@@ -44,7 +46,22 @@ const { article } = Astro.props;
 
 // Trailing slash a mano: política de sitio (GOLIVE, sept. 2026), toda URL
 // interna termina en "/" para evitar el doble redirect.
-const shareUrl = `${getSiteConfig(Astro.request).siteUrl}/blog/${article.slug}/`;
+const siteConfig = getSiteConfig(Astro.request);
+const shareUrl = `${siteConfig.siteUrl}/blog/${article.slug}/`;
+
+// Imagen destacada como og:image/twitter:image y como "image" del
+// BlogPosting (2026-11-05, ficha SEO/GEO de Octopus Conference 2026: Google
+// pide "image" para el rich result de artículo y ninguno de los artículos la
+// traía; las redes sociales mostraban la imagen genérica del sitio).
+// Se pide a 1200x630 porque Layout.astro declara og:image:width/height fijos
+// con esas medidas; ojo: el Image CDN de Netlify encaja (fit=contain), no
+// recorta, así que solo sale exacta si la imagen ya tiene esa proporción
+// (la de Octopus sí; las 27 anteriores salen un poco más angostas, sin
+// deformarse). URL absoluta: los crawlers no resuelven relativas.
+const coverSource = BLOG_IMAGES[article.slug];
+const coverImageUrl = coverSource
+   ? new URL((await getImage({ src: coverSource, width: 1200, height: 630, format: 'jpg' })).src, siteConfig.canonicalUrl).href
+   : undefined;
 
 // Schema propio del artículo (BlogPosting + BreadcrumbList) -- pasado por la
 // prop "schema" del Layout, la escotilla de escape para páginas dinámicas de
@@ -56,11 +73,12 @@ const articlePath = `/blog/${article.slug}/`;
 const articleSchema = [
    generateBlogPostingSchema(
       {
-         headline: article.metaTitle,
+         headline: article.schemaHeadline ?? article.metaTitle,
          description: article.metaDescription,
          path: articlePath,
          publishDate: article.publishDate,
          authorName: article.author,
+         image: coverImageUrl,
       },
       Astro.request,
    ),
@@ -74,7 +92,14 @@ const articleSchema = [
 ];
 ---
 
-<Layout title={article.metaTitle} description={article.metaDescription} type="article" showGrid={false} schema={articleSchema}>
+<Layout
+   title={article.metaTitle}
+   description={article.metaDescription}
+   image={coverImageUrl}
+   type="article"
+   showGrid={false}
+   schema={articleSchema}
+>
    <BlogArticleHero
       slug={article.slug}
       title={article.title}
@@ -84,6 +109,9 @@ const articleSchema = [
       readingMinutes={article.readingMinutes}
       mobileAuthor={article.mobileAuthor}
       mobileReadingMinutes={article.mobileReadingMinutes}
+      subtitle={article.subtitle}
+      heroAlt={article.heroAlt}
+      heroCaption={article.heroCaption}
    />
    <BlogArticleBody
       slug={article.slug}

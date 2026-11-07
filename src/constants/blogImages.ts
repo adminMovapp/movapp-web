@@ -34,6 +34,11 @@ import ImgQueHacerSiDescargasteAppMontadeudas from '@assets/blog-que-hacer-si-de
 import ImgQuePasaSiNoPagasMontadeudas from '@assets/blog-que-pasa-si-no-pagas-montadeudas.png';
 import ImgQuePasaSiNoPagoCredmex from '@assets/blog-que-pasa-si-no-pago-credmex.png';
 import ImgQuePasoFortaprest from '@assets/blog-que-paso-fortaprest.png';
+// 2026-11-05, artículo de Octopus Conference 2026: nombre de archivo de la
+// ficha SEO/GEO (no el patrón blog-<slug>), recorte horizontal de la foto
+// vertical original (EU2.webp) a la proporción 1200x630 de la ficha, la misma
+// del og:image (ver [articulo].astro); el hero 16:10 solo recorta los lados.
+import ImgOctopusConference2026 from '@assets/movapp-octopus-2026-portada.webp';
 
 export const BLOG_IMAGES: Record<string, ImageMetadata> = {
    'historia-movapp': ImgHistoriaMovapp,
@@ -63,4 +68,5 @@ export const BLOG_IMAGES: Record<string, ImageMetadata> = {
    'como-denunciar-montadeudas': ImgComoDenunciarMontadeudas,
    'condusef-montadeudas': ImgCondusefMontadeudas,
    'que-pasa-si-no-pagas-montadeudas': ImgQuePasaSiNoPagasMontadeudas,
+   'octopus-conference-2026-ciberdelincuencia-ia-extorsion': ImgOctopusConference2026,
 };

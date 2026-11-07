@@ -36,9 +36,26 @@ interface Props {
    // ve igual en ambos breakpoints, como antes.
    mobileAuthor?: string;
    mobileReadingMinutes?: number;
+   // Opcionales (2026-11-05, Octopus Conference 2026 -- ver blogArticles.ts):
+   // subtítulo bajo el H1 (texto normal, nunca H2), ALT propio de la imagen
+   // destacada (sin esto se usa el H1) y pie de foto visible.
+   subtitle?: string;
+   heroAlt?: string;
+   heroCaption?: string;
 }
-const { slug, title, breadcrumbLabel, author, publishDate, readingMinutes, mobileAuthor, mobileReadingMinutes } =
-   Astro.props;
+const {
+   slug,
+   title,
+   breadcrumbLabel,
+   author,
+   publishDate,
+   readingMinutes,
+   mobileAuthor,
+   mobileReadingMinutes,
+   subtitle,
+   heroAlt,
+   heroCaption,
+} = Astro.props;
 const hasMobileOverride = mobileAuthor !== undefined || mobileReadingMinutes !== undefined;
 ---
 
@@ -51,6 +68,8 @@ const hasMobileOverride = mobileAuthor !== undefined || mobileReadingMinutes !==
       {title}
    </h1>
 
+   {subtitle && <p class="relative z-10 mx-auto mt-4 max-w-2xl text-lg text-gray-600 dark:text-white/70 md:text-xl">{subtitle}</p>}
+
    <div class="relative z-10 mt-8">
       {
          BLOG_IMAGES[slug] ? (
@@ -62,7 +81,7 @@ const hasMobileOverride = mobileAuthor !== undefined || mobileReadingMinutes !==
             // riesgo de robarle prioridad a otra imagen del mismo hero.
             <Image
                src={BLOG_IMAGES[slug]}
-               alt={title}
+               alt={heroAlt ?? title}
                width={1000}
                class="aspect-[16/10] w-full rounded-2xl object-cover"
                loading="eager"
@@ -72,6 +91,7 @@ const hasMobileOverride = mobileAuthor !== undefined || mobileReadingMinutes !==
             <ImagePlaceholder class="aspect-[16/10] w-full" />
          )
       }
+      {heroCaption && <p class="mt-2 text-sm italic text-gray-500 dark:text-white/60">{heroCaption}</p>}
    </div>
 
    <div class="relative z-10 mt-6 flex items-center gap-3 text-sm text-gray-600 dark:text-white/60">
