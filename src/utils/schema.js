@@ -353,12 +353,19 @@ export function parseSpanishDate(text) {
    documentada arriba, pensada justo para esto: el schema depende del
    frontmatter de cada artículo, no de una ruta fija).
 */
-export function generateBlogPostingSchema({ headline, description, path, publishDate, authorName, image }, request = null) {
+export function generateBlogPostingSchema(
+   { headline, description, path, publishDate, publishedAt, modifiedAt, authorName, image },
+   request = null,
+) {
    const cfg = getSiteConfig(request);
-   const iso = parseSpanishDate(publishDate);
+   // publishedAt/modifiedAt (2026-11-10, fichas ART-001..027): fecha-hora
+   // original exacta y fecha real de la nueva versión. Sin ellas, la fecha
+   // visible convertida a ISO para ambas, como antes.
+   const iso = publishedAt ?? parseSpanishDate(publishDate);
    return prune({
       '@context': CONTEXT,
       '@type': 'BlogPosting',
+      '@id': `${abs(path, cfg)}#articulo`,
       headline,
       description,
       url: abs(path, cfg),
@@ -367,10 +374,7 @@ export function generateBlogPostingSchema({ headline, description, path, publish
       // getImage); prune() la quita si el artículo no tiene imagen.
       image,
       datePublished: iso,
-      // Sin fecha de edición propia por artículo todavía (BLOG_ARTICLES no
-      // la trae) -- se usa la misma que datePublished en vez de inventar una
-      // fecha de modificación que no existe en el copy.
-      dateModified: iso,
+      dateModified: modifiedAt ?? iso,
       author: { '@type': 'Person', name: authorName },
       publisher: { '@type': 'Organization', name: cfg.site.name, url: cfg.canonicalUrl },
       mainEntityOfPage: { '@type': 'WebPage', '@id': abs(path, cfg) },

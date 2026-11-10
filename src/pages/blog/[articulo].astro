@@ -26,10 +26,10 @@ import BlogArticleHero from '@sections/blog/BlogArticleHero.astro';
 import BlogArticleBody from '@sections/blog/BlogArticleBody.astro';
 import BlogRelatedArticles from '@sections/blog/BlogRelatedArticles.astro';
 import BlogArticleCTA from '@sections/blog/BlogArticleCTA.astro';
-import { BLOG_ARTICLES } from '@constants/blogArticles.ts';
+import { BLOG_ARTICLES, stripInline } from '@constants/blogArticles.ts';
 import { BLOG_IMAGES } from '@constants/blogImages.ts';
 import { getSiteConfig } from '@utils/config.jsx';
-import { generateBlogPostingSchema, generateBreadcrumbSchema } from '@utils/schema.js';
+import { generateBlogPostingSchema, generateBreadcrumbSchema, generateFAQSchema } from '@utils/schema.js';
 
 // Mismo motivo que [categoria].astro: el sitio corre en SSR (output:
 // 'server'), así que sin este flag "getStaticPaths" se ignora por completo.
@@ -60,7 +60,10 @@ const shareUrl = `${siteConfig.siteUrl}/blog/${article.slug}/`;
 // deformarse). URL absoluta: los crawlers no resuelven relativas.
 const coverSource = BLOG_IMAGES[article.slug];
 const coverImageUrl = coverSource
-   ? new URL((await getImage({ src: coverSource, width: 1200, height: 630, format: 'jpg' })).src, siteConfig.canonicalUrl).href
+   ? new URL(
+        (await getImage({ src: coverSource, width: 1200, height: 630, format: 'jpg' })).src,
+        siteConfig.canonicalUrl,
+     ).href
    : undefined;
 
 // Schema propio del artículo (BlogPosting + BreadcrumbList) -- pasado por la
@@ -77,6 +80,8 @@ const articleSchema = [
          description: article.metaDescription,
          path: articlePath,
          publishDate: article.publishDate,
+         publishedAt: article.publishedAt,
+         modifiedAt: article.modifiedAt,
          authorName: article.author,
          image: coverImageUrl,
       },
@@ -89,12 +94,24 @@ const articleSchema = [
       ],
       Astro.request,
    ),
+   // FAQPage (2026-11-10, fichas ART-001..027): sale del MISMO array que
+   // pinta BlogArticleBody, con la sintaxis inline limpiada a texto plano,
+   // así la respuesta del schema es idéntica a la visible.
+   ...(article.faqs?.length
+      ? [
+           generateFAQSchema(
+              article.faqs.map((f) => ({ q: f.q, a: stripInline(f.a) })),
+              { '@id': `${new URL(articlePath, siteConfig.canonicalUrl).href}#preguntas-frecuentes` },
+           ),
+        ]
+      : []),
 ];
 ---
 
 <Layout
    title={article.metaTitle}
    description={article.metaDescription}
+   ogTitle={article.ogTitle}
    image={coverImageUrl}
    type="article"
    showGrid={false}
@@ -116,6 +133,9 @@ const articleSchema = [
    <BlogArticleBody
       slug={article.slug}
       sections={article.sections}
+      faqHeading={article.faqHeading}
+      faqs={article.faqs}
+      sourcesList={article.sourcesList}
       authorBio={article.authorBio}
       shareUrl={shareUrl}
       shareTitle={article.title}
