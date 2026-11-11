@@ -7,33 +7,37 @@
 // del artículo como nombre (con acentos/espacios/signos); se copiaron a
 // src/assets con el nombre `blog-<slug>.png` para que el nombre de archivo
 // sea estable y no dependa de caracteres especiales.
-import ImgAppsPrestamosConfiables from '@assets/blog-apps-prestamos-confiables.png';
-import ImgCobranzaStarpresta from '@assets/blog-cobranza-starpresta.png';
-import ImgComoDenunciarMontadeudas from '@assets/blog-como-denunciar-montadeudas.png';
-import ImgComoIdentificarAppsMontadeudas from '@assets/blog-como-identificar-apps-montadeudas.png';
-import ImgCondusefMontadeudas from '@assets/blog-condusef-montadeudas.png';
-import ImgDefensaDelDeudorVsMovapp from '@assets/blog-defensa-del-deudor-vs-movapp.png';
-import ImgEstrategiasMontadeudas from '@assets/blog-estrategias-montadeudas.png';
-import ImgFastEfectivoEsConfiable from '@assets/blog-fast-efectivo-es-confiable.png';
-import ImgHackAppNoDisponible from '@assets/blog-hack-app-no-disponible.png';
-import ImgHackMovappEsConfiable from '@assets/blog-hack-movapp-es-confiable.png';
-import ImgHicreditoEsConfiable from '@assets/blog-hicredito-es-confiable.png';
-import ImgHistoriaMovapp from '@assets/blog-historia-movapp.png';
-import ImgKabyEsMontadeudas from '@assets/blog-kaby-es-montadeudas.png';
-import ImgListaMontadeudas from '@assets/blog-lista-montadeudas.png';
-import ImgMexdinLlamaContactos from '@assets/blog-mexdin-llama-contactos.png';
-import ImgMexicashEsMontadeudas from '@assets/blog-mexicash-es-montadeudas.png';
-import ImgMontadeudasRedesSociales from '@assets/blog-montadeudas-redes-sociales.png';
-import ImgMontadeudasVanATuCasa from '@assets/blog-montadeudas-van-a-tu-casa.png';
-import ImgMovappEsConfiable from '@assets/blog-movapp-es-confiable.png';
-import ImgOkDineroCondusef from '@assets/blog-ok-dinero-condusef.png';
-import ImgPrestamaxEsConfiable from '@assets/blog-prestamax-es-confiable.png';
-import ImgQueEsMovapp from '@assets/blog-que-es-movapp.png';
-import ImgQueHacerConAppsMontadeudas from '@assets/blog-que-hacer-con-apps-montadeudas.png';
-import ImgQueHacerSiDescargasteAppMontadeudas from '@assets/blog-que-hacer-si-descargaste-app-montadeudas.png';
-import ImgQuePasaSiNoPagasMontadeudas from '@assets/blog-que-pasa-si-no-pagas-montadeudas.png';
-import ImgQuePasaSiNoPagoCredmex from '@assets/blog-que-pasa-si-no-pago-credmex.png';
-import ImgQuePasoFortaprest from '@assets/blog-que-paso-fortaprest.png';
+//
+// 2026-11-11: reemplazadas por las portadas .webp de las fichas ART-001..027
+// (mismo patrón `blog-<slug>`, ahora .webp). Viven en src/assets para que
+// astro:assets las redimensione y optimice; las PNG anteriores se borraron.
+import ImgAppsPrestamosConfiables from '@assets/blog-apps-prestamos-confiables.webp';
+import ImgCobranzaStarpresta from '@assets/blog-cobranza-starpresta.webp';
+import ImgComoDenunciarMontadeudas from '@assets/blog-como-denunciar-montadeudas.webp';
+import ImgComoIdentificarAppsMontadeudas from '@assets/blog-como-identificar-apps-montadeudas.webp';
+import ImgCondusefMontadeudas from '@assets/blog-condusef-montadeudas.webp';
+import ImgDefensaDelDeudorVsMovapp from '@assets/blog-defensa-del-deudor-vs-movapp.webp';
+import ImgEstrategiasMontadeudas from '@assets/blog-estrategias-montadeudas.webp';
+import ImgFastEfectivoEsConfiable from '@assets/blog-fast-efectivo-es-confiable.webp';
+import ImgHackAppNoDisponible from '@assets/blog-hack-app-no-disponible.webp';
+import ImgHackMovappEsConfiable from '@assets/blog-hack-movapp-es-confiable.webp';
+import ImgHicreditoEsConfiable from '@assets/blog-hicredito-es-confiable.webp';
+import ImgHistoriaMovapp from '@assets/blog-historia-movapp.webp';
+import ImgKabyEsMontadeudas from '@assets/blog-kaby-es-montadeudas.webp';
+import ImgListaMontadeudas from '@assets/blog-lista-montadeudas.webp';
+import ImgMexdinLlamaContactos from '@assets/blog-mexdin-llama-contactos.webp';
+import ImgMexicashEsMontadeudas from '@assets/blog-mexicash-es-montadeudas.webp';
+import ImgMontadeudasRedesSociales from '@assets/blog-montadeudas-redes-sociales.webp';
+import ImgMontadeudasVanATuCasa from '@assets/blog-montadeudas-van-a-tu-casa.webp';
+import ImgMovappEsConfiable from '@assets/blog-movapp-es-confiable.webp';
+import ImgOkDineroCondusef from '@assets/blog-ok-dinero-condusef.webp';
+import ImgPrestamaxEsConfiable from '@assets/blog-prestamax-es-confiable.webp';
+import ImgQueEsMovapp from '@assets/blog-que-es-movapp.webp';
+import ImgQueHacerConAppsMontadeudas from '@assets/blog-que-hacer-con-apps-montadeudas.webp';
+import ImgQueHacerSiDescargasteAppMontadeudas from '@assets/blog-que-hacer-si-descargaste-app-montadeudas.webp';
+import ImgQuePasaSiNoPagasMontadeudas from '@assets/blog-que-pasa-si-no-pagas-montadeudas.webp';
+import ImgQuePasaSiNoPagoCredmex from '@assets/blog-que-pasa-si-no-pago-credmex.webp';
+import ImgQuePasoFortaprest from '@assets/blog-que-paso-fortaprest.webp';
 // 2026-11-05, artículo de Octopus Conference 2026: nombre de archivo de la
 // ficha SEO/GEO (no el patrón blog-<slug>), recorte horizontal de la foto
 // vertical original (EU2.webp) a la proporción 1200x630 de la ficha, la misma
