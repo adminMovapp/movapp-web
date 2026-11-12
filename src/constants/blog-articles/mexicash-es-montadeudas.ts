@@ -160,10 +160,6 @@ export const ART_016: SeoArticleInput = {
       'Google Play — ficha de «MexiCash-Préstamos de crédito»: [https://play.google.com/store/apps/details?id=com.mexicash.app](https://play.google.com/store/apps/details?id=com.mexicash.app) (consultada el 9 de noviembre de 2026).',
       'Reportes de víctimas atendidas por Movapp.',
    ],
-   related: [
-      'como-identificar-apps-montadeudas',
-      'cobranza-starpresta',
-      'estrategias-montadeudas',
-      'montadeudas-van-a-tu-casa',
-   ],
+   // 2026-11-11: wireframe del blog -- 3 tarjetas (sin cobranza-starpresta).
+   related: ['como-identificar-apps-montadeudas', 'estrategias-montadeudas', 'montadeudas-van-a-tu-casa'],
 };

@@ -148,10 +148,6 @@ export const ART_015: SeoArticleInput = {
       'Google Play — ficha de «Credmex: Préstamos de dinero»: [https://play.google.com/store/apps/details?id=com.fintopia.mxcredmex](https://play.google.com/store/apps/details?id=com.fintopia.mxcredmex) (consultada el 9 de noviembre de 2026).',
       'Registros internos de Movapp, septiembre de 2025.',
    ],
-   related: [
-      'como-identificar-apps-montadeudas',
-      'cobranza-starpresta',
-      'mexicash-es-montadeudas',
-      'estrategias-montadeudas',
-   ],
+   // 2026-11-11: wireframe del blog -- 3 tarjetas (sin cobranza-starpresta).
+   related: ['como-identificar-apps-montadeudas', 'mexicash-es-montadeudas', 'estrategias-montadeudas'],
 };

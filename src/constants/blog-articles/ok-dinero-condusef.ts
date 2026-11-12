@@ -160,5 +160,6 @@ export const ART_005: SeoArticleInput = {
       'CONDUSEF — SIPRES: [https://webapps.condusef.gob.mx/SIPRES/jsp/pub/index.jsp](https://webapps.condusef.gob.mx/SIPRES/jsp/pub/index.jsp) (consultado el 9 de noviembre de 2026; sin coincidencias para «Ok Dinero»).',
       'Registros internos y reportes de víctimas atendidas por Movapp.',
    ],
-   related: ['fast-efectivo-es-confiable', 'lista-montadeudas', 'que-paso-fortaprest', 'prestamax-es-confiable'],
+   // 2026-11-11: wireframe del blog -- 3 tarjetas (sin prestamax-es-confiable).
+   related: ['fast-efectivo-es-confiable', 'lista-montadeudas', 'que-paso-fortaprest'],
 };

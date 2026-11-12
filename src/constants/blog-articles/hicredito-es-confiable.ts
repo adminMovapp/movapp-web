@@ -126,10 +126,6 @@ export const ART_014: SeoArticleInput = {
       'CONDUSEF — SIPRES: [https://webapps.condusef.gob.mx/SIPRES/jsp/pub/index.jsp](https://webapps.condusef.gob.mx/SIPRES/jsp/pub/index.jsp) (consultado el 9 de noviembre de 2026; sin coincidencias para «HiCrédito»).',
       'Reportes de víctimas atendidas por Movapp.',
    ],
-   related: [
-      'como-identificar-apps-montadeudas',
-      'cobranza-starpresta',
-      'que-pasa-si-no-pago-credmex',
-      'mexicash-es-montadeudas',
-   ],
+   // 2026-11-11: wireframe del blog -- 3 tarjetas (sin cobranza-starpresta).
+   related: ['como-identificar-apps-montadeudas', 'que-pasa-si-no-pago-credmex', 'mexicash-es-montadeudas'],
 };

@@ -182,10 +182,6 @@ export const ART_018: SeoArticleInput = {
       'Policía Cibernética, SSC CDMX: [https://www.ssc.cdmx.gob.mx/organizacion-policial/subsecretaria-de-inteligencia-e-investigacion-policial/policia-cibernetica](https://www.ssc.cdmx.gob.mx/organizacion-policial/subsecretaria-de-inteligencia-e-investigacion-policial/policia-cibernetica) (consultado el 9 de noviembre de 2026).',
       'Reportes de víctimas atendidas por Movapp.',
    ],
-   related: [
-      'como-denunciar-montadeudas',
-      'condusef-montadeudas',
-      'que-pasa-si-no-pagas-montadeudas',
-      'que-hacer-con-apps-montadeudas',
-   ],
+   // 2026-11-11: wireframe del blog -- 3 tarjetas (sin que-hacer-con-apps-montadeudas).
+   related: ['como-denunciar-montadeudas', 'condusef-montadeudas', 'que-pasa-si-no-pagas-montadeudas'],
 };

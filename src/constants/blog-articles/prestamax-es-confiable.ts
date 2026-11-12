@@ -170,5 +170,6 @@ export const ART_001: SeoArticleInput = {
       'CONDUSEF — SIPRES, Sistema de Registro de Prestadores de Servicios Financieros: [https://webapps.condusef.gob.mx/SIPRES/jsp/pub/index.jsp](https://webapps.condusef.gob.mx/SIPRES/jsp/pub/index.jsp) (consultado el 9 de noviembre de 2026).',
       'Reportes de víctimas atendidas por Movapp.',
    ],
-   related: ['fast-efectivo-es-confiable', 'ok-dinero-condusef', 'que-paso-fortaprest', 'apps-prestamos-confiables'],
+   // 2026-11-11: wireframe del blog -- 3 tarjetas (sin apps-prestamos-confiables).
+   related: ['fast-efectivo-es-confiable', 'ok-dinero-condusef', 'que-paso-fortaprest'],
 };

@@ -90,7 +90,7 @@ export const BLOG_HOME_SECTIONS = [
          },
          {
             slug: 'apps-prestamos-confiables',
-            title: 'Aplicaciones de préstamos confiables: cómo identificarlas y cuáles verificamos en la CONDUSEF',
+            title: 'Aplicaciones de préstamos confiables – Los mejores préstamos confiables en línea',
          },
          {
             slug: 'lista-montadeudas',

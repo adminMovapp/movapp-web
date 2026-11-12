@@ -181,10 +181,8 @@ export const ART_019: SeoArticleInput = {
       'Google Play — reportar una app: [https://support.google.com/googleplay/answer/2853570?hl=es](https://support.google.com/googleplay/answer/2853570?hl=es) (consultado el 9 de noviembre de 2026).',
       'Casos atendidos por Movapp.',
    ],
-   related: [
-      'condusef-montadeudas',
-      'que-pasa-si-no-pagas-montadeudas',
-      'que-hacer-con-apps-montadeudas',
-      'que-hacer-si-descargaste-app-montadeudas',
-   ],
+   // 2026-11-11: wireframe del blog -- 3 tarjetas. El wireframe pone este mismo
+   // artículo como primera tarjeta (autoenlace, copiado del ART-018); se
+   // conservan las otras dos y el tercer lugar lo ocupa que-hacer-con-apps-montadeudas.
+   related: ['condusef-montadeudas', 'que-pasa-si-no-pagas-montadeudas', 'que-hacer-con-apps-montadeudas'],
 };

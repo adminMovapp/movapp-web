@@ -201,10 +201,6 @@ export const ART_020: SeoArticleInput = {
       'CNBV: [https://www.gob.mx/cnbv](https://www.gob.mx/cnbv) (consultado el 9 de noviembre de 2026).',
       'Consultas a SIPRES sobre MexDin, Credmex y Mexicash (9 de noviembre de 2026; evidencia interna del proyecto).',
    ],
-   related: [
-      'como-denunciar-montadeudas',
-      'que-pasa-si-no-pagas-montadeudas',
-      'que-hacer-con-apps-montadeudas',
-      'que-hacer-si-descargaste-app-montadeudas',
-   ],
+   // 2026-11-11: wireframe del blog -- 3 tarjetas (sin que-hacer-si-descargaste-app-montadeudas).
+   related: ['como-denunciar-montadeudas', 'que-pasa-si-no-pagas-montadeudas', 'que-hacer-con-apps-montadeudas'],
 };

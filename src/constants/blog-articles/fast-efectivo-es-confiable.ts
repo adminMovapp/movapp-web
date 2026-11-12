@@ -120,5 +120,6 @@ export const ART_003: SeoArticleInput = {
       },
    ],
    sourcesList: ['Registros internos y reportes de víctimas atendidas por Movapp, noviembre de 2025.'],
-   related: ['lista-montadeudas', 'ok-dinero-condusef', 'que-paso-fortaprest', 'prestamax-es-confiable'],
+   // 2026-11-11: wireframe del blog -- 3 tarjetas (sin prestamax-es-confiable).
+   related: ['lista-montadeudas', 'ok-dinero-condusef', 'que-paso-fortaprest'],
 };

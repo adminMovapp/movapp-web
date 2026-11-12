@@ -148,5 +148,6 @@ export const ART_007: SeoArticleInput = {
       'CNBV: [https://www.gob.mx/cnbv](https://www.gob.mx/cnbv) (consultado el 9 de noviembre de 2026).',
       'Reportes de víctimas atendidas por Movapp.',
    ],
-   related: ['estrategias-montadeudas', 'montadeudas-van-a-tu-casa', 'hicredito-es-confiable', 'kaby-es-montadeudas'],
+   // 2026-11-11: wireframe del blog -- 3 tarjetas (sin hicredito-es-confiable).
+   related: ['estrategias-montadeudas', 'montadeudas-van-a-tu-casa', 'kaby-es-montadeudas'],
 };

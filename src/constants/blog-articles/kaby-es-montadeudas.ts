@@ -169,10 +169,6 @@ export const ART_010: SeoArticleInput = {
       'Google Play — ficha de «Kaby - Préstamos de crédito»: [https://play.google.com/store/apps/details?id=com.kaby](https://play.google.com/store/apps/details?id=com.kaby) (consultada el 9 de noviembre de 2026).',
       'Registros internos y reportes de víctimas atendidas por Movapp.',
    ],
-   related: [
-      'como-identificar-apps-montadeudas',
-      'mexdin-llama-contactos',
-      'hicredito-es-confiable',
-      'montadeudas-redes-sociales',
-   ],
+   // 2026-11-11: wireframe del blog -- 3 tarjetas (sin hicredito-es-confiable).
+   related: ['como-identificar-apps-montadeudas', 'mexdin-llama-contactos', 'montadeudas-redes-sociales'],
 };

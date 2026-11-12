@@ -159,10 +159,6 @@ export const ART_011: SeoArticleInput = {
       'Google Play — ficha de «MexDin: Préstamos de crédito»: [https://play.google.com/store/apps/details?id=com.elaworld.mexloan](https://play.google.com/store/apps/details?id=com.elaworld.mexloan) (consultada el 9 de noviembre de 2026).',
       'Registros internos de Movapp, septiembre de 2025.',
    ],
-   related: [
-      'como-identificar-apps-montadeudas',
-      'cobranza-starpresta',
-      'hicredito-es-confiable',
-      'montadeudas-redes-sociales',
-   ],
+   // 2026-11-11: wireframe del blog -- 3 tarjetas en este orden (sin hicredito-es-confiable).
+   related: ['como-identificar-apps-montadeudas', 'montadeudas-redes-sociales', 'cobranza-starpresta'],
 };

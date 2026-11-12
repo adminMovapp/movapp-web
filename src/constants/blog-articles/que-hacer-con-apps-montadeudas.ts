@@ -152,10 +152,6 @@ export const ART_017: SeoArticleInput = {
       'CONDUSEF — SIPRES: [https://webapps.condusef.gob.mx/SIPRES/jsp/pub/index.jsp](https://webapps.condusef.gob.mx/SIPRES/jsp/pub/index.jsp) (consultado el 9 de noviembre de 2026).',
       'Reportes de víctimas atendidas por Movapp.',
    ],
-   related: [
-      'que-hacer-si-descargaste-app-montadeudas',
-      'como-denunciar-montadeudas',
-      'condusef-montadeudas',
-      'que-pasa-si-no-pagas-montadeudas',
-   ],
+   // 2026-11-11: wireframe del blog -- 3 tarjetas (sin que-pasa-si-no-pagas-montadeudas).
+   related: ['que-hacer-si-descargaste-app-montadeudas', 'como-denunciar-montadeudas', 'condusef-montadeudas'],
 };

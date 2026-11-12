@@ -114,10 +114,6 @@ export const ART_023: SeoArticleInput = {
       },
    ],
    sourcesList: ['Testimonio de Erik Mann.', 'Línea de la Vida (Gobierno de México), 800 911 2000.'],
-   related: [
-      'movapp-es-confiable',
-      'hack-movapp-es-confiable',
-      'hack-app-no-disponible',
-      'defensa-del-deudor-vs-movapp',
-   ],
+   // 2026-11-11: wireframe del blog -- 3 tarjetas (sin defensa-del-deudor-vs-movapp).
+   related: ['movapp-es-confiable', 'hack-movapp-es-confiable', 'hack-app-no-disponible'],
 };

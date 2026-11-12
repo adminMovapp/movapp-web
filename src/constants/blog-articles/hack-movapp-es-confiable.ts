@@ -168,5 +168,6 @@ export const ART_025: SeoArticleInput = {
       'Reportes de víctimas atendidas por Movapp (plazos de 7 a 14 días y primeras 48 horas).',
       'Línea de la Vida (Gobierno de México), 800 911 2000.',
    ],
-   related: ['historia-movapp', 'hack-app-no-disponible', 'defensa-del-deudor-vs-movapp', 'que-es-movapp'],
+   // 2026-11-11: wireframe del blog -- 3 tarjetas (sin historia-movapp).
+   related: ['hack-app-no-disponible', 'defensa-del-deudor-vs-movapp', 'que-es-movapp'],
 };

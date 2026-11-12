@@ -197,5 +197,6 @@ export const ART_022: SeoArticleInput = {
       'CONDUSEF — SIPRES: [https://webapps.condusef.gob.mx/SIPRES/jsp/pub/index.jsp](https://webapps.condusef.gob.mx/SIPRES/jsp/pub/index.jsp) (consultado el 9 de noviembre de 2026).',
       'Testimonio de Erik Mann sobre su experiencia.',
    ],
-   related: ['historia-movapp', 'movapp-es-confiable', 'hack-movapp-es-confiable', 'hack-app-no-disponible'],
+   // 2026-11-11: wireframe del blog -- 3 tarjetas (sin hack-app-no-disponible).
+   related: ['historia-movapp', 'movapp-es-confiable', 'hack-movapp-es-confiable'],
 };

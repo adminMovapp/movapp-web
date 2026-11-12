@@ -163,5 +163,6 @@ export const ART_024: SeoArticleInput = {
       'CONDUSEF — SIPRES: [https://webapps.condusef.gob.mx/SIPRES/jsp/pub/index.jsp](https://webapps.condusef.gob.mx/SIPRES/jsp/pub/index.jsp) (consultado el 9 de noviembre de 2026; sin coincidencias para «movapp»).',
       'Línea de la Vida (Gobierno de México), 800 911 2000.',
    ],
-   related: ['historia-movapp', 'hack-movapp-es-confiable', 'hack-app-no-disponible', 'defensa-del-deudor-vs-movapp'],
+   // 2026-11-11: wireframe del blog -- 3 tarjetas (sin historia-movapp).
+   related: ['hack-movapp-es-confiable', 'hack-app-no-disponible', 'defensa-del-deudor-vs-movapp'],
 };

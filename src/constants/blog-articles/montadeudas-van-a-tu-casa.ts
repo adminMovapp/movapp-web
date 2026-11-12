@@ -1,5 +1,5 @@
 // ART-009 — ficha "Blog del sitio nuevo · Documento para desarrollo" (2026-11-10). Copy verbatim.
-// La versión nueva ya no trae la segunda imagen de cuerpo (placeholder).
+// 2026-11-11: el wireframe del blog recupera la segunda imagen de cuerpo (placeholder, ver abajo).
 import type { SeoArticleInput } from '@constants/blogArticles.ts';
 
 export const ART_009: SeoArticleInput = {
@@ -38,6 +38,10 @@ export const ART_009: SeoArticleInput = {
                type: 'paragraph',
                text: 'Todo eso busca una sola cosa: que pagues. Y no se limitan a eso. **Si conocen tu domicilio**, porque lo entregaste en un documento, también lo usan para intimidarte.',
             },
+            // 2026-11-11: el wireframe del blog vuelve a poner la imagen de cuerpo
+            // ("como-operan-los-montadeudas.webp") entre esta sección y la
+            // siguiente. Sin archivo todavía: se pinta el ImagePlaceholder.
+            { type: 'image', alt: 'Cómo operan los montadeudas usando Google Maps para intimidar' },
          ],
       },
       {
@@ -134,10 +138,6 @@ export const ART_009: SeoArticleInput = {
       'Casos atendidos por Movapp.',
       '911, número de emergencias: [https://www.gob.mx/911](https://www.gob.mx/911) (consultado el 9 de noviembre de 2026).',
    ],
-   related: [
-      'como-identificar-apps-montadeudas',
-      'mexdin-llama-contactos',
-      'hicredito-es-confiable',
-      'kaby-es-montadeudas',
-   ],
+   // 2026-11-11: wireframe del blog -- 3 tarjetas en este orden (sin hicredito-es-confiable).
+   related: ['como-identificar-apps-montadeudas', 'kaby-es-montadeudas', 'mexdin-llama-contactos'],
 };

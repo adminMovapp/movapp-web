@@ -170,10 +170,6 @@ export const ART_008: SeoArticleInput = {
       'Reportes de víctimas atendidas por Movapp.',
       'CONDUSEF — SIPRES: [https://webapps.condusef.gob.mx/SIPRES/jsp/pub/index.jsp](https://webapps.condusef.gob.mx/SIPRES/jsp/pub/index.jsp) (consultado el 9 de noviembre de 2026).',
    ],
-   related: [
-      'como-identificar-apps-montadeudas',
-      'montadeudas-van-a-tu-casa',
-      'hicredito-es-confiable',
-      'kaby-es-montadeudas',
-   ],
+   // 2026-11-11: wireframe del blog -- 3 tarjetas (sin hicredito-es-confiable).
+   related: ['como-identificar-apps-montadeudas', 'montadeudas-van-a-tu-casa', 'kaby-es-montadeudas'],
 };

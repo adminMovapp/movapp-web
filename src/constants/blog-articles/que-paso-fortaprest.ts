@@ -209,5 +209,6 @@ export const ART_006: SeoArticleInput = {
       'Reporte de Crédito Especial.',
       'Registros internos de Movapp, septiembre de 2025.',
    ],
-   related: ['fast-efectivo-es-confiable', 'lista-montadeudas', 'ok-dinero-condusef', 'prestamax-es-confiable'],
+   // 2026-11-11: wireframe del blog -- 3 tarjetas (préstamos confiables en lugar de Ok Dinero y Prestamax).
+   related: ['fast-efectivo-es-confiable', 'lista-montadeudas', 'apps-prestamos-confiables'],
 };

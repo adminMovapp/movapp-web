@@ -146,10 +146,6 @@ export const ART_012: SeoArticleInput = {
       },
    ],
    sourcesList: ['Reportes de víctimas atendidas por Movapp.'],
-   related: [
-      'como-identificar-apps-montadeudas',
-      'cobranza-starpresta',
-      'hicredito-es-confiable',
-      'que-pasa-si-no-pago-credmex',
-   ],
+   // 2026-11-11: wireframe del blog -- 3 tarjetas (sin que-pasa-si-no-pago-credmex).
+   related: ['como-identificar-apps-montadeudas', 'cobranza-starpresta', 'hicredito-es-confiable'],
 };

@@ -158,5 +158,6 @@ export const ART_027: SeoArticleInput = {
       'Relato institucional de Movapp sobre la relación con La Defensa del Deudor.',
       'CONDUSEF — SIPRES: [https://webapps.condusef.gob.mx/SIPRES/jsp/pub/index.jsp](https://webapps.condusef.gob.mx/SIPRES/jsp/pub/index.jsp) (consultado el 9 de noviembre de 2026).',
    ],
-   related: ['historia-movapp', 'hack-app-no-disponible', 'que-es-movapp', 'movapp-es-confiable'],
+   // 2026-11-11: wireframe del blog -- 3 tarjetas en este orden (sin hack-app-no-disponible).
+   related: ['que-es-movapp', 'historia-movapp', 'movapp-es-confiable'],
 };

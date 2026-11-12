@@ -204,5 +204,6 @@ export const ART_004: SeoArticleInput = {
       'CONDUSEF — SIPRES: [https://webapps.condusef.gob.mx/SIPRES/jsp/pub/index.jsp](https://webapps.condusef.gob.mx/SIPRES/jsp/pub/index.jsp) (consultado el 9 de noviembre de 2026).',
       'Línea de la Vida (Gobierno de México), 800 911 2000.',
    ],
-   related: ['fast-efectivo-es-confiable', 'ok-dinero-condusef', 'que-paso-fortaprest', 'prestamax-es-confiable'],
+   // 2026-11-11: wireframe del blog -- 3 tarjetas (sin prestamax-es-confiable).
+   related: ['fast-efectivo-es-confiable', 'ok-dinero-condusef', 'que-paso-fortaprest'],
 };

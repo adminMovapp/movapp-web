@@ -36,7 +36,7 @@ export const BLOG_CATEGORY_PAGES: BlogCategoryPage[] = [
       recentArticles: [
          {
             slug: 'apps-prestamos-confiables',
-            title: 'Aplicaciones de préstamos confiables: cómo identificarlas y cuáles verificamos en la CONDUSEF',
+            title: 'Aplicaciones de préstamos confiables – Los mejores préstamos confiables en línea',
          },
          { slug: 'prestamax-es-confiable', title: '¿Prestamax es confiable? Lo que reportan las víctimas y qué hacer si ya la descargaste' },
          {

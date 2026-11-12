@@ -112,6 +112,8 @@ export const ART_026: SeoArticleInput = {
          ],
       },
    ],
+   // 2026-11-11: encabezado de FAQs tomado del wireframe del blog.
+   faqHeading: 'Preguntas frecuentes sobre El Hack',
    faqs: [
       {
          q: '¿La deuda desaparece si la app ya no está en la tienda?',
@@ -130,5 +132,6 @@ export const ART_026: SeoArticleInput = {
       'Registros internos de Movapp (número de aplicaciones).',
       'Google Play — reportar una app: [https://support.google.com/googleplay/answer/2853570?hl=es](https://support.google.com/googleplay/answer/2853570?hl=es) (consultado el 9 de noviembre de 2026).',
    ],
-   related: ['historia-movapp', 'defensa-del-deudor-vs-movapp', 'que-es-movapp', 'movapp-es-confiable'],
+   // 2026-11-11: wireframe del blog -- 3 tarjetas en este orden (sin movapp-es-confiable).
+   related: ['defensa-del-deudor-vs-movapp', 'que-es-movapp', 'historia-movapp'],
 };
