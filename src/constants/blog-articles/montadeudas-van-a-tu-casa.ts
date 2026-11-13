@@ -1,6 +1,7 @@
 // ART-009 — ficha "Blog del sitio nuevo · Documento para desarrollo" (2026-11-10). Copy verbatim.
-// 2026-11-11: el wireframe del blog recupera la segunda imagen de cuerpo (placeholder, ver abajo).
+// 2026-11-11: el wireframe del blog recupera la segunda imagen de cuerpo (archivo entregado 2026-11-13, ver abajo).
 import type { SeoArticleInput } from '@constants/blogArticles.ts';
+import ImgComoOperan from '@assets/como-operan-los-montadeudas.webp';
 
 export const ART_009: SeoArticleInput = {
    slug: 'montadeudas-van-a-tu-casa',
@@ -39,9 +40,12 @@ export const ART_009: SeoArticleInput = {
                text: 'Todo eso busca una sola cosa: que pagues. Y no se limitan a eso. **Si conocen tu domicilio**, porque lo entregaste en un documento, también lo usan para intimidarte.',
             },
             // 2026-11-11: el wireframe del blog vuelve a poner la imagen de cuerpo
-            // ("como-operan-los-montadeudas.webp") entre esta sección y la
-            // siguiente. Sin archivo todavía: se pinta el ImagePlaceholder.
-            { type: 'image', alt: 'Cómo operan los montadeudas usando Google Maps para intimidar' },
+            // entre esta sección y la siguiente. Archivo entregado 2026-11-13.
+            {
+               type: 'image',
+               src: ImgComoOperan,
+               alt: 'Cómo operan los montadeudas usando Google Maps para intimidar',
+            },
          ],
       },
       {
