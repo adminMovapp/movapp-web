@@ -84,7 +84,7 @@ export const ART_016: SeoArticleInput = {
             },
             {
                type: 'paragraph',
-               text: 'Si te pasó lo del depósito que no pediste, hay más detalle en nuestra [ficha de Mexicash](/aplicaciones-prestamo/mexicash/).',
+               text: 'Si te pasó lo del depósito que no pediste, hay más detalle en nuestra [ficha de Mexicash](/aplicaciones-prestamo/mexicash/ "Ficha de Mexicash: información y reportes de víctimas").',
             },
          ],
       },

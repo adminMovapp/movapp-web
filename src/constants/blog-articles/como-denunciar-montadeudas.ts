@@ -18,7 +18,7 @@ export const ART_019: SeoArticleInput = {
          blocks: [
             {
                type: 'paragraph',
-               text: 'En México puedes denunciar a una app montadeudas ante la fiscalía de tu estado y la Policía Cibernética cuando hay amenazas, extorsión o uso indebido de tus datos; ante la CONDUSEF si la empresa es una institución financiera registrada; ante la PROFECO si se trata de un proveedor comercial, y en Google Play o App Store para que la tienda revise la app. **Antes de cualquier denuncia, guarda la evidencia. Si estás en peligro inmediato, llama al 911.**',
+               text: 'En México puedes denunciar a una app montadeudas ante la fiscalía de tu estado y la Policía Cibernética cuando hay amenazas, extorsión o uso indebido de tus datos; ante la CONDUSEF si la empresa es una institución financiera registrada; ante la PROFECO si se trata de un proveedor comercial, y en Google Play o App Store para que la tienda revise la app. **Antes de cualquier denuncia, guarda la evidencia.** **Si estás en peligro inmediato, llama al 911.**',
             },
          ],
       },

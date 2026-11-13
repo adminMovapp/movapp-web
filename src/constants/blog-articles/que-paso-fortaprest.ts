@@ -136,7 +136,7 @@ export const ART_006: SeoArticleInput = {
                items: [
                   '**Cobranza a tus contactos.** Cuando el cobro se vuelve impagable, empiezan a molestar a la víctima y a las personas de su agenda.',
                   '**Historial crediticio.** Sí puede afectarlo. El registro de la empresa en SIPRES muestra un contrato vigente con Círculo de Crédito, una de las sociedades de información crediticia de México, así que un atraso puede quedar registrado en tu historial. Si quieres saber qué aparece sobre ti, puedes pedir tu Reporte de Crédito Especial, que es gratuito una vez cada 12 meses.',
-                  '**Amenazas de embargo. Por una deuda con una app o una financiera, un embargo solo puede ordenarlo un juez dentro de un juicio.** Un cobrador no puede embargarte por mensaje ni por llamada.',
+                  '**Amenazas de embargo.** **Por una deuda con una app o una financiera, un embargo solo puede ordenarlo un juez dentro de un juicio.** Un cobrador no puede embargarte por mensaje ni por llamada.',
                ],
             },
             {
