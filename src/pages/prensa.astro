@@ -3,15 +3,15 @@ import Layout from '@layouts/Layout.astro';
 import PrensaHero from '@sections/prensa/PrensaHero.astro';
 import PrensaBroadcast from '@sections/prensa/PrensaBroadcast.astro';
 import { getPressVideos } from '@api/pressVideos.ts';
-import { getPageSchema, generateVideoObjectSchema } from '@utils/schema.js';
+import { getPageSchema, appendToGraph, generateVideoObjectSchema } from '@utils/schema.js';
 
 // La lista de vídeos viene de una API (PRESS_VIDEOS_API_URL), así que el
 // schema de la ruta se completa acá con un VideoObject por vídeo visible.
 const videos = await getPressVideos();
-const schema = [...getPageSchema(Astro.url.pathname, Astro.request), ...videos.map(generateVideoObjectSchema)];
+const schema = appendToGraph(getPageSchema(Astro.url.pathname, Astro.request), videos.map(generateVideoObjectSchema));
 ---
 
-<Layout title="Sala de Prensa | Movapp" type="website" showGrid={false} schema={schema}>
+<Layout type="website" showGrid={false} schema={schema}>
    <PrensaHero />
    {videos.length > 0 && <PrensaBroadcast videos={videos} />}
 </Layout>

@@ -12,25 +12,25 @@ import { FAQ_ICONS, FAQ_COLORS } from './faqIcons';
 export const EL_HACK_FAQS = [
    {
       q: '¿El Hack elimina mi deuda?',
-      a: 'El Hack detiene el acoso y protege tu información, pero no borra por sí sola una deuda. Un asesor te ayuda a entender tu situación y tus opciones. Desconfía de quien prometa "borrar" deudas de forma automática.',
+      a: 'No. Movapp no elimina deudas ni modifica tu historial crediticio. El Hack frena el acoso y protege tu información; qué hacer con la deuda lo decides tú.',
       icon: FAQ_ICONS.bill,
       color: FAQ_COLORS.debt,
    },
    {
-      q: '¿Cuánto cuesta?',
-      a: 'La asesoría es 100% gratuita, el costo del hack va desde los $500 MXN, aunque dependerá de la cantidad de préstamos que tengas activos.',
+      q: '¿Cuánto cuesta El Hack?',
+      a: 'Revisar tu caso es gratis. El Hack cuesta desde $500 MXN según cuántas apps haya; tu asesor confirma el total antes de pagar.',
       icon: FAQ_ICONS.tag,
       color: FAQ_COLORS.cost,
    },
    {
       q: '¿Qué pasa después de escribirles por WhatsApp?',
-      a: 'Un asesor real te responde, escucha tu caso y te guía paso a paso para activar El Hack y frenar el acoso.',
+      a: 'Un asesor revisa gratis tu caso y las apps, te dice si El Hack aplica y te explica su alcance y precio antes de pagar.',
       icon: FAQ_ICONS.chat,
       color: FAQ_COLORS.contact,
    },
    {
       q: '¿Cuánto tarda El Hack?',
-      a: 'El tiempo depende del caso y de cuántas apps están involucradas. Hay personas que notan reducción de presión antes y otras que siguen recibiendo mensajes algunos días. Lo importante es dar seguimiento para verificar si el acoso baja, si cambia la amenaza o si aparece una app nueva.',
+      a: 'Varía según la app y cuántas apps haya. Las víctimas atendidas reportan que el acoso suele disminuir entre 7 y 14 días después de aplicar El Hack; en las primeras 48 horas aún pueden llegar llamadas. Tu asesor te da un estimado.',
       icon: FAQ_ICONS.clock,
       color: FAQ_COLORS.time,
    },

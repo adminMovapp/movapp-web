@@ -5,7 +5,7 @@ export const siteConfigData = {
   site: {
     name: "Movapp",
     title: "El Hack hacia un nuevo inicio",
-    description: "Movapp es una organización que ayuda a personas víctimas de las aplicaciones de préstamo no reguladas mediante apoyo psicológico, asesoría personalizada y la aplicación de El Hack.",
+    description: "Movapp es una organización que ayuda a víctimas de apps de préstamo montadeudas con asesoría personalizada, apoyo psicológico y El Hack, su servicio para frenar el acoso.",
     author: "Movapp",
     locale: "es_MX",
     language: "es-MX"
