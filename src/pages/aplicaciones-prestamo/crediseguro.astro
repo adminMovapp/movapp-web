@@ -1,6 +1,7 @@
 ---
 import Layout from '@layouts/Layout.astro';
 import CrediseguroHero from '@sections/crediseguro/CrediseguroHero.astro';
+import AppAvisoImportante from '@components/ui/AppAvisoImportante.astro';
 import CrediseguroInfo from '@sections/crediseguro/CrediseguroInfo.astro';
 import CrediseguroVerificada from '@sections/crediseguro/CrediseguroVerificada.astro';
 import CrediseguroFaqs from '@sections/crediseguro/CrediseguroFaqs.astro';
@@ -10,6 +11,7 @@ import CrediseguroCTA from '@sections/crediseguro/CrediseguroCTA.astro';
 
 <Layout type="website" showGrid={false} disableCopy>
    <CrediseguroHero />
+   <AppAvisoImportante id="crediseguro" />
    <CrediseguroInfo />
    <CrediseguroVerificada />
    <CrediseguroFaqs />

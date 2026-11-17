@@ -33,7 +33,7 @@ export const STARPRESTA_FAQS: StarprestaFaq[] = [
       color: FAQ_COLORS.legal,
    },
    {
-      q: 'Ya me metieron a mi familia en un grupo de WhatsApp, ¿qué hago?',
+      q: 'Ya metieron a mi familia en un grupo de WhatsApp, ¿qué hago?',
       a: 'Toma capturas de todo antes de salirte, sal del grupo y repórtalo en WhatsApp. Explícale tú a tu gente lo que pasa: cuando entienden que es acoso, el grupo pierde fuerza. Luego escríbenos y revisamos tu caso gratis.',
       icon: FAQ_ICONS.chat,
       color: FAQ_COLORS.contact,

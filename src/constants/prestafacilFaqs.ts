@@ -31,7 +31,7 @@ export const PRESTAFACIL_FAQS: PrestafacilFaq[] = [
       color: FAQ_COLORS.legal,
    },
    {
-      q: '¿PrestaFácil está registrada ante la CONDUSEF?',
+      q: '¿Está registrada ante CONDUSEF?',
       a: 'No la localizamos en el SIPRES de la CONDUSEF (consulta del 10 de noviembre de 2026). Podría operar con otra razón social; si la conoces, puedes consultarla tú en el SIPRES.',
       icon: FAQ_ICONS.building,
       color: FAQ_COLORS.company,

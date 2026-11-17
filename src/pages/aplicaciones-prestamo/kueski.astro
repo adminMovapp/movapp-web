@@ -1,6 +1,7 @@
 ---
 import Layout from '@layouts/Layout.astro';
 import KueskiHero from '@sections/kueski/KueskiHero.astro';
+import AppAvisoImportante from '@components/ui/AppAvisoImportante.astro';
 import KueskiInfo from '@sections/kueski/KueskiInfo.astro';
 import KueskiVerificada from '@sections/kueski/KueskiVerificada.astro';
 import KueskiFaqs from '@sections/kueski/KueskiFaqs.astro';
@@ -10,6 +11,7 @@ import KueskiCTA from '@sections/kueski/KueskiCTA.astro';
 
 <Layout type="website" showGrid={false} disableCopy>
    <KueskiHero />
+   <AppAvisoImportante id="kueski" />
    <KueskiInfo />
    <KueskiVerificada />
    <KueskiFaqs />

@@ -1,6 +1,7 @@
 ---
 import Layout from '@layouts/Layout.astro';
 import StarprestaHero from '@sections/starpresta/StarprestaHero.astro';
+import AppAvisoImportante from '@components/ui/AppAvisoImportante.astro';
 import StarprestaInfo from '@sections/starpresta/StarprestaInfo.astro';
 import StarprestaSenalesRiesgo from '@sections/starpresta/StarprestaSenalesRiesgo.astro';
 import StarprestaQueHacer from '@sections/starpresta/StarprestaQueHacer.astro';
@@ -12,6 +13,7 @@ import StarprestaCTA from '@sections/starpresta/StarprestaCTA.astro';
 
 <Layout type="website" showGrid={false} disableCopy>
    <StarprestaHero />
+   <AppAvisoImportante id="starpresta" />
    <StarprestaInfo />
    <StarprestaSenalesRiesgo />
    <StarprestaQueHacer />

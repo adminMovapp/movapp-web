@@ -19,7 +19,7 @@ export interface CrediseguroFaq {
 
 export const CREDISEGURO_FAQS: CrediseguroFaq[] = [
    {
-      q: '¿CrediSeguro está registrada ante la CONDUSEF?',
+      q: '¿CrediSeguro está registrada ante CONDUSEF?',
       a: 'No la localizamos en el SIPRES de la CONDUSEF (consulta del 10 de noviembre de 2026). Podría operar con otra razón social; búscala en la app o en el contrato.',
       icon: FAQ_ICONS.scale,
       color: FAQ_COLORS.legal,

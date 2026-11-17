@@ -339,7 +339,9 @@ export function generateFAQSchema(faqs = [], extra = {}) {
          name: item.q ?? item.question,
          acceptedAnswer: {
             '@type': 'Answer',
-            text: item.a ?? item.answer,
+            // Las respuestas pueden marcar negritas con **texto** (FAQAccordion.astro);
+            // el JSON-LD lleva el texto plano.
+            text: String(item.a ?? item.answer ?? '').replace(/\*\*(.+?)\*\*/g, '$1'),
          },
       })),
       ...rest,

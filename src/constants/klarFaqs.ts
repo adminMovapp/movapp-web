@@ -16,8 +16,8 @@ export interface KlarFaq {
 
 export const KLAR_FAQS: KlarFaq[] = [
    {
-      q: '¿Klar está registrada ante la CONDUSEF?',
-      a: 'Sí. Klar Technologies, S.A. de C.V., S.F.P. aparece en el SIPRES con la clave 27009 y estatus «En operación» (consulta del 10 de noviembre de 2026). Si tienes un problema con ella, puedes presentar una queja ante la CONDUSEF.',
+      q: '¿Klar está registrada ante CONDUSEF?',
+      a: 'Sí. Klar Technologies, S.A. de C.V., S.F.P. aparece en el SIPRES con la clave 27009 y estatus «En operación» (consulta del 10 de noviembre de 2026). Si tienes un problema con ella, puedes presentar una queja ante la **CONDUSEF**.',
       icon: FAQ_ICONS.scale,
       color: FAQ_COLORS.legal,
    },

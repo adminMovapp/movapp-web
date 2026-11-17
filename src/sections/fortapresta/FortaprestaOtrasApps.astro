@@ -7,13 +7,15 @@
 import { REPORTED_APPS } from '@constants/directorioApps.ts';
 import AppOptionsCarousel from '@components/decorative/AppOptionsCarousel.astro';
 
-const OTHER_APPS = REPORTED_APPS.filter((app) => ['starpresta', 'mexicash', 'prestafacil'].includes(app.slug));
+const OTHER_APPS = REPORTED_APPS.filter((app) => ['starpresta', 'mexicash', 'prestafacil'].includes(app.slug))
+   // Estatus tal cual el wireframe (2026-11-16).
+   .map((app) => ({ ...app, status: 'Con reportes' }));
 ---
 
 <AppOptionsCarousel
    id="fortapresta"
    listName="apps-relacionadas"
-   heading="Otras aplicaciones ilegales que podrías consultar"
+   heading="Otras apps con reportes que podrías consultar"
    apps={OTHER_APPS}
    statusColor="red"
 />

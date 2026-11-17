@@ -1,6 +1,7 @@
 ---
 import Layout from '@layouts/Layout.astro';
 import TalaHero from '@sections/tala/TalaHero.astro';
+import AppAvisoImportante from '@components/ui/AppAvisoImportante.astro';
 import TalaInfo from '@sections/tala/TalaInfo.astro';
 import TalaVerificada from '@sections/tala/TalaVerificada.astro';
 import TalaFaqs from '@sections/tala/TalaFaqs.astro';
@@ -10,6 +11,7 @@ import TalaCTA from '@sections/tala/TalaCTA.astro';
 
 <Layout type="website" showGrid={false} disableCopy>
    <TalaHero />
+   <AppAvisoImportante id="tala" />
    <TalaInfo />
    <TalaVerificada />
    <TalaFaqs />

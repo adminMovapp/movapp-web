@@ -1,6 +1,7 @@
 ---
 import Layout from '@layouts/Layout.astro';
 import MexicashHero from '@sections/mexicash/MexicashHero.astro';
+import AppAvisoImportante from '@components/ui/AppAvisoImportante.astro';
 import MexicashInfo from '@sections/mexicash/MexicashInfo.astro';
 import MexicashSenalesRiesgo from '@sections/mexicash/MexicashSenalesRiesgo.astro';
 import MexicashQueHacer from '@sections/mexicash/MexicashQueHacer.astro';
@@ -12,6 +13,7 @@ import MexicashCTA from '@sections/mexicash/MexicashCTA.astro';
 
 <Layout type="website" showGrid={false} disableCopy>
    <MexicashHero />
+   <AppAvisoImportante id="mexicash" />
    <MexicashInfo />
    <MexicashSenalesRiesgo />
    <MexicashQueHacer />

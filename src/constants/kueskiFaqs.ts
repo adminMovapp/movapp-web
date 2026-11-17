@@ -16,8 +16,8 @@ export interface KueskiFaq {
 
 export const KUESKI_FAQS: KueskiFaq[] = [
    {
-      q: '¿Kueski está registrada ante la CONDUSEF?',
-      a: 'Sí. Kueski, S.A.P.I. de C.V., SOFOM, E.N.R. aparece en el SIPRES con la clave 694080 y estatus «En operación» (consulta del 10 de noviembre de 2026). Si tienes un problema con ella, puedes presentar una queja ante la CONDUSEF.',
+      q: '¿Kueski está registrada ante CONDUSEF?',
+      a: 'Sí. Kueski, S.A.P.I. de C.V., SOFOM, E.N.R. aparece en el SIPRES con la clave 694080 y estatus «En operación» (consulta del 10 de noviembre de 2026). Si tienes un problema con ella, puedes presentar una queja ante la **CONDUSEF**.',
       icon: FAQ_ICONS.scale,
       color: FAQ_COLORS.legal,
    },

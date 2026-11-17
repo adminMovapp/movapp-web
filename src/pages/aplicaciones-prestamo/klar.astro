@@ -1,6 +1,7 @@
 ---
 import Layout from '@layouts/Layout.astro';
 import KlarHero from '@sections/klar/KlarHero.astro';
+import AppAvisoImportante from '@components/ui/AppAvisoImportante.astro';
 import KlarInfo from '@sections/klar/KlarInfo.astro';
 import KlarVerificada from '@sections/klar/KlarVerificada.astro';
 import KlarFaqs from '@sections/klar/KlarFaqs.astro';
@@ -10,6 +11,7 @@ import KlarCTA from '@sections/klar/KlarCTA.astro';
 
 <Layout type="website" showGrid={false} disableCopy>
    <KlarHero />
+   <AppAvisoImportante id="klar" />
    <KlarInfo />
    <KlarVerificada />
    <KlarFaqs />

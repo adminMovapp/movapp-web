@@ -1,6 +1,7 @@
 ---
 import Layout from '@layouts/Layout.astro';
 import PrestafacilHero from '@sections/prestafacil/PrestafacilHero.astro';
+import AppAvisoImportante from '@components/ui/AppAvisoImportante.astro';
 import PrestafacilInfo from '@sections/prestafacil/PrestafacilInfo.astro';
 import PrestafacilSenalesRiesgo from '@sections/prestafacil/PrestafacilSenalesRiesgo.astro';
 import PrestafacilQueHacer from '@sections/prestafacil/PrestafacilQueHacer.astro';
@@ -12,6 +13,7 @@ import PrestafacilCTA from '@sections/prestafacil/PrestafacilCTA.astro';
 
 <Layout type="website" showGrid={false} disableCopy>
    <PrestafacilHero />
+   <AppAvisoImportante id="prestafacil" />
    <PrestafacilInfo />
    <PrestafacilSenalesRiesgo />
    <PrestafacilQueHacer />

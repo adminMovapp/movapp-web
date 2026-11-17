@@ -15,8 +15,8 @@ export interface TalaFaq {
 
 export const TALA_FAQS: TalaFaq[] = [
    {
-      q: '¿Tala está registrada ante la CONDUSEF?',
-      a: 'Sí. Tala Mobile, S.A.P.I. de C.V., SOFOM, E.N.R. aparece en el SIPRES con la clave 695521 y estatus «En operación» (consulta del 10 de noviembre de 2026). Si tienes un problema con ella, puedes presentar una queja ante la CONDUSEF.',
+      q: '¿Tala está registrada ante CONDUSEF?',
+      a: 'Sí. Tala Mobile, S.A.P.I. de C.V., SOFOM, E.N.R. aparece en el SIPRES con la clave 695521 y estatus «En operación» (consulta del 10 de noviembre de 2026). Si tienes un problema con ella, puedes presentar una queja ante la **CONDUSEF**.',
       icon: FAQ_ICONS.scale,
       color: FAQ_COLORS.legal,
    },
