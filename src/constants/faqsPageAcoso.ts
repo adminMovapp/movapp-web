@@ -36,4 +36,11 @@ export const FAQS_PAGE_ACOSO = [
       icon: FAQ_ICONS.home,
       color: FAQ_COLORS.homeVisit,
    },
+   {
+      q: '¿Pueden contactar a tus familiares, amigos o contactos?',
+      // Dos párrafos ("\n\n"): FAQAccordion los pinta como <p> separados.
+      a: 'Sí. Es una de las formas más comunes que utilizan las apps montadeudas para presionarte, amenazarte o exhibirte.\n\nSi ya contactaron a tus familiares, lo primero es mantener la calma, guardar evidencia y contactar a un asesor de Movapp.',
+      icon: FAQ_ICONS.users,
+      color: FAQ_COLORS.family,
+   },
 ];
