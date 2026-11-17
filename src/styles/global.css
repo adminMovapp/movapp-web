@@ -58,24 +58,6 @@ html:not(.dark) .dark-section [class*='bg-white\/'] {
 }
 
 /* ============================================================
-   GLASS CARD — mismo glassfrost que usa el Header al volverse
-   píldora (bg-white/90 dark:bg-zinc-950/85 + backdrop-blur-md),
-   para que todas las secciones compartan un único lenguaje visual
-   de "vidrio". Color plano en vez de gradiente a propósito, y sin
-   usar las utilidades bg-white/x de Tailwind para evitar que los
-   overrides de tema (más arriba en este archivo) lo pisen.
-   ============================================================ */
-.glass-card {
-   background-color: rgba(9, 9, 11, 0.85);
-   -webkit-backdrop-filter: blur(12px);
-   backdrop-filter: blur(12px);
-}
-html:not(.dark) .glass-card {
-   background-color: rgba(255, 255, 255, 0.9);
-}
-
-
-/* ============================================================
    MARQUEE — carrusel horizontal infinito que se desplaza a la
    izquierda. La pista tiene 4 grupos idénticos (cada uno con su
    propio gap interno + un padding-right que reproduce ese mismo

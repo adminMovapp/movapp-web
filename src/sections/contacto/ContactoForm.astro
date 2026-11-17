@@ -1,4 +1,5 @@
 ---
+import { CARD_STYLE } from '@constants/cardStyles';
 // Estructura semántica pedida en la revisión de contenido (Angel Martínez,
 // comentarios sobre /contacto):
 // - "Nombres"/"Apellido"/"Correo"/"Mensaje" NO son <h3> -- cada uno es un
@@ -33,7 +34,7 @@ const fieldClass =
       POST la página se vuelve a renderizar sin exponer nada. Con JavaScript no
       cambia nada: el listener de abajo hace preventDefault y envía por fetch.
    -->
-   <form id="contactoForm" method="post" class="glass-card mt-10 flex flex-col gap-5 rounded-2xl border border-purple_mv/20 p-6 dark:border-white/10 md:p-8">
+   <form id="contactoForm" method="post" class={`mt-10 flex flex-col gap-5 rounded-2xl p-6 md:p-8 ${CARD_STYLE}`}>
       <div class="flex flex-col gap-2 text-left">
          <label for="contacto-nombre" class="text-sm font-semibold text-gray-900 dark:text-white">Nombres</label>
          <input

@@ -13,7 +13,6 @@ import ImgHeroCiudad from '@assets/silencia-los-mensajes-amenazantes.webp';
 // puramente geométrico, no se puede resolver con clases de Tailwind.
 import ImgHeroCiudadMobile from '@assets/Silencia-los-mensajes-amenazantes-mobile.webp';
 import ButtonContact from '@components/ui/ButtonContact.astro';
-import StoreBadges from '@components/ui/StoreBadges.astro';
 ---
 
 <!--
@@ -108,7 +107,7 @@ import StoreBadges from '@components/ui/StoreBadges.astro';
             hereda, alcanza con ponerlo una vez acá) -- en móvil se queda en
             el case normal, como siempre.
 
-            "acoso" y "Movapp" en morado (text_banner); "apps de préstamo"
+            "acoso" y "Movapp" en morado (text_banner); "apps montadeudas"
             además lleva el mismo drop-shadow que ya usaba la frase
             equivalente en el título anterior -- a pedido (2026-08-27).
          -->
@@ -116,7 +115,7 @@ import StoreBadges from '@components/ui/StoreBadges.astro';
             class="hero-float-combo mx-auto mt-4 max-w-4xl text-4xl font-bold leading-tight text-gray-900 dark:text-white md:mx-0 md:text-left md:text-6xl md:uppercase"
             style="--float-dur: 6.5s; --float-delay: 0.3s; animation: heroFadeIn 0.7s ease-out both, heroFloat 6.5s ease-in-out 0.3s infinite;"
          >
-Frena el <span class="text-text_banner">acoso</span> de las <span class="text-text_banner drop-shadow-[0_0_25px_rgba(129,73,226,0.35)]">apps de préstamo</span> con <span class="text-text_banner">Movapp</span>
+Frena el <span class="text-text_banner">acoso</span> de las <span class="text-text_banner drop-shadow-[0_0_25px_rgba(129,73,226,0.35)]">apps montadeudas</span> con <span class="text-text_banner">Movapp</span>
          </h1>
       </div>
 
@@ -371,18 +370,10 @@ Frena el <span class="text-text_banner">acoso</span> de las <span class="text-te
             Asesoría gratuita
          </h2>
          <p class="mt-3 text-gray-700 dark:text-white/80">
-            Detén las llamadas, los mensajes de acoso a ti, así como a tus contactos.
-            <strong class="font-bold text-text_banner">Un asesor real te acompaña paso a paso, sin costo.</strong>
+            Frena las llamadas y mensajes de acoso a ti y a tus contactos. Un asesor revisa tu caso gratis y sin compromiso.
          </p>
          <div class="mt-6">
-            <ButtonContact id="whatsapp-home-hero" label="Hablar con un asesor" fullWidth pageType="home" sectionName="asesoria_gratuita" placement="hero" />
-         </div>
-
-         <!-- Íconos de tienda + contador de descargas: solo en móvil (ver
-              wireframe de estructura móvil), debajo del botón de WhatsApp. -->
-         <div class="mt-6 flex flex-col items-center gap-3 md:hidden">
-            <StoreBadges size="sm" order="app-first" pageType="home" sectionName="hero" />
-            <p class="text-sm font-bold text-text_banner">5000+ Descargas</p>
+            <ButtonContact id="whatsapp-home-hero" label="Hablar con un asesor por WhatsApp" fullWidth pageType="home" sectionName="asesoria_gratuita" placement="hero" />
          </div>
       </div>
 

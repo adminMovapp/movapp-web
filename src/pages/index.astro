@@ -17,8 +17,20 @@ import HomeCTA from '@sections/home/HomeCTA.astro';
    <HomeHowItWorks />
    <HomeFeatured />
    <HomeTrust />
-   <HomeMontadeudas />
-   <HomeFAQ />
-   <HomeCollaborations />
+   <!--
+      Orden móvil (wireframe móvil, 2026-11-16): Colaboraciones va ANTES de
+      "¿Qué es una app montadeudas?"; en escritorio sigue al final, después de
+      las FAQs. Se resuelve con "order" (sin duplicar la sección ni su H2). El
+      DOM conserva el orden de escritorio, que es el que ve el HTML sin JS.
+      Cada <section> trae "my-section", pero dentro de un flex los márgenes
+      no colapsan (se sumarían a 8rem) -- por eso aquí se anulan y el mismo
+      espacio lo da "gap-section"; el "my-section" del contenedor colapsa con
+      las secciones vecinas igual que antes.
+   -->
+   <div class="my-section flex flex-col gap-section [&>div>section]:!my-0">
+      <div><HomeMontadeudas /></div>
+      <div><HomeFAQ /></div>
+      <div class="order-first md:order-none"><HomeCollaborations /></div>
+   </div>
    <HomeCTA />
 </Layout>
