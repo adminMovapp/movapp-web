@@ -26,19 +26,19 @@ export interface PrestafacilFaq {
 export const PRESTAFACIL_FAQS: PrestafacilFaq[] = [
    {
       q: '¿PrestaFácil es legal?',
-      a: 'La respuesta depende de la evidencia disponible; no se afirma automáticamente.',
+      a: 'No lo podemos afirmar: no la localizamos en el registro de la CONDUSEF y no tenemos confirmada la empresa que la opera. Antes de usarla, busca su razón social en la app o el contrato.',
       icon: FAQ_ICONS.scale,
       color: FAQ_COLORS.legal,
    },
    {
-      q: '¿Está registrada ante CONDUSEF?',
-      a: 'Se indica la fecha y el registro consultado.',
+      q: '¿PrestaFácil está registrada ante la CONDUSEF?',
+      a: 'No la localizamos en el SIPRES de la CONDUSEF (consulta del 10 de noviembre de 2026). Podría operar con otra razón social; si la conoces, puedes consultarla tú en el SIPRES.',
       icon: FAQ_ICONS.building,
       color: FAQ_COLORS.company,
    },
    {
       q: '¿Qué permisos solicita?',
-      a: 'Se muestran únicamente los permisos identificados.',
+      a: 'Según los reportes que recibimos, pide acceso a tus contactos. Antes de instalar cualquier app de préstamo, revisa qué permisos pide y no aceptes los que no necesita.',
       icon: FAQ_ICONS.alertTriangle,
       color: FAQ_COLORS.threat,
    },

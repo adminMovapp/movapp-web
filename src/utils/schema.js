@@ -3,40 +3,49 @@
    SCHEMA.ORG / JSON-LD — archivo único de la funcionalidad
    ============================================================================
 
-   Implementa la guía "Movapp · Schema Markup v2.0" (Julio 2026). Todo lo que
-   se mantiene de schema vive aquí:
+   Implementa los schemas por página P01–P19 (nov. 2026), que reemplazan a la
+   guía "Movapp · Schema Markup v2.0". Todo lo que se mantiene de schema vive
+   aquí:
 
-     1. SCHEMA_DATA  — datos de las entidades (Organization y los dos
-                       productos). Es lo que se edita cuando llega un dato
-                       nuevo (URL de Google Play, página de contacto, etc.).
-     2. Generadores  — una función por tipo de schema.
+     1. SCHEMA_DATA  — datos de las entidades (Organization, WebSite, la app
+                       móvil y El Hack). Es lo que se edita cuando llega un
+                       dato nuevo (dirección, tiendas, precio...).
+     2. Generadores  — una función por tipo de nodo.
      3. PAGE_SCHEMA  — qué schema le toca a cada ruta del sitio. Agregar una
                        página = agregar una entrada acá, nada más.
      4. getPageSchema(pathname, request) — lo que llama Layout.astro.
 
-   Layout.astro resuelve el schema solo, a partir de la ruta: las páginas .astro
-   NO declaran nada (salvo que necesiten un caso especial, ver la prop `schema`
-   del layout, pensada para las páginas dinámicas de pSEO que vendrán).
+   Forma de salida (P01–P19): TODAS las rutas fijas emiten un único objeto
+   { "@context", "@graph": [...] } cuyos nodos llevan @id estable
+   (<url>#webpage, #breadcrumb, #preguntas-frecuentes, #servicio) y se
+   enlazan por referencia: cada WebPage es `isPartOf` → /#website y tiene
+   `publisher` → /#organization. Organization, WebSite y la app móvil solo
+   se declaran completos en Home; el resto de las páginas los referencia.
 
-   Reglas no negociables de la guía que este archivo respeta:
+   Layout.astro resuelve el schema solo, a partir de la ruta: las páginas .astro
+   NO declaran nada (salvo los casos especiales de la prop `schema` del layout:
+   artículos del blog y los VideoObject de /prensa, ver appendToGraph()).
+
+   Reglas no negociables que este archivo respeta:
      · JSON-LD únicamente, en el HTML inicial de la respuesta SSR. Nunca desde
        una isla de React ni un useEffect: tiene que verse con `curl`.
-     · URLs SIEMPRE absolutas -- de ahí abs().
+     · URLs SIEMPRE absolutas -- de ahí abs(). Los documentos fuente usan
+       https://movapp.org/; aquí el dominio sale de getSiteConfig(), así en
+       stage las URLs apuntan a stage.
      · Solo se declara schema que existe visualmente en la página. Por eso el
-       texto de FAQPage/HowTo se importa de las mismas constantes que
-       renderizan el markup (@constants/elhack.ts, @constants/faqsPageAcoso.ts,
-       @constants/faqsPageElHack.ts, @constants/faqsPageMovapp.ts) en vez de
+       texto de FAQPage se importa de las mismas constantes que renderizan el
+       markup (@constants/*Faqs.ts, @constants/elhack.ts...) en vez de
        escribirse acá una segunda vez: si cambia el copy, cambia el schema
        solo, y no pueden divergir.
 
-   QA (§4 de la guía):
+   QA:
      curl -s <URL> | grep -A 30 "application/ld+json"
      search.google.com/test/rich-results  ·  validator.schema.org
 */
 
-import { getSiteConfig, URLS, withTrailingSlash } from '@utils/config.jsx';
+import { getSiteConfig, withTrailingSlash } from '@utils/config.jsx';
 import { HOME_FAQS } from '@constants/homeFaqs.ts';
-import { EL_HACK_FAQS, EL_HACK_STEPS, EL_HACK_HOW_IT_WORKS_TITLE } from '@constants/elhack.ts';
+import { EL_HACK_FAQS } from '@constants/elhack.ts';
 import { FAQS_PAGE_ACOSO } from '@constants/faqsPageAcoso.ts';
 import { FAQS_PAGE_EL_HACK } from '@constants/faqsPageElHack.ts';
 import { FAQS_PAGE_MOVAPP } from '@constants/faqsPageMovapp.ts';
@@ -53,121 +62,116 @@ import { STARPRESTA_FAQS } from '@constants/starprestaFaqs.ts';
 // 1. DATOS DE LAS ENTIDADES
 // ============================================================
 
+// Tiendas sin parámetros de campaña (las de URLS en config.jsx llevan UTM
+// para los botones; en sameAs/downloadUrl va la URL canónica de la ficha).
+const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.movapp.mobile';
+const APP_STORE_URL = 'https://apps.apple.com/mx/app/movapp-by-erik-mann/id6755009066';
+
 export const SCHEMA_DATA = {
-   // Alimenta el Knowledge Panel de Google, así que solo van datos
-   // verificables (guía §2.1).
+   // Alimenta el Knowledge Panel de Google: solo datos verificables (P01).
+   // La `description` es la del sitio (siteConfigData.site.description).
    organization: {
-      foundingDate: '2022',
+      name: 'Movapp',
+      legalName: 'MOVAPPBYERIKMANN, S.A. de C.V.',
+      foundingDate: '2021',
       founder: 'Erik Mann',
-      // Solo perfiles oficiales verificados. Se toman de @utils/config.jsx
-      // (URLS) para no mantener dos listas de redes en el repo.
-      sameAs: [URLS.youtube, URLS.facebook, URLS.instagram, URLS.tiktok],
-      // Canal de contacto: el WhatsApp "principal" (el mismo de los botones
-      // del sitio, ver ButtonContact.astro), con su enlace directo como `url`.
-      contactPhone: URLS.whatsapp.principal,
-      contactUrl: `https://api.whatsapp.com/send/?phone=${URLS.whatsapp.principal.replace('+', '')}`,
-      // Dimensiones reales de public/img/Logo.png (cfg.assets.logo) -- Google
-      // prefiere `logo` como ImageObject con width/height explícitos en vez
-      // de un string plano. Deben moverse juntos si el archivo cambia.
+      // Dimensiones reales de public/img/Logo.png (cfg.logoUrl). Deben
+      // moverse juntas si el archivo cambia.
       logoWidth: 3140,
       logoHeight: 550,
+      address: {
+         '@type': 'PostalAddress',
+         streetAddress: 'Homero 229, Col. Polanco',
+         addressLocality: 'Miguel Hidalgo',
+         addressRegion: 'Ciudad de México',
+         postalCode: '11590',
+         addressCountry: 'MX',
+      },
+      // El WhatsApp "principal" (el mismo de ButtonContact.astro).
+      contactPoint: {
+         '@type': 'ContactPoint',
+         contactType: 'customer support',
+         telephone: '+52-55-7876-7442',
+         availableLanguage: 'es',
+         url: 'https://wa.me/5215578767442',
+      },
+      sameAs: [
+         'https://www.youtube.com/@movappoficial',
+         'https://www.facebook.com/movappbymann',
+         'https://www.instagram.com/movappbymann',
+         'https://www.tiktok.com/@movappbymann',
+         PLAY_STORE_URL,
+         APP_STORE_URL,
+      ],
    },
 
+   areaServed: { '@type': 'Country', name: 'México' },
+
    /*
-      Los dos productos son ENTIDADES SEPARADAS de cara a Google, y la guía
-      marca la distinción como crítica: la app Movapp se descarga de las
-      stores (SoftwareApplication, con operatingSystem/downloadUrl); El Hack
-      se usa por WhatsApp y NO está en ninguna store, por eso es un Service
-      (provider/areaServed) en vez de una app.
+      La app y El Hack son ENTIDADES SEPARADAS: la app se descarga de las
+      tiendas (MobileApplication) y NO es El Hack -- su description lo dice
+      explícitamente; El Hack es un Service que se solicita con un asesor.
    */
    movappApp: {
-      name: 'Movapp',
+      name: 'Movapp by Erik Mann',
       operatingSystem: 'Android, iOS',
-      // FinanceApplication y esta descripción vienen del schema de Home
-      // actualizado (oct. 2026), que reemplazó al SecurityApplication previo.
-      applicationCategory: 'FinanceApplication',
-      description: 'Aplicación de Movapp con información y contenido sobre finanzas personales.',
-      // TODO: pegar la URL real de la ficha en Google Play. Mientras sea null,
-      // downloadUrl no se emite (mejor omitir el campo que inventar una URL).
-      downloadUrl: null,
-      // TODO: si la app llega a tener su propia LP, apuntar aquí a esa ruta.
-      // Por ahora su URL canónica es el home, que es donde se presenta.
-      path: '/',
-      // La app sí es de descarga gratuita.
+      applicationCategory: 'LifestyleApplication',
+      description:
+         'App oficial de Movapp, con videos y contenido de Movapp y una función para verificar que hablas con un asesor oficial. No es El Hack.',
+      downloadUrl: [PLAY_STORE_URL, APP_STORE_URL],
       offer: { '@type': 'Offer', price: '0', priceCurrency: 'MXN' },
    },
 
    elHack: {
       name: 'El Hack',
-      // Service, no SoftwareApplication: no es una app de descarga (no está en
-      // Google Play ni App Store), es un servicio de acompañamiento vía
-      // WhatsApp -- de ahí también provider/areaServed en vez de un `offer`
-      // de tipo "app gratuita".
-      serviceType: 'Protección contra acoso de aplicaciones de préstamo no reguladas',
-      description:
-         'Servicio de Movapp que detiene las llamadas y mensajes de acoso de apps montadeuda, protege tus contactos y te acompaña con un asesor real por WhatsApp.',
-      // Versión más detallada para su propia LP (misma entidad, más texto).
-      descriptionLP:
-         'Servicio de Movapp que detiene las llamadas y mensajes de acoso de apps montadeuda, protege tus contactos y te acompaña con un asesor real por WhatsApp.',
       path: '/el-hack',
+      serviceType: 'Servicio para frenar el acoso de apps de préstamo montadeudas',
+      description:
+         'El Hack es el servicio de Movapp para frenar el acoso de las apps montadeudas: las llamadas y mensajes de cobranza hacia la víctima y sus contactos. Se solicita con un asesor, que confirma el alcance y el precio antes de empezar, y lo aplica el equipo técnico de Movapp.',
       /*
-         OJO -- divergencia deliberada respecto a la guía: el documento pide un
-         Offer con price 0 para El Hack, pero el copy visible de /el-hack dice
-         que el costo del hack es de $500 MXN (la asesoría sí es 100%
-         gratuita). Declarar price 0 sería justo el "schema engañoso" que la
-         propia guía prohíbe (regla 3). Por eso priceSpecification lleva un
-         minPrice numérico ("desde $500") y no solo la description en texto
-         libre. El `url` del Offer se agrega en generateElHackSchema.
+         Precio por Hack publicado en /tienda (P02/P04): Offer con price fijo
+         + UnitPriceSpecification "por 1 Hack". El total depende de cuántas
+         apps haya, cosa que dice la description del Offer.
 
-         ⚠ Este 500 y el copy de la FAQ "¿Cuánto cuesta?" en
-         @constants/elhack.ts tienen que moverse juntos.
+         ⚠ Este 500 y el copy de las FAQ de costo ("¿Cuánto cuesta El Hack?"
+         en @constants/elhack.ts, "¿Movapp cobra?" en homeFaqs.ts y "¿La ayuda
+         tiene costo?" en faqsPageMovapp.ts) tienen que moverse juntos.
       */
-      offer: {
-         '@type': 'Offer',
-         priceCurrency: 'MXN',
-         description:
-            'Servicio desde $500 MXN. La asesoría inicial es gratuita; el costo final depende de la cantidad de préstamos activos.',
-         priceSpecification: {
-            '@type': 'PriceSpecification',
-            priceCurrency: 'MXN',
-            minPrice: 500,
-            description: 'Precio mínimo del servicio. El costo final depende de la cantidad de préstamos activos.',
-         },
-      },
+      price: '500.00',
+      priceCurrency: 'MXN',
+      offerPath: '/tienda',
+      offerDescription:
+         'Precio por Hack publicado en la tienda de movapp.org. El total depende del número de apps involucradas y el asesor lo confirma antes de cualquier pago. La revisión del caso es gratuita y sin compromiso.',
    },
 };
 
 // ============================================================
-// 2. GENERADORES POR TIPO DE SCHEMA
+// 2. GENERADORES
 // ============================================================
 
 const CONTEXT = 'https://schema.org';
 
-// URL absoluta a partir de una ruta del sitio ("/el-hack" -> "https://.../el-hack")
+// URL absoluta a partir de una ruta del sitio ("/el-hack" -> "https://.../el-hack/")
 function abs(path, cfg) {
    if (!path) return cfg.canonicalUrl;
    if (/^https?:\/\//.test(path)) return path;
    return new URL(withTrailingSlash(path), cfg.canonicalUrl).href;
 }
 
-// Quita las claves null/undefined para no emitir campos vacíos (p. ej.
-// downloadUrl mientras no se confirme la URL de Google Play).
+// Quita las claves null/undefined para no emitir campos vacíos.
 function prune(obj) {
    return Object.fromEntries(Object.entries(obj).filter(([, v]) => v !== null && v !== undefined));
 }
 
-/*
-   @id estables de las entidades del sitio ("https://movapp.org/#organization").
-   Permiten que los nodos del @graph de Home (y el provider de El Hack) se
-   referencien entre sí en vez de repetir la entidad completa.
-*/
-function entityId(key, cfg) {
-   return `${abs('/', cfg)}#${key}`;
+// @id de un nodo: "<url de la ruta>#<fragmento>" ("https://movapp.org/#organization").
+function nodeId(path, fragment, cfg) {
+   return `${abs(path, cfg)}#${fragment}`;
 }
+const ref = (path, fragment, cfg) => ({ '@id': nodeId(path, fragment, cfg) });
 
 /*
    Agrupa varios nodos en un único objeto { @context, @graph }: cada nodo
-   pierde su propio @context (lo hereda del contenedor). Lo usa Home.
+   pierde su propio @context (lo hereda del contenedor).
 */
 export function generateGraph(nodes = []) {
    return {
@@ -176,122 +180,160 @@ export function generateGraph(nodes = []) {
    };
 }
 
-// --- WebSite (solo Home) ---
+/*
+   Suma nodos calculados en runtime al @graph de una ruta (patrón /prensa:
+   getPageSchema() + un VideoObject por vídeo visible).
+*/
+export function appendToGraph(graph, extraNodes = []) {
+   return generateGraph([...graph['@graph'], ...extraNodes]);
+}
+
+// --- Organization (completa solo en Home; el resto la referencia) ---
+export function generateOrganizationSchema(request = null) {
+   const cfg = getSiteConfig(request);
+   const org = SCHEMA_DATA.organization;
+   return {
+      '@context': CONTEXT,
+      '@type': 'Organization',
+      '@id': nodeId('/', 'organization', cfg),
+      name: org.name,
+      legalName: org.legalName,
+      url: abs('/', cfg),
+      logo: { '@type': 'ImageObject', url: cfg.logoUrl, width: org.logoWidth, height: org.logoHeight },
+      description: cfg.site.description,
+      foundingDate: org.foundingDate,
+      founder: { '@type': 'Person', name: org.founder },
+      address: org.address,
+      contactPoint: org.contactPoint,
+      areaServed: SCHEMA_DATA.areaServed,
+      sameAs: org.sameAs,
+   };
+}
+
+// --- WebSite (solo Home). Sin SearchAction: el buscador es un overlay que
+// no cambia la URL, declararlo sería schema engañoso. ---
 export function generateWebSiteSchema(request = null) {
    const cfg = getSiteConfig(request);
    return {
       '@context': CONTEXT,
       '@type': 'WebSite',
-      name: cfg.site.name,
+      '@id': nodeId('/', 'website', cfg),
       url: abs('/', cfg),
-      description: cfg.site.description,
+      name: SCHEMA_DATA.organization.name,
       inLanguage: cfg.site.language,
-      '@id': entityId('website', cfg),
-      publisher: { '@id': entityId('organization', cfg) },
-      // potentialAction/SearchAction: el sitio no tiene buscador interno, así
-      // que se omite a propósito -- declararlo sin buscador es schema engañoso.
+      publisher: ref('/', 'organization', cfg),
+      description: cfg.site.description,
    };
 }
 
-// --- Organization (Home) ---
-export function generateOrganizationSchema(request = null) {
-   const cfg = getSiteConfig(request);
-   const org = SCHEMA_DATA.organization;
-   return prune({
-      '@context': CONTEXT,
-      '@type': 'Organization',
-      name: cfg.site.name,
-      description: cfg.site.description,
-      url: abs('/', cfg),
-      logo: {
-         '@type': 'ImageObject',
-         url: cfg.logoUrl,
-         width: org.logoWidth,
-         height: org.logoHeight,
-      },
-      foundingDate: org.foundingDate,
-      founder: { '@type': 'Person', name: org.founder },
-      sameAs: org.sameAs,
-      contactPoint: prune({
-         '@type': 'ContactPoint',
-         contactType: cfg.business.contactType,
-         availableLanguage: cfg.business.availableLanguage,
-         telephone: org.contactPhone,
-         url: org.contactUrl,
-      }),
-      areaServed: { '@type': 'Country', name: cfg.business.country },
-      '@id': entityId('organization', cfg),
-   });
-}
-
-// --- SoftwareApplication #1: la app Movapp (Android/iOS) ---
+// --- MobileApplication: la app oficial (Android/iOS). No es El Hack. ---
 export function generateMovappAppSchema(request = null) {
    const cfg = getSiteConfig(request);
    const app = SCHEMA_DATA.movappApp;
-   return prune({
+   return {
       '@context': CONTEXT,
-      '@type': 'SoftwareApplication',
+      '@type': 'MobileApplication',
+      '@id': nodeId('/', 'app', cfg),
       name: app.name,
       operatingSystem: app.operatingSystem,
       applicationCategory: app.applicationCategory,
-      url: abs(app.path, cfg),
-      downloadUrl: app.downloadUrl,
       description: app.description,
+      downloadUrl: app.downloadUrl,
       offers: app.offer,
-      '@id': entityId('app', cfg),
-      publisher: { '@id': entityId('organization', cfg) },
-   });
+      publisher: ref('/', 'organization', cfg),
+   };
 }
 
-// --- Service: El Hack (acompañamiento vía WhatsApp) ---
-// ⚠ Service, no SoftwareApplication: no está en Google Play ni App Store.
+/*
+   Service: El Hack. `detailed` (su propia LP, P02) emite la entidad completa;
+   sin él (/tienda, P04) solo nombre, proveedor y oferta -- mismo @id, así
+   Google los une en una sola entidad.
+*/
 export function generateElHackSchema({ detailed = false } = {}, request = null) {
    const cfg = getSiteConfig(request);
-   const app = SCHEMA_DATA.elHack;
+   const hack = SCHEMA_DATA.elHack;
+   const offers = {
+      '@type': 'Offer',
+      url: abs(hack.offerPath, cfg),
+      priceCurrency: hack.priceCurrency,
+      price: hack.price,
+      priceSpecification: {
+         '@type': 'UnitPriceSpecification',
+         price: hack.price,
+         priceCurrency: hack.priceCurrency,
+         referenceQuantity: { '@type': 'QuantitativeValue', value: 1, unitText: 'Hack' },
+      },
+      description: hack.offerDescription,
+   };
+   const base = { '@context': CONTEXT, '@type': 'Service', '@id': nodeId(hack.path, 'servicio', cfg), name: hack.name };
+   if (!detailed) return { ...base, provider: ref('/', 'organization', cfg), offers };
+   return {
+      ...base,
+      serviceType: hack.serviceType,
+      description: hack.description,
+      provider: ref('/', 'organization', cfg),
+      areaServed: SCHEMA_DATA.areaServed,
+      url: abs(hack.path, cfg),
+      offers,
+   };
+}
+
+/*
+   WebPage y subtipos (CollectionPage, ContactPage...). `about` y
+   `mainEntity` son opcionales (fichas de apps / tienda y El Hack).
+*/
+export function generateWebPageSchema(
+   { name, path, description, type = 'WebPage', about, mainEntity },
+   request = null,
+) {
+   const cfg = getSiteConfig(request);
    return prune({
       '@context': CONTEXT,
-      '@type': 'Service',
-      name: app.name,
-      serviceType: app.serviceType,
-      url: abs(app.path, cfg),
-      description: detailed ? app.descriptionLP : app.description,
-      provider: {
-         '@type': 'Organization',
-         name: cfg.site.name,
-         url: abs('/', cfg),
-         '@id': entityId('organization', cfg),
-      },
-      areaServed: { '@type': 'Country', name: cfg.business.country },
-      offers: { ...app.offer, url: abs(app.path, cfg) },
+      '@type': type,
+      '@id': nodeId(path, 'webpage', cfg),
+      url: abs(path, cfg),
+      name,
+      description,
+      inLanguage: cfg.site.language,
+      isPartOf: ref('/', 'website', cfg),
+      publisher: ref('/', 'organization', cfg),
+      about,
+      mainEntity,
    });
 }
 
-// --- BreadcrumbList: items = [{ name, path }]; "Inicio" se agrega solo ---
-export function generateBreadcrumbSchema(items = [], request = null) {
+/*
+   BreadcrumbList: items = [{ name, path }]; "Inicio" se agrega solo. Con
+   `id` (la ruta de la página) el nodo lleva @id <url>#breadcrumb.
+*/
+export function generateBreadcrumbSchema(items = [], request = null, { id } = {}) {
    const cfg = getSiteConfig(request);
    const trail = [{ name: 'Inicio', path: '/' }, ...items];
-   return {
+   return prune({
       '@context': CONTEXT,
       '@type': 'BreadcrumbList',
+      '@id': id ? nodeId(id, 'breadcrumb', cfg) : undefined,
       itemListElement: trail.map((item, i) => ({
          '@type': 'ListItem',
          position: i + 1,
          name: item.name,
          item: abs(item.path, cfg),
       })),
-   };
+   });
 }
 
 /*
    FAQPage: `faqs` acepta [{ q, a }] o [{ question, answer }].
    El texto de acceptedAnswer debe ser EXACTAMENTE el que el usuario lee en
    pantalla; por eso se le pasa la misma constante que renderiza el markup.
-   `extra` agrega propiedades al nodo (Home: @id, inLanguage, isPartOf).
+   `extra` agrega propiedades al nodo (p. ej. @id).
 */
 export function generateFAQSchema(faqs = [], extra = {}) {
-   return {
+   const { '@id': id, ...rest } = extra;
+   return prune({
       '@context': CONTEXT,
       '@type': 'FAQPage',
+      '@id': id,
       mainEntity: faqs.map((item) => ({
          '@type': 'Question',
          name: item.q ?? item.question,
@@ -300,24 +342,7 @@ export function generateFAQSchema(faqs = [], extra = {}) {
             text: item.a ?? item.answer,
          },
       })),
-      ...extra,
-   };
-}
-
-/*
-   WebPage y sus subtipos. `type` acepta cualquier subtipo: "AboutPage" para
-   /nosotros, "CollectionPage" para listados, "WebPage" para el resto.
-*/
-export function generateWebPageSchema({ name, path, description, type = 'WebPage' }, request = null) {
-   const cfg = getSiteConfig(request);
-   return prune({
-      '@context': CONTEXT,
-      '@type': type,
-      name: name,
-      url: abs(path, cfg),
-      description: description,
-      inLanguage: cfg.site.language,
-      publisher: { '@type': 'Organization', name: cfg.site.name, url: cfg.canonicalUrl },
+      ...rest,
    });
 }
 
@@ -349,9 +374,7 @@ export function parseSpanishDate(text) {
    BlogPosting: un artículo de /blog/<slug> (ver src/pages/blog/[articulo].astro
    y @constants/blogArticles.ts). Ruta dinámica, así que NO vive en
    PAGE_SCHEMA como el resto -- cada página arma su propio array con esta
-   función y lo pasa por la prop `schema` del Layout (la escotilla de escape
-   documentada arriba, pensada justo para esto: el schema depende del
-   frontmatter de cada artículo, no de una ruta fija).
+   función y lo pasa por la prop `schema` del Layout.
 */
 export function generateBlogPostingSchema(
    { headline, description, path, publishDate, publishedAt, modifiedAt, authorName, image },
@@ -402,9 +425,9 @@ export function generateVideoObjectSchema(video) {
 }
 
 /*
-   HowTo: solo aplica si la página tiene una sección de pasos VISIBLE, y los
-   pasos deben coincidir uno a uno con los de la página (por eso comparten
-   fuente de datos). `totalTime` en ISO 8601 (PT10M = 10 minutos).
+   HowTo: hoy ninguna ruta lo emite (P02 lo quitó de /el-hack). Si vuelve,
+   solo con una sección de pasos VISIBLE y sin totalTime salvo que la página
+   lo muestre.
 */
 export function generateHowToSchema({ name, description, totalTime, tool, steps = [] }) {
    return prune({
@@ -428,141 +451,221 @@ export function generateHowToSchema({ name, description, totalTime, tool, steps 
 // ============================================================
 
 /*
-   Una entrada por página. Cada una define:
-     · name        — título visible (H1) de la página
-     · description — se usa en el schema Y como meta description por defecto
-                     (Layout.astro cae aquí si la página no pasa la prop
-                     `description`), así el texto no se escribe dos veces
-     · breadcrumb  — etiqueta en el rastro de migas; null = sin BreadcrumbList
-                     (Home, que es la raíz)
-     · build()     — devuelve el array de schemas de esa página
+   Una entrada por página (clave SIN barra final). Campos:
+     · name        — `name` del WebPage. También es el <title> por defecto de
+                     la página (Layout.astro cae aquí si no recibe `title`).
+     · description — `description` del WebPage y meta description por
+                     defecto (misma regla), y su línea en /llms.txt.
+     · breadcrumb  — etiqueta del último nivel de la miga (visible, vía
+                     Breadcrumbs.astro, y BreadcrumbList); null = sin miga.
+     · parents     — niveles intermedios de la miga, [{ name, path }].
+     · type        — subtipo de WebPage (default 'WebPage').
+     · about       — nodo `about` del WebPage (fichas de apps).
+     · faqs        — constante de FAQ visible → nodo FAQPage.
+     · service     — 'detailed' | 'offer': agrega el Service de El Hack y lo
+                     declara como mainEntity del WebPage.
+     · build()     — composición a mano (solo Home).
 
-   Agregar una página nueva = agregar una entrada acá. Nada que tocar en el
-   .astro ni en el layout.
+   Orden de nodos en el @graph (igual que P02–P19): WebPage, BreadcrumbList,
+   Service, FAQPage.
 */
+const APPS = { name: 'Aplicaciones', path: '/aplicaciones-prestamo' };
+
 export const PAGE_SCHEMA = {
-   // --- Home: la página más crítica. Establece a Movapp como entidad ante
-   // Google y los LLMs (clave para GEO); el Organization alimenta el
-   // Knowledge Panel. Sin BreadcrumbList: es la raíz. Se suma FAQPage porque
-   // HomeFAQ.astro ya la hace una sección visible de la página (debajo de
-   // los testimonios, ver HomeTrust.astro). (Guía §2.1)
-   //
-   // Sin generateElHackSchema acá (hallazgo de auditoría corregido): El Hack
-   // es una LP propia con su propio Service en /el-hack -- Home solo lo
-   // menciona de pasada (card de HomeFeatured.astro, sin detalle), así que
-   // declarar su schema completo acá era redundante/duplicado con el de su
-   // propia página. Ver PAGE_SCHEMA['/el-hack'] para ese schema.
+   // --- P01 Home: la única página que declara completas la Organization, el
+   // WebSite y la app; todas las demás las referencian por @id. Sin
+   // BreadcrumbList (es la raíz) ni Service de El Hack (vive en /el-hack).
    '/': {
-      name: 'Movapp',
-      description: null, // usa la del sitio (siteConfigData.site.description)
+      name: 'Movapp | Ayuda para frenar el acoso de montadeudas',
+      description:
+         '¿Una app montadeudas te acosa a ti o a tus contactos? Movapp te ayuda a frenarlo con asesoría, apoyo psicológico y El Hack. Revisamos tu caso gratis.',
       breadcrumb: null,
-      // Un único @graph cuyos nodos se enlazan por @id (WebSite/App →
-      // publisher Organization, FAQPage → isPartOf WebSite).
       build: (request) => {
          const cfg = getSiteConfig(request);
+         const page = PAGE_SCHEMA['/'];
          return generateGraph([
             generateOrganizationSchema(request),
             generateWebSiteSchema(request),
             generateMovappAppSchema(request),
-            generateFAQSchema(HOME_FAQS, {
-               '@id': entityId('faq', cfg),
-               inLanguage: cfg.site.language,
-               isPartOf: { '@id': entityId('website', cfg) },
-            }),
+            generateWebPageSchema(
+               { name: page.name, path: '/', description: page.description, about: ref('/', 'organization', cfg) },
+               request,
+            ),
+            generateFAQSchema(HOME_FAQS, { '@id': nodeId('/', 'preguntas-frecuentes', cfg) }),
          ]);
       },
    },
 
-   // --- LP de conversión. El Service es más detallado que la mención de
-   // Home, y se suman HowTo y FAQPage porque ambas secciones existen
-   // visualmente (ElHackHowItWorks y ElHackFAQ). (Guía §2.2)
+   // --- P02 El Hack. P02 ya no trae HowTo.
    '/el-hack': {
-      name: 'Recupera tu tranquilidad hoy, adiós al acoso de las apps de préstamos',
-      description: null, // la página pasa su propio copy SEO
-      breadcrumb: 'El Hack',
-      build: (request) => [
-         generateElHackSchema({ detailed: true }, request),
-         breadcrumbFor('/el-hack', request),
-         generateHowToSchema({
-            name: EL_HACK_HOW_IT_WORKS_TITLE,
-            description: 'Tres pasos para volver a tener el control y frenar el acoso de las apps de préstamo.',
-            tool: 'El Hack (WhatsApp)',
-            steps: EL_HACK_STEPS,
-            // Sin totalTime a propósito: la página no declara una duración del
-            // proceso (la FAQ dice que "depende del caso"), así que poner un
-            // PT10M sería declarar algo que no está en pantalla.
-         }),
-         generateFAQSchema(EL_HACK_FAQS),
-      ],
-   },
-
-   // --- La LP más directa para FAQPage. (Guía §2.3)
-   // Combina las 3 secciones de la página (Acoso, El Hack, Movapp) en un solo
-   // FAQPage: el schema no necesita conservar la agrupación visual, solo que
-   // cada Question/acceptedAnswer coincida con lo que se lee en pantalla.
-   '/preguntas-frecuentes': {
-      name: 'Preguntas frecuentes',
-      description: 'Respondemos las dudas más comunes sobre acoso de apps de préstamo, El Hack y Movapp.',
-      breadcrumb: 'Preguntas frecuentes',
-      build: (request) => [
-         generateFAQSchema([...FAQS_PAGE_ACOSO, ...FAQS_PAGE_EL_HACK, ...FAQS_PAGE_MOVAPP]),
-         breadcrumbFor('/preguntas-frecuentes', request),
-      ],
-   },
-
-   // /nosotros no se vuelve a publicar en este deploy (301 permanente a Home,
-   // ver netlify.toml) -- sin entrada acá, cae al fallback de Organization.
-
-   /*
-      --- Páginas de soporte (guía §2.5): con su contenido actual no
-      justifican schemas complejos. La prioridad es el BreadcrumbList (impacto
-      inmediato en SERP) y el WebPage para declarar la URL canónica.
-
-      Sin `build`, se arma solo: WebPage (o el `type` indicado) + Breadcrumb.
-   */
-   '/testimonios': {
-      // La guía sugiere CollectionPage para testimonios. Todavía NO se declara
-      // Review ni AggregateRating: no hay calificaciones estructuradas en la
-      // página, solo video, y declararlas sería schema engañoso.
-      type: 'CollectionPage',
-      name: 'testimonios movapp',
-      // Suavizado (QA Go-Live, URL-TEST-002): "dejaron de ser acosadas" era
-      // una promesa universal que los testimonios reales no respaldan de
-      // forma pareja.
+      name: 'El Hack de Movapp: frena el acoso de las montadeudas',
       description:
-         'Lee testimonios reales de personas que enfrentaron el acoso de apps de préstamo montadeudas y encontraron apoyo con Movapp. Comparte tu experiencia también.',
+         'El Hack es el servicio de Movapp para frenar el acoso de las apps montadeudas. Se solicita con un asesor, que confirma el alcance y el precio antes de pagar.',
+      breadcrumb: 'El Hack',
+      service: 'detailed',
+      faqs: EL_HACK_FAQS,
+   },
+
+   // --- P03: las 3 secciones visibles (Acoso, El Hack, Movapp) en un solo
+   // FAQPage; el schema no necesita conservar la agrupación visual.
+   '/preguntas-frecuentes': {
+      name: 'Movapp: preguntas frecuentes sobre El Hack y el acoso',
+      description:
+         'Qué es Movapp, cuánto cuesta El Hack, cuánto tarda y qué hacer si una app montadeudas te acosa. Respuestas claras para víctimas de montadeudas.',
+      breadcrumb: 'Preguntas frecuentes',
+      faqs: [...FAQS_PAGE_ACOSO, ...FAQS_PAGE_EL_HACK, ...FAQS_PAGE_MOVAPP],
+   },
+
+   // --- P04 Tienda: el Service de El Hack (versión corta, mismo @id que en
+   // /el-hack) como mainEntity, con la oferta de $500 por Hack.
+   '/tienda': {
+      name: 'Tienda Movapp: precio y pago de El Hack',
+      description:
+         'El Hack cuesta $500 MXN por Hack. El total depende de cuántas apps haya y tu asesor lo confirma antes de pagar. Pago seguro en la tienda oficial de Movapp.',
+      breadcrumb: 'Tienda',
+      service: 'offer',
+   },
+
+   // --- P05 Directorio de apps.
+   '/aplicaciones-prestamo': {
+      type: 'CollectionPage',
+      name: 'Apps de préstamos: ¿registradas o con reportes? | Movapp',
+      description:
+         'Consulta qué apps de préstamos encontramos en el registro de la CONDUSEF y cuáles tienen reportes de acoso. Señales de alerta y qué hacer si ya te cobran.',
+      breadcrumb: 'Aplicaciones',
+   },
+
+   // --- P06–P13 Fichas de apps. `about`: Organization con su clave SIPRES
+   // cuando la encontramos registrada (Tala, Kueski, Klar); si no, la app
+   // como SoftwareApplication. FortaPrest SÍ aparece (como Unlimit Leasing,
+   // dice su FAQ), pero P07 la declara como SoftwareApplication.
+   '/aplicaciones-prestamo/crediseguro': {
+      name: '¿CrediSeguro es confiable? Registro y qué revisar | Movapp',
+      description:
+         'Revisamos si CrediSeguro aparece en el registro de la CONDUSEF (SIPRES). Qué encontramos, con fecha de consulta, y qué revisar antes de usar la app.',
+      breadcrumb: 'CrediSeguro',
+      parents: [APPS],
+      about: { '@type': 'SoftwareApplication', name: 'CrediSeguro' },
+      faqs: CREDISEGURO_FAQS,
+   },
+
+   '/aplicaciones-prestamo/fortapresta': {
+      // Ruta "fortapresta" (no "fortaprest"): slug canónico del documento
+      // maestro de SEO, ver directorioApps.ts.
+      name: '¿FortaPrest es confiable? Reportes y qué hacer | Movapp',
+      description:
+         'FortaPrest aparece registrada en la CONDUSEF, pero sus víctimas reportan amenazas y exhibición de datos. Qué hacer si te cobran y dónde denunciar.',
+      breadcrumb: 'FortaPrest',
+      parents: [APPS],
+      about: { '@type': 'SoftwareApplication', name: 'FortaPrest' },
+      faqs: FORTAPRESTA_FAQS,
+   },
+
+   '/aplicaciones-prestamo/klar': {
+      name: '¿Klar es confiable? Registro en la CONDUSEF | Movapp',
+      description:
+         '¿Klar es confiable? Revisamos su registro en la CONDUSEF (SIPRES): empresa, clave y estatus con fecha de consulta, y qué revisar antes de contratar.',
+      breadcrumb: 'Klar',
+      parents: [APPS],
+      about: { '@type': 'Organization', name: 'Klar Technologies, S.A. de C.V., S.F.P.', identifier: 'SIPRES 27009' },
+      faqs: KLAR_FAQS,
+   },
+
+   '/aplicaciones-prestamo/kueski': {
+      name: '¿Kueski es confiable? Registro en la CONDUSEF | Movapp',
+      description:
+         '¿Kueski es confiable? Revisamos su registro en la CONDUSEF (SIPRES): empresa, clave y estatus con fecha de consulta, y qué revisar antes de contratar.',
+      breadcrumb: 'Kueski',
+      parents: [APPS],
+      about: { '@type': 'Organization', name: 'Kueski, S.A.P.I. de C.V., SOFOM, E.N.R.', identifier: 'SIPRES 694080' },
+      faqs: KUESKI_FAQS,
+   },
+
+   '/aplicaciones-prestamo/mexicash': {
+      name: '¿Mexicash es confiable? Depósitos no pedidos | Movapp',
+      description:
+         '¿Mexicash te depositó sin pedirlo o llama a tus contactos? No la encontramos en la CONDUSEF. Qué reportan sus víctimas, qué hacer y dónde denunciar.',
+      breadcrumb: 'Mexicash',
+      parents: [APPS],
+      about: { '@type': 'SoftwareApplication', name: 'Mexicash' },
+      faqs: MEXICASH_FAQS,
+   },
+
+   '/aplicaciones-prestamo/prestafacil': {
+      name: '¿PrestaFácil es confiable? Reportes y qué hacer | Movapp',
+      description:
+         '¿PrestaFácil es confiable? No la localizamos en el registro de la CONDUSEF. Señales de riesgo que reportan sus víctimas y qué hacer si ya la descargaste.',
+      breadcrumb: 'PrestaFácil',
+      parents: [APPS],
+      about: { '@type': 'SoftwareApplication', name: 'PrestaFácil' },
+      faqs: PRESTAFACIL_FAQS,
+   },
+
+   '/aplicaciones-prestamo/starpresta': {
+      name: '¿StarPresta es confiable? Grupos de WhatsApp | Movapp',
+      description:
+         '¿StarPresta creó un grupo de WhatsApp con tus contactos? Qué reportan sus víctimas, si aparece en la CONDUSEF y qué hacer para frenar el acoso.',
+      breadcrumb: 'StarPresta',
+      parents: [APPS],
+      about: { '@type': 'SoftwareApplication', name: 'StarPresta' },
+      faqs: STARPRESTA_FAQS,
+   },
+
+   '/aplicaciones-prestamo/tala': {
+      name: '¿Tala es confiable? Registro en la CONDUSEF | Movapp',
+      description:
+         '¿Tala es confiable? Revisamos su registro en la CONDUSEF (SIPRES): empresa, clave y estatus con fecha de consulta, y qué revisar antes de contratar.',
+      breadcrumb: 'Tala',
+      parents: [APPS],
+      about: {
+         '@type': 'Organization',
+         name: 'Tala Mobile, S.A.P.I. de C.V., SOFOM, E.N.R.',
+         identifier: 'SIPRES 695521',
+      },
+      faqs: TALA_FAQS,
+   },
+
+   // --- P14 Testimonios. WebPage (ya no CollectionPage). Sin Review ni
+   // AggregateRating: no hay calificaciones estructuradas visibles.
+   '/testimonios': {
+      name: 'Opiniones de Movapp: testimonios de víctimas | Movapp',
+      description:
+         'Testimonios de víctimas de apps montadeudas que Movapp ha acompañado, en sus propias palabras. Lee sus experiencias y comparte la tuya.',
       breadcrumb: 'Testimonios',
    },
 
+   // --- P15 Contacto: ContactPage, la página tiene formulario real.
    '/contacto': {
-      // ContactPage: la guía la reserva justamente para páginas con
-      // formulario de contacto real, como esta.
       type: 'ContactPage',
-      name: 'CONTÁCTANOS',
+      name: 'Contacto: ayuda contra apps montadeudas | Movapp',
       description:
-         '¿Necesitas ayuda con una app de préstamos que te acosa? Completa el formulario o síguenos en redes sociales. Movapp te responde y te asesora.',
+         '¿Una app de préstamos te acosa? Escríbenos por el formulario o por WhatsApp al +52 55 7876 7442: revisamos tu caso gratis y sin compromiso.',
       breadcrumb: 'Contáctanos',
    },
 
-   // --- CollectionPage: listado de artículos agrupados por categoría, mismo
-   // criterio que /testimonios. Sin BlogPosting/ItemList todavía: no hay
-   // fecha/autor por artículo en el copy visible, y declararlos sería
-   // inventar datos que no están en pantalla.
+   // --- P16 Sala de prensa. Los VideoObject NO van acá: la lista viene de
+   // una API en cada request (@api/pressVideos.ts), así que prensa.astro los
+   // suma con appendToGraph() y pasa el resultado por la prop `schema`.
+   '/prensa': {
+      type: 'CollectionPage',
+      name: 'Sala de prensa: Erik Mann y Movapp en medios',
+      description:
+         'Entrevistas y apariciones en medios de Erik Mann, fundador de Movapp, sobre apps montadeudas, fraudes digitales y acoso por cobranza.',
+      breadcrumb: 'Sala de prensa',
+   },
+
+   // --- P17 Blog.
    '/blog': {
       type: 'CollectionPage',
-      name: 'Blog: alertas y noticias sobre apps montadeudas',
+      name: 'Blog de Movapp: alertas y guías sobre montadeudas',
       description:
-         'Entérate de las últimas alertas sobre apps de préstamos montadeudas en México. Casos reales, reportes de usuarios y consejos de Movapp para protegerte.',
+         'Alertas, guías y noticias sobre apps de préstamos montadeudas en México: qué reportan sus víctimas, cómo verificar una app y qué hacer si te acosan.',
       breadcrumb: 'Blog',
    },
 
-   // --- Páginas de detalle por categoría del blog (plantilla única, ver
-   // src/pages/blog/[categoria].astro + @constants/blogCategoryPages.ts).
-   // Ruta dinámica: cada categoría de ese archivo necesita su propia entrada
-   // acá (mismo `name`/`breadcrumb` que su `h1`, misma `description` que su
-   // `intro`) -- agregar una categoría nueva a ese archivo sin agregar su
-   // entrada acá la deja sin BreadcrumbList/WebPage propios (cae al fallback
-   // de solo Organization, ver getPageSchema).
+   // --- Categoría del blog (sin documento P-nn; mismo formato). Plantilla
+   // única src/pages/blog/[categoria].astro + @constants/blogCategoryPages.ts:
+   // cada categoría publicada necesita su entrada acá o su miga sale vacía.
    '/blog/evaluaciones': {
       type: 'CollectionPage',
       name: 'Evaluaciones de apps y lista negra',
@@ -571,281 +674,49 @@ export const PAGE_SCHEMA = {
       breadcrumb: 'Evaluaciones de apps y lista negra',
    },
 
-   // --- CollectionPage: listado de apps agrupadas por estatus (reportadas vs.
-   // reguladas), mismo criterio que /blog. Sin Review/AggregateRating: la
-   // página no muestra calificaciones, solo estatus de reporte/regulación.
-   '/aplicaciones-prestamo': {
-      type: 'CollectionPage',
-      name: 'Apps de préstamos legales e ilegales en México',
-      description:
-         'Descubre qué apps de préstamos son legales y cuáles son montadeudas. Aprende a identificar señales de alerta y qué hacer si ya tienes problemas.',
-      breadcrumb: 'Aplicaciones',
-   },
-
-   // --- Perfil de app individual (primera de la serie /aplicaciones-prestamo/<slug>,
-   // ver skill Importaciones). WebPage + FAQPage porque CrediseguroFaqs.astro
-   // ya hace visible esa sección (misma fuente de datos, CREDISEGURO_FAQS).
-   // Breadcrumb de 2 niveles ("Inicio | Aplicaciones | CrediSeguro") -- por
-   // eso build() arma el BreadcrumbList a mano en vez de usar breadcrumbFor()
-   // (que solo soporta un nivel intermedio). Ver Breadcrumbs.astro para el
-   // mismo trail en la miga visible (prop "items").
-   '/aplicaciones-prestamo/crediseguro': {
-      name: 'CrediSeguro: información verificada, registro y datos de contacto',
-      description:
-         'Consulta la información disponible de CrediSeguro: registro, datos de contacto y los criterios que Movapp revisa para evaluar esta app de préstamos.',
-      breadcrumb: 'CrediSeguro',
-      build: (request) => [
-         generateWebPageSchema(
-            {
-               name: 'CrediSeguro: información verificada, registro y datos de contacto',
-               path: '/aplicaciones-prestamo/crediseguro',
-               description:
-                  'Consulta la información disponible de CrediSeguro: registro, datos de contacto y los criterios que Movapp revisa para evaluar esta app de préstamos.',
-            },
-            request,
-         ),
-         generateBreadcrumbSchema(
-            [
-               { name: 'Aplicaciones', path: '/aplicaciones-prestamo' },
-               { name: 'CrediSeguro', path: '/aplicaciones-prestamo/crediseguro' },
-            ],
-            request,
-         ),
-         generateFAQSchema(CREDISEGURO_FAQS),
-      ],
-   },
-
-   // --- Segunda página de perfil de app, mismo patrón que CrediSeguro
-   // (WebPage + BreadcrumbList de 2 niveles armado a mano + FAQPage).
-   '/aplicaciones-prestamo/tala': {
-      name: 'Tala: información verificada, registro y datos de contacto',
-      description:
-         'Consulta la información disponible de Tala: registro, datos de contacto y los criterios que Movapp revisa para evaluar esta app de préstamos.',
-      breadcrumb: 'Tala',
-      build: (request) => [
-         generateWebPageSchema(
-            {
-               name: 'Tala: información verificada, registro y datos de contacto',
-               path: '/aplicaciones-prestamo/tala',
-               description:
-                  'Consulta la información disponible de Tala: registro, datos de contacto y los criterios que Movapp revisa para evaluar esta app de préstamos.',
-            },
-            request,
-         ),
-         generateBreadcrumbSchema(
-            [
-               { name: 'Aplicaciones', path: '/aplicaciones-prestamo' },
-               { name: 'Tala', path: '/aplicaciones-prestamo/tala' },
-            ],
-            request,
-         ),
-         generateFAQSchema(TALA_FAQS),
-      ],
-   },
-
-   // --- Tercera página de perfil de app, mismo patrón que CrediSeguro/Tala.
-   '/aplicaciones-prestamo/kueski': {
-      name: 'Kueski: información verificada, registro y datos de contacto',
-      description:
-         'Consulta la información disponible de Kueski: registro, datos de contacto y los criterios que Movapp revisa para evaluar esta app de préstamos.',
-      breadcrumb: 'Kueski',
-      build: (request) => [
-         generateWebPageSchema(
-            {
-               name: 'Kueski: información verificada, registro y datos de contacto',
-               path: '/aplicaciones-prestamo/kueski',
-               description:
-                  'Consulta la información disponible de Kueski: registro, datos de contacto y los criterios que Movapp revisa para evaluar esta app de préstamos.',
-            },
-            request,
-         ),
-         generateBreadcrumbSchema(
-            [
-               { name: 'Aplicaciones', path: '/aplicaciones-prestamo' },
-               { name: 'Kueski', path: '/aplicaciones-prestamo/kueski' },
-            ],
-            request,
-         ),
-         generateFAQSchema(KUESKI_FAQS),
-      ],
-   },
-
-   // --- Cuarta página de perfil de app, mismo patrón que CrediSeguro/Tala/Kueski.
-   '/aplicaciones-prestamo/klar': {
-      name: 'Klar: información verificada, registro y datos de contacto',
-      description:
-         'Consulta la información disponible de Klar: registro, datos de contacto y los criterios que Movapp revisa para evaluar esta app de préstamos.',
-      breadcrumb: 'Klar',
-      build: (request) => [
-         generateWebPageSchema(
-            {
-               name: 'Klar: información verificada, registro y datos de contacto',
-               path: '/aplicaciones-prestamo/klar',
-               description:
-                  'Consulta la información disponible de Klar: registro, datos de contacto y los criterios que Movapp revisa para evaluar esta app de préstamos.',
-            },
-            request,
-         ),
-         generateBreadcrumbSchema(
-            [
-               { name: 'Aplicaciones', path: '/aplicaciones-prestamo' },
-               { name: 'Klar', path: '/aplicaciones-prestamo/klar' },
-            ],
-            request,
-         ),
-         generateFAQSchema(KLAR_FAQS),
-      ],
-   },
-
-   // --- Primera página del lado "app reportada/ilegal" de la serie (ver
-   // skill Importaciones) -- mismo patrón WebPage + BreadcrumbList de 2
-   // niveles + FAQPage que CrediSeguro/Tala/Kueski/Klar, pero el H1/copy de
-   // la página siguen una plantilla distinta (ver PrestafacilHero.astro).
-   '/aplicaciones-prestamo/prestafacil': {
-      name: '¿Prestafácil es confiable? Reportes y riesgos',
-      description:
-         'Analizamos los reportes de usuarios sobre Prestafácil, sus riesgos y los pasos que puedes seguir para protegerte si ya la descargaste.',
-      breadcrumb: 'PrestaFácil',
-      build: (request) => [
-         generateWebPageSchema(
-            {
-               name: '¿Prestafácil es confiable? Reportes y riesgos',
-               path: '/aplicaciones-prestamo/prestafacil',
-               description:
-                  'Analizamos los reportes de usuarios sobre Prestafácil, sus riesgos y los pasos que puedes seguir para protegerte si ya la descargaste.',
-            },
-            request,
-         ),
-         generateBreadcrumbSchema(
-            [
-               { name: 'Aplicaciones', path: '/aplicaciones-prestamo' },
-               { name: 'PrestaFácil', path: '/aplicaciones-prestamo/prestafacil' },
-            ],
-            request,
-         ),
-         generateFAQSchema(PRESTAFACIL_FAQS),
-      ],
-   },
-
-   // --- Segunda página del lado "app reportada/ilegal". Ruta "fortapresta"
-   // (no "fortaprest") -- ver comentario en directorioApps.ts, es el slug
-   // canónico del documento maestro de SEO.
-   '/aplicaciones-prestamo/fortapresta': {
-      name: 'Fortaprest: reportes de usuarios y qué hacer',
-      description:
-         'Descubre qué están reportando los usuarios de Fortaprest sobre riesgo de ingresar su información personal y qué acciones puedes tomar hoy.',
-      breadcrumb: 'FortaPrest',
-      build: (request) => [
-         generateWebPageSchema(
-            {
-               name: 'Fortaprest: reportes de usuarios y qué hacer',
-               path: '/aplicaciones-prestamo/fortapresta',
-               description:
-                  'Descubre qué están reportando los usuarios de Fortaprest sobre riesgo de ingresar su información personal y qué acciones puedes tomar hoy.',
-            },
-            request,
-         ),
-         generateBreadcrumbSchema(
-            [
-               { name: 'Aplicaciones', path: '/aplicaciones-prestamo' },
-               { name: 'FortaPrest', path: '/aplicaciones-prestamo/fortapresta' },
-            ],
-            request,
-         ),
-         generateFAQSchema(FORTAPRESTA_FAQS),
-      ],
-   },
-
-   // --- Tercera página del lado "app reportada/ilegal".
-   '/aplicaciones-prestamo/mexicash': {
-      name: 'Mexicash: el depósito que nunca pediste y qué puedes hacer',
-      description:
-         '¿Mexicash te depositó dinero que no solicitaste? Te explicamos por qué ocurre esta táctica y qué pasos seguir para protegerte del cobro forzado.',
-      breadcrumb: 'Mexicash',
-      build: (request) => [
-         generateWebPageSchema(
-            {
-               name: 'Mexicash: el depósito que nunca pediste y qué puedes hacer',
-               path: '/aplicaciones-prestamo/mexicash',
-               description:
-                  '¿Mexicash te depositó dinero que no solicitaste? Te explicamos por qué ocurre esta táctica y qué pasos seguir para protegerte del cobro forzado.',
-            },
-            request,
-         ),
-         generateBreadcrumbSchema(
-            [
-               { name: 'Aplicaciones', path: '/aplicaciones-prestamo' },
-               { name: 'Mexicash', path: '/aplicaciones-prestamo/mexicash' },
-            ],
-            request,
-         ),
-         generateFAQSchema(MEXICASH_FAQS),
-      ],
-   },
-
-   // --- Cuarta y última página del lado "app reportada/ilegal" -- octava y
-   // última página de perfil de app de toda la serie.
-   '/aplicaciones-prestamo/starpresta': {
-      name: 'StarPresta: el grupo de WhatsApp con tus contactos y qué puedes hacer',
-      description:
-         'Starpresta arma grupos de WhatsApp con tus contactos para presionar el pago. Conoce las señales de riesgo y qué hacer si ya te está pasando.',
-      breadcrumb: 'StarPresta',
-      build: (request) => [
-         generateWebPageSchema(
-            {
-               name: 'StarPresta: el grupo de WhatsApp con tus contactos y qué puedes hacer',
-               path: '/aplicaciones-prestamo/starpresta',
-               description:
-                  'Starpresta arma grupos de WhatsApp con tus contactos para presionar el pago. Conoce las señales de riesgo y qué hacer si ya te está pasando.',
-            },
-            request,
-         ),
-         generateBreadcrumbSchema(
-            [
-               { name: 'Aplicaciones', path: '/aplicaciones-prestamo' },
-               { name: 'StarPresta', path: '/aplicaciones-prestamo/starpresta' },
-            ],
-            request,
-         ),
-         generateFAQSchema(STARPRESTA_FAQS),
-      ],
-   },
-
-   // /mind, /red y /collaborations quedan fuera de este deploy (siguiente
-   // fase, ver instrucciones de redirecciones) -- sin entradas acá, sus
-   // rutas (si se accede a ellas) caen al fallback de Organization.
-
-   // --- Sala de Prensa: apariciones de Movapp en medios, en vídeo.
-   // CollectionPage (listado de contenido, mismo criterio que /testimonios y
-   // /blog). Los VideoObject NO van acá: la lista de vídeos viene de una API
-   // en cada request (ver @api/pressVideos.ts), así que src/pages/prensa.astro
-   // los suma a getPageSchema() y pasa el resultado por la prop `schema`.
-   '/prensa': {
-      type: 'CollectionPage',
-      name: 'Sala de Prensa',
-      description: 'Sala de prensa de Movapp: entrevistas y apariciones de Erik Mann en medios sobre fraudes digitales y apps de préstamo.',
-      breadcrumb: 'Sala de Prensa',
-   },
-
+   // --- P18 / P19 Legales.
    '/aviso-de-privacidad': {
-      name: 'Aviso de Privacidad Integral',
+      name: 'Aviso de privacidad integral | Movapp',
       description:
          'Aviso de privacidad integral de Movapp: qué datos personales tratamos, para qué los usamos, a quién los transferimos y cómo ejercer tus derechos ARCO.',
       breadcrumb: 'Aviso de privacidad',
    },
 
    '/terminos-y-condiciones': {
-      name: 'Términos y Condiciones de Uso',
+      name: 'Términos y condiciones de uso | Movapp',
       description:
-         'Términos y condiciones de Movapp: qué incluyen y qué no incluyen El Hack, la asesoría y el acompañamiento, precio por aplicación, cancelación y devoluciones.',
+         'Términos y condiciones de uso del sitio, la app y los servicios de Movapp, incluido El Hack: contratación, pagos, cancelación, devoluciones y tus derechos.',
       breadcrumb: 'Términos y condiciones',
    },
 };
 
-// Breadcrumb de una ruta, leyendo su etiqueta de PAGE_SCHEMA.
-function breadcrumbFor(pathname, request) {
-   const page = PAGE_SCHEMA[pathname];
-   return generateBreadcrumbSchema([{ name: page.breadcrumb, path: pathname }], request);
+// @graph estándar de una ruta: WebPage + BreadcrumbList (+ Service) (+ FAQPage).
+function buildPageGraph(route, page, request) {
+   const cfg = getSiteConfig(request);
+   const nodes = [
+      generateWebPageSchema(
+         {
+            type: page.type,
+            name: page.name,
+            path: route,
+            description: page.description,
+            about: page.about,
+            mainEntity: page.service ? ref(SCHEMA_DATA.elHack.path, 'servicio', cfg) : undefined,
+         },
+         request,
+      ),
+   ];
+   if (page.breadcrumb) {
+      nodes.push(
+         generateBreadcrumbSchema([...(page.parents ?? []), { name: page.breadcrumb, path: route }], request, {
+            id: route,
+         }),
+      );
+   }
+   if (page.service) nodes.push(generateElHackSchema({ detailed: page.service === 'detailed' }, request));
+   if (page.faqs?.length)
+      nodes.push(generateFAQSchema(page.faqs, { '@id': nodeId(route, 'preguntas-frecuentes', cfg) }));
+   return generateGraph(nodes);
 }
 
 // ============================================================
@@ -865,24 +736,17 @@ export function getPageEntry(pathname) {
 }
 
 /*
-   Schemas de una ruta (array de nodos, u objeto @graph en Home). Es lo que
+   Schema de una ruta: siempre un objeto { @context, @graph }. Es lo que
    Layout.astro serializa en el <head>.
 
    Las rutas que NO están en PAGE_SCHEMA (utilitarias: /404, /success,
-   /pending, /failure, /tienda...) reciben solo el Organization: declaran la
-   entidad Movapp sin inventar schema que no corresponde a su contenido.
+   /pending, /failure...) reciben solo el Organization: declaran la entidad
+   Movapp sin inventar schema que no corresponde a su contenido.
 */
 export function getPageSchema(pathname, request = null) {
-   const page = getPageEntry(pathname);
-   if (!page) return [generateOrganizationSchema(request)];
-
-   // Páginas con composición propia (Home, /el-hack, /preguntas-frecuentes).
-   if (page.build) return page.build(request);
-
-   // Caso por defecto: WebPage (o su subtipo) + BreadcrumbList.
    const route = normalize(pathname);
-   return [
-      generateWebPageSchema({ type: page.type, name: page.name, path: route, description: page.description }, request),
-      ...(page.breadcrumb ? [breadcrumbFor(route, request)] : []),
-   ];
+   const page = PAGE_SCHEMA[route];
+   if (!page) return generateGraph([generateOrganizationSchema(request)]);
+   if (page.build) return page.build(request);
+   return buildPageGraph(route, page, request);
 }

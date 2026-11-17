@@ -17,13 +17,13 @@ export interface FortaprestaFaq {
 export const FORTAPRESTA_FAQS: FortaprestaFaq[] = [
    {
       q: '¿Fortaprest está registrada ante CONDUSEF?',
-      a: 'En nuestra última revisión no la encontramos en el registro. Una app que no está registrada no está supervisada, y eso también quiere decir que sus formas de cobrar no son legales.',
+      a: 'Sí, con otro nombre: Unlimit Leasing, S.A.P.I. de C.V., SOFOM, E.N.R. aparece en el SIPRES con la clave 695531 y estatus «En operación» (consulta del 10 de noviembre de 2026). Estar registrada no la autoriza a cobrar con amenazas.',
       icon: FAQ_ICONS.scale,
       color: FAQ_COLORS.legal,
    },
    {
-      q: '¿Qué pasa si no pago?',
-      a: 'Lo más probable es que empiecen las llamadas constantes, los mensajes a tus contactos y la exposición de tus datos. Es desagradable, pero tiene salida y no eres la primera persona que lo vive.',
+      q: '¿Qué pasa si no le pago a FortaPrest?',
+      a: 'Las víctimas nos reportan llamadas constantes, mensajes a sus contactos y exposición de sus datos. Es angustiante, pero no eres la primera persona que lo vive y puedes pedir orientación.',
       icon: FAQ_ICONS.bill,
       color: FAQ_COLORS.debt,
    },
@@ -35,7 +35,7 @@ export const FORTAPRESTA_FAQS: FortaprestaFaq[] = [
    },
    {
       q: '¿Puedo denunciarlos?',
-      a: 'Sí. Amenazar, difamar y exponer tus datos personales está prohibido, aunque tú debas dinero. Guarda las pruebas y te acompañamos en el proceso.',
+      a: 'Sí. Las amenazas, la difamación y la exposición de tus datos se pueden denunciar aunque debas dinero. Guarda las pruebas: te orientamos para hacerlo.',
       icon: FAQ_ICONS.checklist,
       color: FAQ_COLORS.followUp,
    },

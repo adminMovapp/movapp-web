@@ -10,13 +10,13 @@ import { FAQ_ICONS, FAQ_COLORS } from './faqIcons';
 export const FAQS_PAGE_EL_HACK = [
    {
       q: '¿Qué es El Hack?',
-      a: 'Es una herramienta digital que bloquea el acoso de las apps de préstamo, protege tus contactos y tu galería, y te conecta con un asesor real.',
+      a: 'Es el servicio de Movapp para frenar el acoso de las apps montadeudas: llamadas y mensajes a ti y a tus contactos. Se solicita con un asesor, que confirma el alcance y el precio.',
       icon: FAQ_ICONS.shield,
       color: FAQ_COLORS.protection,
    },
    {
       q: '¿El Hack elimina mi deuda?',
-      a: 'No. El Hack detiene el acoso y protege tu información, pero no borra por sí solo una deuda. Un asesor te ayuda a entender tus opciones. Desconfía de quien prometa "borrar" deudas automáticamente.',
+      a: 'No. Movapp no elimina deudas ni modifica tu historial crediticio. El Hack frena el acoso y protege tu información; qué hacer con la deuda lo decides tú. Desconfía de quien prometa «borrar» deudas.',
       icon: FAQ_ICONS.bill,
       color: FAQ_COLORS.debt,
    },
