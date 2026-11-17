@@ -166,6 +166,15 @@ const { id, title, items, linkHref, linkLabel, ambientCount = 35, background: Ba
 </section>
 
 <style>
+   /* Respuestas justificadas en todas las FAQs del sitio (2026-11-17, a
+      pedido). hyphens:auto (lang="es" en <html>) evita los huecos grandes
+      que deja el justificado en columnas angostas. Va en este <style>, que
+      siempre se inlinea, para que también aplique sin JS/Tailwind. */
+   [data-faq-list] p {
+      text-align: justify;
+      hyphens: auto;
+   }
+
    /*
       Reveal "spin": arranca dando una vuelta COMPLETA (--faq-spin-from,
       ±360°, alterna de dirección según el índice) desde chico/invisible;
