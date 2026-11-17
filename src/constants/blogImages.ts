@@ -43,8 +43,13 @@ import ImgQuePasoFortaprest from '@assets/blog-que-paso-fortaprest.webp';
 // vertical original (EU2.webp) a la proporción 1200x630 de la ficha, la misma
 // del og:image (ver [articulo].astro); el hero 16:10 solo recorta los lados.
 import ImgOctopusConference2026 from '@assets/movapp-octopus-2026-portada.webp';
+// 2026-11-17, Buen Fin y apps montadeudas: entregada como "BUEN FIN
+// 2026.webp" (1024x683, 3:2), renombrada al patrón blog-<slug>. El hero 16:10
+// recorta apenas arriba/abajo; el og:image 1200x630 sale encajado, sin recorte.
+import ImgBuenFinAppsMontadeudas from '@assets/blog-buen-fin-apps-montadeudas.webp';
 
 export const BLOG_IMAGES: Record<string, ImageMetadata> = {
+   'buen-fin-apps-montadeudas': ImgBuenFinAppsMontadeudas,
    'historia-movapp': ImgHistoriaMovapp,
    'apps-prestamos-confiables': ImgAppsPrestamosConfiables,
    'como-identificar-apps-montadeudas': ImgComoIdentificarAppsMontadeudas,

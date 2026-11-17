@@ -89,7 +89,12 @@ export type BlogBlock =
    | { type: 'callout'; text: string }
    // Tabla con encabezado (registro SIPRES, comparativas) -- 2026-11-10.
    // Celdas con la misma sintaxis inline del cuerpo.
-   | { type: 'table'; head: string[]; rows: string[][] };
+   | { type: 'table'; head: string[]; rows: string[][] }
+   // Preguntas frecuentes con el diseño de FAQAccordion.astro (tarjetas,
+   // giro de entrada y estela), 2026-11-17, artículo del Buen Fin. "title"
+   // es el H2 de la sección y cada "q" un H3. A diferencia del campo "faqs"
+   // del artículo, NO alimenta el FAQPage del schema: es solo diseño.
+   | { type: 'faqAccordion'; title: string; items: { q: string; a: string }[] };
 
 // Lo que trae cada ficha ART: todo menos lo que se deriva en seoArticle().
 export type SeoArticleInput = Omit<
@@ -100,6 +105,7 @@ export type SeoArticleInput = Omit<
    related: string[];
 };
 
+import { BUEN_FIN_ARTICLE } from '@constants/blog-articles/buen-fin-apps-montadeudas.ts';
 import { OCTOPUS_ARTICLE } from '@constants/blog-articles/octopus-conference-2026-ciberdelincuencia-ia-extorsion.ts';
 import { ART_001 } from '@constants/blog-articles/prestamax-es-confiable.ts';
 import { ART_002 } from '@constants/blog-articles/apps-prestamos-confiables.ts';
@@ -152,6 +158,8 @@ function blockText(block: BlogBlock): string[] {
          return block.items;
       case 'table':
          return [...block.head, ...block.rows.flat()];
+      case 'faqAccordion':
+         return [block.title, ...block.items.flatMap((item) => [item.q, item.a])];
       default:
          return [];
    }
@@ -216,6 +224,10 @@ const ARTICLES: BlogArticle[] = [
       ART_027,
    ].map(seoArticle),
    OCTOPUS_ARTICLE,
+   // 2026-11-17, Buen Fin y apps montadeudas: ficha propia (no ART-0xx) con
+   // Erik Mann de autor, así que la bio es la suya (misma que Octopus) en
+   // vez de la de "Equipo Movapp" que pone seoArticle().
+   { ...seoArticle(BUEN_FIN_ARTICLE), authorBio: OCTOPUS_ARTICLE.authorBio },
 ];
 
 // Títulos de "relacionados" = H1 vigente de cada artículo (fuente única).

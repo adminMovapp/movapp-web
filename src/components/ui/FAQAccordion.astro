@@ -43,13 +43,18 @@ interface Props {
    // ambientCount, que es específico de StarField); si el fondo elegido
    // necesita otra config, se le pasan sus props por defecto propios.
    background?: any;
+   // Dentro de otro contenedor que ya pone ancho, padding y fondo (p. ej. el
+   // cuerpo de un artículo del blog, ver BlogArticleBody.astro): sin
+   // my-section/px-4 ni StarField propios, para no duplicar márgenes ni
+   // estrellas. El diseño de las tarjetas, el giro y la estela no cambian.
+   embedded?: boolean;
 }
 
-const { id, title, items, linkHref, linkLabel, ambientCount = 35, background: Background } = Astro.props;
+const { id, title, items, linkHref, linkLabel, ambientCount = 35, background: Background, embedded = false } = Astro.props;
 ---
 
-<section class="relative mx-auto my-section w-full max-w-3xl px-4" data-faq-root={id}>
-   {Background ? <Background id={id} /> : <StarField id={id} ambientCount={ambientCount} />}
+<section class={embedded ? 'relative mx-auto w-full max-w-3xl pt-4' : 'relative mx-auto my-section w-full max-w-3xl px-4'} data-faq-root={id}>
+   {!embedded && (Background ? <Background id={id} /> : <StarField id={id} ambientCount={ambientCount} />)}
 
    <h2 class="faq-reveal text-center text-2xl md:text-4xl font-bold uppercase gradient-text-move bg-gradient-to-r from-gray-900 to-purple_mv bg-clip-text text-transparent dark:from-white dark:to-purple_mv">
       {title}

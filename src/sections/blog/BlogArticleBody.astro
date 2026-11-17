@@ -27,6 +27,7 @@ import { Image } from 'astro:assets';
 import ImagePlaceholder from '@components/ui/ImagePlaceholder.astro';
 import BlogInline from '@sections/blog/BlogInline.astro';
 import BlogArticleShare from '@sections/blog/BlogArticleShare.astro';
+import FAQAccordion from '@components/ui/FAQAccordion.astro';
 import StarField from '@components/decorative/StarField.astro';
 import type { BlogBlock } from '@constants/blogArticles.ts';
 
@@ -158,6 +159,10 @@ const { slug, sections, faqHeading, faqs, sourcesList, authorBio, shareUrl, shar
                            </tbody>
                         </table>
                      </div>
+                  ) : block.type === 'faqAccordion' ? (
+                     // Mismo componente de FAQs del resto del sitio, en modo
+                     // "embedded" (ancho/fondo los pone este cuerpo).
+                     <FAQAccordion id={`blog-faq-${slug}`} title={block.title} items={block.items} embedded />
                   ) : block.type === 'sources' ? (
                      <ol class="list-none space-y-2 text-left text-sm md:text-base">
                         {block.items.map((item, i) => (

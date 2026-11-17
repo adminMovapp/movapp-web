@@ -47,10 +47,10 @@ function resolveArticleDate(slug: string): { date: string | null; iso: string | 
 }
 
 export const BLOG_FEATURED = {
-   // 2026-11-06, a pedido: el artículo de Octopus Conference 2026 pasa a ser
-   // el destacado (antes: historia-movapp, que sigue en "Noticias recientes").
-   slug: 'octopus-conference-2026-ciberdelincuencia-ia-extorsion',
-   title: 'Octopus Conference 2026: inteligencia artificial, evidencia digital y extorsión en la agenda global contra la ciberdelincuencia',
+   // 2026-11-17, a pedido: el artículo del Buen Fin pasa a ser el destacado
+   // (antes: Octopus Conference 2026, que sigue en "Noticias recientes").
+   slug: 'buen-fin-apps-montadeudas',
+   title: 'Buen Fin: cómo evitar caer en apps montadeudas al pedir un préstamo',
 };
 
 // Reemplaza las 4 categorías-stub anteriores (Evaluaciones/Modus operandi/
@@ -76,6 +76,9 @@ export const BLOG_HOME_SECTIONS = [
       // fijarse en la fecha lo habría desordenado en silencio. `date` es la
       // fecha corta que se muestra en la tarjeta (BlogCategorySection.astro).
       articles: [
+         // 2026-11-17: Buen Fin (las 3 secciones suman ahora 29). La fecha
+         // (Noviembre 12, 2026) lo ordena primero sola.
+         { slug: 'buen-fin-apps-montadeudas', title: 'Buen Fin: cómo evitar caer en apps montadeudas al pedir un préstamo' },
          // 2026-11-05: séptimo artículo de la sección (las 3 secciones ya
          // no suman 27 sino 28). La fecha la ordena primero sola.
          {
