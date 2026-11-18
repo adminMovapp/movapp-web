@@ -12,13 +12,13 @@ import RiskTimeline from '@components/decorative/RiskTimeline.astro';
 
 const RISK_SIGNS = [
    { text: 'Te depositan sin que lo hayas pedido.' },
-   { text: 'Terminas pagando casi el doble.' },
-   { text: 'No aparece regulada por CONDUSEF ni por la CNBV.' },
+   { text: 'Reportan pagos de casi el doble.' },
+   { text: 'No la encontramos en el registro de la CONDUSEF.' },
    { text: 'El plazo se encoge.' },
-   { text: 'Los plazos reales son mucho más cortos y están pensados para que no alcances a pagar y entres en cargos por atraso.' },
-   { text: 'Te hablan a tus contactos por una deuda que no existe.' },
+   { text: 'Víctimas reportan plazos reales más cortos que los anunciados, con cargos por atraso.' },
+   { text: 'Te hablan a tus contactos por una deuda que no aceptaste.' },
    { text: 'Empiezan los mensajes y las llamadas a tu agenda para exigir el pago de una deuda que muchas veces ni siquiera aceptaste.' },
 ];
 ---
 
-<RiskTimeline id="mexicash" heading="Señales de riesgo relacionadas con Mexicash" items={RISK_SIGNS} />
+<RiskTimeline id="mexicash" heading="Lo que nos reportan las víctimas de Mexicash" items={RISK_SIGNS} />

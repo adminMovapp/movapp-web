@@ -1,4 +1,5 @@
 ---
+import { CARD_STYLE } from '@constants/cardStyles';
 // Hero de /prensa: mismo fondo que el resto del sitio (StarField, igual que
 // TestimonialsHero.astro) + badge HUD + H1. Sin copy de apoyo a propósito:
 // la página es solo la "transmisión" de vídeos de PrensaBroadcast.astro, que
@@ -13,7 +14,7 @@ import Breadcrumbs from '@components/ui/Breadcrumbs.astro';
    <Breadcrumbs />
 
    <div
-      class="glass-card inline-flex items-center gap-2 rounded-full border border-purple_mv/30 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-purple_mv dark:border-white/10 dark:text-white/80"
+      class={`inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-purple_mv dark:text-white/80 ${CARD_STYLE}`}
    >
       <span class="relative flex h-2 w-2" aria-hidden="true">
          <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-500 opacity-75"></span>

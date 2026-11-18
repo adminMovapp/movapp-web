@@ -12,7 +12,7 @@ const VERIFIED_REASONS = [
    },
    {
       title: 'Aviso de privacidad publicado',
-      text: 'Klar publica su Política/Aviso de Privacidad en el sitio oficial: https://www.klar.mx/privacidad',
+      text: 'Klar publica su **aviso de privacidad** en su sitio oficial.',
    },
    {
       title: 'Condiciones visibles antes de contratar',
@@ -33,7 +33,10 @@ const VERIFIED_REASONS = [
          VERIFIED_REASONS.map((reason) => (
             <li class="rounded-2xl border border-purple_mv/25 bg-gradient-to-b from-purple_mv/[0.06] to-transparent p-6 text-center dark:border-white/10 dark:from-purple_mv/[0.1] dark:to-black/30">
                <h3 class="font-bold text-text_banner">{reason.title}</h3>
-               <p class="mt-2 text-sm italic text-gray-600 dark:text-white/70">{reason.text}</p>
+               <p class="mt-2 text-sm italic text-gray-600 dark:text-white/70">
+                  {/* **texto** = negritas (subrayado del wireframe, sin enlace). */}
+                  {reason.text.split(/\*\*(.+?)\*\*/).map((part, i) => (i % 2 ? <strong class="font-bold text-text_banner">{part}</strong> : part))}
+               </p>
             </li>
          ))
       }

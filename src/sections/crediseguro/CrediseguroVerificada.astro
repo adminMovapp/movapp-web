@@ -6,15 +6,15 @@ import StarField from '@components/decorative/StarField.astro';
 const VERIFIED_REASONS = [
    {
       title: 'Registro vigente',
-      text: 'Localizada en el registro de CONDUSEF a la fecha de revisión.',
+      text: 'No la localizamos en el registro de la CONDUSEF (10 nov 2026).',
    },
    {
       title: 'Aviso de privacidad publicado',
-      text: 'Disponible en el sitio oficial identificado.',
+      text: 'No identificamos un sitio oficial.',
    },
    {
       title: 'Condiciones visibles antes de contratar',
-      text: 'Tasas y comisiones publicadas previo a la aceptación.',
+      text: 'Sin confirmar: revisa el CAT antes de aceptar.',
    },
 ];
 ---
@@ -23,7 +23,7 @@ const VERIFIED_REASONS = [
    <StarField id="crediseguro-verificada" ambientCount={40} />
 
    <h2 class="text-center text-2xl md:text-4xl font-bold uppercase gradient-text-move bg-gradient-to-r from-gray-900 to-purple_mv bg-clip-text text-transparent dark:from-white dark:to-purple_mv">
-      ¿Por qué se considera verificada?
+      ¿Qué revisamos?
    </h2>
 
    <ul class="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3">

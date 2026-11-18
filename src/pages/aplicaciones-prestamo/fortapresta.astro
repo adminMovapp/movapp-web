@@ -1,6 +1,7 @@
 ---
 import Layout from '@layouts/Layout.astro';
 import FortaprestaHero from '@sections/fortapresta/FortaprestaHero.astro';
+import AppAvisoImportante from '@components/ui/AppAvisoImportante.astro';
 import FortaprestaInfo from '@sections/fortapresta/FortaprestaInfo.astro';
 import FortaprestaSenalesRiesgo from '@sections/fortapresta/FortaprestaSenalesRiesgo.astro';
 import FortaprestaQueHacer from '@sections/fortapresta/FortaprestaQueHacer.astro';
@@ -10,14 +11,9 @@ import FortaprestaOtrasApps from '@sections/fortapresta/FortaprestaOtrasApps.ast
 import FortaprestaCTA from '@sections/fortapresta/FortaprestaCTA.astro';
 ---
 
-<Layout
-   title="Fortaprest: reportes de usuarios y qué hacer | Movapp"
-   description="Descubre qué están reportando los usuarios de Fortaprest sobre riesgo de ingresar su información personal y qué acciones puedes tomar hoy."
-   type="website"
-   showGrid={false}
-   disableCopy
->
+<Layout type="website" showGrid={false} disableCopy>
    <FortaprestaHero />
+   <AppAvisoImportante id="fortapresta" />
    <FortaprestaInfo />
    <FortaprestaSenalesRiesgo />
    <FortaprestaQueHacer />

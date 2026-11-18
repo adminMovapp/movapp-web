@@ -59,6 +59,9 @@ const disableThirdPartyScripts = Astro.url.searchParams.get('minimal') === '1';
 
 interface Props {
    title?: string;
+   // og:title / twitter:title cuando deben diferir del <title> (fichas de
+   // blog ART-001..027, 2026-11-10). Sin esto se usa el mismo title.
+   ogTitle?: string;
    description?: string;
    image?: string;
    type?: string;
@@ -94,7 +97,7 @@ interface Props {
    */
    hideChrome?: boolean;
 }
-const { title, schema, showGrid = true, disableCopy = false, hideChrome = false } = Astro.props;
+const { title, ogTitle, schema, showGrid = true, disableCopy = false, hideChrome = false } = Astro.props;
 
 const siteConfig = getSiteConfig(Astro.request);
 
@@ -109,6 +112,8 @@ const pageEntry = getPageEntry(Astro.url.pathname);
 const seoTags = generateSEOTags(
    {
       ...Astro.props,
+      // Mismo criterio para el <title>: el `name` del WebPage en PAGE_SCHEMA.
+      title: Astro.props.title ?? pageEntry?.name ?? undefined,
       description: Astro.props.description ?? pageEntry?.description ?? undefined,
       url: new URL(Astro.url.pathname, siteConfig.canonicalUrl).href,
    },
@@ -122,8 +127,8 @@ const seoTags = generateSEOTags(
    JavaScript, así que el schema sigue presente en la versión sin JS.
 */
 const pageSchema = schema ?? getPageSchema(Astro.url.pathname, Astro.request);
-// Un objeto suelto (p. ej. el { @context, @graph } de Home) se serializa tal
-// cual; el resto de las rutas emite un array de nodos.
+// Las rutas fijas emiten un objeto { @context, @graph }; los artículos del
+// blog (prop `schema`) siguen pasando un array de nodos. Ambos se serializan tal cual.
 const schemaJson = JSON.stringify(pageSchema);
 ---
 
@@ -169,11 +174,52 @@ const schemaJson = JSON.stringify(pageSchema);
          estado actual del sitio (sin este fix) a quedar trabado en no-js
          para siempre.
       -->
+      <!--
+         Parpadeo al cambiar de página (2026-11-17): aun con global.css en
+         caché, el navegador pinta 1-2 frames con no-js.css (fondo claro, HTML
+         plano) antes del "load" del <link>, y luego el body anima de ese
+         fondo claro al oscuro por su transition-colors. Fix, solo en
+         navegaciones posteriores de la sesión (flag "mv_css_ok"; la primera
+         visita -- la que mide Lighthouse -- sigue igual): "css-pending" oculta
+         el body con el color de fondo del tema hasta el flip o un tope de
+         500 ms (después se ve el fallback no-js, como antes), y
+         "no-theme-transition" anula la transición del body durante el flip.
+         Tiene que ir inline (no en Tailwind): aplica antes de que cargue.
+      -->
+      <style is:inline>
+         html.css-pending { background: #d1d5db; }
+         html.css-pending.dark { background: #050505; }
+         html.css-pending body { visibility: hidden; }
+         html.no-theme-transition body { transition: none !important; }
+      </style>
       <script is:inline define:vars={{ stylesheetHref, flagIconsHref, flagIconsSri }}>
          (function () {
+            var root = document.documentElement;
+            var reveal = function () {
+               root.classList.remove('css-pending');
+            };
+            try {
+               if (sessionStorage.getItem('mv_css_ok')) {
+                  root.classList.add('css-pending');
+                  setTimeout(reveal, 500);
+               }
+            } catch (e) {}
+
             var flip = function () {
+               root.classList.add('no-theme-transition');
                document.documentElement.classList.remove('no-js');
                document.documentElement.classList.add('js');
+               reveal();
+               try {
+                  sessionStorage.setItem('mv_css_ok', '1');
+               } catch (e) {}
+               // Doble rAF: la transición se reactiva cuando el estilo
+               // final ya se pintó, así el toggle de tema sigue animando.
+               requestAnimationFrame(function () {
+                  requestAnimationFrame(function () {
+                     root.classList.remove('no-theme-transition');
+                  });
+               });
                // Señal para scripts que necesitan saber cuándo Tailwind ya
                // terminó de cargar (o falló) en vez de sondear con rAF +
                // getComputedStyle en cada frame -- ver HomeFeatured.astro/
@@ -241,7 +287,7 @@ const schemaJson = JSON.stringify(pageSchema);
       <!-- Open Graph -->
       <meta property="og:type" content={seoTags.type} />
       <meta property="og:url" content={seoTags.canonical} />
-      <meta property="og:title" content={seoTags.title} />
+      <meta property="og:title" content={ogTitle ?? seoTags.title} />
       <meta property="og:description" content={seoTags.description} />
       <meta property="og:image" content={seoTags.image} />
       <meta property="og:image:width" content="1200" />
@@ -252,7 +298,7 @@ const schemaJson = JSON.stringify(pageSchema);
       <!-- Twitter Card -->
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:url" content={seoTags.canonical} />
-      <meta name="twitter:title" content={seoTags.title} />
+      <meta name="twitter:title" content={ogTitle ?? seoTags.title} />
       <meta name="twitter:description" content={seoTags.description} />
       <meta name="twitter:image" content={seoTags.image} />
       <meta name="twitter:site" content={siteConfig.social.twitter} />

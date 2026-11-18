@@ -38,9 +38,12 @@ interface Props {
    // RiskTimeline.astro (title/text/textMobile).
    paragraphMobile?: string;
    whatsappMessage: string;
+   // Label del botón del hero (wireframes de CrediSeguro/Tala, 2026-11-16:
+   // "…por WhatsApp"). Mismo texto en móvil y escritorio.
+   buttonLabel?: string;
 }
 
-const { id, breadcrumbLabel, h1, paragraph, paragraphMobile, whatsappMessage } = Astro.props;
+const { id, breadcrumbLabel, h1, paragraph, paragraphMobile, whatsappMessage, buttonLabel = 'Solicitar orientación' } = Astro.props;
 const appType = APP_TYPE_BY_SLUG[id];
 // El nombre para GA4 sale del catálogo, no de breadcrumbLabel: esa prop es
 // texto de interfaz y puede cambiar por página sin que eso deba partir en
@@ -99,13 +102,14 @@ const appName = APP_NAME_BY_SLUG[id] ?? breadcrumbLabel;
                   <span class="hidden md:inline">{paragraph}</span>
                </>
             ) : (
-               paragraph
+               // **texto** = negritas (subrayado del wireframe, sin enlace).
+               paragraph.split(/\*\*(.+?)\*\*/).map((part, i) => (i % 2 ? <strong class="font-bold text-text_banner">{part}</strong> : part))
             )}
          </p>
          <div class="mt-6 flex justify-center md:justify-start">
             <ButtonContact
                id={`whatsapp-${id}-hero`}
-               label="Solicitar orientación"
+               label={buttonLabel}
                message={whatsappMessage}
                pageType="aplicaciones_prestamo_detalle"
                sectionName="hero"

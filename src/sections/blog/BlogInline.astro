@@ -10,12 +10,16 @@
 //                     "sources" (BlogArticleBody.astro)
 // Cada <a> va en una sola línea a propósito: un salto de línea dentro del
 // enlace se renderiza como un espacio subrayado.
+// Atributo title (2026-11-11): se deriva del destino en blogLinkTitle(); un
+// enlace puede fijar el suyo con [texto](href "title").
+import { blogLinkTitle } from '@utils/blogLinkTitle.ts';
+
 interface Props {
    text: string;
 }
 const { text } = Astro.props;
 
-type Segment = string | { bold: string } | { link: string; href: string } | { ref: string };
+type Segment = string | { bold: string } | { link: string; href: string; title?: string } | { ref: string };
 
 const segments: Segment[] = text
    .split(/(\*\*[^*]+\*\*|\[[^\]^][^\]]*\]\([^)]+\)|\[\^\d+\])/g)
@@ -24,8 +28,8 @@ const segments: Segment[] = text
       if (part.startsWith('**') && part.endsWith('**')) return { bold: part.slice(2, -2) };
       const ref = /^\[\^(\d+)\]$/.exec(part);
       if (ref) return { ref: ref[1] };
-      const link = /^\[([^\]]+)\]\(([^)]+)\)$/.exec(part);
-      if (link) return { link: link[1], href: link[2] };
+      const link = /^\[([^\]]+)\]\(([^)\s]+)(?:\s+"([^"]*)")?\)$/.exec(part);
+      if (link) return { link: link[1], href: link[2], title: link[3] ?? blogLinkTitle(link[2]) };
       return part;
    });
 
@@ -41,9 +45,9 @@ const isExternal = (href: string) => /^https?:\/\//.test(href);
       ) : 'ref' in seg ? (
          <sup><a href={`#fuente-${seg.ref}`} class="text-text_banner hover:underline" aria-label={`Fuente ${seg.ref}`}>[{seg.ref}]</a></sup>
       ) : isExternal(seg.href) ? (
-         <a href={seg.href} target="_blank" rel="noopener" class="font-semibold text-text_banner underline underline-offset-2 hover:no-underline">{seg.link}</a>
+         <a href={seg.href} title={seg.title} target="_blank" rel="noopener" class="font-semibold text-text_banner underline underline-offset-2 hover:no-underline">{seg.link}</a>
       ) : (
-         <a href={seg.href} class="font-semibold text-text_banner underline underline-offset-2 hover:no-underline">{seg.link}</a>
+         <a href={seg.href} title={seg.title} class="font-semibold text-text_banner underline underline-offset-2 hover:no-underline">{seg.link}</a>
       ),
    )
 }

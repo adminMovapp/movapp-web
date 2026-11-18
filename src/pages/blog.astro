@@ -6,12 +6,7 @@ import BlogCategoryCTA from '@sections/blog/BlogCategoryCTA.astro';
 import { BLOG_HOME_SECTIONS } from '@constants/blog.ts';
 ---
 
-<Layout
-   title="Blog: alertas y noticias sobre apps montadeudas | Movapp"
-   description="Entérate de las últimas alertas sobre apps de préstamos montadeudas en México. Casos reales, reportes de usuarios y consejos de Movapp para protegerte."
-   type="website"
-   showGrid={false}
->
+<Layout type="website" showGrid={false}>
    <BlogHero />
    {
       BLOG_HOME_SECTIONS.map((section) => (

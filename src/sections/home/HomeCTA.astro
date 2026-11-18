@@ -35,8 +35,8 @@ import ImgMockup from '@assets/Mockup-celular-movapp-1.webp';
       -->
       <div class="cta-grid relative z-10 gap-8 md:gap-12">
          <!-- Logo de Movapp (mismo que la navbar de escritorio) -- solo en
-              escritorio, a pedido; en móvil no se agrega. Va antes que el
-              título (a pedido: logo primero, luego "Da el primer paso"). -->
+              escritorio (el wireframe móvil no lo trae). Va antes que el
+              título (logo primero, luego "Da el primer paso"). -->
          <div class="cta-logo hidden md:block">
             <Image src={ImgLogo} alt="Movapp" height={100} class="cta-logo-img block h-10 w-auto dark:hidden" />
             <Image src={ImgLogoBlanco} alt="Movapp" height={100} class="cta-logo-img hidden h-10 w-auto dark:block" />
@@ -65,7 +65,7 @@ import ImgMockup from '@assets/Mockup-celular-movapp-1.webp';
          <!-- md:-mt-6: mismo criterio que el título de arriba, para achicar
               el aire entre el título y este párrafo. -->
          <p class="cta-text mx-auto max-w-xl text-center text-sm text-gray-600 dark:text-white/80 md:mx-0 md:-mt-6 md:text-left md:text-base">
-            No tienes que enfrentar esto solo. Escríbenos por WhatsApp y recupera tu tranquilidad.
+            No tienes que enfrentar esto solo. Escríbenos por WhatsApp: revisamos tu caso gratis.
          </p>
 
          <div class="cta-rest text-center md:text-left">
@@ -83,7 +83,7 @@ import ImgMockup from '@assets/Mockup-celular-movapp-1.webp';
                class="float-anim -mx-6 flex justify-center md:mx-0 md:justify-start"
                style="--float-dur: 5.8s; --float-delay: 0.3s;"
             >
-               <ButtonContact id="whatsapp-home-footer" label="Hablar con un asesor" fullWidth pageType="home" sectionName="app" />
+               <ButtonContact id="whatsapp-home-footer" label="Hablar con un asesor por WhatsApp" fullWidth pageType="home" sectionName="app" />
             </div>
 
             <StoreBadges class="mt-6 flex flex-col items-center gap-3 md:items-start" pageType="home" sectionName="app" />
@@ -127,8 +127,7 @@ import ImgMockup from '@assets/Mockup-celular-movapp-1.webp';
 
    /* Escritorio: layout original (imagen a la izquierda, todo el texto
       apilado a la derecha) -- la imagen ocupa las 4 filas de su columna
-      ahora que se sumó "logo" arriba del título (a pedido, solo visible en
-      escritorio, ver "cta-logo" en el markup). */
+      ahora que se sumó "logo" arriba del título (ver "cta-logo" en el markup). */
    @media (min-width: 768px) {
       .cta-grid {
          grid-template-columns: 1fr 1fr;
