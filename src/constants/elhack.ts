@@ -12,13 +12,13 @@ import { FAQ_ICONS, FAQ_COLORS } from './faqIcons';
 export const EL_HACK_FAQS = [
    {
       q: '¿El Hack elimina mi deuda?',
-      a: 'El Hack detiene el acoso y protege tu información, pero no borra por sí sola una deuda. Un asesor te ayuda a entender tu situación y tus opciones. Desconfía de quien prometa "borrar" deudas de forma automática.',
+      a: 'El Hack detiene el acoso y protege tu información, pero no borra por sí sola una deuda. Un asesor te ayuda a entender tu situación y tus opciones. Desconfía de quien prometa “borrar” deudas de forma automática.',
       icon: FAQ_ICONS.bill,
       color: FAQ_COLORS.debt,
    },
    {
       q: '¿Cuánto cuesta?',
-      a: 'La asesoría es 100% gratuita, el costo del hack va desde los $500 MXN, aunque dependerá de la cantidad de préstamos que tengas activos.',
+      a: 'El costo del hack va desde los $500 MXN, aunque dependerá de la cantidad de préstamos que tengas activos.',
       icon: FAQ_ICONS.tag,
       color: FAQ_COLORS.cost,
    },
@@ -30,7 +30,7 @@ export const EL_HACK_FAQS = [
    },
    {
       q: '¿Cuánto tarda El Hack?',
-      a: 'El tiempo depende del caso y de cuántas apps están involucradas. Hay personas que notan reducción de presión antes y otras que siguen recibiendo mensajes algunos días. Lo importante es dar seguimiento para verificar si el acoso baja, si cambia la amenaza o si aparece una app nueva.',
+      a: 'El tiempo depende de tu caso y de cuántas apps estén involucradas. Hay personas que notan reducción de presión antes y otras que siguen recibiendo mensajes algunos días.\n\nLo importante es dar seguimiento para verificar si el acoso baja, si cambia la amenaza o si aparece una app nueva.',
       icon: FAQ_ICONS.clock,
       color: FAQ_COLORS.time,
    },
@@ -42,11 +42,11 @@ export const EL_HACK_HOW_IT_WORKS_TITLE = '¿Cómo funciona El Hack?';
 export const EL_HACK_STEPS = [
    {
       title: 'Habla con un asesor real',
-      text: 'Nos escribes por WhatsApp y te escuchamos. Te explicamos, paso a paso, cómo usar El Hack en tu caso.',
+      text: 'Nos escribes por WhatsApp y te explicamos, paso a paso, cómo usar El Hack en tu caso.',
    },
    {
       title: 'Instala y activa El Hack',
-      text: 'Al activarlo, bloqueamos de inmediato las llamadas y los mensajes de acoso, y proteges tus contactos y tu galería.',
+      text: 'Al activarlo, bloqueas de inmediato las llamadas y los mensajes de acoso, y proteges tus contactos y tu galería.',
    },
    {
       title: 'Recupera tu tranquilidad',

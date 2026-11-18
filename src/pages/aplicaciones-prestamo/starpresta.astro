@@ -1,6 +1,7 @@
 ---
 import Layout from '@layouts/Layout.astro';
 import StarprestaHero from '@sections/starpresta/StarprestaHero.astro';
+import AppAvisoImportante from '@components/ui/AppAvisoImportante.astro';
 import StarprestaInfo from '@sections/starpresta/StarprestaInfo.astro';
 import StarprestaSenalesRiesgo from '@sections/starpresta/StarprestaSenalesRiesgo.astro';
 import StarprestaQueHacer from '@sections/starpresta/StarprestaQueHacer.astro';
@@ -10,14 +11,9 @@ import StarprestaOtrasApps from '@sections/starpresta/StarprestaOtrasApps.astro'
 import StarprestaCTA from '@sections/starpresta/StarprestaCTA.astro';
 ---
 
-<Layout
-   title="Starpresta crea grupos de WhatsApp con contactos | Movapp"
-   description="Starpresta arma grupos de WhatsApp con tus contactos para presionar el pago. Conoce las señales de riesgo y qué hacer si ya te está pasando."
-   type="website"
-   showGrid={false}
-   disableCopy
->
+<Layout type="website" showGrid={false} disableCopy>
    <StarprestaHero />
+   <AppAvisoImportante id="starpresta" />
    <StarprestaInfo />
    <StarprestaSenalesRiesgo />
    <StarprestaQueHacer />

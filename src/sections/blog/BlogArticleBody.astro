@@ -27,61 +27,26 @@ import { Image } from 'astro:assets';
 import ImagePlaceholder from '@components/ui/ImagePlaceholder.astro';
 import BlogInline from '@sections/blog/BlogInline.astro';
 import BlogArticleShare from '@sections/blog/BlogArticleShare.astro';
+import FAQAccordion from '@components/ui/FAQAccordion.astro';
 import StarField from '@components/decorative/StarField.astro';
+import type { BlogBlock } from '@constants/blogArticles.ts';
 
+// Tipos de bloque: ver BlogBlock en @constants/blogArticles.ts (fuente única
+// desde 2026-11-10; antes la unión se repetía aquí). Además de los de antes,
+// "subheading" (H3), "callout" (recuadro) y "table" llegaron con las fichas
+// ART-001..027, junto con las preguntas frecuentes (H2 + H3 por pregunta,
+// las mismas que alimentan el FAQPage del schema) y la lista "Fuentes".
 interface Props {
    slug: string;
-   sections: {
-      heading?: string;
-      blocks: (
-         // "mobileText" opcional (2026-08-29, "lista-montadeudas"): mismo
-         // criterio de conflicto móvil/escritorio del resto del proyecto --
-         // cuando el wireframe de móviles trae otro texto para el mismo
-         // párrafo, se muestra solo ahí vía el span responsivo de abajo,
-         // sin tocar "text" (el de escritorio).
-         | { type: 'paragraph'; text: string; mobileText?: string }
-         | { type: 'appGrid'; apps: { name: string; icon: string | null }[] }
-         // Lista numerada (2026-08-30, "ok-dinero-condusef"): ese artículo
-         // trae dos listas de pasos/características enumeradas (1, 2, 3...)
-         // dentro del cuerpo -- no son párrafos independientes.
-         // "start" opcional (2026-08-30, "como-denunciar-montadeudas"): ese
-         // artículo intercala párrafos explicativos ENTRE items de una
-         // misma lista numerada (confirmado real en el pase de móviles, no
-         // un artefacto del mockup) -- se parte en varios bloques
-         // "orderedList" consecutivos con "start" para que la numeración
-         // visual continúe (1, luego 2, luego 3-6) en vez de reiniciar.
-         | { type: 'orderedList'; items: string[]; start?: number }
-         // Lista con viñetas (2026-08-30, "que-hacer-con-apps-montadeudas"):
-         // ese artículo trae una lista de características SIN numerar (•),
-         // a diferencia de "orderedList" que sí lleva 1, 2, 3...
-         | { type: 'unorderedList'; items: string[] }
-         // Lista con letras (2026-08-30, "como-denunciar-montadeudas"): ese
-         // artículo trae un índice corto tipo "A) Fiscalía del estado", "B)
-         // Policía Cibernética"... -- la letra ya viene incluida como texto
-         // literal en cada item (fuente), así que se renderiza sin marcador
-         // adicional (list-none), a diferencia de "unorderedList" (•).
-         | { type: 'letteredList'; items: string[] }
-         // Imagen ilustrativa de cuerpo (2026-08-30, "montadeudas-van-a-tu-
-         // casa"): ese wireframe trae una segunda imagen a media sección,
-         // distinta de la imagen destacada del Hero -- sin archivo real
-         // entregado aún, así que se muestra como ImagePlaceholder (mismo
-         // criterio ya usado para íconos de apps sin ícono real).
-         // "src"/"caption" opcionales (2026-11-05, Octopus Conference 2026):
-         // primer artículo con fotos de cuerpo reales y pie de foto visible.
-         // Sin "src" sigue cayendo al ImagePlaceholder de antes.
-         | { type: 'image'; alt: string; src?: ImageMetadata; caption?: string }
-         // Lista de fuentes numeradas [1], [2]... (2026-11-05, Octopus
-         // Conference 2026): cada item lleva id="fuente-n", destino de las
-         // llamadas [^n] de los párrafos (BlogInline.astro). El número sale
-         // del orden del item, no se escribe en el texto.
-         | { type: 'sources'; items: string[] }
-      )[];
-   }[];
+   sections: { heading?: string; blocks: BlogBlock[] }[];
+   faqHeading?: string;
+   faqs?: { q: string; a: string }[];
+   sourcesList?: string[];
    authorBio: { name: string; text: string };
    shareUrl: string;
    shareTitle: string;
 }
-const { slug, sections, authorBio, shareUrl, shareTitle } = Astro.props;
+const { slug, sections, faqHeading, faqs, sourcesList, authorBio, shareUrl, shareTitle } = Astro.props;
 
 // Negritas inline (2026-08-30, "como-identificar-apps-montadeudas"),
 // enlaces y llamadas a fuentes (2026-11-05, Octopus Conference 2026) --
@@ -118,7 +83,14 @@ const { slug, sections, authorBio, shareUrl, shareTitle } = Astro.props;
                            <li class="flex flex-col items-center rounded-2xl border border-purple_mv/25 bg-gradient-to-b from-purple_mv/[0.06] to-transparent p-4 text-center dark:border-white/10 dark:from-purple_mv/[0.1] dark:to-black/30">
                               {app.icon ? (
                                  <div class="mb-2 flex h-14 w-14 items-center justify-center overflow-hidden rounded-2xl border border-purple_mv/20 bg-purple_mv/5 dark:border-white/10 dark:bg-white/5">
-                                    <img src={app.icon} alt="" width="56" height="56" class="h-full w-full object-contain p-2" loading="lazy" />
+                                    <img
+                                       src={app.icon}
+                                       alt=""
+                                       width="56"
+                                       height="56"
+                                       class="h-full w-full object-contain p-2"
+                                       loading="lazy"
+                                    />
                                  </div>
                               ) : (
                                  <ImagePlaceholder class="mb-2 h-14 w-14" />
@@ -128,7 +100,10 @@ const { slug, sections, authorBio, shareUrl, shareTitle } = Astro.props;
                         ))}
                      </ul>
                   ) : block.type === 'orderedList' ? (
-                     <ol start={block.start} class="list-decimal space-y-2 pl-5 marker:font-bold marker:text-text_banner">
+                     <ol
+                        start={block.start}
+                        class="list-decimal space-y-2 pl-5 marker:font-bold marker:text-text_banner"
+                     >
                         {block.items.map((item) => (
                            <li>
                               <BlogInline text={item} />
@@ -151,6 +126,43 @@ const { slug, sections, authorBio, shareUrl, shareTitle } = Astro.props;
                            </li>
                         ))}
                      </ul>
+                  ) : block.type === 'subheading' ? (
+                     <h3 class="pt-2 text-left text-lg font-bold text-text_banner md:text-xl">{block.text}</h3>
+                  ) : block.type === 'callout' ? (
+                     <p class="rounded-r-2xl border-l-4 border-purple_mv bg-purple_mv/[0.06] px-4 py-3 dark:bg-purple_mv/[0.12]">
+                        <BlogInline text={block.text} />
+                     </p>
+                  ) : block.type === 'table' ? (
+                     // Scroll horizontal propio en móvil: la tabla nunca
+                     // empuja el ancho de la página (estándar mobile-first).
+                     <div class="overflow-x-auto rounded-2xl border border-purple_mv/25 dark:border-white/10">
+                        <table class="w-full min-w-[32rem] border-collapse text-left text-sm md:text-base">
+                           <thead class="bg-purple_mv/[0.08] dark:bg-purple_mv/[0.15]">
+                              <tr>
+                                 {block.head.map((cell) => (
+                                    <th scope="col" class="px-3 py-2 font-bold text-text_banner">
+                                       <BlogInline text={cell} />
+                                    </th>
+                                 ))}
+                              </tr>
+                           </thead>
+                           <tbody>
+                              {block.rows.map((row) => (
+                                 <tr class="border-t border-purple_mv/15 align-top dark:border-white/10">
+                                    {row.map((cell) => (
+                                       <td class="px-3 py-2">
+                                          <BlogInline text={cell} />
+                                       </td>
+                                    ))}
+                                 </tr>
+                              ))}
+                           </tbody>
+                        </table>
+                     </div>
+                  ) : block.type === 'faqAccordion' ? (
+                     // Mismo componente de FAQs del resto del sitio, en modo
+                     // "embedded" (ancho/fondo los pone este cuerpo).
+                     <FAQAccordion id={`blog-faq-${slug}`} title={block.title} items={block.items} embedded />
                   ) : block.type === 'sources' ? (
                      <ol class="list-none space-y-2 text-left text-sm md:text-base">
                         {block.items.map((item, i) => (
@@ -161,9 +173,17 @@ const { slug, sections, authorBio, shareUrl, shareTitle } = Astro.props;
                      </ol>
                   ) : block.src ? (
                      <figure>
-                        <Image src={block.src} alt={block.alt} width={1000} class="h-auto w-full rounded-2xl" loading="lazy" />
+                        <Image
+                           src={block.src}
+                           alt={block.alt}
+                           width={1000}
+                           class="h-auto w-full rounded-2xl"
+                           loading="lazy"
+                        />
                         {block.caption && (
-                           <figcaption class="mt-2 text-center text-sm italic text-gray-500 dark:text-white/60">{block.caption}</figcaption>
+                           <figcaption class="mt-2 text-center text-sm italic text-gray-500 dark:text-white/60">
+                              {block.caption}
+                           </figcaption>
                         )}
                      </figure>
                   ) : (
@@ -173,11 +193,45 @@ const { slug, sections, authorBio, shareUrl, shareTitle } = Astro.props;
             </div>
          ))
       }
+
+      {
+         faqs && faqs.length > 0 && (
+            // id = el "#preguntas-frecuentes" del @id del FAQPage (schema).
+            <div id="preguntas-frecuentes" class="scroll-mt-24 space-y-4">
+               <h2 class="text-xl font-bold text-text_banner md:text-2xl">{faqHeading ?? 'Preguntas frecuentes'}</h2>
+               {faqs.map((faq) => (
+                  <div class="space-y-1">
+                     <h3 class="text-left text-lg font-bold text-text_banner md:text-xl">{faq.q}</h3>
+                     <p>
+                        <BlogInline text={faq.a} />
+                     </p>
+                  </div>
+               ))}
+            </div>
+         )
+      }
+
+      {
+         sourcesList && sourcesList.length > 0 && (
+            <div class="space-y-4">
+               <h2 class="text-xl font-bold text-text_banner md:text-2xl">Fuentes</h2>
+               <ul class="list-disc space-y-2 break-words pl-5 text-left text-sm marker:text-text_banner md:text-base">
+                  {sourcesList.map((item) => (
+                     <li>
+                        <BlogInline text={item} />
+                     </li>
+                  ))}
+               </ul>
+            </div>
+         )
+      }
    </div>
 
    <BlogArticleShare url={shareUrl} title={shareTitle} slug={slug} />
 
-   <div class="mt-10 flex items-start gap-4 rounded-2xl border border-purple_mv/25 bg-gradient-to-b from-purple_mv/[0.06] to-transparent p-5 dark:border-white/10 dark:from-purple_mv/[0.1] dark:to-black/30">
+   <div
+      class="mt-10 flex items-start gap-4 rounded-2xl border border-purple_mv/25 bg-gradient-to-b from-purple_mv/[0.06] to-transparent p-5 dark:border-white/10 dark:from-purple_mv/[0.1] dark:to-black/30"
+   >
       <span class="h-12 w-12 flex-shrink-0 rounded-full bg-purple_mv/15 dark:bg-white/10" aria-hidden="true"></span>
       <div>
          <h3 class="font-bold text-text_banner">{authorBio.name}</h3>

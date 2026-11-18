@@ -20,13 +20,13 @@ export interface CrediseguroFaq {
 export const CREDISEGURO_FAQS: CrediseguroFaq[] = [
    {
       q: '¿CrediSeguro está registrada ante CONDUSEF?',
-      a: 'Sí, localizada con folio 00234 al 04 ago 2026.',
+      a: 'No la localizamos en el SIPRES de la CONDUSEF (consulta del 10 de noviembre de 2026). Podría operar con otra razón social; búscala en la app o en el contrato.',
       icon: FAQ_ICONS.scale,
       color: FAQ_COLORS.legal,
    },
    {
       q: '¿Cómo verifico las tasas antes de contratar?',
-      a: 'Consulta el sitio oficial o el documento de condiciones publicado.',
+      a: 'Revisa el CAT y el monto total a pagar en el contrato antes de aceptar, y desconfía si la app no los muestra.',
       icon: FAQ_ICONS.tag,
       color: FAQ_COLORS.cost,
    },

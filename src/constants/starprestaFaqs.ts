@@ -27,32 +27,32 @@ export interface StarprestaFaq {
 
 export const STARPRESTA_FAQS: StarprestaFaq[] = [
    {
-      q: 'Si tiene permiso de CONDUSEF, ¿entonces es legal lo que hace?',
-      a: 'No. Aparecer en un registro no autoriza a nadie a acosarte, difamarte ni exponer tus datos. Esas prácticas están prohibidas aunque tú debas dinero, y son denunciables precisamente ante CONDUSEF y PROFECO.',
+      q: '¿StarPresta está registrada en la CONDUSEF?',
+      a: 'No la localizamos por su nombre en el SIPRES (consulta del 10 de noviembre de 2026); podría operar con otra razón social. Aunque estuviera registrada, eso no la autoriza a acosarte ni a exhibir tus datos.',
       icon: FAQ_ICONS.scale,
       color: FAQ_COLORS.legal,
    },
    {
-      q: 'Ya me metieron a mi familia en un grupo de WhatsApp, ¿qué hago?',
-      a: 'Toma capturas de todo antes de salirte, sal del grupo y explícale tú a tu gente lo que está pasando. En cuanto tus contactos entienden que es una práctica de acoso y no una deuda real que les incumbe, el grupo deja de funcionar como arma.',
+      q: 'Ya metieron a mi familia en un grupo de WhatsApp, ¿qué hago?',
+      a: 'Toma capturas de todo antes de salirte, sal del grupo y repórtalo en WhatsApp. Explícale tú a tu gente lo que pasa: cuando entienden que es acoso, el grupo pierde fuerza. Luego escríbenos y revisamos tu caso gratis.',
       icon: FAQ_ICONS.chat,
       color: FAQ_COLORS.contact,
    },
    {
       q: '¿Por qué me cobran mucho más de lo que recibí?',
-      a: 'No la encontramos regulada por CONDUSEF ni la CNBV. Estar registrado como despacho de cobranza ante PROFECO no la convierte en una financiera supervisada, y tampoco la autoriza a acosarte.',
+      a: 'Las víctimas reportan que a la tasa anunciada se suman comisiones y cargos por atraso. Revisa en tu contrato el monto total a pagar y guarda los comprobantes de lo que ya pagaste.',
       icon: FAQ_ICONS.building,
       color: FAQ_COLORS.company,
    },
    {
-      q: '¿De verdad me van a afectar el buró de crédito?',
-      a: 'Revisa tú mismo antes de asumirlo. Consulta tu reporte de crédito especial, que es gratuita una vez al año, y comprueba con lo que te están diciendo.',
+      q: '¿De verdad me van a afectar en el buró de crédito?',
+      a: 'Compruébalo antes de asumirlo: consulta tu Reporte de Crédito Especial, gratuito una vez al año, y revisa si esa deuda aparece.',
       icon: FAQ_ICONS.bill,
       color: FAQ_COLORS.debt,
    },
    {
       q: '¿Puedo denunciarlos?',
-      a: 'Sí. Guarda capturas, números de teléfono, montos y fechas. Con esa evidencia puedes presentar tu denuncia, y podemos acompañarte en el proceso.',
+      a: 'Sí. Guarda capturas, números de teléfono, montos y fechas. Con esa evidencia puedes presentar tu denuncia, y te orientamos para hacerlo.',
       icon: FAQ_ICONS.checklist,
       color: FAQ_COLORS.followUp,
    },

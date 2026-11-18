@@ -1,4 +1,5 @@
 ---
+import { CARD_STYLE, CARD_HOVER } from '@constants/cardStyles';
 // Estructura semántica pedida en la revisión de contenido (Angel Martínez,
 // comentarios sobre /contacto):
 // - "¡Sigue nuestras redes!" es <h2>.
@@ -45,7 +46,7 @@ const FOOTER_ICONS: Record<string, string> = {
                   href={social.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="glass-card flex items-center gap-4 rounded-2xl border border-purple_mv/20 p-4 text-left transition duration-300 hover:-translate-y-1 hover:border-purple_mv/50 hover:shadow-[0_0_25px_rgba(129,73,226,0.25)] dark:border-white/10"
+                  class={`flex items-center gap-4 rounded-2xl p-4 text-left ${CARD_STYLE} ${CARD_HOVER}`}
                >
                   <img src={FOOTER_ICONS[social.name]} alt="" width="40" height="40" class="h-10 w-10 rounded-full object-cover" />
                   <span class="font-bold text-gray-900 dark:text-white">{social.name}</span>

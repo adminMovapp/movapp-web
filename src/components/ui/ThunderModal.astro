@@ -24,9 +24,8 @@
 // viewport (el <dialog> no mete transform/filter que cree un nuevo
 // contenedor), no contra la card.
 //
-// Glass más tenue que el .glass-card estándar del sitio (ese es casi
-// opaco, pensado para FAQ/Contacto sobre fondo con StarField) -- acá se
-// baja la opacidad para que se note el blur/vidrio sin oscurecer tanto el
+// Glass propio del modal (no es una card de contenido, así que no usa la
+// card estándar de @constants/cardStyles) -- opacidad baja para que se note el blur/vidrio sin oscurecer tanto el
 // texto del propio modal.
 interface Props {
    id: string;
@@ -59,9 +58,9 @@ const { id } = Astro.props;
       overflow: visible;
    }
 
-   /* Glass más tenue que el .glass-card estándar (global.css usa 0.85/0.9
-      de opacidad, pensado para ir sobre un fondo con StarField) -- acá se
-      baja para que el efecto vidrio se note sin restarle lectura al texto,
+   /* Glass propio del modal (no usa la card estándar de
+      @constants/cardStyles, eso es para cards de contenido) -- opacidad baja
+      para que el efecto vidrio se note sin restarle lectura al texto,
       que va directo sobre el ::backdrop oscuro/claro. */
    .thunder-modal-card {
       background-color: rgba(255, 255, 255, 0.72);

@@ -6,6 +6,6 @@ import { getServerCountry } from '@utils/geo';
 const serverCountry = getServerCountry(Astro);
 ---
 
-<Layout title="Tienda">
+<Layout>
    <TiendaShop serverCountry={serverCountry} />
 </Layout>

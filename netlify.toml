@@ -289,6 +289,19 @@
   to = "/blog/que-paso-fortaprest/"
   status = 301
 
+# Artículos nuevos (nov. 2026): sus fichas SEO proponen la URL en la raíz
+# (movapp.org/<slug>/, como el WordPress anterior); en el sitio viven bajo
+# /blog/, así que la URL de la ficha se redirige igual que las de arriba.
+[[redirects]]
+  from = "/octopus-conference-2026-ciberdelincuencia-ia-extorsion/"
+  to = "/blog/octopus-conference-2026-ciberdelincuencia-ia-extorsion/"
+  status = 301
+
+[[redirects]]
+  from = "/buen-fin-apps-montadeudas/"
+  to = "/blog/buen-fin-apps-montadeudas/"
+  status = 301
+
 [[redirects]]
   from = "/nuestro-servicio/"
   to = "/el-hack/"

@@ -59,6 +59,9 @@ const disableThirdPartyScripts = Astro.url.searchParams.get('minimal') === '1';
 
 interface Props {
    title?: string;
+   // og:title / twitter:title cuando deben diferir del <title> (fichas de
+   // blog ART-001..027, 2026-11-10). Sin esto se usa el mismo title.
+   ogTitle?: string;
    description?: string;
    image?: string;
    type?: string;
@@ -94,7 +97,7 @@ interface Props {
    */
    hideChrome?: boolean;
 }
-const { title, schema, showGrid = true, disableCopy = false, hideChrome = false } = Astro.props;
+const { title, ogTitle, schema, showGrid = true, disableCopy = false, hideChrome = false } = Astro.props;
 
 const siteConfig = getSiteConfig(Astro.request);
 
@@ -109,6 +112,8 @@ const pageEntry = getPageEntry(Astro.url.pathname);
 const seoTags = generateSEOTags(
    {
       ...Astro.props,
+      // Mismo criterio para el <title>: el `name` del WebPage en PAGE_SCHEMA.
+      title: Astro.props.title ?? pageEntry?.name ?? undefined,
       description: Astro.props.description ?? pageEntry?.description ?? undefined,
       url: new URL(Astro.url.pathname, siteConfig.canonicalUrl).href,
    },
@@ -122,8 +127,8 @@ const seoTags = generateSEOTags(
    JavaScript, así que el schema sigue presente en la versión sin JS.
 */
 const pageSchema = schema ?? getPageSchema(Astro.url.pathname, Astro.request);
-// Un objeto suelto (p. ej. el { @context, @graph } de Home) se serializa tal
-// cual; el resto de las rutas emite un array de nodos.
+// Las rutas fijas emiten un objeto { @context, @graph }; los artículos del
+// blog (prop `schema`) siguen pasando un array de nodos. Ambos se serializan tal cual.
 const schemaJson = JSON.stringify(pageSchema);
 ---
 
@@ -241,7 +246,7 @@ const schemaJson = JSON.stringify(pageSchema);
       <!-- Open Graph -->
       <meta property="og:type" content={seoTags.type} />
       <meta property="og:url" content={seoTags.canonical} />
-      <meta property="og:title" content={seoTags.title} />
+      <meta property="og:title" content={ogTitle ?? seoTags.title} />
       <meta property="og:description" content={seoTags.description} />
       <meta property="og:image" content={seoTags.image} />
       <meta property="og:image:width" content="1200" />
@@ -252,7 +257,7 @@ const schemaJson = JSON.stringify(pageSchema);
       <!-- Twitter Card -->
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:url" content={seoTags.canonical} />
-      <meta name="twitter:title" content={seoTags.title} />
+      <meta name="twitter:title" content={ogTitle ?? seoTags.title} />
       <meta name="twitter:description" content={seoTags.description} />
       <meta name="twitter:image" content={seoTags.image} />
       <meta name="twitter:site" content={siteConfig.social.twitter} />
