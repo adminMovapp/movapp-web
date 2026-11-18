@@ -174,11 +174,52 @@ const schemaJson = JSON.stringify(pageSchema);
          estado actual del sitio (sin este fix) a quedar trabado en no-js
          para siempre.
       -->
+      <!--
+         Parpadeo al cambiar de página (2026-11-17): aun con global.css en
+         caché, el navegador pinta 1-2 frames con no-js.css (fondo claro, HTML
+         plano) antes del "load" del <link>, y luego el body anima de ese
+         fondo claro al oscuro por su transition-colors. Fix, solo en
+         navegaciones posteriores de la sesión (flag "mv_css_ok"; la primera
+         visita -- la que mide Lighthouse -- sigue igual): "css-pending" oculta
+         el body con el color de fondo del tema hasta el flip o un tope de
+         500 ms (después se ve el fallback no-js, como antes), y
+         "no-theme-transition" anula la transición del body durante el flip.
+         Tiene que ir inline (no en Tailwind): aplica antes de que cargue.
+      -->
+      <style is:inline>
+         html.css-pending { background: #d1d5db; }
+         html.css-pending.dark { background: #050505; }
+         html.css-pending body { visibility: hidden; }
+         html.no-theme-transition body { transition: none !important; }
+      </style>
       <script is:inline define:vars={{ stylesheetHref, flagIconsHref, flagIconsSri }}>
          (function () {
+            var root = document.documentElement;
+            var reveal = function () {
+               root.classList.remove('css-pending');
+            };
+            try {
+               if (sessionStorage.getItem('mv_css_ok')) {
+                  root.classList.add('css-pending');
+                  setTimeout(reveal, 500);
+               }
+            } catch (e) {}
+
             var flip = function () {
+               root.classList.add('no-theme-transition');
                document.documentElement.classList.remove('no-js');
                document.documentElement.classList.add('js');
+               reveal();
+               try {
+                  sessionStorage.setItem('mv_css_ok', '1');
+               } catch (e) {}
+               // Doble rAF: la transición se reactiva cuando el estilo
+               // final ya se pintó, así el toggle de tema sigue animando.
+               requestAnimationFrame(function () {
+                  requestAnimationFrame(function () {
+                     root.classList.remove('no-theme-transition');
+                  });
+               });
                // Señal para scripts que necesitan saber cuándo Tailwind ya
                // terminó de cargar (o falló) en vez de sondear con rAF +
                // getComputedStyle en cada frame -- ver HomeFeatured.astro/
