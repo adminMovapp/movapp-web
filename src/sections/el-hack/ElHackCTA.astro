@@ -4,16 +4,16 @@ import StormField from '@components/decorative/StormField.astro';
 ---
 
 <section class="relative mx-auto my-section w-full max-w-3xl px-4" data-aos="fade-up">
-   <!-- StormField a nivel de sección (fullBleed), igual que el resto de las secciones de El Hack --
-        no adentro de la card, que se vería como una caja de niebla aparte en vez de fondo de página. -->
+   {/* StormField a nivel de sección (fullBleed), igual que el resto de las secciones de El Hack --
+        no adentro de la card, que se vería como una caja de niebla aparte en vez de fondo de página. */}
    <StormField id="el-hack-cta" />
 
-   <!--
+   {/*
       Misma tarjeta "panel" que el bloque de seguridad en ElHackFeatures.astro
       (rounded-3xl, border-purple_mv/25, mismo degradado, shadow-card, mismo
       padding) -- antes tenía 2 glows morados extra + más padding, y por eso
       se veía mucho más saturada/grande que el resto de las cards de la página.
-   -->
+   */}
    <div
       class="float-anim relative rounded-3xl border border-purple_mv/25 bg-gradient-to-b from-purple_mv/[0.06] to-transparent p-8 text-center shadow-card dark:border-white/10 dark:from-purple_mv/[0.1] dark:to-black/30 md:p-10"
       style="--float-dur: 6.2s; --float-delay: 0s;"

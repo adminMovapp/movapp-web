@@ -25,10 +25,10 @@ const hasError = Astro.url.searchParams.get('error') === '1';
 
 <Layout title="Próximamente" noIndex={true} hideChrome={true} showGrid={false}>
    <section class="dark-section relative flex min-h-[100svh] w-full items-center justify-center overflow-hidden bg-[#050505] px-4 py-16">
-      <!-- Resplandor morado ambiente, mismo lenguaje visual que StarField.astro
+      {/* Resplandor morado ambiente, mismo lenguaje visual que StarField.astro
          (aura difusa detrás del contenido) -- puramente decorativo, sin script,
          para no repetir el riesgo de CLS ya documentado con piezas animadas
-         como .hero-orbit-group. -->
+         como .hero-orbit-group. */}
       <div
          aria-hidden="true"
          class="pointer-events-none absolute left-1/2 top-1/3 h-72 w-[80%] max-w-[640px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-purple_mv/30 blur-[120px]"

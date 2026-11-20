@@ -6,7 +6,7 @@ import MenuMobile from '@components/layout/MenuMobile.astro';
 import MobileSearch from '@components/layout/MobileSearch.astro';
 ---
 
-<!--
+{/*
    "sticky bottom-0", NO "fixed bottom-0" (lo que había antes, y varios
    intentos de compensarlo por JS que no terminaron de resolverlo -- ver
    historial). "position: fixed" en móvil se ancla al *layout viewport*, que
@@ -21,12 +21,12 @@ import MobileSearch from '@components/layout/MobileSearch.astro';
    no sufre ese desfase. Como es el último elemento del body y no hay nada
    después, se queda pegado al fondo del viewport en todo el rango de
    scroll, igual que "fixed" pero sin el bug.
--->
+*/}
 <nav
    id="mobileBottomNav"
    class="sticky bottom-0 z-[999999999] flex items-stretch justify-around bg-gradient-to-t from-purple_mv/[0.06] to-white/90 dark:from-purple_mv/[0.08] dark:to-zinc-950/85 backdrop-blur-md border-t border-purple_mv/25 dark:border-white/10 shadow-[0_-8px_25px_-10px_rgba(129,73,226,0.15)] pb-[env(safe-area-inset-bottom)] lg:hidden"
 >
-   <!-- Logo / Home -->
+   {/* Logo / Home */}
    <a
       href="/"
       class="flex flex-1 flex-col items-center justify-center gap-1 py-2 text-gray-500 hover:text-text_banner dark:text-white/60 dark:hover:text-white"
@@ -34,26 +34,26 @@ import MobileSearch from '@components/layout/MobileSearch.astro';
       data-home-link
    >
       <span class="sr-only">Home</span>
-      <!-- height=84 (no 260): se muestra a h-7 (28px) -- 84 da 3x retina de
+      {/* height=84 (no 260): se muestra a h-7 (28px) -- 84 da 3x retina de
            margen sin servir un archivo ~5x más grande de lo necesario
-           (Lighthouse lo marcaba: 335x260 real para 63x49 de visualización). -->
+           (Lighthouse lo marcaba: 335x260 real para 63x49 de visualización). */}
       <Image src={ImgLogoResp} alt="" height={84} class="bottomnav-logo block h-7 w-auto dark:hidden" aria-hidden="true" />
       <Image src={ImgLogoRespBlanco} alt="" height={84} class="bottomnav-logo hidden h-7 w-auto dark:block" aria-hidden="true" />
    </a>
 
-   <!-- Tienda -->
+   {/* Tienda */}
    <a href="/tienda/" class="flex flex-1 flex-col items-center justify-center py-2" aria-label="Tienda">
       <span class="tienda-icon block h-7 w-7 bg-purple_mv dark:bg-white" aria-hidden="true"></span>
    </a>
 
-   <!-- Menú (hamburguesa con el resto de opciones) -->
+   {/* Menú (hamburguesa con el resto de opciones) */}
    <MenuMobile />
 
-   <!-- Buscador (móvil): se despliega in-place (ver MobileSearch.astro),
+   {/* Buscador (móvil): se despliega in-place (ver MobileSearch.astro),
         mismo patrón que HeaderSearch.astro en escritorio. Su backdrop
         (bloquea scroll/toques de la página de atrás mientras está abierto)
-        vive aparte, como hermano de este <nav> (MobileSearchBackdrop.astro,
-        ver ese componente para el porqué). -->
+        vive aparte, como hermano de este ‹nav› (MobileSearchBackdrop.astro,
+        ver ese componente para el porqué). */}
    <MobileSearch />
 </nav>
 

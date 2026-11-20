@@ -8,7 +8,7 @@ import ImgLogoBlanco from '@assets/Logo-Blanco.png';
    id="global-preloader"
    style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 999999; display: flex; align-items: center; justify-content: center; overflow: hidden; background-color: #0a0414; select-none;"
 >
-   <!-- Filtro SVG Oculto para Distorsión Estática/Ruido -->
+   {/* Filtro SVG Oculto para Distorsión Estática/Ruido */}
    <svg style="position: absolute; width: 0; height: 0;" aria-hidden="true">
       <filter id="glitch-distortion-filter">
          <feTurbulence type="fractalNoise" baseFrequency="0.05 0.9" numOctaves="2" result="warp"></feTurbulence>
@@ -17,18 +17,18 @@ import ImgLogoBlanco from '@assets/Logo-Blanco.png';
       </filter>
    </svg>
 
-   <!-- Contenedor Principal -->
+   {/* Contenedor Principal */}
    <div
       id="preloader-content"
       style="position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; gap: 24px;"
    >
-      <!-- Círculo Central con Posición Inicial Arriba -->
+      {/* Círculo Central con Posición Inicial Arriba */}
       <div
          id="circle-container"
          class="circle-drop-in"
          style="position: relative; width: 250px; height: 250px; border-radius: 50%; border: 3px solid rgba(239,68,68,0.5); display: flex; align-items: center; justify-content: center; background-color: rgba(0,0,0,0.5); box-shadow: 0 0 30px rgba(239,68,68,0.3);"
       >
-         <!-- Ilustración (Vector Montadeudas) -->
+         {/* Ilustración (Vector Montadeudas) */}
          <svg
             id="montadeudas-svg"
             viewBox="0 0 200 200"
@@ -36,16 +36,16 @@ import ImgLogoBlanco from '@assets/Logo-Blanco.png';
             xmlns="http://www.w3.org/2000/svg"
             style="position: absolute; width: 150px; height: 150px; color: #ef4444; filter: drop-shadow(0 0 10px rgba(239,68,68,0.6)); display: none; transition: filter 0.1s ease, transform 0.1s ease;"
          >
-            <!-- Smartphone -->
+            {/* Smartphone */}
             <rect x="60" y="20" width="80" height="150" rx="12" stroke="currentColor" stroke-width="8"></rect>
             <line x1="90" y1="35" x2="110" y2="35" stroke="currentColor" stroke-width="6" stroke-linecap="round"></line>
-            <!-- Calavera -->
+            {/* Calavera */}
             <path
                d="M100 70 C85 70 75 80 75 95 C75 105 80 110 85 110 V120 H115 V110 C120 110 125 105 125 95 C125 80 115 70 100 70 Z"
                fill="currentColor"></path>
             <circle cx="90" cy="95" r="5" fill="#0a0414"></circle>
             <circle cx="110" cy="95" r="5" fill="#0a0414"></circle>
-            <!-- Alerta -->
+            {/* Alerta */}
             <path
                d="M140 40 H180 V80 H160 L140 100 V80 H140 Z"
                fill="currentColor"
@@ -53,14 +53,14 @@ import ImgLogoBlanco from '@assets/Logo-Blanco.png';
                stroke-width="4"
                stroke-linejoin="round"></path>
             <text x="151" y="70" fill="#0a0414" font-family="sans-serif" font-size="28" font-weight="900">!</text>
-            <!-- Huesos cruzados -->
+            {/* Huesos cruzados */}
             <line x1="75" y1="125" x2="125" y2="145" stroke="currentColor" stroke-width="6" stroke-linecap="round"
             ></line>
             <line x1="125" y1="125" x2="75" y2="145" stroke="currentColor" stroke-width="6" stroke-linecap="round"
             ></line>
          </svg>
 
-         <!-- Logo de Movapp -->
+         {/* Logo de Movapp */}
          <Image
             id="movapp-logo-center"
             src={ImgLogoBlanco}
@@ -70,7 +70,7 @@ import ImgLogoBlanco from '@assets/Logo-Blanco.png';
          />
       </div>
 
-      <!-- Barra de Carga de Progreso -->
+      {/* Barra de Carga de Progreso */}
       <div
          id="progress-wrapper"
          class="progress-drop-in"

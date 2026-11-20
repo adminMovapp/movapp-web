@@ -10,7 +10,7 @@
 // hacía y se podía seguir navegando/scrolleando la página de atrás.
 ---
 
-<!--
+{/*
    Posicionado igual que el botón original (ver MobileBottomNav.astro): hijo
    "absolute" de #mobileBottomNav ("position: sticky", que también sirve de
    contenedor de referencia para descendientes "position: absolute"), pegado
@@ -21,7 +21,7 @@
    "flex-start" ancla al DOM-primer-hijo (el botón) al lado derecho --
    exactamente donde vive fijo con "right-4" -- y el campo (segundo hijo) se
    despliega hacia la izquierda de ahí.
--->
+*/}
 <div id="mobileSearch" class="absolute bottom-full right-4 z-10 flex -translate-y-3 flex-row-reverse items-center gap-2">
    <button
       id="mobileSearchToggle"
@@ -46,8 +46,8 @@
             placeholder="Buscar en Movapp…"
             class="w-full bg-transparent text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none dark:text-white dark:placeholder:text-white/40"
          />
-         <!-- "x" pedida explícitamente al lado del cuadro de texto, además
-              del propio botón flotante (que también alterna abrir/cerrar). -->
+         {/* "x" pedida explícitamente al lado del cuadro de texto, además
+              del propio botón flotante (que también alterna abrir/cerrar). */}
          <button
             id="mobileSearchClose"
             type="button"

@@ -42,8 +42,8 @@ const symptoms = [
       </p>
    </div>
 
-   <!-- 2x2 también en móvil (wireframe móvil, 2026-11-16): tarjetas más
-        compactas por debajo de md (padding, ícono y texto), escritorio igual. -->
+   {/* 2x2 también en móvil (wireframe móvil, 2026-11-16): tarjetas más
+        compactas por debajo de md (padding, ícono y texto), escritorio igual. */}
    <ul class="mt-10 grid grid-cols-2 gap-3 md:gap-6">
       {
          symptoms.map((s, i) => (
@@ -66,13 +66,13 @@ const symptoms = [
                      )}
                   </div>
                </div>
-               <!-- Morado en escritorio (a pedido): todo texto en negritas va
+               {/* Morado en escritorio (a pedido): todo texto en negritas va
                     en color morado (text_banner) -- mismo criterio que el H1
                     de HomeHero.astro. "md:dark:text-text_banner" además de
                     "md:text-text_banner": el tema por defecto es oscuro
-                    (<html class="dark">), y sin la variante compuesta
+                    (‹html class="dark">), y sin la variante compuesta
                     "dark:text-white" le seguía ganando al morado en
-                    escritorio (confirmado con Playwright). -->
+                    escritorio (confirmado con Playwright). */}
                <h3 class="relative text-sm font-bold text-gray-900 dark:text-white md:text-base md:text-text_banner md:dark:text-text_banner">
                   {s.title}
                </h3>

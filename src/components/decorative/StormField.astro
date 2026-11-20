@@ -57,13 +57,13 @@ const fogOffset = hash % 8;
 ---
 
 <div class={wrapperClass} data-storm-id={id} aria-hidden="true">
-   <!--
+   {/*
       Niebla: 3 masas grandes y muy tenues (blur pesado, opacidad baja),
       derivando horizontalmente muy lento -- dos en tono morado (mismo
       lenguaje visual que el resto del sitio) y una en gris azulado, para que
       lea como bruma de tormenta y no como el nebuloso "espacio" de
       StarField.astro.
-   -->
+   */}
    <div
       class={`storm-fog absolute -top-10 left-[8%] h-72 w-[60%] max-w-[600px] rounded-full bg-purple_mv/[0.1] blur-[85px] dark:bg-purple_mv/[0.2]`}
       style={`animation-delay: ${fogOffset}s;`}
@@ -80,7 +80,7 @@ const fogOffset = hash % 8;
    >
    </div>
 
-   <!-- Rayos: forma delgada tipo arco eléctrico (trazo, no un ícono relleno grueso como el del hero) -->
+   {/* Rayos: forma delgada tipo arco eléctrico (trazo, no un ícono relleno grueso como el del hero) */}
    {
       bolts.map((b) => (
          <span
