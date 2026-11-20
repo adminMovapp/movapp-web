@@ -130,32 +130,53 @@ const pageSchema = schema ?? getPageSchema(Astro.url.pathname, Astro.request);
 // Las rutas fijas emiten un objeto { @context, @graph }; los artículos del
 // blog (prop `schema`) siguen pasando un array de nodos. Ambos se serializan tal cual.
 const schemaJson = JSON.stringify(pageSchema);
+
+/*
+   Comentarios del template: siempre {/* * /} (no se publican), nunca
+   <!-- --> (Screaming Frog, nov 2026: un "--" o una etiqueta escrita dentro de
+   un comentario HTML del head hacía que el validador cerrara el head antes de
+   tiempo => "Falta la etiqueta body" + "Elementos HTML no válidos en head").
+   Dos posiciones donde {/* * /} rompe el compilador de Astro (verificado):
+   justo antes de un <style> del head (imprime el comentario como texto o
+   emite el </html> antes del <body>) y entre </head> y <body> (lo imprime
+   como texto). Tampoco nada después de </html>. Esas notas van aquí, en el
+   frontmatter, o como comentario CSS dentro del propio <style>.
+
+   <body>: min-h-[100svh], NO min-h-screen (100vh) ni min-h-[100dvh]: evita que
+   el body cambie de tamaño cada vez que el navegador anima su barra de
+   direcciones/gestos al hacer scroll -- "100vh" es un valor fijo (el tamaño
+   máximo, barra oculta) que no se recalcula con el scroll; "100dvh" sí se
+   recalcularía en cada frame de esa animación, generando reflow. Nótese que
+   MobileBottomNav ya NO es "fixed" (ver ese componente) así que no necesita
+   padding-bottom en el body para reservarle espacio -- al ser "sticky"
+   reserva su propio espacio en el flujo normal.
+*/
 ---
 
 <!doctype html>
 <html lang={siteConfig.site.language} class="no-js dark">
    <head>
-      <!-- Primer hijo de <head>, sin excepción: PageSpeed marca el charset
-         si aparece después del primer 1024 bytes de HTML. -->
+      {/* Primer hijo de ‹head›, sin excepción: PageSpeed marca el charset
+         si aparece después del primer 1024 bytes de HTML. */}
       <meta charset="UTF-8" />
 
-      <!--
+      {/*
          Preconnect a jsDelivr: flag-icons.min.css (usado por la isla de
          tienda) solo se pide con JS, vía el script de más abajo -- pero la
          conexión (DNS/TLS) puede empezar antes, en paralelo al resto del
-         <head>, sin esperar a que ese script corra. No renderiza nada ni
+         ‹head›, sin esperar a que ese script corra. No renderiza nada ni
          depende de JS, así que no compromete el modo no-js.
-      -->
+      */}
       <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
 
-      <!--
+      {/*
          Carga del CSS condicionada a JavaScript: si el navegador (o el bot)
          no ejecuta este script, la hoja de estilos de Tailwind nunca se pide
          y la página se sirve como HTML plano, mucho más ligero. Con
-         JavaScript, se agrega el <link> y la página luce con el diseño
+         JavaScript, se agrega el ‹link› y la página luce con el diseño
          completo (colores, animaciones, etc.).
 
-         El flip de clase "no-js" -> "js" espera al "load" de ese <link> (no
+         El flip de clase "no-js" -> "js" espera al "load" de ese ‹link› (no
          es inmediato) -- a propósito, y solo confirmado con Playwright bajo
          throttling real: si se quita "no-js" de una (como antes), el
          navegador pierde el fallback de no-js.css en el mismo instante en
@@ -173,25 +194,7 @@ const schemaJson = JSON.stringify(pageSchema);
          si la hoja nunca carga (bloqueada, sin red), preferible quedar en el
          estado actual del sitio (sin este fix) a quedar trabado en no-js
          para siempre.
-      -->
-      <!--
-         Parpadeo al cambiar de página (2026-11-17): aun con global.css en
-         caché, el navegador pinta 1-2 frames con no-js.css (fondo claro, HTML
-         plano) antes del "load" del <link>, y luego el body anima de ese
-         fondo claro al oscuro por su transition-colors. Fix, solo en
-         navegaciones posteriores de la sesión (flag "mv_css_ok"; la primera
-         visita -- la que mide Lighthouse -- sigue igual): "css-pending" oculta
-         el body con el color de fondo del tema hasta el flip o un tope de
-         500 ms (después se ve el fallback no-js, como antes), y
-         "no-theme-transition" anula la transición del body durante el flip.
-         Tiene que ir inline (no en Tailwind): aplica antes de que cargue.
-      -->
-      <style is:inline>
-         html.css-pending { background: #d1d5db; }
-         html.css-pending.dark { background: #050505; }
-         html.css-pending body { visibility: hidden; }
-         html.no-theme-transition body { transition: none !important; }
-      </style>
+      */}
       <script is:inline define:vars={{ stylesheetHref, flagIconsHref, flagIconsSri }}>
          (function () {
             var root = document.documentElement;
@@ -243,7 +246,7 @@ const schemaJson = JSON.stringify(pageSchema);
          })();
       </script>
 
-      <!-- Tema: aplicar antes del paint para evitar flash (default DARK) -->
+      {/* Tema: aplicar antes del paint para evitar flash (default DARK) */}
       <script is:inline>
          (function () {
             try {
@@ -270,21 +273,21 @@ const schemaJson = JSON.stringify(pageSchema);
          </script>
       )}
 
-      <!-- Viewport (charset ya se declaró como primer hijo de <head>) -->
+      {/* Viewport (charset ya se declaró como primer hijo de ‹head›) */}
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
       <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
-      <!-- SEO básico -->
+      {/* SEO básico */}
       <title>{seoTags.title}</title>
       <meta name="description" content={seoTags.description} />
       <meta name="author" content={seoTags.author} />
       {!siteConfig.isProduction && <meta name="robots" content={seoTags.robots} />}
 
-      <!-- Canonical URL -->
+      {/* Canonical URL */}
       <link rel="canonical" href={seoTags.canonical} />
 
-      <!-- Open Graph -->
+      {/* Open Graph */}
       <meta property="og:type" content={seoTags.type} />
       <meta property="og:url" content={seoTags.canonical} />
       <meta property="og:title" content={ogTitle ?? seoTags.title} />
@@ -295,7 +298,7 @@ const schemaJson = JSON.stringify(pageSchema);
       <meta property="og:site_name" content={siteConfig.site.name} />
       <meta property="og:locale" content={siteConfig.site.locale} />
 
-      <!-- Twitter Card -->
+      {/* Twitter Card */}
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:url" content={seoTags.canonical} />
       <meta name="twitter:title" content={ogTitle ?? seoTags.title} />
@@ -304,26 +307,26 @@ const schemaJson = JSON.stringify(pageSchema);
       <meta name="twitter:site" content={siteConfig.social.twitter} />
       <meta name="twitter:creator" content={siteConfig.social.twitter} />
 
-      <!-- Favicon -->
-      <!-- <link rel="icon" type="image/png" href="/ico-movapp.ico" /> -->
+      {/* Favicon */}
+      {/* ‹link rel="icon" type="image/png" href="/ico-movapp.ico" /> */}
       <link rel="icon" type="image/x-icon" href={siteConfig.assets.favicon} />
       <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
       <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
       <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-      <!-- <link rel="manifest" href="/site.webmanifest" /> -->
+      {/* ‹link rel="manifest" href="/site.webmanifest" /> */}
       <meta name="theme-color" content={siteConfig.seo.themeColor} />
 
-<!--
+{/*
          Las cabeceras de seguridad (CSP, HSTS, X-Frame-Options, nosniff,
-         Referrer-Policy...) van como headers HTTP reales, no como <meta
+         Referrer-Policy...) van como headers HTTP reales, no como ‹meta
          http-equiv> (aquí no tienen efecto): ver src/utils/securityHeaders.ts.
-      -->
+      */}
       <meta name="generator" content={Astro.generator} />
 
-      <!-- Schema.org JSON-LD -->
+      {/* Schema.org JSON-LD */}
       <script type="application/ld+json" set:html={schemaJson} />
 
-      <!-- Header meta-pixel  -->
+      {/* Header meta-pixel  */}
       <meta name="facebook-domain-verification" content="uffghfhff1th1z040abwzgjgjto9mi" />
 
       {
@@ -363,33 +366,31 @@ const schemaJson = JSON.stringify(pageSchema);
          </style>
       </noscript>
 
-      <!--
-         Margen 0 en <body> siempre activo (con o sin JS, cargue o no
-         Tailwind): mientras el preflight de Tailwind no llega (carga async,
-         ver mecanismo no-js/js), el navegador aplica su margen por defecto
-         de 8px -- un salto de 8px en los 4 lados de TODO el viewport apenas
-         Tailwind carga se medía como un CLS de ~0.79 (confirmado con la
-         Layout Instability API: única fuente del shift era <body>, de
-         x:7,y:8 a x:0,y:0). No es una regla de diseño (no revela color ni
-         tipografía), es normalización de caja -- coincide con el valor
-         final de Tailwind, así que no cambia nada visualmente.
-      -->
       <style>
+         /* Margen 0 en body siempre activo (con o sin JS, cargue o no
+            Tailwind): mientras el preflight de Tailwind no llega (carga async,
+            ver mecanismo no-js/js), el navegador aplica su margen por defecto
+            de 8px: un salto de 8px en los 4 lados de TODO el viewport apenas
+            Tailwind carga se medía como un CLS de ~0.79 (confirmado con la
+            Layout Instability API: única fuente del shift era body, de
+            x:7,y:8 a x:0,y:0). No es una regla de diseño (no revela color ni
+            tipografía), es normalización de caja: coincide con el valor
+            final de Tailwind, así que no cambia nada visualmente. */
          body {
             margin: 0;
          }
       </style>
 
-      <!--
-         .no-copy (ver prop "disableCopy" arriba): CSS propio, no Tailwind,
-         para que aplique con o sin JS -- "user-select: none" ya bloquea el
-         vector principal (arrastrar el mouse para seleccionar texto) sin
-         depender de que cargue ningún script. El bloqueo del evento
-         "copy"/menú contextual (defensa en profundidad, para el caso de
-         selección por teclado) vive en el <script> junto al <main>, porque
-         eso sí necesita JS.
-      -->
       <style>
+         /* .no-copy (ver prop "disableCopy" arriba): CSS propio, no Tailwind,
+            para que aplique con o sin JS: "user-select: none" ya bloquea el
+            vector principal (arrastrar el mouse para seleccionar texto) sin
+            depender de que cargue ningún script. El bloqueo del evento
+            "copy"/menú contextual (defensa en profundidad, para el caso de
+            selección por teclado) vive en el script junto al main, porque
+            eso sí necesita JS.
+            Va como comentario CSS y no como {/* * /} antes de este style:
+            ver la nota "Comentarios del template" en el frontmatter. */
          .no-copy,
          .no-copy * {
             -webkit-user-select: none;
@@ -410,17 +411,6 @@ const schemaJson = JSON.stringify(pageSchema);
       </style>
    </head>
 
-   <!--
-      min-h-[100svh], NO min-h-screen (100vh) ni min-h-[100dvh]: evita que el
-      body cambie de tamaño cada vez que el navegador anima su barra de
-      direcciones/gestos al hacer scroll -- "100vh" es un valor fijo (el
-      tamaño máximo, barra oculta) que no se recalcula con el scroll;
-      "100dvh" sí se recalcularía en cada frame de esa animación, generando
-      reflow. Nótese que MobileBottomNav ya NO es "fixed" (ver ese
-      componente) así que no necesita padding-bottom en el body para
-      reservarle espacio -- al ser "sticky" reserva su propio espacio en el
-      flujo normal.
-   -->
    <body
       class="bg-gray-300 text-gray-900 dark:bg-[#050505] dark:text-white min-h-[100svh] flex flex-col overflow-x-hidden transition-colors duration-300"
    >
@@ -454,15 +444,15 @@ const schemaJson = JSON.stringify(pageSchema);
          </div>
       </main>
 
-      <!--
+      {/*
          Defensa en profundidad de ".no-copy" (ver prop "disableCopy" y el
-         CSS junto a </head>): el "user-select: none" ya bloquea seleccionar
+         CSS junto a ‹/head›): el "user-select: none" ya bloquea seleccionar
          con el mouse, pero no evita el menú contextual (clic derecho >
          Copiar) ni una selección hecha por teclado/lector de pantalla --
          acá se bloquean también los eventos "copy"/"cut"/"contextmenu"/
          "dragstart" dentro del contenido protegido. Sin JS este script no
          corre, pero el CSS de arriba (siempre inline) sigue aplicando.
-      -->
+      */}
       <script is:inline>
          (function () {
             function blockCopyEvents(el) {
@@ -481,14 +471,14 @@ const schemaJson = JSON.stringify(pageSchema);
       {!hideChrome && <MenuMobilePanel />}
       {!hideChrome && <MenuDesktopPanel />}
 
-      <!--
+      {/*
          DIAGNÓSTICO TEMPORAL (v2) -- borrar una vez resuelto. Solo se activa
          con ?navdebug=1 en la URL. A diferencia de la v1, esta vez también
          registra el "transform" que el script de compensación de
          MobileBottomNav.astro le está aplicando en cada momento, para
          confirmar si esa corrección realmente se está aplicando y aun así
          no alcanza, o si nunca llega a aplicarse.
-      -->
+      */}
       <script is:inline>
          (function () {
             if (!/[?&]navdebug=1(&|$)/.test(location.search)) return;
@@ -590,21 +580,21 @@ const schemaJson = JSON.stringify(pageSchema);
          })();
       </script>
 
-      <!--
+      {/*
          Widget de chat LeadConnector -- DESACTIVADO TEMPORALMENTE a pedido.
          Para reactivarlo, descomentar este bloque.
-      -->
-      <!--
+      */}
+      {/*
       {!disableChatWidget && (
-         <script
+         ‹script
             is:inline
             src="https://widgets.leadconnectorhq.com/loader.js"
             data-resources-url="https://widgets.leadconnectorhq.com/chat-widget/loader.js"
-            data-widget-id="6a629fdd6f3b01a586db9391"></script>
+            data-widget-id="6a629fdd6f3b01a586db9391">‹/script›
       )}
-      -->
+      */}
 
-      <!--
+      {/*
          El widget de LeadConnector se posiciona a sí mismo dentro de su
          propio shadow DOM (no llega el CSS normal) fijando "right: 20px"
          inline UNA SOLA VEZ al montar. En móvil lo reubicamos por JS -- y,
@@ -615,7 +605,7 @@ const schemaJson = JSON.stringify(pageSchema);
          izquierda para siempre (confirmado). Por eso, al volver a
          escritorio, hay que RESTAURAR explícitamente "right: 20px" en vez
          de solo limpiar.
-      -->
+      */}
       <script is:inline>
          (function () {
             function repositionChatWidget() {
@@ -746,7 +736,7 @@ const schemaJson = JSON.stringify(pageSchema);
          })();
       </script>
 
-      <!--
+      {/*
          Reveal on scroll para [data-aos] (todas las secciones marcadas con
          ese atributo, en toda la página): reemplaza a la librería AOS, que
          antes se inicializaba desde una isla de React (InitAOS,
@@ -760,7 +750,7 @@ const schemaJson = JSON.stringify(pageSchema);
          absoluto, igual que el resto de los scripts de este layout. Mismos
          valores de traslado que tenía AOS (ver [data-aos] en global.css),
          ahora también activo en móvil (antes AOS venía desactivado ahí).
-      -->
+      */}
       <script is:inline>
          (function () {
             function initAosReveal() {
@@ -813,14 +803,14 @@ const schemaJson = JSON.stringify(pageSchema);
          })();
       </script>
 
-      <!--
+      {/*
          Tracking del evento "Lead" en botones WhatsApp (.wa__stt). Vive acá,
          una sola vez, y no en ButtonContact.astro: ese componente se repite
          2-3 veces en varias páginas, y un listener por instancia hacía que
          el mismo clic disparara el evento 2-3 veces. Un solo listener
          delegado en document cubre todos los botones (incluso los que se
          agreguen después) sin duplicarse.
-      -->
+      */}
       <script is:inline define:vars={{ serverCountry, leadValue: LEAD_VALUE }}>
          (function () {
             // País resuelto en el servidor (geo de Netlify, ver
@@ -909,7 +899,7 @@ const schemaJson = JSON.stringify(pageSchema);
          })();
       </script>
 
-      <!--
+      {/*
          Tracking GA4 de CTAs de navegación ("Plan de eventos GA4 · Movapp",
          fase 2): UN solo listener delegado en document para todos los
          enlaces/botones medibles -- los atributos data-* que ya llevaban
@@ -920,7 +910,7 @@ const schemaJson = JSON.stringify(pageSchema);
          los data-*; no hace falta JS por evento.
 
          Tres familias de evento:
-         - whatsapp_click: cualquier <a> a wa.me / api.whatsapp.com (canal
+         - whatsapp_click: cualquier ‹a› a wa.me / api.whatsapp.com (canal
            principal; params button_id, button_text, placement,
            destination_url, page_location). NO se mezcla con cta_click.
            OJO con el orden: un data-ga-event explícito gana SIEMPRE, y por
@@ -953,7 +943,7 @@ const schemaJson = JSON.stringify(pageSchema);
          Sin datos personales en ningún parámetro: destination_url va sin
          query string (el href de WhatsApp lleva el mensaje precargado) y
          nunca se reenvían data-message ni data-external-label.
-      -->
+      */}
       <script is:inline>
          (function () {
             var PLACEMENTS = ['header', 'hero', 'footer', 'sticky', 'contenido'];
@@ -1037,5 +1027,3 @@ const schemaJson = JSON.stringify(pageSchema);
       </script>
    </body>
 </html>
-
-<!-- bust cache -->

@@ -34,8 +34,8 @@ const socials = [
 ];
 ---
 
-<!--
-   Vive FUERA de <MobileBottomNav> a propósito (se renderiza como hermano
+{/*
+   Vive FUERA de ‹MobileBottomNav› a propósito (se renderiza como hermano
    suyo desde Layout.astro): ese nav tiene un "transform" inline permanente
    (ver su propio script -- compensación de viewport en iOS) y en CSS,
    cualquier transform en un ancestro convierte a ese ancestro en el
@@ -60,15 +60,15 @@ const socials = [
    sale por el mismo lado: el botón que lo abre vive en la barra inferior
    (MenuMobile.astro dentro de MobileBottomNav), así que el movimiento nace
    de donde el dedo tocó. Es el equivalente móvil de la "cortina" lateral
-   del menú de escritorio (MenuDesktopPanel.astro). Ver el <style> y el
-   <script> de más abajo.
--->
+   del menú de escritorio (MenuDesktopPanel.astro). Ver el ‹style› y el
+   ‹script› de más abajo.
+*/}
 <nav
    id="menuNav"
    class="menu-mobile-panel fixed inset-0 z-[999999999] hidden flex-col bg-white p-6 pt-[calc(1.5rem_+_env(safe-area-inset-top))] pb-[calc(1.5rem_+_env(safe-area-inset-bottom))] dark:bg-background_bottom"
    style="transform: translateY(100%);"
 >
-   <!-- Encabezado: marca + cerrar (misma estructura que la referencia de diseño) -->
+   {/* Encabezado: marca + cerrar (misma estructura que la referencia de diseño) */}
    <div class="relative flex items-center justify-between">
       <a href="/" class="flex items-center" aria-label="Movapp - Inicio" data-home-link>
          <Image src={ImgLogo} alt="Movapp" height={100} class="menu-logo block h-7 w-auto dark:hidden" />
@@ -86,7 +86,7 @@ const socials = [
       </button>
    </div>
 
-   <!--
+   {/*
       "justify-start" (NO "justify-center") a propósito: con las filas más
       altas de los botones, el contenido suele desbordar el alto disponible,
       y centrar un contenedor flex que desborda dispara un bug real de
@@ -97,7 +97,7 @@ const socials = [
 
       "items-start" (a pedido, vuelve a la izquierda -- ya no centrado) +
       "pt-10" (en vez de "py-6") para bajar un poco el bloque completo.
-   -->
+   */}
    <div class="menu-mobile-scroll relative flex min-h-0 flex-1 flex-col items-start justify-start gap-5 overflow-y-auto pb-6 pt-10">
       {
          topLinks.map((item) => (
@@ -110,8 +110,8 @@ const socials = [
          ))
       }
 
-      <!-- "Contenido": acordeón (mismo agrupamiento que el submenú de escritorio),
-           igual que la sección expandible de la referencia de diseño. -->
+      {/* "Contenido": acordeón (mismo agrupamiento que el submenú de escritorio),
+           igual que la sección expandible de la referencia de diseño. */}
       <button
          id="menuContentToggle"
          type="button"
@@ -138,7 +138,7 @@ const socials = [
       </div>
    </div>
 
-   <!-- Carrito y tema -->
+   {/* Carrito y tema */}
    <div class="relative flex flex-col items-start gap-4 border-t border-black/10 pt-4 dark:border-white/10">
       <a
          href="/tienda/"
@@ -195,7 +195,7 @@ const socials = [
       </button>
    </div>
 
-   <!-- Redes sociales (misma fila inferior que la referencia de diseño) -->
+   {/* Redes sociales (misma fila inferior que la referencia de diseño) */}
    <div class="relative flex items-center justify-center gap-4 border-t border-black/10 pt-4 mt-4 dark:border-white/10">
       {
          socials.map((s) => (

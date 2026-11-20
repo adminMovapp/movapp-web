@@ -15,9 +15,9 @@ import ImgHeroCiudadMobile from '@assets/Silencia-los-mensajes-amenazantes-mobil
 import ButtonContact from '@components/ui/ButtonContact.astro';
 ---
 
-<!--
-   Sin pt-*/pb-* a propósito: a diferencia del resto del sitio, este
-   <section> no usa "my-section" (margen, que colapsa con el margin-top de la
+{/*
+   Sin pt-* /pb-* a propósito: a diferencia del resto del sitio, este
+   ‹section› no usa "my-section" (margen, que colapsa con el margin-top de la
    siguiente sección y da el espaciado estándar de 4rem, ver
    tailwind.config.mjs) sino min-h+flex para el centrado vertical. El
    pt-16/md:pt-8 que tenía antes (espacio bajo el header, para cuando el H1
@@ -27,38 +27,38 @@ import ButtonContact from '@components/ui/ButtonContact.astro';
    por ".header-spacer", ver Header.astro), sin un padding de más encima
    dejando un hueco. Tampoco se agrega pb-* por la razón de siempre: no
    colapsa con el mt-section de HomeSymptoms, se sumaría encima.
--->
+*/}
 <section class="relative mx-auto flex min-h-[85vh] max-w-5xl flex-col items-center justify-center px-4 text-center md:min-h-[70vh]">
-   <!--
+   {/*
       Fondo espacial: full-bleed (ignora el max-w del section con el truco
       left-1/2 + w-screen + -translate-x-1/2) para que llene todo el ancho
       de la pantalla y no se vea como un recuadro morado aparte. La base es
       del mismo tono que el fondo del body; el morado queda solo como un
       resplandor superior tenue, y las estrellas se crean por JS más abajo.
-   -->
+   */}
    <div
       class="pointer-events-none absolute -top-24 -bottom-24 left-1/2 -z-20 w-screen -translate-x-1/2"
       aria-hidden="true"
    >
-      <!-- Base: mismo tono que el fondo del body -->
+      {/* Base: mismo tono que el fondo del body */}
       <div class="absolute inset-0 dark:bg-[#050505]"></div>
 
-      <!-- Resplandor superior: el "toque morado", tenue -->
+      {/* Resplandor superior: el "toque morado", tenue */}
       <div
          class="absolute left-1/2 top-[-160px] h-[460px] w-[70%] max-w-[900px] -translate-x-1/2 rounded-full bg-purple_mv/[0.06] blur-[150px] dark:bg-purple_mv/[0.18]"
       >
       </div>
 
-      <!-- Estrellas: el contenedor solo define el color (currentColor); las estrellas las crea el script de más abajo.
+      {/* Estrellas: el contenedor solo define el color (currentColor); las estrellas las crea el script de más abajo.
            Ocultas en fondo claro (2026-09-10, a pedido, mismo criterio que StarField.astro) -- "hidden dark:block"
-           en vez de tocar el script: en oscuro quedan exactamente igual que antes. -->
+           en vez de tocar el script: en oscuro quedan exactamente igual que antes. */}
       <div id="hero-stars" class="absolute inset-0 hidden text-white/90 dark:block"></div>
 
-      <!-- Estrellas fugaces: cruzan el hero de vez en cuando (mismo patrón que StarField.astro, que el hero no usa por tener su propio fondo) -->
+      {/* Estrellas fugaces: cruzan el hero de vez en cuando (mismo patrón que StarField.astro, que el hero no usa por tener su propio fondo) */}
       <div id="hero-shooting-stars" class="absolute inset-0 overflow-hidden text-purple_mv/70 dark:text-white"></div>
    </div>
 
-   <!--
+   {/*
       Bloque del título + animación: en móvil, el título va solo, sin la
       órbita de escudos de fondo (removida a pedido -- ver más abajo). En
       escritorio (md+) se abre a 2 columnas: el texto queda a la izquierda y
@@ -93,15 +93,15 @@ import ButtonContact from '@components/ui/ButtonContact.astro';
       margen de sobra sin volver a abrir el hueco grande de antes). En
       escritorio se mantiene centrado (md:items-center) -- ahí la órbita sí
       llena ese espacio, así que no hay hueco que corregir.
-   -->
+   */}
    <div id="home-hero-stage-wrapper" class="relative w-full h-[170vh]">
       <div class="sticky top-0 flex h-screen w-full items-end justify-center pb-16 md:items-center md:pb-0">
    <div class="relative z-0 w-full md:grid md:grid-cols-2 md:items-center md:gap-10 lg:gap-16">
       <div class="relative">
-         <!--
+         {/*
             H1 (único H1 de la página). Todo el texto (el "eyebrow" +
             el título) vive dentro de este mismo H1, en escritorio Y en
-            móvil (a pedido) -- ya no hay un <p> suelto aparte, así no hay
+            móvil (a pedido) -- ya no hay un ‹p› suelto aparte, así no hay
             texto duplicado ni riesgo de dos encabezados. En escritorio,
             además, todo va en mayúsculas ("md:uppercase": text-transform se
             hereda, alcanza con ponerlo una vez acá) -- en móvil se queda en
@@ -110,7 +110,7 @@ import ButtonContact from '@components/ui/ButtonContact.astro';
             "acoso" y "Movapp" en morado (text_banner); "apps montadeudas"
             además lleva el mismo drop-shadow que ya usaba la frase
             equivalente en el título anterior -- a pedido (2026-08-27).
-         -->
+         */}
          <h1
             class="hero-float-combo mx-auto mt-4 max-w-4xl text-4xl font-bold leading-tight text-gray-900 dark:text-white md:mx-0 md:text-left md:text-6xl md:uppercase"
             style="--float-dur: 6.5s; --float-delay: 0.3s; animation: heroFadeIn 0.7s ease-out both, heroFloat 6.5s ease-in-out 0.3s infinite;"
@@ -119,9 +119,9 @@ Frena el <span class="text-text_banner">acoso</span> de las <span class="text-te
          </h1>
       </div>
 
-      <!-- Animación de Órbita de Protección -- versión escritorio: columna derecha, protagonista (ya no es fondo de toda la sección) -->
+      {/* Animación de Órbita de Protección -- versión escritorio: columna derecha, protagonista (ya no es fondo de toda la sección) */}
       <div class="relative hidden md:flex md:items-center md:justify-center" aria-hidden="true">
-         <!--
+         {/*
             Mismo patrón que la versión móvil de arriba: el grupo es un
             contenedor flex centrado, y los círculos son hijos "absolute" con
             solo ancho/alto (sin translate) -- el navegador los centra en el
@@ -144,19 +144,19 @@ Frena el <span class="text-text_banner">acoso</span> de las <span class="text-te
             que se probó para lo anterior sumaba espacio de más siempre, sin
             importar si hacía falta, y el bloque completo quedaba con mucho
             aire arriba (toda la sección se centra con justify-center en el
-            <section> exterior). Con tamaño real aquí, la fila mide
+            ‹section› exterior). Con tamaño real aquí, la fila mide
             max(alto del título, alto del círculo) -- ni más ni menos -- y
             "items-center" en el grid centra ambas columnas dentro de esa
             altura correcta en todos los casos.
-         -->
+         */}
          <div class="hero-orbit-group pointer-events-none relative z-[-10] flex h-[304px] w-[304px] items-center justify-center opacity-30 dark:opacity-40 lg:h-[396px] lg:w-[396px] xl:h-[484px] xl:w-[484px]">
-            <!-- Círculo interior (decorativo) -->
+            {/* Círculo interior (decorativo) */}
             <div class="hero-orbit-inner absolute h-[170px] w-[170px] rounded-full border-[1.5px] border-purple_mv/20 border-dashed lg:h-[230px] lg:w-[230px] xl:h-[280px] xl:w-[280px]"></div>
 
-            <!-- Círculo Exterior (Órbita de Escudos) -->
+            {/* Círculo Exterior (Órbita de Escudos) */}
             <div class="hero-orbit-outer absolute h-[260px] w-[260px] rounded-full border border-purple_mv/30 lg:h-[340px] lg:w-[340px] xl:h-[420px] xl:w-[420px]">
 
-               <!-- Escudo 1 (Arriba: 0 grados) -->
+               {/* Escudo 1 (Arriba: 0 grados) */}
                <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-11 h-11 text-purple_mv lg:w-14 lg:h-14 xl:w-16 xl:h-16">
                   <div class="w-full h-full hero-orbit-item">
                      <svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full drop-shadow-[0_0_8px_rgba(129,73,226,0.6)]">
@@ -166,7 +166,7 @@ Frena el <span class="text-text_banner">acoso</span> de las <span class="text-te
                   </div>
                </div>
 
-               <!-- Escudo 2 (Abajo Izquierda: 120 grados) -->
+               {/* Escudo 2 (Abajo Izquierda: 120 grados) */}
                <div class="absolute top-[75%] left-[6.7%] -translate-x-1/2 -translate-y-1/2 w-11 h-11 text-purple_mv lg:w-14 lg:h-14 xl:w-16 xl:h-16">
                   <div class="w-full h-full hero-orbit-item">
                      <svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full drop-shadow-[0_0_8px_rgba(129,73,226,0.6)]">
@@ -176,7 +176,7 @@ Frena el <span class="text-text_banner">acoso</span> de las <span class="text-te
                   </div>
                </div>
 
-               <!-- Escudo 3 (Abajo Derecha: 240 grados) -->
+               {/* Escudo 3 (Abajo Derecha: 240 grados) */}
                <div class="absolute top-[75%] left-[93.3%] -translate-x-1/2 -translate-y-1/2 w-11 h-11 text-purple_mv lg:w-14 lg:h-14 xl:w-16 xl:h-16">
                   <div class="w-full h-full hero-orbit-item">
                      <svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full drop-shadow-[0_0_8px_rgba(129,73,226,0.6)]">
@@ -189,7 +189,7 @@ Frena el <span class="text-text_banner">acoso</span> de las <span class="text-te
             </div>
          </div>
 
-         <!--
+         {/*
             Logo Movapp + ondas, flotando en el centro de la órbita. Solo en escritorio
             (a pedido: en móvil se queda como antes, sin logo). El wrap se centra igual
             que .hero-orbit-group: "absolute" sin left/top/translate, el navegador lo
@@ -210,19 +210,19 @@ Frena el <span class="text-text_banner">acoso</span> de las <span class="text-te
 
             La imagen del logo sigue con "inset-0 + margin:auto" porque ahí sí funciona
             (su tamaño no excede el del wrap en ningún eje).
-         -->
+         */}
          <div
             class="hero-logo-wrap pointer-events-none absolute z-[-5] flex h-20 w-20 items-center justify-center lg:h-28 lg:w-28 xl:h-32 xl:w-32"
             aria-hidden="true"
          >
-            <!--
+            {/*
                Tamaño base = el mismo que .hero-orbit-outer (260/340/420px, ver arriba),
                para que la onda termine su recorrido justo en el círculo donde orbitan
                los escudos. La animación arranca en scale(0.3) -- aprox. el tamaño del
                propio logo relativo a ese círculo -- y crece hasta scale(1) (tamaño
                completo del círculo), en vez de crecer un poco y desvanecerse cerca del
                logo como antes.
-            -->
+            */}
             <span
                class="hero-logo-wave absolute h-[260px] w-[260px] rounded-full border-2 border-purple_mv/60 dark:border-white/50 lg:h-[340px] lg:w-[340px] xl:h-[420px] xl:w-[420px]"
                style="animation-delay: 0s;"
@@ -254,12 +254,12 @@ Frena el <span class="text-text_banner">acoso</span> de las <span class="text-te
       </div>
    </div>
 
-      <!--
+      {/*
          Foto de portada: cubre el escenario por encima del título+órbita
-         (z-10) y se achica/desvanece por scroll -- ver el <script> al final
+         (z-10) y se achica/desvanece por scroll -- ver el ‹script› al final
          del archivo. Full-bleed dentro del escenario con el mismo truco que
          el fondo espacial de arriba (left-1/2 + w-screen + -translate-x-1/2),
-         aunque el escenario herede el max-w-5xl angosto del <section>.
+         aunque el escenario herede el max-w-5xl angosto del ‹section›.
          overflow-hidden sólo en ESTE div (no en el escenario completo) para
          no arriesgar recortar el título+órbita si llegan a medir más que
          100vh (zoom/fuente grande).
@@ -286,7 +286,7 @@ Frena el <span class="text-text_banner">acoso</span> de las <span class="text-te
          normal sobre el archivo ya modificado. En escritorio el recorte es
          mucho menos angosto y no hace falta nada de esto, por eso ahí se
          sigue usando el archivo original sin tocar.
-      -->
+      */}
       <div id="home-hero-image-cover" class="pointer-events-none absolute top-0 bottom-0 left-1/2 z-10 w-screen -translate-x-1/2 overflow-hidden">
          <Image
             src={ImgHeroCiudadMobile}
@@ -310,7 +310,7 @@ Frena el <span class="text-text_banner">acoso</span> de las <span class="text-te
             fetchpriority="high"
             class="hidden h-full w-full object-cover md:block"
          />
-         <!-- Degradado hacia el fondo real de la página (gray-300 / #050505, ver <body> en Layout.astro) para que el corte con lo de abajo sea gradual -->
+         {/* Degradado hacia el fondo real de la página (gray-300 / #050505, ver ‹body› en Layout.astro) para que el corte con lo de abajo sea gradual */}
          <div
             class="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-gray-300 dark:to-[#050505]"
             aria-hidden="true"
@@ -320,7 +320,7 @@ Frena el <span class="text-text_banner">acoso</span> de las <span class="text-te
       </div>
    </div>
 
-   <!--
+   {/*
       Indicador de scroll (mismo pedido: "un indicador de scroll... para que
       el usuario no sepa que debe hacer scroll") -- ícono de mouse + flecha,
       centrado abajo de la pantalla. "fixed" respecto al viewport real, NO
@@ -341,7 +341,7 @@ Frena el <span class="text-text_banner">acoso</span> de las <span class="text-te
       hace falta que siga ahí una vez que ya entendió que hay más contenido
       debajo -- por eso "fixed" no es un problema pese a persistir en el DOM
       mientras el usuario sigue bajando por el resto de la página.
-   -->
+   */}
    <div
       id="home-hero-scroll-cue"
       class="pointer-events-none fixed inset-x-0 bottom-16 z-20 flex flex-col items-center gap-2 text-white md:bottom-10"
@@ -355,16 +355,16 @@ Frena el <span class="text-text_banner">acoso</span> de las <span class="text-te
       </svg>
    </div>
 
-   <!-- Asesoría gratuita -->
+   {/* Asesoría gratuita */}
    <div
       class="hero-float-solo mt-10 grid w-full grid-cols-1 items-center gap-6 overflow-hidden rounded-3xl border border-purple_mv/25 bg-gradient-to-b from-purple_mv/[0.06] to-transparent p-6 text-left shadow-card dark:border-white/10 dark:from-purple_mv/[0.1] dark:to-black/30 md:mt-14 md:grid-cols-2 md:gap-10 md:p-10"
       style="--float-dur: 6.2s; --float-delay: 0.6s; animation: heroFloat 6.2s ease-in-out 0.6s infinite;"
    >
-      <!-- order-2/md:order-1 + order-1/md:order-2 en este div y el de la imagen
+      {/* order-2/md:order-1 + order-1/md:order-2 en este div y el de la imagen
            (a pedido, 2026-08-27): en móvil (grid-cols-1, todo apilado) el orden
            visual pasa a ser imagen -> título -> texto/botón/badges; en
            escritorio (md:grid-cols-2) vuelve al diseño original -- este bloque
-           en la columna izquierda, imagen en la derecha -- sin tocar el DOM. -->
+           en la columna izquierda, imagen en la derecha -- sin tocar el DOM. */}
       <div class="order-2 md:order-1">
          <h2 class="text-2xl font-bold uppercase gradient-text-move bg-gradient-to-r from-gray-900 to-purple_mv bg-clip-text text-transparent dark:from-white dark:to-purple_mv md:text-3xl">
             Asesoría gratuita
@@ -377,9 +377,9 @@ Frena el <span class="text-text_banner">acoso</span> de las <span class="text-te
          </div>
       </div>
 
-      <!-- Con tope de ancho + mx-auto para que no ocupe toda la columna: se veía
+      {/* Con tope de ancho + mx-auto para que no ocupe toda la columna: se veía
            demasiado grande frente al texto. Ahora también visible en móvil
-           (a pedido, 2026-08-27) -- ver el comentario de "order" arriba. -->
+           (a pedido, 2026-08-27) -- ver el comentario de "order" arriba. */}
       <div class="order-1 mx-auto flex aspect-[4/3] w-full max-w-[220px] items-center justify-center overflow-hidden rounded-2xl border border-purple_mv/20 bg-purple_mv/5 dark:border-white/10 dark:bg-white/5 md:order-2 md:aspect-square md:max-w-[240px]">
          <Image
             src={ImgAsesoria}

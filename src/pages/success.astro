@@ -4,7 +4,7 @@ import Layout from '@layouts/Layout.astro';
 
 <Layout title="¡Gracias por tu compra!">
    <section class="mt-32 mb-20 flex flex-col items-center justify-center px-6 text-center" data-aos="zoom-in">
-      <!-- Ícono de éxito -->
+      {/* Ícono de éxito */}
       <div class="text-green-500 mb-6">
          <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -21,19 +21,19 @@ import Layout from '@layouts/Layout.astro';
          </svg>
       </div>
 
-      <!-- Título -->
+      {/* Título */}
       <h1 class="text-3xl sm:text-4xl font-bold text-green-500 mb-2">¡Pago realizado con éxito!</h1>
 
-      <!-- Mensaje -->
+      {/* Mensaje */}
       <p class="text-lg text-gray-700 dark:text-white max-w-2xl mb-2">
          Gracias por tu compra. Hemos recibido tu pago correctamente. En breve recibirás un correo electrónico con la
          confirmación y los detalles.
       </p>
 
-      <!-- Folio (si Stripe redirige con payment_intent) -->
+      {/* Folio (si Stripe redirige con payment_intent) */}
       <p id="order-folio" class="text-sm text-text_banner font-semibold mb-6"></p>
 
-      <!-- Botones -->
+      {/* Botones */}
       <div class="flex flex-col sm:flex-row gap-4">
          <a
             href="/"
@@ -42,12 +42,12 @@ import Layout from '@layouts/Layout.astro';
             Volver al inicio
          </a>
 
-         <!-- <a
+         {/* ‹a
         href="mailto:soporte@movapp.org"
         class="px-6 py-3 bg-gray-200 text-gray-800 rounded-lg font-semibold shadow hover:bg-gray-300 transition"
       >
         Contactar soporte
-      </a> -->
+      ‹/a› */}
       </div>
    </section>
 

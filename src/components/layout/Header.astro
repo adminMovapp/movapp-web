@@ -9,36 +9,36 @@ import HeaderSearch from '@components/layout/HeaderSearch.astro';
    id="siteHeader"
    class="fixed top-0 inset-x-0 z-50 bg-gradient-to-b from-purple_mv/[0.06] to-white/90 dark:from-purple_mv/[0.08] dark:to-zinc-950/85 backdrop-blur-md px-6 md:px-10 lg:px-16 py-4 hidden lg:flex justify-between items-center transition-colors duration-300"
 >
-   <!-- Logo con su diseño/color original (sin recolorear vía mask-image) --
+   {/* Logo con su diseño/color original (sin recolorear vía mask-image) --
         mismo criterio que Footer.astro y MenuMobilePanel.astro: en light se
-        usa el PNG tal cual, en dark el PNG blanco. -->
+        usa el PNG tal cual, en dark el PNG blanco. */}
    <a href="/" class="flex items-center" aria-label="Movapp - Inicio" data-home-link>
       <Image src={ImgLogo} alt="Movapp" height={100} class="site-logo block h-9 w-auto dark:hidden md:h-10" />
       <Image src={ImgLogoBlanco} alt="Movapp" height={100} class="site-logo hidden h-9 w-auto dark:block md:h-10" />
    </a>
 
-   <!--
+   {/*
       Desktop: ya no lleva los enlaces de navegación inline (Inicio/Movapp/
       Hack/Contenido) -- a pedido, esos viven ahora dentro del menú
       hamburguesa (ver MenuDesktopPanel.astro). Lo único que queda visible
       en la barra, además del logo, es tienda/carrito y el toggle de tema
       (explícitamente pedido que se queden afuera del menú) y el botón de
       hamburguesa que abre ese panel.
-   -->
+   */}
    <div class="hidden lg:flex items-center gap-2">
-      <!--
+      {/*
          Buscador (desktop): se despliega dentro de la propia navbar (ver
          HeaderSearch.astro) -- a pedido explícito, NO es el mismo modal
          centrado que usa el botón flotante de móvil (SearchPanel.astro).
-      -->
+      */}
       <HeaderSearch />
 
-      <!-- Tienda / Carrito (desktop): por defecto se muestra el ícono de
+      {/* Tienda / Carrito (desktop): por defecto se muestra el ícono de
          tienda (igual al de la barra inferior en móvil); solo se cambia
          por el ícono de carrito (con su badge) cuando hay algo dentro --
          ver el toggle de data-cart-empty-icon/data-cart-filled-icon en el
          script de abajo, que corre junto al resto de la lógica del badge.
-      -->
+      */}
       <a
          href="/tienda/"
          id="storeButton"
@@ -64,14 +64,14 @@ import HeaderSearch from '@components/layout/HeaderSearch.astro';
          >0</span>
       </a>
 
-      <!-- Toggle de tema -->
+      {/* Toggle de tema */}
       <button
          id="themeToggle"
          type="button"
          aria-label="Cambiar tema"
          class="flex h-9 w-9 items-center justify-center rounded-full icon-tone hover:bg-black/5 dark:hover:bg-white/10 transition"
       >
-         <!-- Sol (visible en light) -->
+         {/* Sol (visible en light) */}
          <svg
             class="block h-5 w-5 dark:hidden"
             xmlns="http://www.w3.org/2000/svg"
@@ -87,7 +87,7 @@ import HeaderSearch from '@components/layout/HeaderSearch.astro';
                d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"
             ></path>
          </svg>
-         <!-- Luna (visible en dark) -->
+         {/* Luna (visible en dark) */}
          <svg
             class="hidden h-5 w-5 dark:block"
             xmlns="http://www.w3.org/2000/svg"
@@ -102,10 +102,10 @@ import HeaderSearch from '@components/layout/HeaderSearch.astro';
          </svg>
       </button>
 
-      <!-- Menú hamburguesa: abre MenuDesktopPanel.astro (ver ese archivo para
+      {/* Menú hamburguesa: abre MenuDesktopPanel.astro (ver ese archivo para
            el panel y la animación de "cortinas"). Mismo ícono enmascarado
            (/img/menu.webp) que MenuMobile.astro, para que ambos hamburguesas
-           del sitio se vean iguales. -->
+           del sitio se vean iguales. */}
       <button
          id="menuDesktopButton"
          aria-label="Abrir menú"
@@ -125,13 +125,13 @@ import HeaderSearch from '@components/layout/HeaderSearch.astro';
    </div>
 </header>
 
-<!--
+{/*
    Spacer: el header es position:fixed (no sticky), así que no reserva su
    propio espacio en el documento. Este div compensa esa altura para que el
    contenido de abajo no quede tapado. Solo aplica en lg+ (mismo breakpoint
    en el que el header se muestra). 74px = altura medida del header sin
    scroll (py-4 + logo h-10).
--->
+*/}
 <div class="header-spacer hidden lg:block" style="height: 74px;" aria-hidden="true"></div>
 
 <style>

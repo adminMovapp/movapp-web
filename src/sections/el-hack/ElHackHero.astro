@@ -9,7 +9,7 @@ import { getServerCountry } from '@utils/geo';
 const serverCountry = getServerCountry(Astro);
 ---
 
-<!--
+{/*
    Vista de producto en /el-hack (a pedido, sept. 2026): cualquier visita a
    la landing real del producto abre el funnel de Meta (ViewContent ->
    AddToCart -> InitiateCheckout -> Purchase). Vive en el Hero porque es la
@@ -27,7 +27,7 @@ const serverCountry = getServerCountry(Astro);
    Si la API no responde a tiempo, el evento sale igual con el ID correcto
    pero sin precio (nunca value: 0). Los precios se piden en el navegador,
    no en el SSR, para no sumarle dos llamadas a la API al TTFB de la página.
--->
+*/}
 <div id="el-hack-product-view" data-country={serverCountry} hidden></div>
 <script>
    import { getLocalizedPrices } from '@api/api';
@@ -49,32 +49,32 @@ const serverCountry = getServerCountry(Astro);
    });
 </script>
 
-<!--
-   Sin pb-16 a propósito (mismo criterio que HomeHero.astro): este <section>
+{/*
+   Sin pb-16 a propósito (mismo criterio que HomeHero.astro): este ‹section›
    no usa "my-section" (el margen estándar de 4rem, ver tailwind.config.mjs,
    que colapsa con el margin-top de la siguiente sección), sino padding para
    el centrado vertical del contenido. Un pb-16 acá no colapsa con el
    mt-section de ElHackWhatIs -- se suma encima (128px en vez de 64px), casi
    el doble del espacio de cualquier otro par de secciones de la página.
--->
+*/}
 <section class="relative mx-auto flex max-w-4xl flex-col items-center justify-center px-4 pt-16 text-center">
-   <!--
+   {/*
       Mismo fondo de tormenta (rayos + niebla) que el resto de las secciones
       de El Hack -- antes el hero tenía sus propios truenos, más gruesos y
       protagonistas, pero a pedido ahora usa el mismo StormField que
       ElHackWhatIs/HowItWorks/Features/FAQ/CTA para que el fondo se sienta
       consistente en toda la página. boltCount más alto (5): el hero es más
       grande que el resto de las secciones (max-w-4xl + más padding vertical).
-   -->
+   */}
    <StormField id="el-hack-hero" boltCount={5} />
 
    <Breadcrumbs />
 
-   <!--
+   {/*
       Fondo negro + resplandor central: capa aparte del StormField de arriba
       (que ya trae su propia niebla) -- este es el fondo sólido de la sección
       y el resplandor original del hero, sin relación con los rayos.
-   -->
+   */}
    <div
       class="pointer-events-none absolute -top-24 -bottom-24 left-1/2 -z-20 flex w-screen items-center justify-center -translate-x-1/2"
       aria-hidden="true"
@@ -86,26 +86,26 @@ const serverCountry = getServerCountry(Astro);
       </div>
    </div>
 
-   <!-- H1 (único H1 de la página) -->
+   {/* H1 (único H1 de la página) */}
    <h1 class="max-w-3xl text-3xl font-bold uppercase leading-tight text-gray-900 dark:text-white md:text-5xl">
       El Hack: el servicio para <span class="text-text_banner">frenar</span> el <span class="text-text_banner">acoso</span> de las
       <span class="text-text_banner drop-shadow-[0_0_25px_rgba(129,73,226,0.35)]">apps montadeudas</span>
    </h1>
 
-   <!--
+   {/*
       Logo de El Hack en el flujo del contenido (entre el título y el
       párrafo que le sigue) -- ya no es capa de fondo, pero conserva las
       mismas animaciones que tenía ahí (float + glitch).
-   -->
+   */}
    <div class="hero-logo-float relative z-10 my-6 w-[55%] max-w-[380px] aspect-[510/144]" aria-hidden="true">
-      <!--
+      {/*
          GLOBAL-001 (ver skill Rendimiento): sin "loading"/"fetchpriority",
-         <Image> renderiza loading="lazy" por defecto -- estos 2 logos están
+         ‹Image› renderiza loading="lazy" por defecto -- estos 2 logos están
          arriba del pliegue junto con el H1 (no hay foto grande en este hero,
          a diferencia de HomeHero.astro), así que igual conviene pedirlos
          eager+high en vez de dejarlos competir por prioridad con recursos
          menos urgentes.
-      -->
+      */}
       <Image
          src={ImgElHackNegro}
          alt=""

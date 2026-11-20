@@ -41,20 +41,20 @@ const hasMultipleTrustPages = testimonials.length > TRUST_PAGE_SIZE;
       </p>
    </div>
 
-   <!--
+   {/*
       Historias reales -- mismo lenguaje visual que "¿Cómo te ayuda Movapp?"
       (HomeFeatured.astro): carrusel deslizable en móvil (scroll-snap nativo,
       funciona sin JS) y grid estático de 3 columnas en escritorio. En vez de
       foto (son testimonios anónimos) cada tarjeta lleva el mismo tratamiento
       de "icono sobre grid punteado" que usa la primera tarjeta de esa
       sección, con un ícono de persona anónima.
-   -->
-   <!-- Móvil: carrusel deslizable, igual que antes (todos los testimonios, scroll-snap).
+   */}
+   {/* Móvil: carrusel deslizable, igual que antes (todos los testimonios, scroll-snap).
         "pt-2": mismo fix que "#featuredCarousel" en HomeFeatured.astro -- las
         tarjetas usan ".float-anim" (translateY hasta -6px) y este contenedor
         tiene "overflow-x-auto" (que vuelve "auto" también el overflow-y);
         sin aire arriba, ese recorrido se recortaba contra el borde superior
-        del scroll. Ver el comentario completo en HomeFeatured.astro. -->
+        del scroll. Ver el comentario completo en HomeFeatured.astro. */}
    <div class="md:hidden">
       <div
          id="trustCarousel"
@@ -67,11 +67,11 @@ const hasMultipleTrustPages = testimonials.length > TRUST_PAGE_SIZE;
                   class="testimonial-card float-anim w-[78vw] flex-shrink-0 snap-center overflow-hidden rounded-3xl border border-purple_mv/25 shadow-card transition-colors duration-300 hover:border-purple_mv/50 hover:shadow-card-hover dark:border-white/10"
                   style={`--float-dur: ${5.6 + i * 0.3}s; --float-delay: ${i * 0.2}s;`}
                >
-                  <!-- flex column + h-full (a pedido): el nombre siempre queda
+                  {/* flex column + h-full (a pedido): el nombre siempre queda
                        pegado abajo, sin importar cuánto más corto sea un
                        testimonio que otro -- .testimonial-card ya recibe una
                        altura real e igual entre las 3 tarjetas (stretch por
-                       defecto del flex del carrusel), este div solo la llena. -->
+                       defecto del flex del carrusel), este div solo la llena. */}
                   <div class="relative flex h-full flex-col bg-gradient-to-b from-purple_mv/[0.06] to-transparent p-5 text-left dark:from-purple_mv/[0.1] dark:to-black/30">
                      <span class="pointer-events-none absolute -top-2 left-4 select-none text-6xl font-serif text-purple_mv/30">
                         “
@@ -84,7 +84,7 @@ const hasMultipleTrustPages = testimonials.length > TRUST_PAGE_SIZE;
          }
       </div>
 
-      <!--
+      {/*
          Posiciona el carrusel móvil sobre el testimonio de Diego (a pedido:
          debe ser lo primero que se ve, aunque quedó en medio del orden) --
          mismo mecanismo que "El Hack" en HomeFeatured.astro, ver los
@@ -95,7 +95,7 @@ const hasMultipleTrustPages = testimonials.length > TRUST_PAGE_SIZE;
          reacción a ese evento va detrás de un doble rAF (reprocesamiento
          forzado: leer geometría en el mismo tick en que Tailwind invalida
          el estilo de la página).
-      -->
+      */}
       <script is:inline>
          (function () {
             var track = document.getElementById('trustCarousel');
@@ -122,10 +122,10 @@ const hasMultipleTrustPages = testimonials.length > TRUST_PAGE_SIZE;
          })();
       </script>
 
-      <!-- Pista de swipe: siempre visible en el HTML (no depende de JS).
+      {/* Pista de swipe: siempre visible en el HTML (no depende de JS).
            Las flechas son botones reales (ver script) que llevan a la
            tarjeta anterior/siguiente -- el swipe manual sigue funcionando
-           igual, esto solo agrega una forma alterna de navegar con un tap. -->
+           igual, esto solo agrega una forma alterna de navegar con un tap. */}
       <div class="swipe-hint mx-auto mt-5 flex w-fit items-center gap-2 rounded-full border border-purple_mv/25 bg-purple_mv/5 px-4 py-1.5 text-[11px] font-medium text-gray-500 dark:border-white/10 dark:bg-white/5 dark:text-white/50">
          <button id="trustSwipePrev" type="button" aria-label="Ver testimonio anterior" class="-m-1 flex items-center justify-center p-1">
             <svg class="swipe-hint-arrow h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
@@ -141,7 +141,7 @@ const hasMultipleTrustPages = testimonials.length > TRUST_PAGE_SIZE;
       </div>
    </div>
 
-   <!--
+   {/*
       Escritorio: PÁGINAS de 3 testimonios distintos (no una ventana
       deslizante) -- cada testimonio aparece en una sola página, nunca se
       repite entre un click y el siguiente. Si el total no es múltiplo de 3,
@@ -175,7 +175,7 @@ const hasMultipleTrustPages = testimonials.length > TRUST_PAGE_SIZE;
       (altura real del contenido, sin el mínimo, en cada breakpoint) y se
       ajustó apenas por encima de eso -- a pedido, más chico que antes
       porque con el texto actual las tarjetas se veían con demasiado aire.
-   -->
+   */}
    <div class="hidden md:flex md:items-center md:justify-center md:gap-4 lg:gap-6">
       {
          hasMultipleTrustPages && (
@@ -239,8 +239,8 @@ const hasMultipleTrustPages = testimonials.length > TRUST_PAGE_SIZE;
       }
    </div>
 
-   <!-- Botón "Ver más testimonios": únicamente en escritorio -- el wireframe
-        móvil (2026-11-16) no lo trae. -->
+   {/* Botón "Ver más testimonios": únicamente en escritorio -- el wireframe
+        móvil (2026-11-16) no lo trae. */}
    <div class="mt-8 hidden justify-center md:flex">
       <a
          id="cta-home-testimonios"
@@ -255,7 +255,7 @@ const hasMultipleTrustPages = testimonials.length > TRUST_PAGE_SIZE;
       </a>
    </div>
 
-   <!-- Datos completos de los testimonios para el script del carrusel de escritorio (las 3 tarjetas de arriba solo pintan los índices 0, 1 y 2 al cargar). -->
+   {/* Datos completos de los testimonios para el script del carrusel de escritorio (las 3 tarjetas de arriba solo pintan los índices 0, 1 y 2 al cargar). */}
    <script type="application/json" id="trust-data" is:inline set:html={JSON.stringify(testimonials)} />
 </section>
 

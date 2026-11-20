@@ -28,14 +28,14 @@ const fieldClass =
       <p class="mt-3 text-gray-700 dark:text-white/80">Revisamos tu caso gratis. Si es urgente, usa WhatsApp.</p>
    </div>
 
-   <!--
+   {/*
       method="post" (auditoría ZAP/Softree, oct. 2026, "Sensitive Information in
       URL"): sin JavaScript el navegador envía el formulario con el método por
       defecto, GET, y el correo del usuario acababa en la URL
       (/contacto/?correo=...), en el historial, en logs y en el Referer. Con
       POST la página se vuelve a renderizar sin exponer nada. Con JavaScript no
       cambia nada: el listener de abajo hace preventDefault y envía por fetch.
-   -->
+   */}
    <form id="contactoForm" method="post" class={`mt-10 flex flex-col gap-5 rounded-2xl p-6 md:p-8 ${CARD_STYLE}`}>
       <div class="flex flex-col gap-2 text-left">
          <h3 id="contacto-nombre-label" class="text-sm font-semibold text-gray-900 dark:text-white">Nombre</h3>

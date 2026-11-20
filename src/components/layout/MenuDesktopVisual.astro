@@ -42,10 +42,10 @@ const STARS = Array.from({ length: 12 }).map(() => ({
    class="menu-visual-stage relative flex h-full w-full items-center justify-center overflow-hidden bg-white dark:bg-background_bottom"
    aria-hidden="true"
 >
-   <!-- Resplandor morado ambiente (mismo tono que el de StarField.astro) -->
+   {/* Resplandor morado ambiente (mismo tono que el de StarField.astro) */}
    <div class="menu-visual-glow pointer-events-none absolute inset-0"></div>
 
-   <!-- Estrellas ambiente (currentColor, igual que StarField.astro, para que cambien con el tema) -->
+   {/* Estrellas ambiente (currentColor, igual que StarField.astro, para que cambien con el tema) */}
    <div class="pointer-events-none absolute inset-0 text-purple_mv/50 dark:text-white/70">
       {
          STARS.map((s) => (
@@ -57,27 +57,27 @@ const STARS = Array.from({ length: 12 }).map(() => ({
       }
    </div>
 
-   <!-- Capa donde el script inyecta las palabras clave que cruzan la pantalla -->
+   {/* Capa donde el script inyecta las palabras clave que cruzan la pantalla */}
    <div id="menuThreatLayer" class="pointer-events-none absolute inset-0 overflow-hidden"></div>
 
-   <!--
+   {/*
       "M" + ondas + órbita (mismo motivo que el centro de la órbita del Hero
       de Home -- ver HomeHero.astro, ".hero-orbit-inner/outer" +
       "heroOrbitSpin") -- a pedido, SIN los escudos que orbitan ahí (los 3
       SVG "Escudo 1/2/3" de ese archivo no se replican acá, solo los dos
       anillos y su rotación).
-   -->
+   */}
    <div id="menuShieldHitbox" class="shield-hitbox relative flex aspect-square h-56 w-56 items-center justify-center xl:h-64 xl:w-64">
-      <!--
+      {/*
          Anillos atenuados (mismo opacity-30/dark:opacity-40 que
          ".hero-orbit-group" en HomeHero.astro) -- sin esto, las ondas de
          abajo (mismo color, sin atenuar) quedaban camufladas contra estos
          anillos en vez de leerse como un pulso que crece por encima de ellos.
-      -->
+      */}
       <div class="pointer-events-none absolute inset-0 flex items-center justify-center opacity-30 dark:opacity-40">
-         <!-- Círculo interior (decorativo) -->
+         {/* Círculo interior (decorativo) */}
          <div class="menu-orbit-inner absolute h-[65%] w-[65%] rounded-full border-[1.5px] border-dashed border-purple_mv/20 dark:border-white/20"></div>
-         <!-- Círculo exterior (mismo tamaño que las ondas de abajo) -->
+         {/* Círculo exterior (mismo tamaño que las ondas de abajo) */}
          <div class="menu-orbit-outer absolute inset-0 rounded-full border border-purple_mv/30 dark:border-white/20"></div>
       </div>
 
@@ -85,9 +85,9 @@ const STARS = Array.from({ length: 12 }).map(() => ({
       <span class="shield-wave absolute inset-0 rounded-full border-2 border-purple_mv/60 dark:border-white/50" style="animation-delay: 1.83s;"></span>
       <span class="shield-wave absolute inset-0 rounded-full border-2 border-purple_mv/60 dark:border-white/50" style="animation-delay: 3.67s;"></span>
 
-      <!-- height=160 (no 260): el tamaño real en pantalla va de h-14 (56px) a
+      {/* height=160 (no 260): el tamaño real en pantalla va de h-14 (56px) a
            xl:h-16 (64px) -- 160 cubre 2.5x retina del caso más grande sin
-           servir el archivo a tamaño completo. -->
+           servir el archivo a tamaño completo. */}
       <Image src={ImgLogoResp} alt="Movapp" height={160} class="shield-logo relative z-10 block h-14 w-14 object-contain dark:hidden xl:h-16 xl:w-16" />
       <Image src={ImgLogoRespBlanco} alt="Movapp" height={160} class="shield-logo relative z-10 hidden h-14 w-14 object-contain dark:block xl:h-16 xl:w-16" />
    </div>

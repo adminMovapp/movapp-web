@@ -47,7 +47,7 @@ const resolvedArticles = await Promise.all(
       Artículos relacionados
    </h2>
 
-   <!-- Móvil: grid apilado con todos los artículos, sin paginar (sin cambios, fuera de alcance de este pedido). -->
+   {/* Móvil: grid apilado con todos los artículos, sin paginar (sin cambios, fuera de alcance de este pedido). */}
    <ul class="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 md:hidden">
       {
          resolvedArticles.map((a) => (
@@ -80,7 +80,7 @@ const resolvedArticles = await Promise.all(
       }
    </ul>
 
-   <!-- Escritorio: páginas de 3 artículos con flechas (mismo patrón que el carrusel de escritorio de HomeTrust.astro). -->
+   {/* Escritorio: páginas de 3 artículos con flechas (mismo patrón que el carrusel de escritorio de HomeTrust.astro). */}
    <div class="mt-10 hidden md:flex md:items-center md:justify-center md:gap-4 lg:gap-6">
       {
          hasMultiplePages && (
@@ -162,7 +162,7 @@ const resolvedArticles = await Promise.all(
       }
    </div>
 
-   <!-- Datos completos (ya con la imagen optimizada resuelta) para el script del carrusel de escritorio -- las 3 tarjetas de arriba solo pintan la página 0 al cargar. -->
+   {/* Datos completos (ya con la imagen optimizada resuelta) para el script del carrusel de escritorio -- las 3 tarjetas de arriba solo pintan la página 0 al cargar. */}
    <script type="application/json" id={`${id}-data`} is:inline set:html={JSON.stringify(resolvedArticles)} />
 </section>
 

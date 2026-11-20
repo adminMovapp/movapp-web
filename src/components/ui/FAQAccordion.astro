@@ -61,7 +61,7 @@ const { id, title, items, linkHref, linkLabel, ambientCount = 35, background: Ba
    </h2>
 
    <div class="relative mt-10">
-      <!--
+      {/*
          Estela que se dibuja con el scroll: full-bleed (mismo truco left-1/2 +
          w-screen + -translate-x-1/2 que StarField/BackgroundGrid) para que
          ondule a lo ancho de TODA la pantalla, no solo junto a la lista.
@@ -70,7 +70,7 @@ const { id, title, items, linkHref, linkLabel, ambientCount = 35, background: Ba
          (alto real de la lista). Solo en md+ -- en móvil el mismo viewBox
          ancho, estirado sobre un contenedor angosto, aplanaba la onda hasta
          verse como una línea recta sin gracia (ver versión móvil debajo).
-      -->
+      */}
       <div class="faq-trail pointer-events-none absolute left-1/2 top-0 hidden h-full w-screen -translate-x-1/2 md:block" aria-hidden="true">
          <svg viewBox="0 0 1600 1000" preserveAspectRatio="none" class="h-full w-full">
             <defs>
@@ -93,14 +93,14 @@ const { id, title, items, linkHref, linkLabel, ambientCount = 35, background: Ba
          </svg>
       </div>
 
-      <!--
+      {/*
          Versión móvil de la estela: mismo trazo (mismas proporciones
          relativas x/1600 remapeadas a un viewBox de 400 de ancho), pero
          sobre un viewBox angosto -- así el estiramiento por
          preserveAspectRatio="none" sobre el contenedor real (~360-430px) es
          casi 1:1 en X en vez de comprimir ~6x como con el viewBox de 1600,
          que es lo que aplanaba la onda en pantallas angostas.
-      -->
+      */}
       <div class="faq-trail pointer-events-none absolute left-1/2 top-0 block h-full w-screen -translate-x-1/2 md:hidden" aria-hidden="true">
          <svg viewBox="0 0 400 1000" preserveAspectRatio="none" class="h-full w-full">
             <defs>

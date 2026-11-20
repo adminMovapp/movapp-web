@@ -83,7 +83,7 @@ import Breadcrumbs from '@components/ui/Breadcrumbs.astro';
 import ImgContactoHero from '@assets/contactos-portada.webp';
 ---
 
-<!--
+{/*
    El breadcrumb vive FUERA de la sección "keep-white" (a diferencia del
    resto de los Hero, donde va adentro) -- esa clase fuerza texto blanco
    sin importar el tema (ver global.css: ".keep-white [class*='text-white']"),
@@ -92,7 +92,7 @@ import ImgContactoHero from '@assets/contactos-portada.webp';
    "dark:text-white/60" del breadcrumb (aunque solo deberían aplicar en modo
    oscuro) y lo forzaría a blanco también en modo claro -- ilegible ahí
    arriba, donde el fondo sigue siendo el del sitio (claro), no la foto.
--->
+*/}
 <div class="relative mx-auto max-w-5xl px-4 pt-16 text-center md:pt-8">
    <Breadcrumbs />
 </div>
@@ -104,18 +104,18 @@ import ImgContactoHero from '@assets/contactos-portada.webp';
          aria-hidden="true"
       >
       </div>
-      <!--
+      {/*
          Mismo glow que el de abajo, pero más chico/tenue y arriba (hacia el
          header) -- el borde superior también quedaba con un remanente
          visible sin nada que lo distraiga/mezcle.
-      -->
+      */}
       <div
          class="pointer-events-none absolute -top-10 left-[40%] -z-10 h-48 w-48 -translate-x-1/2 rounded-full bg-purple_mv/[0.07] blur-[100px] dark:bg-purple_mv/[0.2] md:-top-14 md:h-64 md:w-64"
          aria-hidden="true"
       >
       </div>
 
-      <!--
+      {/*
          "Puentes" de costura: viven en este wrapper sin overflow-hidden
          (a diferencia del contenedor de la imagen), pegados exacto al borde
          de arriba/abajo de ese contenedor ("bottom-full"/"top-full" quedan
@@ -128,7 +128,7 @@ import ImgContactoHero from '@assets/contactos-portada.webp';
          depender de que la opacidad/blur del glow de abajo "adivine" el
          tono correcto. Lo que queda revelándose gradualmente detrás, a
          medida que el puente se desvanece, es el glow morado real.
-      -->
+      */}
       <div class="contacto-hero-seam contacto-hero-seam-bottom pointer-events-none absolute inset-x-0 top-full h-20 md:h-28" aria-hidden="true">
       </div>
       <div class="contacto-hero-seam contacto-hero-seam-top pointer-events-none absolute inset-x-0 bottom-full h-14 md:h-20" aria-hidden="true">

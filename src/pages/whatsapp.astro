@@ -60,7 +60,7 @@ Astro.response.headers.set('X-Robots-Tag', 'noindex, nofollow');
       <title>WhatsApp · Movapp</title>
       <link rel="canonical" href={canonical} />
       <link rel="icon" href="/ico-movapp.ico" />
-      <!-- Sin JavaScript (bots, navegadores limitados) igual se redirige; solo no se mide. -->
+      {/* Sin JavaScript (bots, navegadores limitados) igual se redirige; solo no se mide. */}
       <noscript><meta http-equiv="refresh" content={`0;url=${destino}`} /></noscript>
       <script is:inline define:vars={{ GA4_ID, destino, query }}>
          // URL que recibe GA4: la normalizada en el servidor (un solo "?",

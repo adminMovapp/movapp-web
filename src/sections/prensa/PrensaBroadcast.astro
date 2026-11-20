@@ -29,10 +29,10 @@ const srcset = (video: PressVideo, widths: number[]) => widths.map((w) => `${vim
    <StarField id="prensa-broadcast" ambientCount={30} />
 
    <div id="press-broadcast" data-active="0">
-      <!-- ===== Monitor ===== -->
+      {/* ===== Monitor ===== */}
       <div class="press-monitor relative rounded-[1.75rem] p-px">
          <div class="relative overflow-hidden rounded-[calc(1.75rem-1px)] bg-neutral-950">
-            <!-- Barra superior: REC + canal -->
+            {/* Barra superior: REC + canal */}
             <div class="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-2.5 font-mono text-[10px] uppercase tracking-[0.2em] text-white/70 md:px-6 md:text-xs">
                <span class="flex items-center gap-2">
                   <span class="press-rec-dot h-2 w-2 rounded-full bg-red-500" aria-hidden="true"></span>
@@ -43,7 +43,7 @@ const srcset = (video: PressVideo, widths: number[]) => widths.map((w) => `${vim
                </span>
             </div>
 
-            <!-- Pantalla -->
+            {/* Pantalla */}
             <div data-monitor-screen class="press-screen relative aspect-video overflow-hidden bg-black">
                {
                   videos.map((video, i) => (
@@ -106,7 +106,7 @@ const srcset = (video: PressVideo, widths: number[]) => widths.map((w) => `${vim
                         <span class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-black/30" aria-hidden="true" />
                         <span class="press-scanlines absolute inset-0" aria-hidden="true" />
 
-                        <!-- Esquinas HUD -->
+                        {/* Esquinas HUD */}
                         <span class="press-corner left-3 top-3 border-l-2 border-t-2 md:left-5 md:top-5" aria-hidden="true" />
                         <span class="press-corner right-3 top-3 border-r-2 border-t-2 md:right-5 md:top-5" aria-hidden="true" />
                         <span class="press-corner bottom-3 left-3 border-b-2 border-l-2 md:bottom-5 md:left-5" aria-hidden="true" />
@@ -118,7 +118,7 @@ const srcset = (video: PressVideo, widths: number[]) => widths.map((w) => `${vim
                            </span>
                         )}
 
-                        <!-- Botón de play con anillos -->
+                        {/* Botón de play con anillos */}
                         <span class="absolute left-1/2 top-[42%] -translate-x-1/2 -translate-y-1/2" aria-hidden="true">
                            <span class="press-ring absolute inset-0 rounded-full border-2 border-purple_mv" />
                            <span class="press-ring press-ring--late absolute inset-0 rounded-full border-2 border-purple_mv" />
@@ -129,7 +129,7 @@ const srcset = (video: PressVideo, widths: number[]) => widths.map((w) => `${vim
                            </span>
                         </span>
 
-                        <!-- Cintillo tipo noticiero -->
+                        {/* Cintillo tipo noticiero */}
                         <span class="absolute bottom-5 left-5 right-5 flex flex-col items-start md:bottom-10 md:left-10 md:right-auto md:max-w-xl">
                            <span class="press-lower-kicker bg-purple_mv px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-white md:text-xs">
                               Prensa · CH {channel(i)}
@@ -143,11 +143,11 @@ const srcset = (video: PressVideo, widths: number[]) => widths.map((w) => `${vim
                }
 
 
-               <!-- Contenedor del <iframe> de Vimeo (lo crea el script al dar
+               {/* Contenedor del ‹iframe› de Vimeo (lo crea el script al dar
                     play). Al salir el monitor de pantalla con el vídeo
                     sonando, este mismo contenedor pasa a position:fixed
                     (mini reproductor): cambiar solo su CSS no recarga el
-                    iframe, moverlo de nodo sí lo haría. -->
+                    iframe, moverlo de nodo sí lo haría. */}
                <div data-player-shell class="press-shell absolute inset-0 z-10 hidden">
                   <div
                      data-dock-bar
@@ -180,8 +180,8 @@ const srcset = (video: PressVideo, widths: number[]) => widths.map((w) => `${vim
                   <div data-player-frame class="press-player-frame relative h-full w-full bg-black"></div>
                </div>
 
-               <!-- Pantalla final propia: reemplaza a la de Vimeo ("seguir a
-                    Movapp en Vimeo"), ver finish() en el script. -->
+               {/* Pantalla final propia: reemplaza a la de Vimeo ("seguir a
+                    Movapp en Vimeo"), ver finish() en el script. */}
                <div
                   data-endcard
                   class="press-endcard absolute inset-0 z-10 hidden flex-col items-center justify-center gap-3 bg-black/75 p-4 text-center backdrop-blur-sm md:gap-5"
@@ -211,14 +211,14 @@ const srcset = (video: PressVideo, widths: number[]) => widths.map((w) => `${vim
                   </div>
                </div>
 
-               <!-- Estática al cambiar de canal -->
+               {/* Estática al cambiar de canal */}
                <div data-monitor-static class="press-static pointer-events-none absolute inset-0 z-20 opacity-0" aria-hidden="true">
                </div>
             </div>
          </div>
       </div>
 
-      <!-- ===== Canales ===== -->
+      {/* ===== Canales ===== */}
       <ul class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 md:mt-8 md:gap-6 lg:grid-cols-4">
          {
             videos.map((video, i) => (
@@ -252,7 +252,7 @@ const srcset = (video: PressVideo, widths: number[]) => widths.map((w) => `${vim
                            {formatDuration(video.durationSeconds)}
                         </span>
                      )}
-                     <!-- Indicador "en pantalla" (solo el canal activo, ver CSS) -->
+                     {/* Indicador "en pantalla" (solo el canal activo, ver CSS) */}
                      <span class="press-onair absolute inset-0 items-center justify-center bg-purple_mv/40 backdrop-blur-[2px]" aria-hidden="true">
                         <span class="flex h-5 items-end gap-[3px]">
                            <span class="press-eq-bar" />
@@ -269,8 +269,8 @@ const srcset = (video: PressVideo, widths: number[]) => widths.map((w) => `${vim
                         <span class="press-onair-label ml-1 text-red-500">· En pantalla</span>
                      </span>
                      <h2 class="text-base font-bold leading-snug text-gray-900 dark:text-white">
-                        <!-- El botón cubre toda la tarjeta (after:inset-0) sin
-                             meter el <h2> dentro de un <button>, que no es HTML válido. -->
+                        {/* El botón cubre toda la tarjeta (after:inset-0) sin
+                             meter el ‹h2› dentro de un ‹button›, que no es HTML válido. */}
                         <button
                            type="button"
                            data-channel={i}

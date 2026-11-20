@@ -25,11 +25,11 @@ const contentLinks = [
 ];
 ---
 
-<!--
+{/*
    Menú de escritorio: overlay de pantalla completa dividido en dos paneles
    (izquierda/derecha), solo visible en lg+ (Header.astro ya solo muestra su
    contenido -- logo, tienda/carrito, tema -- en ese mismo breakpoint). Vive
-   FUERA de <Header> como hermano suyo (mismo criterio que MenuMobilePanel
+   FUERA de ‹Header› como hermano suyo (mismo criterio que MenuMobilePanel
    respecto de MobileBottomNav): un overlay "fixed inset-0" no debería anidarse
    dentro de un ancestro con su propia lógica de posicionamiento/transform.
 
@@ -42,9 +42,9 @@ const contentLinks = [
    Animación tipo "cortina" al abrir y al cerrar: ambos paneles arrancan
    fuera de pantalla (izquierdo trasladado a la izquierda, derecho a la
    derecha) y se deslizan hacia el centro al abrir / de vuelta a sus lados de
-   origen al cerrar. Ver el <style> y el <script> más abajo.
--->
-<!--
+   origen al cerrar. Ver el ‹style› y el ‹script› más abajo.
+*/}
+{/*
    "hidden" sin variante "lg:flex" a propósito -- aunque el botón que lo abre
    solo es alcanzable en escritorio (vive dentro del "hidden lg:flex" de
    Header.astro), agregar "lg:flex" acá haría que este overlay "fixed
@@ -56,15 +56,15 @@ const contentLinks = [
    (bug real, confirmado con Playwright: el propio botón de hamburguesa
    quedaba inalcanzable). Mismo patrón que MenuMobilePanel.astro: JS a
    secas alterna "hidden"/"flex" sin depender de ningún breakpoint.
--->
+*/}
 <div id="menuDesktopNav" class="fixed inset-0 z-[999999999] hidden" aria-hidden="true">
-   <!-- border-r visible aunque el panel esté vacío, a pedido: sin esto, los
+   {/* border-r visible aunque el panel esté vacío, a pedido: sin esto, los
         dos paneles se ven como una sola superficie continua en vez de dos
         mitades separadas. Contenido del panel: MenuDesktopVisual.astro --
         pieza 100% vectorial (SVG + CSS + TypeScript, sin video/imágenes) con
         el ciclo de escenas y transición glitch pedido. Ese componente ya
         trae su propio fondo morado, así que este contenedor no necesita
-        bg-white/dark:bg-background_bottom propio. -->
+        bg-white/dark:bg-background_bottom propio. */}
    <div
       id="menuDesktopLeft"
       class="menu-desktop-panel relative h-full w-1/2 overflow-hidden border-r border-black/10 dark:border-white/10"

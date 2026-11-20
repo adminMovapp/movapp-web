@@ -67,7 +67,7 @@ const resolvedArticles = isCarousel
    {
       isCarousel ? (
          <>
-            <!-- Móvil: carrusel deslizable con TODOS los artículos (scroll-snap, sin paginar). -->
+            {/* Móvil: carrusel deslizable con TODOS los artículos (scroll-snap, sin paginar). */}
             <ul
                data-blog-carousel
                class="no-scrollbar mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-[11vw] pb-2 md:hidden"
@@ -129,7 +129,7 @@ const resolvedArticles = isCarousel
                </button>
             </div>
 
-            <!-- Escritorio: páginas de 3 artículos con flechas (mismo patrón que HomeTrust.astro / BlogRelatedArticles.astro). -->
+            {/* Escritorio: páginas de 3 artículos con flechas (mismo patrón que HomeTrust.astro / BlogRelatedArticles.astro). */}
             <div class="mt-10 hidden md:flex md:items-center md:justify-center md:gap-4 lg:gap-6">
                {hasMultiplePages && (
                   <button
@@ -220,13 +220,13 @@ const resolvedArticles = isCarousel
                )}
             </div>
 
-            <!-- Progressive enhancement: sin JS, el bloque de escritorio de arriba
+            {/* Progressive enhancement: sin JS, el bloque de escritorio de arriba
                  (Tailwind "hidden md:flex", clases que no existen sin el CSS de
-                 Tailwind cargado) queda invisible en la práctica -- el <ul> móvil
+                 Tailwind cargado) queda invisible en la práctica -- el ‹ul› móvil
                  de arriba, que SÍ es HTML/CSS puro (scroll-snap nativo), es el que
-                 efectivamente muestra el 100% de los artículos sin depender de JS. -->
+                 efectivamente muestra el 100% de los artículos sin depender de JS. */}
 
-            <!-- Datos completos (imagen ya optimizada) para el script del carrusel de escritorio -- las 3 tarjetas de arriba solo pintan la página 0 al cargar. -->
+            {/* Datos completos (imagen ya optimizada) para el script del carrusel de escritorio -- las 3 tarjetas de arriba solo pintan la página 0 al cargar. */}
             <script type="application/json" id={`${id}-data`} is:inline set:html={JSON.stringify(resolvedArticles)} />
          </>
       ) : (
