@@ -84,6 +84,8 @@ const articleSchema = [
          modifiedAt: article.modifiedAt,
          authorName: article.author,
          image: coverImageUrl,
+         type: article.schemaType,
+         about: article.schemaAbout,
       },
       Astro.request,
    ),
@@ -129,6 +131,7 @@ const articleSchema = [
       subtitle={article.subtitle}
       heroAlt={article.heroAlt}
       heroCaption={article.heroCaption}
+      kicker={article.kicker}
    />
    <BlogArticleBody
       slug={article.slug}

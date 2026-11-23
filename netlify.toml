@@ -303,6 +303,11 @@
   status = 301
 
 [[redirects]]
+  from = "/ec3-cyber-innovation-forum-2026-europol/"
+  to = "/blog/ec3-cyber-innovation-forum-2026-europol/"
+  status = 301
+
+[[redirects]]
   from = "/nuestro-servicio/"
   to = "/el-hack/"
   status = 301

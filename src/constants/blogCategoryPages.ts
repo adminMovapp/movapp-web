@@ -93,6 +93,11 @@ export const BLOG_CATEGORY_PAGES: BlogCategoryPage[] = [
       h1: 'Noticias de Movapp',
       intro: 'Mantente al día con los últimos operativos, alertas financieras y actualizaciones del equipo de Movapp en la lucha contra el fraude digital.',
       recentArticles: [
+         // 2026-11-23: comunicado del EC3 Cyber Innovation Forum, el más nuevo.
+         {
+            slug: 'ec3-cyber-innovation-forum-2026-europol',
+            title: 'EC3 Cyber Innovation Forum 2026: MOVAPP en la sede de Europol en La Haya',
+         },
          {
             slug: 'octopus-conference-2026-ciberdelincuencia-ia-extorsion',
             title: 'Octopus Conference 2026: inteligencia artificial, evidencia digital y extorsión en la agenda global contra la ciberdelincuencia',

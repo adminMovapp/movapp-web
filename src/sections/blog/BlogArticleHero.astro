@@ -42,8 +42,11 @@ interface Props {
    subtitle?: string;
    heroAlt?: string;
    heroCaption?: string;
+   // Etiqueta corta sobre el H1 (2026-11-23, EC3): párrafo, nunca encabezado.
+   kicker?: string;
 }
 const {
+   kicker,
    slug,
    title,
    breadcrumbLabel,
@@ -63,6 +66,8 @@ const hasMobileOverride = mobileAuthor !== undefined || mobileReadingMinutes !==
    <StarField id={`blog-article-hero-${slug}`} ambientCount={40} />
 
    <Breadcrumbs items={[{ label: 'Blog', href: '/blog/' }, { label: breadcrumbLabel }]} />
+
+   {kicker && <p class="relative z-10 mb-3 text-xs font-bold uppercase tracking-[0.2em] text-text_banner md:text-sm">{kicker}</p>}
 
    <h1 class="relative z-10 mx-auto max-w-2xl text-3xl font-bold uppercase leading-tight text-gray-900 dark:text-white md:text-5xl">
       {title}

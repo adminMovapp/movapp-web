@@ -47,10 +47,10 @@ function resolveArticleDate(slug: string): { date: string | null; iso: string | 
 }
 
 export const BLOG_FEATURED = {
-   // 2026-11-17, a pedido: el artículo del Buen Fin pasa a ser el destacado
-   // (antes: Octopus Conference 2026, que sigue en "Noticias recientes").
-   slug: 'buen-fin-apps-montadeudas',
-   title: 'Buen Fin: cómo evitar caer en apps montadeudas al pedir un préstamo',
+   // 2026-11-23, a pedido: el comunicado del EC3 Cyber Innovation Forum pasa
+   // a ser el destacado (antes: Buen Fin, que sigue en "Noticias recientes").
+   slug: 'ec3-cyber-innovation-forum-2026-europol',
+   title: 'EC3 Cyber Innovation Forum 2026: MOVAPP en la sede de Europol en La Haya',
 };
 
 // Reemplaza las 4 categorías-stub anteriores (Evaluaciones/Modus operandi/
@@ -76,6 +76,13 @@ export const BLOG_HOME_SECTIONS = [
       // fijarse en la fecha lo habría desordenado en silencio. `date` es la
       // fecha corta que se muestra en la tarjeta (BlogCategorySection.astro).
       articles: [
+         // 2026-11-23: comunicado del EC3 Cyber Innovation Forum (las 3
+         // secciones suman ahora 30). La fecha (Noviembre 18, 2026) lo ordena
+         // primero sola.
+         {
+            slug: 'ec3-cyber-innovation-forum-2026-europol',
+            title: 'EC3 Cyber Innovation Forum 2026: MOVAPP en la sede de Europol en La Haya',
+         },
          // 2026-11-17: Buen Fin (las 3 secciones suman ahora 29). La fecha
          // (Noviembre 12, 2026) lo ordena primero sola.
          { slug: 'buen-fin-apps-montadeudas', title: 'Buen Fin: cómo evitar caer en apps montadeudas al pedir un préstamo' },

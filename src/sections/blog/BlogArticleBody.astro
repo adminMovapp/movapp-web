@@ -130,6 +130,7 @@ const { slug, sections, faqHeading, faqs, sourcesList, authorBio, shareUrl, shar
                      <h3 class="pt-2 text-left text-lg font-bold text-text_banner md:text-xl">{block.text}</h3>
                   ) : block.type === 'callout' ? (
                      <p class="rounded-r-2xl border-l-4 border-purple_mv bg-purple_mv/[0.06] px-4 py-3 dark:bg-purple_mv/[0.12]">
+                        {block.title && <strong class="block font-bold text-text_banner">{block.title}</strong>}
                         <BlogInline text={block.text} />
                      </p>
                   ) : block.type === 'table' ? (
@@ -172,7 +173,10 @@ const { slug, sections, faqHeading, faqs, sourcesList, authorBio, shareUrl, shar
                         ))}
                      </ol>
                   ) : block.src ? (
-                     <figure>
+                     // Foto vertical (2026-11-23, EC3): a ancho completo medía
+                     // ~1150px de alto en escritorio; se limita a max-w-md y
+                     // se centra. En móvil (<448px) no cambia nada.
+                     <figure class={block.src.height > block.src.width ? 'mx-auto max-w-md' : undefined}>
                         <Image
                            src={block.src}
                            alt={block.alt}

@@ -47,8 +47,14 @@ import ImgOctopusConference2026 from '@assets/movapp-octopus-2026-portada.webp';
 // 2026.webp" (1024x683, 3:2), renombrada al patrón blog-<slug>. El hero 16:10
 // recorta apenas arriba/abajo; el og:image 1200x630 sale encajado, sin recorte.
 import ImgBuenFinAppsMontadeudas from '@assets/blog-buen-fin-apps-montadeudas.webp';
+// 2026-11-23, EC3 Cyber Innovation Forum: portada diseñada (1600x900, 16:9,
+// entregada con nombre de UUID), renombrada al patrón blog-<slug>. El hero
+// 16:10 recorta ~5% por lado (el texto de la izquierda queda dentro); el
+// og:image 1200x630 sale encajado, sin recorte.
+import ImgEc3CyberInnovationForum2026 from '@assets/blog-ec3-cyber-innovation-forum-2026-europol.webp';
 
 export const BLOG_IMAGES: Record<string, ImageMetadata> = {
+   'ec3-cyber-innovation-forum-2026-europol': ImgEc3CyberInnovationForum2026,
    'buen-fin-apps-montadeudas': ImgBuenFinAppsMontadeudas,
    'historia-movapp': ImgHistoriaMovapp,
    'apps-prestamos-confiables': ImgAppsPrestamosConfiables,

@@ -379,17 +379,20 @@ export function parseSpanishDate(text) {
    función y lo pasa por la prop `schema` del Layout.
 */
 export function generateBlogPostingSchema(
-   { headline, description, path, publishDate, publishedAt, modifiedAt, authorName, image },
+   { headline, description, path, publishDate, publishedAt, modifiedAt, authorName, image, type = 'BlogPosting', about },
    request = null,
 ) {
    const cfg = getSiteConfig(request);
+   const org = SCHEMA_DATA.organization;
    // publishedAt/modifiedAt (2026-11-10, fichas ART-001..027): fecha-hora
    // original exacta y fecha real de la nueva versión. Sin ellas, la fecha
    // visible convertida a ISO para ambas, como antes.
    const iso = publishedAt ?? parseSpanishDate(publishDate);
    return prune({
       '@context': CONTEXT,
-      '@type': 'BlogPosting',
+      // NewsArticle para comunicados (2026-11-23, ficha del EC3 Cyber
+      // Innovation Forum), BlogPosting para el resto.
+      '@type': type,
       '@id': `${abs(path, cfg)}#articulo`,
       headline,
       description,
@@ -401,8 +404,18 @@ export function generateBlogPostingSchema(
       datePublished: iso,
       dateModified: modifiedAt ?? iso,
       author: { '@type': 'Person', name: authorName },
-      publisher: { '@type': 'Organization', name: cfg.site.name, url: cfg.canonicalUrl },
+      // logo (2026-11-23, pedido por la ficha del EC3): el mismo del
+      // Organization del Home; aplica a todos los artículos.
+      publisher: {
+         '@type': 'Organization',
+         name: cfg.site.name,
+         url: cfg.canonicalUrl,
+         logo: { '@type': 'ImageObject', url: cfg.logoUrl, width: org.logoWidth, height: org.logoHeight },
+      },
       mainEntityOfPage: { '@type': 'WebPage', '@id': abs(path, cfg) },
+      // Lo que el artículo cubre (p. ej. el Event de un comunicado). prune()
+      // lo quita si no hay.
+      about,
    });
 }
 

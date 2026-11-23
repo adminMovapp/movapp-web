@@ -49,6 +49,15 @@ export interface BlogArticle {
    heroAlt?: string;
    heroCaption?: string;
    schemaHeadline?: string;
+   // Etiqueta corta sobre el H1 ("COMUNICADO · CIBERSEGURIDAD"), texto
+   // normal, nunca encabezado (2026-11-23, comunicado del EC3 Cyber
+   // Innovation Forum). Opcional.
+   kicker?: string;
+   // @type del artículo en el schema cuando la ficha pide uno distinto de
+   // BlogPosting (p. ej. NewsArticle para un comunicado) y su nodo "about"
+   // (p. ej. el Event del que trata). Solo datos visibles en la página.
+   schemaType?: 'BlogPosting' | 'NewsArticle';
+   schemaAbout?: Record<string, unknown>;
    // Secciones de cuerpo -- cada una es un H2 opcional + una secuencia
    // ordenada de bloques (ver BlogArticleBody.astro).
    sections: {
@@ -86,7 +95,8 @@ export type BlogBlock =
    // Subtítulo H3 dentro de una sección (2026-11-10, fichas ART).
    | { type: 'subheading'; text: string }
    // Recuadro destacado (aclaraciones, línea de crisis) -- 2026-11-10.
-   | { type: 'callout'; text: string }
+   // "title" (2026-11-23, EC3): primera línea en negrita, en su propia línea.
+   | { type: 'callout'; text: string; title?: string }
    // Tabla con encabezado (registro SIPRES, comparativas) -- 2026-11-10.
    // Celdas con la misma sintaxis inline del cuerpo.
    | { type: 'table'; head: string[]; rows: string[][] }
@@ -106,6 +116,7 @@ export type SeoArticleInput = Omit<
 };
 
 import { BUEN_FIN_ARTICLE } from '@constants/blog-articles/buen-fin-apps-montadeudas.ts';
+import { EC3_FORUM_ARTICLE } from '@constants/blog-articles/ec3-cyber-innovation-forum-2026-europol.ts';
 import { OCTOPUS_ARTICLE } from '@constants/blog-articles/octopus-conference-2026-ciberdelincuencia-ia-extorsion.ts';
 import { ART_001 } from '@constants/blog-articles/prestamax-es-confiable.ts';
 import { ART_002 } from '@constants/blog-articles/apps-prestamos-confiables.ts';
@@ -149,8 +160,9 @@ function blockText(block: BlogBlock): string[] {
    switch (block.type) {
       case 'paragraph':
       case 'subheading':
-      case 'callout':
          return [block.text];
+      case 'callout':
+         return [block.title ?? '', block.text];
       case 'orderedList':
       case 'unorderedList':
       case 'letteredList':
@@ -228,6 +240,9 @@ const ARTICLES: BlogArticle[] = [
    // Erik Mann de autor, así que la bio es la suya (misma que Octopus) en
    // vez de la de "Equipo Movapp" que pone seoArticle().
    { ...seoArticle(BUEN_FIN_ARTICLE), authorBio: OCTOPUS_ARTICLE.authorBio },
+   // 2026-11-23, comunicado del EC3 Cyber Innovation Forum: mismo criterio
+   // que Buen Fin (ficha propia, Erik Mann de autor, su bio).
+   { ...seoArticle(EC3_FORUM_ARTICLE), authorBio: OCTOPUS_ARTICLE.authorBio },
 ];
 
 // Títulos de "relacionados" = H1 vigente de cada artículo (fuente única).
